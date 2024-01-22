@@ -1,0 +1,16 @@
+<div>
+    {{ this.myData }}
+</div>
+
+<div>
+    <button mat-raised-btn (click)="changeWarningText()"> {{ this.changeWarningButtonText}} </button>
+</div>
+
+<div uk-alert *ngIf="this.warning === true">
+    {{ this.warningText}}
+</div>
+
+
+<div>
+    <button mat-raised-btn (click)="getProfiles()"> {{ this.getProfilesText}} </button>
+</div>
