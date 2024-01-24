@@ -1,0 +1,22 @@
+{
+	"workbench.colorTheme": "Default Dark Modern",
+    "editor.insertSpaces": false,
+    "editor.detectIndentation": false,
+    "search.exclude": {
+        "**/*angular": true
+    },
+	"[html]": {
+        "editor.defaultFormatter": "vscode.html-language-features"
+    },
+    "[less]": {
+        "editor.defaultFormatter": "vscode.css-language-features"
+    },
+    "[typescript]": {
+        "editor.defaultFormatter": "vscode.typescript-language-features"
+    },
+    "git.autofetch": true,
+	"json.schemas": [
+		
+
+	]
+}

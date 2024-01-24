@@ -6,5 +6,5 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.less']
 })
 export class AppComponent {
-  title = 'Statistic-chart-generator-Admin-v2';
+  title = 'Statistic Chart Generator Admin V2';
 }
