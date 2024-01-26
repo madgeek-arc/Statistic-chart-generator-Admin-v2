@@ -10,10 +10,10 @@ import { environment } from '../../environments/environment.prod';
 })
 export class DashboardComponent implements OnInit {
 
-	@Input() myData: string = '';
+	views: Array<any> = [];
 
-	warning: boolean = false;
-	warningText: string = '';
+	loading: boolean = false;
+	headerText: string = '';
 	changeWarningButtonText: string = "Change Warning Text";
 	getProfilesText: string = "Get Profiles";
 
@@ -23,26 +23,27 @@ export class DashboardComponent implements OnInit {
 
 
 	ngOnInit(): void {
-		console.log("My Data:", this.myData);
-		this.warningText = 'Warning';
+		this.headerText = 'Loading...';
 
 		setTimeout(() => {
-			this.warning = true;
+			this.getProfiles();
 		}, 3000);
 	}
 
-	changeWarningText(): void {
-		if (this.warningText === 'Warning') {
-			this.warningText = 'DO NOT PRESS';
-		} else {
-			this.warningText = 'Warning';
-		}
-	}
-
 	protected getProfiles() {
-		const sub = this.getProfileMappings().subscribe(resutls => {
-			console.log("Resutls:", resutls)
+		const sub = this.getProfileMappings().subscribe({
+			next: (resutls: any) => {
+				console.log("Resutls:", resutls)
+				this.views = resutls;
+				this.loading = true;
+				this.headerText = '';
+			},
+			error: (error: any) => {
+				console.log("Error:", error)
+				this.headerText = 'Error Getting Data';
+			}
 		});
+
 	}
 
 	private getProfileMappings(): Observable<Array<any>> {

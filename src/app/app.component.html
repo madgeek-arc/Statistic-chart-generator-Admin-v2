@@ -1,55 +1,8 @@
 <h3>
+	<button routerLink="/dashboard" class="uk-button uk-button-default"><span uk-icon="icon: home"></span></button>
 	{{title}}
 </h3>
 
-<app-dashboard myData="Testing Input"></app-dashboard>
-
-<footer class="Site-footer container-fluid">
-	<div class="row no-gutters">
-		<div class="col openaire-euflag">
-			<div>
-				<!-- <img sizes="(min-width: 126px) 126px" data-width="126" data-height="30" class="el-image" alt="OpenAIRE" src="https://www.openaire.eu/templates/yootheme/cache/Logo_Horizontal_white_small-74927fe1.png" srcset="https://www.openaire.eu/templates/yootheme/cache/Logo_Horizontal_white_small-74927fe1.png 126w"> -->
-				<img sizes="(min-width: 126px) 126px" data-width="126" data-height="30" class="el-image" alt="OpenAIRE"
-					src="https://www.openaire.eu/templates/yootheme/cache/Logo_Horizontal_white_small-74927fe1.png"
-					srcset="https://www.openaire.eu/templates/yootheme/cache/Logo_Horizontal_white_small-74927fe1.png 126w">
-			</div>
-			<div>
-				<img src="https://www.openaire.eu/images/Logos/flag_black_white_low.jpg" width="126" data-width="427"
-					data-height="285" class="el-image" alt="European Commission">
-			</div>
-		</div>
-	</div>
-	<div class="row no-gutters">
-		<div class="col cc-attribution">
-			<a href="http://creativecommons.org/licenses/by/4.0/" rel="license"> <img uk-svg="" hidden="true">
-				<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" width="24" height="24" class=" uk-svg">
-					<g data-name="Creative Commons" id="Creative_Commons">
-						<circle cx="12" cy="12" r="11.5"
-							style="fill:none;stroke:#ffffff;stroke-linecap:round;stroke-linejoin:round" />
-						<path d="M10.87,10a3.5,3.5,0,1,0,0,4"
-							style="fill:none;stroke:#ffffff;stroke-linecap:round;stroke-linejoin:round" />
-						<path d="M18.87,10a3.5,3.5,0,1,0,0,4"
-							style="fill:none;stroke:#ffffff;stroke-linecap:round;stroke-linejoin:round" />
-					</g>
-				</svg>&nbsp;
-				<img uk-svg="" hidden="true">
-				<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" width="24" height="24" class=" uk-svg">
-					<g id="Attribution">
-						<g data-name="<Group>" id="_Group_">
-							<circle cx="12" cy="5" data-name="<Path>" id="_Path_" r="1.5"
-								style="fill:none;stroke:#ffffff;stroke-linecap:round;stroke-linejoin:round" />
-							<path
-								d="M12,8a5,5,0,0,0-3.07.71,1,1,0,0,0-.43.83V15H10v5.5h4V15h1.5V9.54a1,1,0,0,0-.43-.83A5,5,0,0,0,12,8Z"
-								data-name="<Path>" id="_Path_2"
-								style="fill:none;stroke:#ffffff;stroke-linecap:round;stroke-linejoin:round" />
-						</g>
-						<circle cx="12" cy="12" r="11.5"
-							style="fill:none;stroke:#ffffff;stroke-linecap:round;stroke-linejoin:round" />
-					</g>
-				</svg>
-			</a>&nbsp;Unless otherwise indicated, all materials created by OpenAIRE are licenced under&nbsp;
-			<a href="http://creativecommons.org/licenses/by/4.0/" rel="license" style="color: #fff;">CC ATTRIBUTION
-				4.0 INTERNATIONAL LICENSE</a>.
-		</div>
-	</div>
-</footer>
+<header></header>
+<router-outlet></router-outlet>
+<footer></footer>

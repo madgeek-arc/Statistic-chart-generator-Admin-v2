@@ -1,16 +1,15 @@
-<div>
-    {{ this.myData }}
-</div>
+<div class="container">
+	<div class="loading-text">
+		<h3>
+			{{ this.headerText }}
+		</h3>
+	</div>
 
-<div>
-    <button mat-raised-btn (click)="changeWarningText()"> {{ this.changeWarningButtonText}} </button>
-</div>
+	<div class="uk-grid-match uk-child-width-1-5@s uk-flex-first uk-text-center" uk-grid>
 
-<div uk-alert *ngIf="this.warning === true">
-    {{ this.warningText}}
-</div>
+		<ng-container *ngFor="let item of this.views">
 
-
-<div>
-    <button mat-raised-btn (click)="getProfiles()"> {{ this.getProfilesText}} </button>
+			<app-card-component [data]="item"></app-card-component>
+		</ng-container>
+	</div>
 </div>
