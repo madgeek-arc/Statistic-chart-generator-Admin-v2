@@ -9,4 +9,9 @@ export class CardComponentComponent {
 
 	@Input() data: any;
 
+	constructor() {}
+
+	viewSelect() {
+		console.log("DATA:", this.data);
+	}
 }

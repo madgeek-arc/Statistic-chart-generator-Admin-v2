@@ -2,6 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment.prod';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
 	selector: 'app-dashboard',
@@ -17,9 +18,23 @@ export class DashboardComponent implements OnInit {
 	changeWarningButtonText: string = "Change Warning Text";
 	getProfilesText: string = "Get Profiles";
 
+	isLinear: boolean = true;
+
+	formGroup: FormGroup;
+
 	constructor(
-		private http: HttpClient
-	) { }
+		private http: HttpClient,
+		private formBuilder: FormBuilder
+	) { 
+		this.formGroup = this.formBuilder.group({
+			firstFormGroup: this.formBuilder.group({
+				title: this.formBuilder.control('Placeholder Title', Validators.required)
+			}),
+			secondFormGroup: this.formBuilder.group({
+				description: this.formBuilder.control('Placeholder Description', Validators.required)
+			})
+		})
+	}
 
 
 	ngOnInit(): void {
@@ -29,6 +44,15 @@ export class DashboardComponent implements OnInit {
 			this.getProfiles();
 		}, 3000);
 	}
+
+	get firstFormGroup() {
+		return this.formGroup.get('firstFormGroup') as FormGroup;
+	}
+
+	get secondFormGroup() {
+		return this.formGroup.get('secondFormGroup') as FormGroup;
+	}
+
 
 	protected getProfiles() {
 		const sub = this.getProfileMappings().subscribe({
