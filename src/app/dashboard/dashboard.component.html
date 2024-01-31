@@ -1,30 +1,45 @@
 <div class="container">
-	<div class="loading-text">
-		<h3>
-			{{ this.headerText }}
-		</h3>
-	</div>
-
 	<!-- Insert stepper here and add inside the view selector -->
-	<div class="uk-width-1-4">
+	<!-- <div class="uk-width-1-4">
 		<button mat-raised-button (click)="isLinear = !isLinear" id="toggle-linear">
 			{{!isLinear ? 'Enable linear mode' : 'Disable linear mode'}}
 		</button>
-	</div>
-	<mat-stepper [linear]="isLinear">
+	</div> -->
+	<mat-stepper [linear]="isLinear" [selectedIndex]="stepIndex" #stepper>
 		<mat-step [stepControl]="this.firstFormGroup">
-			<app-view-selector></app-view-selector>
+			<ng-template matStepLabel>
+				<span style="display: block;">
+					{{viewSelectionLabel}}
+				</span>
+				<span *ngIf="true" style="display: block;">
+					{{selectedView}}
+				</span>
+			</ng-template>
+			<div>
+				<button mat-button matStepperNext>Next</button>
+			</div>
+			<app-view-selector (showSelection)="updateStepper($event)"></app-view-selector>
 		</mat-step>
-		<mat-step [stepControl]="this.secondFormGroup">
+		<mat-step [stepControl]="this.secondFormGroup" [label]="categorySelectionLabel">
+			<div>
+				<button mat-button matStepperPrevious>Back</button>
+				<button mat-button matStepperNext>Next</button>
+			</div>
 			<app-category-selector></app-category-selector>
 		</mat-step>
+		<mat-step [label]="configureDatasieriesLabel">
+			<div>
+				<button mat-button matStepperPrevious>Back</button>
+				<button mat-button matStepperNext>Next</button>
+			</div>
+			Configure Dataseries
+		</mat-step>
+		<mat-step [label]="customiseAppearanceLabel">
+			<div>
+				<button mat-button matStepperPrevious>Back</button>
+				<button mat-button matStepperNext>Next</button>
+			</div>
+			Customise Appearance
+		</mat-step>
 	</mat-stepper>
-
-	<div class="uk-grid-match uk-child-width-1-5@s uk-flex-center uk-text-center" uk-grid>
-
-		<ng-container *ngFor="let item of this.views">
-
-			<app-card-component [data]="item" class="uk-width-medium"></app-card-component>
-		</ng-container>
-	</div>
 </div>

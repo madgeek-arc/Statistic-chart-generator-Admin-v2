@@ -1,10 +1,75 @@
-import { Component } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Component, EventEmitter, Output } from '@angular/core';
+import { Observable, catchError, retry } from 'rxjs';
+import { UrlProviderService } from 'src/app/services/url-provider.service';
+import { environment } from 'src/environments/environment.prod';
 
 @Component({
-  selector: 'app-view-selector',
-  templateUrl: './view-selector.component.html',
-  styleUrls: ['./view-selector.component.less']
+	selector: 'app-view-selector',
+	templateUrl: './view-selector.component.html',
+	styleUrls: ['./view-selector.component.less']
 })
 export class ViewSelectorComponent {
 
+	@Output() showSelection = new EventEmitter<string>;
+	views: Array<any> = [];
+
+	loading: boolean = false;
+	headerText: string = '';
+	changeWarningButtonText: string = "Change Warning Text";
+	getProfilesText: string = "Get Profiles";
+
+	isLinear: boolean = true;
+
+	constructor(
+		private http: HttpClient,
+		private urlProvider: UrlProviderService
+	) { }
+
+
+	ngOnInit(): void {
+
+		this.headerText = 'Loading...';
+
+		setTimeout(() => {
+			this.getProfiles();
+		}, 3000);
+	}
+
+
+
+	protected getProfiles() {
+		const sub = this.getProfileMappings().subscribe({
+			next: (resutls: any) => {
+				console.log("Resutls:", resutls)
+				this.views = resutls;
+				this.loading = true;
+				this.headerText = '';
+			},
+			error: (error: any) => {
+				console.log("Error:", error)
+				this.headerText = 'Error Getting Data';
+			}
+		});
+
+	}
+
+	// Possibly put in service 
+	private getProfileMappings(): Observable<Array<any>> {
+		const supportedProfiles = this.urlProvider.serviceURL + '/schema/profiles'
+
+		return this.http.get<Array<any>>(supportedProfiles)
+			.pipe(
+				retry(3)
+				// catchError
+			);
+	}
+
+	moveToNextStep(event: any): void {
+		if (event.name) {
+			this.showSelection.emit(event.name)
+		} else {
+			this.showSelection.emit("PlaceHolder")
+		}
+	}
 }

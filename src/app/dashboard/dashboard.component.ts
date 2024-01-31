@@ -1,8 +1,7 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
-import { environment } from '../../environments/environment.prod';
+import { CdkStepper } from '@angular/cdk/stepper';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { MatStepper } from '@angular/material/stepper';
 
 @Component({
 	selector: 'app-dashboard',
@@ -10,22 +9,22 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 	styleUrls: ['./dashboard.component.less']
 })
 export class DashboardComponent implements OnInit {
-
-	views: Array<any> = [];
-
-	loading: boolean = false;
-	headerText: string = '';
-	changeWarningButtonText: string = "Change Warning Text";
-	getProfilesText: string = "Get Profiles";
-
-	isLinear: boolean = true;
+	@ViewChild('stepper') stepper !: MatStepper;
 
 	formGroup: FormGroup;
 
+	stepIndex: number = 0;
+
+	isLinear: boolean = true;
+	viewSelectionLabel: string = "Select View";
+	selectedView: string = "";
+	categorySelectionLabel: string = "Select Category";
+	configureDatasieriesLabel: string = "Configure Dataseiries";
+	customiseAppearanceLabel: string = "Customise Appearance";
+
 	constructor(
-		private http: HttpClient,
 		private formBuilder: FormBuilder
-	) { 
+	) {
 		this.formGroup = this.formBuilder.group({
 			firstFormGroup: this.formBuilder.group({
 				title: this.formBuilder.control('Placeholder Title', Validators.required)
@@ -38,11 +37,6 @@ export class DashboardComponent implements OnInit {
 
 
 	ngOnInit(): void {
-		this.headerText = 'Loading...';
-
-		setTimeout(() => {
-			this.getProfiles();
-		}, 3000);
 	}
 
 	get firstFormGroup() {
@@ -53,27 +47,15 @@ export class DashboardComponent implements OnInit {
 		return this.formGroup.get('secondFormGroup') as FormGroup;
 	}
 
+	updateStepper(event: any): void {
+		if (event) {
+			this.selectedView = event;
+		}
 
-	protected getProfiles() {
-		const sub = this.getProfileMappings().subscribe({
-			next: (resutls: any) => {
-				console.log("Resutls:", resutls)
-				this.views = resutls;
-				this.loading = true;
-				this.headerText = '';
-			},
-			error: (error: any) => {
-				console.log("Error:", error)
-				this.headerText = 'Error Getting Data';
-			}
-		});
-
+		this.moveToNextStep()
 	}
 
-	private getProfileMappings(): Observable<Array<any>> {
-		const url = environment.apiUrl + environment.apiFolder + '/schema/profiles'
-
-		return this.http.get<Array<any>>(url);
+	moveToNextStep(): void {
+		this.stepper.selectedIndex = this.stepIndex + 1;
 	}
-
 }
