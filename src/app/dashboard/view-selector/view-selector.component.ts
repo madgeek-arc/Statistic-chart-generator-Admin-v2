@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, EventEmitter, Output } from '@angular/core';
 import { Observable, catchError, retry } from 'rxjs';
-import { UrlProviderService } from 'src/app/services/url-provider.service';
+import { UrlProviderService } from 'src/app/services/url-provider/url-provider.service';
 import { environment } from 'src/environments/environment.prod';
 
 @Component({
@@ -28,12 +28,9 @@ export class ViewSelectorComponent {
 
 
 	ngOnInit(): void {
-
 		this.headerText = 'Loading...';
 
-		setTimeout(() => {
-			this.getProfiles();
-		}, 3000);
+		this.getProfiles();
 	}
 
 
@@ -41,7 +38,6 @@ export class ViewSelectorComponent {
 	protected getProfiles() {
 		const sub = this.getProfileMappings().subscribe({
 			next: (resutls: any) => {
-				console.log("Resutls:", resutls)
 				this.views = resutls;
 				this.loading = true;
 				this.headerText = '';

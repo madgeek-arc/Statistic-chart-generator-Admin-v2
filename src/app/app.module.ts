@@ -14,6 +14,7 @@ import { CardComponentComponent } from './dashboard/helper-components/card-compo
 import { MaterialModule } from './material/material.module';
 import { CommonModule } from '@angular/common';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { DiagramCardComponentComponent } from './dashboard/helper-components/diagram-card-component/diagram-card-component.component';
 
 @NgModule({
 	declarations: [
@@ -24,7 +25,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 		ViewSelectorComponent,
 		CategorySelectorComponent,
 		PageNotFoundComponent,
-		CardComponentComponent
+		CardComponentComponent,
+		DiagramCardComponentComponent
 	],
 	imports: [
 		BrowserModule,

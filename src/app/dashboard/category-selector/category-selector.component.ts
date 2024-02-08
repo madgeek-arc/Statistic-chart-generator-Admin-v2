@@ -1,32 +1,64 @@
 import { HttpClient } from '@angular/common/http';
-import { Component } from '@angular/core';
-import { Observable, catchError, retry } from 'rxjs';
-import { UrlProviderService } from 'src/app/services/url-provider.service';
+import { Component, OnInit } from '@angular/core';
+import { Observable, catchError, first, retry } from 'rxjs';
+import { ChartProviderService, ISupportedMap, ISupportedMiscType, ISupportedPolar, ISupportedSpecialChartType } from 'src/app/services/chart-provider/chart-provider.service';
+import { UrlProviderService } from 'src/app/services/url-provider/url-provider.service';
 
 @Component({
 	selector: 'app-category-selector',
 	templateUrl: './category-selector.component.html',
 	styleUrls: ['./category-selector.component.less']
 })
-export class CategorySelectorComponent {
+export class CategorySelectorComponent implements OnInit {
+
+	supportedChartTypes: Array<ISupportedChart> = [];
+	supportedPolarTypes: Array<ISupportedPolar> = [];
+	supportedMaps: Array<ISupportedMap> = [];
+	supportedSpecialisedDiagrams: Array<ISupportedSpecialChartType> = [];
+	supportedMiscTypes: Array<ISupportedMiscType> = [];
+
+	availableDiagrams: Array<ISupportedCategory> = [];
+
+	hideChartFilter = (chart: ISupportedChart) => !chart.isHidden;
 
 
 	constructor(
 		private http: HttpClient,
-		private urlProvider: UrlProviderService
+		private urlProvider: UrlProviderService,
+		private chartProvider: ChartProviderService
 	) { }
 
+	ngOnInit(): void {
+		this.chartProvider.getSupportedChartTypes().pipe(first()).subscribe(
+			(data: Array<ISupportedChart>) => {
+				this.supportedChartTypes = data.filter(this.hideChartFilter);
+			},
+			error => {
+				console.log("ERROR getSupportedChartTypes:", error);
+			},
+			() => {
+				this.supportedChartTypes.map((elem: ISupportedChart) => {
+					this.availableDiagrams.push(elem);
+				});
+			}
+		);
 
-	// Possibly put in service 
-	getSupportedChartTypes(): Observable<Array<ISupportedChart>> {
+		this.chartProvider.getSupportedPolarTypes().pipe(first()).subscribe(
+			(data: Array<ISupportedPolar>) => {
+				this.supportedPolarTypes = data.filter(this.hideChartFilter);
+			},
+			error => {
+				console.log("ERROR getSupportedPolarTypes:", error);
+			},
+			() => {
+				this.supportedPolarTypes.map((elem: ISupportedPolar) => {
+					this.availableDiagrams.push(elem);
+				});
+			}
+		);
 
-		const supportedChartTypesUrl = this.urlProvider.serviceURL + '/chart/types';
-		return this.http.get<Array<ISupportedChart>>(supportedChartTypesUrl)
-			.pipe(
-				retry(3), // retry a failed request up to 3 times
-				// catchError(this.errorHandler.handleError) // then handle the error
-			);
 	}
+
 
 
 }

@@ -1,1 +1,30 @@
-<p>category-selector works!</p>
+<div>
+	<div class="uk-list uk-list-disc uk-list-emphasis">
+		<li>
+			<div>
+				Basic Types
+			</div>
+			<div class="uk-text-center" uk-grid>
+				<ng-container *ngFor="let basicDiagram of this.supportedChartTypes">
+					<div>
+						<app-diagram-card-component [diagramName]="basicDiagram.name"></app-diagram-card-component>
+					</div>
+				</ng-container>
+			</div>
+		</li>
+		<li>
+			<div>
+				Polar Types
+			</div>
+			<div class="uk-text-center" uk-grid>
+				<ng-container *ngFor="let polarDiagram of this.supportedPolarTypes">
+					<div>
+						<app-diagram-card-component [diagramName]="polarDiagram.name"></app-diagram-card-component>
+					</div>
+				</ng-container>
+			</div>
+		</li>
+
+	</div>
+
+</div>
