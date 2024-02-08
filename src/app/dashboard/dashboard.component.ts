@@ -13,13 +13,14 @@ export class DashboardComponent implements OnInit {
 
 	formGroup: FormGroup;
 
-	stepIndex: number = 0;
+	isStep1Done: boolean = false;
+	isStep2Done: boolean = false;
 
 	isLinear: boolean = true;
 	viewSelectionLabel: string = "Select View";
 	selectedView: string = "";
 	categorySelectionLabel: string = "Select Category";
-	configureDatasieriesLabel: string = "Configure Dataseiries";
+	configureDatasieriesLabel: string = "Configure Dataseries";
 	customiseAppearanceLabel: string = "Customise Appearance";
 
 	constructor(
@@ -48,6 +49,7 @@ export class DashboardComponent implements OnInit {
 	}
 
 	updateStepper(event: any): void {
+		console.log("Event:", event);
 		if (event) {
 			this.selectedView = event;
 		}
@@ -56,6 +58,26 @@ export class DashboardComponent implements OnInit {
 	}
 
 	moveToNextStep(): void {
-		this.stepper.selectedIndex = this.stepIndex + 1;
+		console.log("isLinear:", this.isLinear);
+		console.log("this.isStep1Done:", this.isStep1Done);
+
+		if (this.stepper.selectedIndex === 0) {
+			this.isStep1Done = true;
+		}
+		setTimeout(() => {           // or do some API calls/ Async events
+			this.stepper.next();
+			console.log("this.isStep1Done:", this.isStep1Done);
+		}, 1);
+
+		// if (this.stepper.selectedIndex === 0) {
+		// 	this.step2Editable = true;
+		// } else if (this.stepper.selectedIndex === 1) {
+		// 	this.step3Editable = true;
+		// }
+		// this.stepper.selectedIndex += + 1;
+	}
+
+	testLog() {
+		console.log("this.isStep1Done:", this.isStep1Done);
 	}
 }

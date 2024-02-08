@@ -1,12 +1,7 @@
+<button (click)="testLog()">TEST</button>
 <div class="container">
-	<!-- Insert stepper here and add inside the view selector -->
-	<!-- <div class="uk-width-1-4">
-		<button mat-raised-button (click)="isLinear = !isLinear" id="toggle-linear">
-			{{!isLinear ? 'Enable linear mode' : 'Disable linear mode'}}
-		</button>
-	</div> -->
-	<mat-stepper [linear]="isLinear" [selectedIndex]="stepIndex" #stepper>
-		<mat-step [stepControl]="this.firstFormGroup">
+	<mat-stepper #stepper linear>
+		<mat-step [stepControl]="this.firstFormGroup" [label]="viewSelectionLabel" [completed]="isStep1Done">
 			<ng-template matStepLabel>
 				<span style="display: block;">
 					{{viewSelectionLabel}}
@@ -15,30 +10,15 @@
 					{{selectedView}}
 				</span>
 			</ng-template>
-			<div>
-				<button mat-button matStepperNext>Next</button>
-			</div>
-			<app-view-selector (showSelection)="updateStepper($event)"></app-view-selector>
+			<app-view-selector (showViewSelection)="updateStepper($event)"></app-view-selector>
 		</mat-step>
-		<mat-step [stepControl]="this.secondFormGroup" [label]="categorySelectionLabel">
-			<div>
-				<button mat-button matStepperPrevious>Back</button>
-				<button mat-button matStepperNext>Next</button>
-			</div>
-			<app-category-selector></app-category-selector>
+		<mat-step [stepControl]="this.secondFormGroup" [label]="categorySelectionLabel" [editable]="this.isStep1Done">
+			<app-category-selector (showCategorySelection)="updateStepper($event)"></app-category-selector>
 		</mat-step>
-		<mat-step [label]="configureDatasieriesLabel">
-			<div>
-				<button mat-button matStepperPrevious>Back</button>
-				<button mat-button matStepperNext>Next</button>
-			</div>
+		<mat-step [label]="configureDatasieriesLabel" [editable]="isStep2Done">
 			Configure Dataseries
 		</mat-step>
 		<mat-step [label]="customiseAppearanceLabel">
-			<div>
-				<button mat-button matStepperPrevious>Back</button>
-				<button mat-button matStepperNext>Next</button>
-			</div>
 			Customise Appearance
 		</mat-step>
 	</mat-stepper>

@@ -11,7 +11,7 @@ import { environment } from 'src/environments/environment.prod';
 })
 export class ViewSelectorComponent {
 
-	@Output() showSelection = new EventEmitter<string>;
+	@Output() showViewSelection = new EventEmitter<string>;
 	views: Array<any> = [];
 
 	loading: boolean = false;
@@ -63,9 +63,9 @@ export class ViewSelectorComponent {
 
 	moveToNextStep(event: any): void {
 		if (event.name) {
-			this.showSelection.emit(event.name)
+			this.showViewSelection.emit(event.name)
 		} else {
-			this.showSelection.emit("PlaceHolder")
+			this.showViewSelection.emit("PlaceHolder")
 		}
 	}
 }

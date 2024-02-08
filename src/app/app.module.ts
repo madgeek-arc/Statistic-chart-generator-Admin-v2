@@ -15,6 +15,7 @@ import { MaterialModule } from './material/material.module';
 import { CommonModule } from '@angular/common';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { DiagramCardComponentComponent } from './dashboard/helper-components/diagram-card-component/diagram-card-component.component';
+import { CapitalizePipe } from './dashboard/pipes/capitalize.pipe';
 
 @NgModule({
 	declarations: [
@@ -26,7 +27,10 @@ import { DiagramCardComponentComponent } from './dashboard/helper-components/dia
 		CategorySelectorComponent,
 		PageNotFoundComponent,
 		CardComponentComponent,
-		DiagramCardComponentComponent
+		DiagramCardComponentComponent,
+
+		// Pipes
+		CapitalizePipe
 	],
 	imports: [
 		BrowserModule,

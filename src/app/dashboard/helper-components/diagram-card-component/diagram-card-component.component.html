@@ -1,8 +1,10 @@
-<div class="uk-card uk-card-default uk-card-hover uk-card-small">
-	<div class="uk-card-media-top">
-        <img src="../../../../assets/images/numberPlaceholder.png" width="30px" height="30px" alt="Diagram Placeholder">
-    </div>
-	<div class="uk-card-footer">
-		<p>{{diagramName}}</p>
+<button (click)="categorySelect()">
+	<div class="uk-card uk-card-default uk-card-hover uk-card-small">
+		<div class="uk-card-media-top">
+			<img src="../../../../assets/images/numberPlaceholder.png" width="30px" height="30px" alt="Diagram Placeholder">
+		</div>
+		<div class="uk-card-footer">
+			<p>{{diagram.name | capitalize}}</p>
+		</div>
 	</div>
-</div>
+</button>

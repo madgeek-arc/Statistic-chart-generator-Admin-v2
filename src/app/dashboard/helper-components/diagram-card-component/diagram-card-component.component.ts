@@ -7,7 +7,13 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 })
 export class DiagramCardComponentComponent {
 
-	@Input() diagramName: string | undefined = '';
+	@Input() diagram: any;
+	@Output() outputEvent = new EventEmitter<any>;
 
 	constructor() { }
+
+	categorySelect(): void {
+		console.log("CATEGORY Data:", this.diagram);
+		this.outputEvent.emit(this.diagram);
+	}
 }

@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
-import { Observable, catchError, first, retry } from 'rxjs';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { first } from 'rxjs';
 import { ChartProviderService, ISupportedMap, ISupportedMiscType, ISupportedPolar, ISupportedSpecialChartType } from 'src/app/services/chart-provider/chart-provider.service';
 import { UrlProviderService } from 'src/app/services/url-provider/url-provider.service';
 
@@ -10,6 +10,8 @@ import { UrlProviderService } from 'src/app/services/url-provider/url-provider.s
 	styleUrls: ['./category-selector.component.less']
 })
 export class CategorySelectorComponent implements OnInit {
+
+	@Output() showCategorySelection = new EventEmitter<string>;
 
 	supportedChartTypes: Array<ISupportedChart> = [];
 	supportedPolarTypes: Array<ISupportedPolar> = [];
@@ -57,10 +59,60 @@ export class CategorySelectorComponent implements OnInit {
 			}
 		);
 
+
+		this.chartProvider.getSupportedMaps().pipe(first()).subscribe(
+			(data: Array<ISupportedMap>) => {
+				this.supportedMaps = data.filter(this.hideChartFilter);
+			},
+			error => {
+				console.log("ERROR getSupportedPolarTypes:", error);
+			},
+			() => {
+				this.supportedMaps.map((elem: ISupportedMap) => {
+					this.availableDiagrams.push(elem);
+				});
+			}
+		);
+
+		this.chartProvider.getSupportedSpecialChartTypes().pipe(first()).subscribe(
+			(data: Array<ISupportedSpecialChartType>) => {
+				this.supportedSpecialisedDiagrams = data.filter(this.hideChartFilter);
+			},
+			error => {
+				console.log("ERROR getSupportedPolarTypes:", error);
+			},
+			() => {
+				this.supportedSpecialisedDiagrams.map((elem: ISupportedSpecialChartType) => {
+					this.availableDiagrams.push(elem);
+				});
+			}
+		);
+
+
+		this.chartProvider.getSupportedMiscTypes().pipe(first()).subscribe(
+			(data: Array<ISupportedMiscType>) => {
+				this.supportedMiscTypes = data.filter(this.hideChartFilter);
+			},
+			error => {
+				console.log("ERROR getSupportedPolarTypes:", error);
+			},
+			() => {
+				this.supportedMiscTypes.map((elem: ISupportedMiscType) => {
+					this.availableDiagrams.push(elem);
+				});
+			}
+		);
+
+
 	}
 
-
-
+	moveToNextStep(event: any): void {
+		if (event.name) {
+			this.showCategorySelection.emit(event.name)
+		} else {
+			this.showCategorySelection.emit("PlaceHolder")
+		}
+	}
 }
 
 export interface ISupportedCategory {
