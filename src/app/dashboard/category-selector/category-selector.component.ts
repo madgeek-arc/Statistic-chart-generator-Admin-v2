@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { FormControl } from '@angular/forms';
 import { first } from 'rxjs';
 import { ChartProviderService, ISupportedMap, ISupportedMiscType, ISupportedPolar, ISupportedSpecialChartType } from 'src/app/services/chart-provider/chart-provider.service';
 import { UrlProviderService } from 'src/app/services/url-provider/url-provider.service';
@@ -11,7 +12,8 @@ import { UrlProviderService } from 'src/app/services/url-provider/url-provider.s
 })
 export class CategorySelectorComponent implements OnInit {
 
-	@Output() showCategorySelection = new EventEmitter<string>;
+	@Input('categoryForm') categoryForm: FormControl = new FormControl();
+	@Output() showCategorySelection = new EventEmitter<any>;
 
 	supportedChartTypes: Array<ISupportedChart> = [];
 	supportedPolarTypes: Array<ISupportedPolar> = [];
@@ -25,8 +27,6 @@ export class CategorySelectorComponent implements OnInit {
 
 
 	constructor(
-		private http: HttpClient,
-		private urlProvider: UrlProviderService,
 		private chartProvider: ChartProviderService
 	) { }
 
@@ -108,9 +108,16 @@ export class CategorySelectorComponent implements OnInit {
 
 	moveToNextStep(event: any): void {
 		if (event.name) {
-			this.showCategorySelection.emit(event.name)
+			this.categoryForm.setValue(event);
+			this.showCategorySelection.emit({
+				name: event.name,
+				step: "category"
+			})
 		} else {
-			this.showCategorySelection.emit("PlaceHolder")
+			this.showCategorySelection.emit({
+				name: "PlaceHolder Category",
+				step: "category"
+			})
 		}
 	}
 }

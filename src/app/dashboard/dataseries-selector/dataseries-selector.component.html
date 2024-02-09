@@ -1,0 +1,38 @@
+<!-- <div>
+	<div>
+		<span>Entity</span>
+	</div>
+	<button class="uk-button uk-button-default" type="button">{{ this.entitySelection}}</button>
+	<div uk-dropdown="pos: bottom-center; mode: click; animation: reveal-left; animate-out: true; duration: 700">
+		<ng-container>
+			<ul class="uk-nav uk-dropdown-nav" *ngFor="let entity of this.entities">
+				<li>
+					<button (click)="selectEntity(entity)">
+						{{entity}}
+					</button>
+				</li>
+			</ul>
+		</ng-container>
+	</div>
+</div> -->
+
+<button (click)="testLog()">TEST</button>
+
+<div>
+	<h4>mat-select</h4>
+	<mat-form-field>
+		<mat-label>Entities</mat-label>
+		<mat-select [(value)]="testingSelect" (selectionChange)="someMethod($event)">
+			<mat-option>-- None --</mat-option>
+			<ng-container *ngFor="let group of entities">
+				<mat-option [value]="group">{{group}}</mat-option>
+				<!-- create entity array with subcategories -->
+				<!-- <mat-optgroup [label]="group">
+				<ng-container *ngFor="let group of entities">
+					<mat-option [value]="group">{{group}}</mat-option>
+				</ng-container>
+			</mat-optgroup> -->
+			</ng-container>
+		</mat-select>
+	</mat-form-field>
+</div>

@@ -2,15 +2,15 @@ import { TestBed } from '@angular/core/testing';
 
 import { ChartProviderService } from './chart-provider.service';
 
-describe('UrlProviderService', () => {
-  let service: ChartProviderService;
+describe('ChartProviderService', () => {
+	let service: ChartProviderService;
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({});
-    service = TestBed.inject(ChartProviderService);
-  });
+	beforeEach(() => {
+		TestBed.configureTestingModule({});
+		service = TestBed.inject(ChartProviderService);
+	});
 
-  it('should be created', () => {
-    expect(service).toBeTruthy();
-  });
+	it('should be created', () => {
+		expect(service).toBeTruthy();
+	});
 });

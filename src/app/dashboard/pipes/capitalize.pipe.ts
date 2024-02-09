@@ -13,7 +13,7 @@ export class CapitalizePipe implements PipeTransform {
 
 			return splitString.join(' ');
 		} else {
-			return value ? value : '-';
+			return value ? value : '';
 		}
 	}
 

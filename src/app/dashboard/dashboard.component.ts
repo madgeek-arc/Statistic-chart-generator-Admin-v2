@@ -1,7 +1,8 @@
 import { CdkStepper } from '@angular/cdk/stepper';
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatStepper } from '@angular/material/stepper';
+import { Profile } from '../services/profile-provider/profile-provider.service';
 
 @Component({
 	selector: 'app-dashboard',
@@ -15,69 +16,98 @@ export class DashboardComponent implements OnInit {
 
 	isStep1Done: boolean = false;
 	isStep2Done: boolean = false;
-
 	isLinear: boolean = true;
+
 	viewSelectionLabel: string = "Select View";
 	selectedView: string = "";
 	categorySelectionLabel: string = "Select Category";
+	selectedCategory: string = "";
 	configureDatasieriesLabel: string = "Configure Dataseries";
+	selectedDataseries: string = "";
 	customiseAppearanceLabel: string = "Customise Appearance";
+	selectedAppearance: string = '';
+
 
 	constructor(
 		private formBuilder: FormBuilder
 	) {
 		this.formGroup = this.formBuilder.group({
-			firstFormGroup: this.formBuilder.group({
-				title: this.formBuilder.control('Placeholder Title', Validators.required)
+			view: this.formBuilder.control(null, Validators.required),
+			category: this.formBuilder.control(null, Validators.required),
+			dataseries: this.formBuilder.group({
+				entity: this.formBuilder.control(null, Validators.required)
 			}),
-			secondFormGroup: this.formBuilder.group({
-				description: this.formBuilder.control('Placeholder Description', Validators.required)
+			appearance: this.formBuilder.group({
+				color: this.formBuilder.control(null)
 			})
 		})
 	}
 
 
 	ngOnInit(): void {
+		this.view.valueChanges.subscribe((view: Profile) => {
+			if (view) {
+				this.newViewSelected();
+			}
+		});
 	}
 
-	get firstFormGroup() {
-		return this.formGroup.get('firstFormGroup') as FormGroup;
+	get view() {
+		return this.formGroup.get('view') as FormControl;
 	}
 
-	get secondFormGroup() {
-		return this.formGroup.get('secondFormGroup') as FormGroup;
+	get category() {
+		return this.formGroup.get('category') as FormControl;
+	}
+
+	get dataseries() {
+		return this.formGroup.get('dataseries') as FormGroup;
+	}
+
+	get appearance() {
+		return this.formGroup.get('appearance') as FormGroup;
+	}
+
+	onStepChange(event: any): void {
+		console.log("onStepChange:", event.selectedIndex);
 	}
 
 	updateStepper(event: any): void {
-		console.log("Event:", event);
+		console.log("updateStepper:", event);
 		if (event) {
-			this.selectedView = event;
+			if (event.step === 'view') {
+				this.selectedView = event.name;
+			} else if (event.step === 'category') {
+				this.selectedCategory = event.name;
+			}
 		}
 
 		this.moveToNextStep()
 	}
 
 	moveToNextStep(): void {
-		console.log("isLinear:", this.isLinear);
-		console.log("this.isStep1Done:", this.isStep1Done);
-
-		if (this.stepper.selectedIndex === 0) {
-			this.isStep1Done = true;
-		}
-		setTimeout(() => {           // or do some API calls/ Async events
+		setTimeout(() => {
 			this.stepper.next();
-			console.log("this.isStep1Done:", this.isStep1Done);
+			this.formGroup.updateValueAndValidity();
 		}, 1);
+	}
 
-		// if (this.stepper.selectedIndex === 0) {
-		// 	this.step2Editable = true;
-		// } else if (this.stepper.selectedIndex === 1) {
-		// 	this.step3Editable = true;
-		// }
-		// this.stepper.selectedIndex += + 1;
+	newViewSelected(): void {
+		this.category.reset();
+		this.dataseries.reset();
+		this.appearance.reset();
+		this.formGroup.updateValueAndValidity();
+		this.selectedCategory = '';
+		this.selectedDataseries = '';
+		this.selectedAppearance = '';
 	}
 
 	testLog() {
-		console.log("this.isStep1Done:", this.isStep1Done);
+		console.log("TESTING View:", this.view.value);
+		console.log("TESTING Category:", this.category.value);
+	}
+
+	submitTest() {
+		console.log("SUBMIT:", this.formGroup.value);
 	}
 }

@@ -16,6 +16,8 @@ import { CommonModule } from '@angular/common';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { DiagramCardComponentComponent } from './dashboard/helper-components/diagram-card-component/diagram-card-component.component';
 import { CapitalizePipe } from './dashboard/pipes/capitalize.pipe';
+import { ReactiveFormsModule } from '@angular/forms';
+import { DataseriesSelectorComponent } from './dashboard/dataseries-selector/dataseries-selector.component';
 
 @NgModule({
 	declarations: [
@@ -28,12 +30,14 @@ import { CapitalizePipe } from './dashboard/pipes/capitalize.pipe';
 		PageNotFoundComponent,
 		CardComponentComponent,
 		DiagramCardComponentComponent,
+		DataseriesSelectorComponent,
 
 		// Pipes
-		CapitalizePipe
+		CapitalizePipe,
 	],
 	imports: [
 		BrowserModule,
+		ReactiveFormsModule,
 		BrowserAnimationsModule,
 		AppRoutingModule,
 		HttpClientModule,

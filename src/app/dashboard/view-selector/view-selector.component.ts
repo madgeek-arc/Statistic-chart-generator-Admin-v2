@@ -1,8 +1,6 @@
-import { HttpClient } from '@angular/common/http';
-import { Component, EventEmitter, Output } from '@angular/core';
-import { Observable, catchError, retry } from 'rxjs';
-import { UrlProviderService } from 'src/app/services/url-provider/url-provider.service';
-import { environment } from 'src/environments/environment.prod';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { FormControl } from '@angular/forms';
+import { ProfileProviderService } from 'src/app/services/profile-provider/profile-provider.service';
 
 @Component({
 	selector: 'app-view-selector',
@@ -11,61 +9,31 @@ import { environment } from 'src/environments/environment.prod';
 })
 export class ViewSelectorComponent {
 
-	@Output() showViewSelection = new EventEmitter<string>;
-	views: Array<any> = [];
-
-	loading: boolean = false;
-	headerText: string = '';
-	changeWarningButtonText: string = "Change Warning Text";
-	getProfilesText: string = "Get Profiles";
+	@Input('viewForm') viewForm: FormControl = new FormControl();
+	@Output() showViewSelection = new EventEmitter<any>;
 
 	isLinear: boolean = true;
 
 	constructor(
-		private http: HttpClient,
-		private urlProvider: UrlProviderService
+		protected profileProvide: ProfileProviderService
 	) { }
 
 
-	ngOnInit(): void {
-		this.headerText = 'Loading...';
+	ngOnInit(): void { }
 
-		this.getProfiles();
-	}
-
-
-
-	protected getProfiles() {
-		const sub = this.getProfileMappings().subscribe({
-			next: (resutls: any) => {
-				this.views = resutls;
-				this.loading = true;
-				this.headerText = '';
-			},
-			error: (error: any) => {
-				console.log("Error:", error)
-				this.headerText = 'Error Getting Data';
-			}
-		});
-
-	}
-
-	// Possibly put in service 
-	private getProfileMappings(): Observable<Array<any>> {
-		const supportedProfiles = this.urlProvider.serviceURL + '/schema/profiles'
-
-		return this.http.get<Array<any>>(supportedProfiles)
-			.pipe(
-				retry(3)
-				// catchError
-			);
-	}
 
 	moveToNextStep(event: any): void {
 		if (event.name) {
-			this.showViewSelection.emit(event.name)
+			this.viewForm.setValue(event);
+			this.showViewSelection.emit({
+				name: event.name,
+				step: "view"
+			});
 		} else {
-			this.showViewSelection.emit("PlaceHolder")
+			this.showViewSelection.emit({
+				name: "PlaceHolder View",
+				step: "view"
+			});
 		}
 	}
 }

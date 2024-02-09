@@ -1,25 +1,36 @@
 <button (click)="testLog()">TEST</button>
+<button style="float: right;" (click)="submitTest()" [disabled]="!(this.view.valid && this.category.valid && this.dataseries.valid)">SUBMIT</button>
 <div class="container">
-	<mat-stepper #stepper linear>
-		<mat-step [stepControl]="this.firstFormGroup" [label]="viewSelectionLabel" [completed]="isStep1Done">
-			<ng-template matStepLabel>
-				<span style="display: block;">
-					{{viewSelectionLabel}}
-				</span>
-				<span *ngIf="true" style="display: block;">
-					{{selectedView}}
-				</span>
-			</ng-template>
-			<app-view-selector (showViewSelection)="updateStepper($event)"></app-view-selector>
-		</mat-step>
-		<mat-step [stepControl]="this.secondFormGroup" [label]="categorySelectionLabel" [editable]="this.isStep1Done">
-			<app-category-selector (showCategorySelection)="updateStepper($event)"></app-category-selector>
-		</mat-step>
-		<mat-step [label]="configureDatasieriesLabel" [editable]="isStep2Done">
-			Configure Dataseries
-		</mat-step>
-		<mat-step [label]="customiseAppearanceLabel">
-			Customise Appearance
-		</mat-step>
-	</mat-stepper>
+	<form [formGroup]="this.formGroup">
+		<mat-stepper #stepper linear (selectionChange)="onStepChange($event)">
+			<mat-step [stepControl]="this.view">
+				<ng-template matStepLabel>
+					<span style="display: block;">
+						{{viewSelectionLabel}}
+					</span>
+					<span *ngIf="true" style="display: block;">
+						{{selectedView}}
+					</span>
+				</ng-template>
+				<app-view-selector (showViewSelection)="updateStepper($event)" [viewForm]="this.view"></app-view-selector>
+			</mat-step>
+			<mat-step [stepControl]="this.category">
+				<ng-template matStepLabel>
+					<span style="display: block;">
+						{{categorySelectionLabel}}
+					</span>
+					<span *ngIf="true" style="display: block;">
+						{{selectedCategory | capitalize}}
+					</span>
+				</ng-template>
+				<app-category-selector (showCategorySelection)="updateStepper($event)" [categoryForm]="this.category"></app-category-selector>
+			</mat-step>
+			<mat-step [stepControl]="this.dataseries" [label]="configureDatasieriesLabel">
+				<app-dataseries-selector [dataseriesForm]="this.dataseries" [selectedView]="this.view"></app-dataseries-selector>
+			</mat-step>
+			<mat-step [stepControl]="this.appearance" [label]="customiseAppearanceLabel" [optional]="true" [completed]="this.view.valid && this.category.valid">
+				Customise Appearance
+			</mat-step>
+		</mat-stepper>
+	</form>
 </div>

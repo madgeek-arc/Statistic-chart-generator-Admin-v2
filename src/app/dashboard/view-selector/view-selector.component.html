@@ -1,12 +1,6 @@
 <div>
-	<div class="loading-text">
-		<h3>
-			{{ this.headerText }}
-		</h3>
-	</div>
-
 	<div class="uk-grid-match uk-child-width-1-5@s uk-flex-center uk-text-center" uk-grid>
-		<ng-container *ngFor="let item of this.views">
+		<ng-container *ngFor="let item of (this.profileProvide.mappingProfiles$ | async)">
 			<app-card-component [data]="item" (outputEvent)="moveToNextStep($event)" class="uk-width-medium"></app-card-component>
 		</ng-container>
 	</div>
