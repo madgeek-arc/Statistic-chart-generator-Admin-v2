@@ -18,8 +18,8 @@ export class DashboardComponent implements OnInit {
 	isStep2Done: boolean = false;
 	isLinear: boolean = true;
 
-	viewSelectionLabel: string = "Select View";
-	selectedView: string = "";
+	profileSelectionLabel: string = "Select Profile";
+	selectedProfile: string = "";
 	categorySelectionLabel: string = "Select Category";
 	selectedCategory: string = "";
 	configureDatasieriesLabel: string = "Configure Dataseries";
@@ -32,7 +32,7 @@ export class DashboardComponent implements OnInit {
 		private formBuilder: FormBuilder
 	) {
 		this.formGroup = this.formBuilder.group({
-			view: this.formBuilder.control(null, Validators.required),
+			profile: this.formBuilder.control(null, Validators.required),
 			category: this.formBuilder.control(null, Validators.required),
 			dataseries: this.formBuilder.group({
 				entity: this.formBuilder.control(null, Validators.required)
@@ -45,15 +45,15 @@ export class DashboardComponent implements OnInit {
 
 
 	ngOnInit(): void {
-		this.view.valueChanges.subscribe((view: Profile) => {
-			if (view) {
+		this.profile.valueChanges.subscribe((profile: Profile) => {
+			if (profile) {
 				this.newViewSelected();
 			}
 		});
 	}
 
-	get view() {
-		return this.formGroup.get('view') as FormControl;
+	get profile() {
+		return this.formGroup.get('profile') as FormControl;
 	}
 
 	get category() {
@@ -73,10 +73,9 @@ export class DashboardComponent implements OnInit {
 	}
 
 	updateStepper(event: any): void {
-		console.log("updateStepper:", event);
 		if (event) {
-			if (event.step === 'view') {
-				this.selectedView = event.name;
+			if (event.step === 'profile') {
+				this.selectedProfile = event.name;
 			} else if (event.step === 'category') {
 				this.selectedCategory = event.name;
 			}
@@ -103,8 +102,7 @@ export class DashboardComponent implements OnInit {
 	}
 
 	testLog() {
-		console.log("TESTING View:", this.view.value);
-		console.log("TESTING Category:", this.category.value);
+		console.log("TESTING formGroup:", this.formGroup.value);
 	}
 
 	submitTest() {

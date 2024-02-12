@@ -27,12 +27,12 @@ export class ViewSelectorComponent {
 			this.viewForm.setValue(event);
 			this.showViewSelection.emit({
 				name: event.name,
-				step: "view"
+				step: "profile"
 			});
 		} else {
 			this.showViewSelection.emit({
-				name: "PlaceHolder View",
-				step: "view"
+				name: "PlaceHolder Profile",
+				step: "profile"
 			});
 		}
 	}

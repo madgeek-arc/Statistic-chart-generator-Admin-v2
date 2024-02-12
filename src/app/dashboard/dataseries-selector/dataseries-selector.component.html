@@ -19,6 +19,30 @@
 <button (click)="testLog()">TEST</button>
 
 <div>
+	<h3>Y Axis</h3>
+	<mat-label>Select Entity</mat-label>
+	<mat-select (selectionChange)="someMethod($event)">
+		<mat-option>None</mat-option>
+		<mat-option *ngFor="let entity of entities">
+			{{entity}}
+		</mat-option>
+	</mat-select>
+</div>
+
+
+<div>
+	<h3>X Axis</h3>
+	<mat-label>Select Entity Field</mat-label>
+	<mat-select (selectionChange)="someMethod($event)">
+		<mat-option>None</mat-option>
+		<mat-option *ngFor="let entity of entities">
+			{{entity}}
+		</mat-option>
+	</mat-select>
+</div>
+
+
+<div>
 	<h4>mat-select</h4>
 	<mat-form-field>
 		<mat-label>Entities</mat-label>

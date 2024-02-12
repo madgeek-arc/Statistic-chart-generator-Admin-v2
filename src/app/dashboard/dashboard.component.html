@@ -1,18 +1,18 @@
 <button (click)="testLog()">TEST</button>
-<button style="float: right;" (click)="submitTest()" [disabled]="!(this.view.valid && this.category.valid && this.dataseries.valid)">SUBMIT</button>
+<button style="float: right;" (click)="submitTest()" [disabled]="!(this.profile.valid && this.category.valid && this.dataseries.valid)">SUBMIT</button>
 <div class="container">
 	<form [formGroup]="this.formGroup">
 		<mat-stepper #stepper linear (selectionChange)="onStepChange($event)">
-			<mat-step [stepControl]="this.view">
+			<mat-step [stepControl]="this.profile">
 				<ng-template matStepLabel>
 					<span style="display: block;">
-						{{viewSelectionLabel}}
+						{{profileSelectionLabel}}
 					</span>
 					<span *ngIf="true" style="display: block;">
-						{{selectedView}}
+						{{selectedProfile}}
 					</span>
 				</ng-template>
-				<app-view-selector (showViewSelection)="updateStepper($event)" [viewForm]="this.view"></app-view-selector>
+				<app-view-selector (showViewSelection)="updateStepper($event)" [viewForm]="this.profile"></app-view-selector>
 			</mat-step>
 			<mat-step [stepControl]="this.category">
 				<ng-template matStepLabel>
@@ -26,9 +26,9 @@
 				<app-category-selector (showCategorySelection)="updateStepper($event)" [categoryForm]="this.category"></app-category-selector>
 			</mat-step>
 			<mat-step [stepControl]="this.dataseries" [label]="configureDatasieriesLabel">
-				<app-dataseries-selector [dataseriesForm]="this.dataseries" [selectedView]="this.view"></app-dataseries-selector>
+				<app-dataseries-selector [dataseriesForm]="this.dataseries" [selectedProfile]="this.profile"></app-dataseries-selector>
 			</mat-step>
-			<mat-step [stepControl]="this.appearance" [label]="customiseAppearanceLabel" [optional]="true" [completed]="this.view.valid && this.category.valid">
+			<mat-step [stepControl]="this.appearance" [label]="customiseAppearanceLabel" [optional]="true" [completed]="this.profile.valid && this.category.valid">
 				Customise Appearance
 			</mat-step>
 		</mat-stepper>

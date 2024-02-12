@@ -13,7 +13,6 @@ export class DiagramCardComponentComponent {
 	constructor() { }
 
 	categorySelect(): void {
-		console.log("CATEGORY Data:", this.diagram);
 		this.outputEvent.emit(this.diagram);
 	}
 }

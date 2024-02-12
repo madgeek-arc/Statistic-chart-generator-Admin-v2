@@ -13,7 +13,6 @@ export class CardComponentComponent {
 	constructor() { }
 
 	viewSelect() {
-		console.log("VIEW Data:", this.data);
 		this.outputEvent.emit(this.data);
 	}
 }
