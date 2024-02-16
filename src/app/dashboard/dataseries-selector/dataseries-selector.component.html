@@ -20,43 +20,75 @@
 
 <div>
 	<h3>Y Axis</h3>
-	<mat-label>Select Entity</mat-label>
-	<mat-select (selectionChange)="someMethod($event)">
-		<mat-option>None</mat-option>
-		<mat-option *ngFor="let entity of entities">
-			{{entity}}
-		</mat-option>
-	</mat-select>
+	<mat-form-field>
+		<mat-label>Select Entity</mat-label>
+		<mat-select (selectionChange)="selectEntity($event)">
+			<mat-option>None</mat-option>
+			<mat-option [value]="entity" *ngFor="let entity of entities">
+				{{entity}}
+			</mat-option>
+		</mat-select>
+	</mat-form-field>
+	<mat-form-field>
+		<mat-label>Select Aggregate</mat-label>
+		<mat-select (selectionChange)="selectAggregate($event)">
+			<mat-option>None</mat-option>
+			<mat-option [value]="aggregate.code" *ngFor="let aggregate of aggregates">
+				{{aggregate.name}}
+			</mat-option>
+		</mat-select>
+	</mat-form-field>
 </div>
 
 
 <div>
 	<h3>X Axis</h3>
-	<mat-label>Select Entity Field</mat-label>
-	<mat-select (selectionChange)="someMethod($event)">
-		<mat-option>None</mat-option>
-		<mat-option *ngFor="let entity of entities">
-			{{entity}}
-		</mat-option>
-	</mat-select>
-</div>
-
-
-<div>
-	<h4>mat-select</h4>
 	<mat-form-field>
-		<mat-label>Entities</mat-label>
-		<mat-select [(value)]="testingSelect" (selectionChange)="someMethod($event)">
-			<mat-option>-- None --</mat-option>
-			<ng-container *ngFor="let group of entities">
-				<mat-option [value]="group">{{group}}</mat-option>
-				<!-- create entity array with subcategories -->
-				<!-- <mat-optgroup [label]="group">
-				<ng-container *ngFor="let group of entities">
-					<mat-option [value]="group">{{group}}</mat-option>
+		<mat-label>Entity Field</mat-label>
+		<mat-select (selectionChange)="selectEntityField($event)">
+
+			<ng-container *ngIf="selectedEntity">
+
+				<!-- Fields -->
+				<ng-container *ngFor="let entityField of selectedEntityMap[0].fields">
+					<mat-option [value]="entityField.name">
+						{{entityField.name}}
+					</mat-option>
 				</ng-container>
-			</mat-optgroup> -->
+
+				<!-- Relations  -->
+				<ng-container *ngFor="let entityFieldRelations of selectedEntityMap[0].relations">
+					<mat-expansion-panel [expanded]="isExpandionPanelOpen(entityFieldRelations)">
+						<mat-expansion-panel-header>
+							{{entityFieldRelations | uppercase}}
+						</mat-expansion-panel-header>
+						<mat-option [value]="entityFieldRelations">
+							<!-- Have to find a way to get the related fields of each entity field -->
+							{{entityFieldRelations}}
+						</mat-option>
+					</mat-expansion-panel>
+				</ng-container>
 			</ng-container>
+
+
+			<!-- <ng-container *ngFor="let entityField of selectedEntityMap">
+				<mat-option [value]="entityField.name">
+
+				</mat-option>
+				<mat-optgroup [label]="entityField.name">
+					<mat-divider></mat-divider>
+					<mat-option [value]="field.name" *ngFor="let field of entityField.fields">
+						<mat-expansion-panel>
+							<mat-expansion-panel-header>
+								<mat-panel-title>
+									{{entityField.name}}
+								</mat-panel-title>
+							</mat-expansion-panel-header>
+							{{field.name}}
+						</mat-expansion-panel>
+					</mat-option>
+				</mat-optgroup>
+			</ng-container> -->
 		</mat-select>
 	</mat-form-field>
 </div>

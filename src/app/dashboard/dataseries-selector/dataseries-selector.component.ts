@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { MatSelectChange } from '@angular/material/select';
 import { BehaviorSubject, Observable, distinctUntilChanged, first, forkJoin } from 'rxjs';
 import { EntityProviderService } from 'src/app/services/entity-provider/entity-provider.service';
 import { Profile } from 'src/app/services/profile-provider/profile-provider.service';
@@ -21,7 +22,24 @@ export class DataseriesSelectorComponent implements OnInit {
 	selectedEntity: string = '';
 	entitySelection: string = 'Select Entity';
 
+	openedPanels: Array<number> = [];
+
+	// testing
+	panelOpenState: boolean = false;
+
 	private _entityMap$: BehaviorSubject<Map<string, CachedEntityNode>> = new BehaviorSubject(new Map<string, CachedEntityNode>());
+	protected entityMap = new Map<string, CachedEntityNode>(new Map<string, CachedEntityNode>());
+	protected selectedEntityMap: Array<CachedEntityNode> = [];
+
+	// check "getSupportedAggregateFunctionFilterY" in Admin v1 and see if we should change how we get these.
+	protected aggregates = [
+		{ name: 'Total', code: 'total' },
+		{ name: 'Count', code: 'count' },
+		{ name: 'Sum', code: 'sum' },
+		{ name: 'Minimum', code: 'min' },
+		{ name: 'Maximum', code: 'max' },
+		{ name: 'Average', code: 'avg' }
+	];
 
 	constructor(
 		private formBuilder: FormBuilder,
@@ -45,8 +63,6 @@ export class DataseriesSelectorComponent implements OnInit {
 					console.log("Entity Names:", entityNames);
 					this.entities = entityNames;
 
-					let entityMap = new Map<string, CachedEntityNode>(new Map<string, CachedEntityNode>());
-
 					let entityArray = entityNames.map((entity: string) => {
 						return this.getEntityRelations(profile, entity).pipe(first());
 					});
@@ -55,15 +71,14 @@ export class DataseriesSelectorComponent implements OnInit {
 						console.log("Cached Entity Nodes:", cachedEntityNodes);
 
 						for (let i = 0; i < entityNames.length; i++) {
-							entityMap.set(entityNames[i], cachedEntityNodes[i]);
+							this.entityMap.set(entityNames[i], cachedEntityNodes[i]);
 						}
 
-						console.log("Cached Entity Map:", entityMap);
+						console.log("Cached Entity Map:", this.entityMap);
 
-						if (entityMap.size > 0) {
-							this._entityMap$.next(entityMap);
+						if (this.entityMap.size > 0) {
+							this._entityMap$.next(this.entityMap);
 						}
-
 					});
 				})
 			}
@@ -78,19 +93,52 @@ export class DataseriesSelectorComponent implements OnInit {
 	}
 
 
-	selectEntity(entity: string): void {
-		this.dataseriesForm.get('entity')?.setValue(entity);
+	// selectEntity(entity: string): void {
+	// 	this.dataseriesForm.get('entity')?.setValue(entity);
+	// }
+
+
+
+	selectEntity(event: MatSelectChange): void {
+		console.log("selectEntity event:", event);
+		this.dataseriesForm.get('entity')?.setValue(event.value);
+
+		this.selectedEntity = event.value;
+
+		// check which panels will be opened by default after the creation of the "tree" to see how big it will be depending on the entity selected
+		// testing
+
+		this.panelOpenState = true;
+
+		this.selectedEntityMap = Array.from(this.entityMap.values()).filter((item: any) => {
+			if (item.name === this.selectedEntity) {
+				return item;
+			}
+		});
+
+		console.log("selectedEntityMap:", this.selectedEntityMap);
+	}
+
+	selectAggregate(event: MatSelectChange): void {
+		console.log("selectAggregate event:", event);
+		this.dataseriesForm.get('aggregate')?.setValue(event.value);
 	}
 
 	testLog(): void {
-		console.log("this.dataseriesForm.get('entity'):", this.dataseriesForm.get('entity')?.value);
+		console.log("this.dataseriesForm.value:", this.dataseriesForm.value);
 	}
 
-	someMethod(event: any): void {
-		this.dataseriesForm.get('entity')?.setValue(event.value);
-		this.selectedEntity = event.value;
+	selectEntityField(event: MatSelectChange): void {
+		this.dataseriesForm.get('entityField')?.setValue(event.value);
 	}
 
+	isExpandionPanelOpen(event: any): boolean {
+		let isPanelOpenFlag: boolean = false;
+
+		// check the selected value if it is part of an expansion panel and keep it open. Close others.
+
+		return isPanelOpenFlag;
+	}
 }
 
 

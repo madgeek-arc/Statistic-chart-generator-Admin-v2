@@ -35,7 +35,9 @@ export class DashboardComponent implements OnInit {
 			profile: this.formBuilder.control(null, Validators.required),
 			category: this.formBuilder.control(null, Validators.required),
 			dataseries: this.formBuilder.group({
-				entity: this.formBuilder.control(null, Validators.required)
+				entity: this.formBuilder.control(null, Validators.required),
+				aggregate: this.formBuilder.control(null, Validators.required),
+				entityField: this.formBuilder.control(null, Validators.required)
 			}),
 			appearance: this.formBuilder.group({
 				color: this.formBuilder.control(null)
