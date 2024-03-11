@@ -1,0 +1,23 @@
+<!-- <mat-select (selectionChange)="entityFieldSelect($event)"> -->
+
+<!-- Fields -->
+<ng-container *ngFor="let entityField of this.selectedEntityMap[0].fields">
+	<mat-option [value]="entityField.name" (click)="entityFieldSelect(entityField.name)">
+		{{entityField.name}}
+	</mat-option>
+</ng-container>
+
+<!-- Also check mat-tree which might be optimal -->
+<!-- Also check for component in component like a recurring function -->
+<!-- Relations  -->
+<ng-container *ngFor="let entityFieldRelation of this.selectedEntityMap[0].relations">
+	<mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
+		<mat-expansion-panel-header>
+			{{entityFieldRelation | uppercase}}
+		</mat-expansion-panel-header>
+		<ng-container *ngIf="panelOpenState">
+			<app-entity-selection-component [entityMap]="this.entityMap" [entityFieldRelation]="entityFieldRelation"></app-entity-selection-component>
+		</ng-container>
+	</mat-expansion-panel>
+</ng-container>
+<!-- </mat-select> -->

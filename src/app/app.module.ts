@@ -18,6 +18,7 @@ import { DiagramCardComponentComponent } from './dashboard/helper-components/dia
 import { CapitalizePipe } from './dashboard/pipes/capitalize.pipe';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DataseriesSelectorComponent } from './dashboard/dataseries-selector/dataseries-selector.component';
+import { EntitySelectionComponentComponent } from './dashboard/helper-components/entity-selection-component/entity-selection-component.component';
 
 @NgModule({
 	declarations: [
@@ -31,6 +32,7 @@ import { DataseriesSelectorComponent } from './dashboard/dataseries-selector/dat
 		CardComponentComponent,
 		DiagramCardComponentComponent,
 		DataseriesSelectorComponent,
+		EntitySelectionComponentComponent,
 
 		// Pipes
 		CapitalizePipe,

@@ -49,8 +49,11 @@
 
 			<ng-container *ngIf="selectedEntity">
 
+				<!-- <app-entity-selection-component [entityMap]="this.entityMap" [selectedEntity]="this.selectedEntityMap"></app-entity-selection-component> -->
+
+
 				<!-- Fields -->
-				<ng-container *ngFor="let entityField of selectedEntityMap[0].fields">
+				<ng-container *ngFor="let entityField of this.selectedEntityMap[0].fields">
 					<mat-option [value]="entityField.name">
 						{{entityField.name}}
 					</mat-option>
@@ -59,17 +62,39 @@
 				<!-- Also check mat-tree which might be optimal -->
 				<!-- Also check for component in component like a recurring function -->
 				<!-- Relations  -->
-				<ng-container *ngFor="let entityFieldRelations of selectedEntityMap[0].relations">
-					<mat-expansion-panel [expanded]="isExpandionPanelOpen(entityFieldRelations)">
+				<ng-container *ngFor="let entityFieldRelation of selectedEntityMap[0].relations">
+					<mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
 						<mat-expansion-panel-header>
-							{{entityFieldRelations | uppercase}}
+							{{entityFieldRelation | uppercase}}
 						</mat-expansion-panel-header>
-						<mat-option [value]="entityFieldRelations">
-							<!-- Have to find a way to get the related fields of each entity field -->
-							{{entityFieldRelations}}
-						</mat-option>
+						<ng-container *ngIf="panelOpenState">
+							<app-entity-selection-component [entityMap]="this.entityMap" [entityFieldRelation]="entityFieldRelation" (outputEvent)="outputResult($event)"></app-entity-selection-component>
+						</ng-container>
 					</mat-expansion-panel>
 				</ng-container>
+
+
+
+
+
+				<!-- <mat-tree [dataSource]="dataSource" [treeControl]="treeControl" class="example-tree">
+					<mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle>
+						{{node.name}}
+					</mat-tree-node>
+					<mat-nested-tree-node *matTreeNodeDef="let node; when: hasChild">
+						<div class="mat-tree-node">
+							<button mat-icon-button matTreeNodeToggle [attr.aria-label]="'Toggle ' + node.name">
+								<mat-icon class="mat-icon-rtl-mirror">
+									{{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
+								</mat-icon>
+							</button>
+							{{node.name}}
+						</div>
+						<div [class.example-tree-invisible]="!treeControl.isExpanded(node)" role="group">
+							<ng-container matTreeNodeOutlet></ng-container>
+						</div>
+					</mat-nested-tree-node>
+				</mat-tree> -->
 			</ng-container>
 
 

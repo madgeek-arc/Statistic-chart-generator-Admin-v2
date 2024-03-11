@@ -6,7 +6,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatExpansionModule } from '@angular/material/expansion';
-
+import { MatTreeModule } from '@angular/material/tree';
+import { MatIconModule } from '@angular/material/icon';
 
 @NgModule({
 	exports: [
@@ -15,7 +16,9 @@ import { MatExpansionModule } from '@angular/material/expansion';
 		MatButtonModule,
 		MatSelectModule,
 		MatDividerModule,
-		MatExpansionModule
+		MatExpansionModule,
+		MatTreeModule,
+		MatIconModule
 	]
 })
 export class MaterialModule { }

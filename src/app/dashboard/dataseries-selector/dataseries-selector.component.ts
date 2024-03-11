@@ -1,7 +1,9 @@
+import { NestedTreeControl } from '@angular/cdk/tree';
 import { HttpClient } from '@angular/common/http';
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatSelectChange } from '@angular/material/select';
+import { MatTreeNestedDataSource } from '@angular/material/tree';
 import { BehaviorSubject, Observable, distinctUntilChanged, first, forkJoin } from 'rxjs';
 import { EntityProviderService } from 'src/app/services/entity-provider/entity-provider.service';
 import { Profile } from 'src/app/services/profile-provider/profile-provider.service';
@@ -16,6 +18,9 @@ export class DataseriesSelectorComponent implements OnInit {
 
 	@Input('dataseriesForm') dataseriesForm: FormGroup;
 	@Input('selectedProfile') selectedProfile: FormControl = new FormControl;
+
+	// dataSource = new MatTreeNestedDataSource<EntityNode>();
+	// treeControl = new NestedTreeControl<EntityNode>(node => node.relations);
 
 	testingSelect: string = '';
 	entities: Array<string> = [];
@@ -49,8 +54,11 @@ export class DataseriesSelectorComponent implements OnInit {
 	) {
 		this.dataseriesForm = new FormGroup({
 			entity: this.formBuilder.control(null, Validators.required)
-		})
+		});
 	}
+
+	hasChild = (_: number, node: EntityNode) => !!node.relations && node.relations.length > 0;
+
 
 	get entity(): FormControl {
 		return this.dataseriesForm.get('entity') as FormControl;
@@ -116,6 +124,7 @@ export class DataseriesSelectorComponent implements OnInit {
 			}
 		});
 
+
 		console.log("selectedEntityMap:", this.selectedEntityMap);
 	}
 
@@ -139,6 +148,11 @@ export class DataseriesSelectorComponent implements OnInit {
 
 		return isPanelOpenFlag;
 	}
+
+	outputResult(event: any): void {
+		console.log("FINAL PATH:", event);
+	}
+
 }
 
 
