@@ -1,0 +1,88 @@
+.data-tree-invisible {
+    display: none;
+  }
+  
+.data-tree ul,
+.data-tree li {
+    margin-top: 0;
+    margin-bottom: 0;
+    list-style-type: none;
+}
+
+#data-tree-button {
+    background-color: white;
+    padding: 0em !important
+}
+
+#data-tree-entity-field {
+    font-weight: bold;
+}
+
+/* Every mat-nested-tree-node li wraps around its content */
+/* .mat-nested-tree-node li{
+    width: fit-content !important;
+} */
+.mat-tree-node {
+    font-family: Lato, "Helvetica Neue", Arial, Helvetica, sans-serif;
+    min-height: 1em;
+    font-size: 1.1em;
+}
+.mat-tree-node.header {
+    font-size: 1.1em;
+}
+
+.ui.link.list {
+    padding-left: 1em;
+    padding-top: 0.25em;
+}
+
+/* Makes the dropdown menu bigger and enables the horizontal scroll bar */
+.ui.fluid.selection.dropdown .menu {
+    max-height: 300px !important;
+    overflow-x: auto !important;
+}
+
+.ui.fluid.pointing.dropdown.segment {
+    padding: 0.785714em 1em !important;
+    line-height: 1em !important;
+}
+
+/* Makes the selected item's background white, while selected */
+.ui.dropdown .menu .selected.item, .ui.dropdown.selected {
+    background: white ;
+}
+
+/* Same as above, but while on hover */
+.ui.dropdown .menu>.item:hover {
+    background: white ;
+}
+
+#attributeDropdownField .default.text {
+    display: inline-block;
+}
+
+#attributeDropdownField .dropdown-menu {
+    min-width: calc(100% + 1px);
+    will-change: transform, opacity !important;
+}
+
+#attributeDropdownField .dropdown-toggle div {
+    display: inline-block;
+}
+
+#attributeDropdownField .ui.breadcrumb {
+    padding: 2px;
+    background-color: #fff;
+}
+
+.dropdown-toggle {
+    white-space: normal;
+    display: inline-block;
+    padding-right: 24px;
+}
+
+.dropdown-toggle::after {
+    margin-top: -0.7em;
+    float: right;
+    margin-right: -24px;
+}

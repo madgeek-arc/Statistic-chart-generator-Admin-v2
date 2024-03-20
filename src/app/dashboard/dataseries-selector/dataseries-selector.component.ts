@@ -8,6 +8,7 @@ import { BehaviorSubject, Observable, distinctUntilChanged, first, forkJoin } fr
 import { EntityProviderService } from 'src/app/services/entity-provider/entity-provider.service';
 import { Profile } from 'src/app/services/profile-provider/profile-provider.service';
 import { UrlProviderService } from 'src/app/services/url-provider/url-provider.service';
+import { CachedEntityNode, EntityNode } from '../helper-components/select-attribute/dynamic-entity-tree/entity-tree-nodes.types';
 
 @Component({
 	selector: 'app-dataseries-selector',
@@ -156,48 +157,48 @@ export class DataseriesSelectorComponent implements OnInit {
 }
 
 
-export class EntityTreeNode {
-	fields: FieldNode[];
-	relations: EntityTreeNode[];
-	name: string;
-	parent: EntityTreeNode;
+// export class EntityTreeNode {
+// 	fields: FieldNode[];
+// 	relations: EntityTreeNode[];
+// 	name: string;
+// 	parent: EntityTreeNode;
 
-	constructor(fields: FieldNode[], relations: EntityTreeNode[], name: string, parent: EntityTreeNode) {
-		this.fields = fields;
-		this.relations = relations;
-		this.name = name;
-		this.parent = parent;
-	}
-}
+// 	constructor(fields: FieldNode[], relations: EntityTreeNode[], name: string, parent: EntityTreeNode) {
+// 		this.fields = fields;
+// 		this.relations = relations;
+// 		this.name = name;
+// 		this.parent = parent;
+// 	}
+// }
 
-export class EntityNode {
-	fields: FieldNode[];
-	relations: EntityNode[];
-	name: string;
+// export class EntityNode {
+// 	fields: FieldNode[];
+// 	relations: EntityNode[];
+// 	name: string;
 
-	constructor() {
-		this.fields = [];
-		this.relations = [];
-		this.name = '';
-	}
-}
-export class CachedEntityNode {
-	fields: FieldNode[];
-	relations: string[];
-	name: string;
+// 	constructor() {
+// 		this.fields = [];
+// 		this.relations = [];
+// 		this.name = '';
+// 	}
+// }
+// export class CachedEntityNode {
+// 	fields: FieldNode[];
+// 	relations: string[];
+// 	name: string;
 
-	constructor() {
-		this.fields = [];
-		this.relations = [];
-		this.name = '';
-	}
-}
-export class FieldNode {
-	name: string;
-	type: string;
+// 	constructor() {
+// 		this.fields = [];
+// 		this.relations = [];
+// 		this.name = '';
+// 	}
+// }
+// export class FieldNode {
+// 	name: string;
+// 	type: string;
 
-	constructor() {
-		this.name = '';
-		this.type = '';
-	}
-}
+// 	constructor() {
+// 		this.name = '';
+// 		this.type = '';
+// 	}
+// }
