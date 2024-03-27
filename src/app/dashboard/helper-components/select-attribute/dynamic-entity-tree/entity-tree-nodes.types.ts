@@ -10,7 +10,7 @@ export class DynamicEntityNode {
 	loading: boolean;
 
 	constructor(fields: FieldNode[], name: string, path: string[],
-		relations?: BehaviorSubject<DynamicEntityNode[]>, parent?: DynamicEntityNode, loading = false) {
+		relations?: BehaviorSubject<DynamicEntityNode[]> | null, parent?: DynamicEntityNode, loading = false) {
 
 		this.fields = fields;
 		this.name = name;
@@ -18,6 +18,7 @@ export class DynamicEntityNode {
 		this.path = path;
 		this.path.push(name);
 
+		// Might have to change because we can't pass null anymore.
 		if (relations != null)
 			this.relations = relations;
 		else

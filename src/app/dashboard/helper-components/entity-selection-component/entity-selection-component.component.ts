@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { CachedEntityNode } from '../../dataseries-selector/dataseries-selector.component';
 import { MatSelectChange } from '@angular/material/select';
+import { CachedEntityNode } from '../select-attribute/dynamic-entity-tree/entity-tree-nodes.types';
 
 @Component({
 	selector: 'app-entity-selection-component',

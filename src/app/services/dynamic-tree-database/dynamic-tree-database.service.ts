@@ -17,8 +17,8 @@ export class DynamicTreeDatabase {
 	public loading = false;
 
 	// The cached data of a Profile's Entities
-	public get entityMap(): Map<string, CachedEntityNode> { return this._entityMap$.getValue(); }
-	private _entityMap$ = new BehaviorSubject<Map<string, CachedEntityNode>>(null);
+	public get entityMap(): Map<string, CachedEntityNode> { return this._entityMap$.getValue() as Map<string, CachedEntityNode>; }
+	private _entityMap$ = new BehaviorSubject<Map<string, CachedEntityNode> | null>(null);
 
 	constructor(private http: HttpClient, private urlProvider: UrlProviderService,
 		private profileMappingService: MappingProfilesService, private dbService: DbSchemaService) {
@@ -54,11 +54,11 @@ export class DynamicTreeDatabase {
 			});
 	}
 
-	getRootNode(entity: string): BehaviorSubject<DynamicEntityNode> | undefined {
-		var root = new BehaviorSubject<DynamicEntityNode>(null);
+	getRootNode(entity: string): BehaviorSubject<DynamicEntityNode | null> | undefined {
+		var root = new BehaviorSubject<DynamicEntityNode | null>(null);
 
 		// We only care for the first map that has entries, in order to get the root node.
-		this._entityMap$.pipe(filter(map => map?.size > 0), first()).subscribe(map => {
+		this._entityMap$.pipe(filter(map => map?.size! > 0), first()).subscribe(map => {
 
 			if (map == null)
 				return;
@@ -82,7 +82,7 @@ export class DynamicTreeDatabase {
 			return children$;
 
 		// Get the cached version of the given Entity Node, out of the first map that has entries.
-		this._entityMap$.pipe(filter(map => map.size > 0), first()).subscribe(map => {
+		this._entityMap$.pipe(filter(map => map?.size! > 0), first()).subscribe(map => {
 
 			if (map == null)
 				return;
