@@ -19,6 +19,10 @@ import { CapitalizePipe } from './dashboard/pipes/capitalize.pipe';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DataseriesSelectorComponent } from './dashboard/dataseries-selector/dataseries-selector.component';
 import { EntitySelectionComponentComponent } from './dashboard/helper-components/entity-selection-component/entity-selection-component.component';
+import { ChartLoadingService } from './services/chart-loading-service/chart-loading.service';
+import { SelectAttributeComponent } from './dashboard/helper-components/select-attribute/select-attribute.component';
+import { DynamicTreeDatabase } from './services/dynamic-tree-database/dynamic-tree-database.service';
+import { DbSchemaService } from './services/db-schema-service/db-schema.service';
 
 @NgModule({
 	declarations: [
@@ -33,6 +37,7 @@ import { EntitySelectionComponentComponent } from './dashboard/helper-components
 		DiagramCardComponentComponent,
 		DataseriesSelectorComponent,
 		EntitySelectionComponentComponent,
+		SelectAttributeComponent,
 
 		// Pipes
 		CapitalizePipe,
@@ -47,7 +52,11 @@ import { EntitySelectionComponentComponent } from './dashboard/helper-components
 		MaterialModule,
 		CommonModule
 	],
-	providers: [],
+	providers: [
+		ChartLoadingService,
+		DynamicTreeDatabase,
+		DbSchemaService
+	],
 	bootstrap: [AppComponent]
 })
 export class AppModule { }

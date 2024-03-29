@@ -5,9 +5,9 @@ import { ControlContainer, FormGroupDirective, ControlValueAccessor, NG_VALUE_AC
 import { NestedTreeControl } from '@angular/cdk/tree';
 import { BehaviorSubject, of as observableOf } from 'rxjs';
 import { filter, first, takeWhile } from 'rxjs/operators';
-import { MappingProfilesService } from '../../services/mapping-profiles-service/mapping-profiles.service';
-import { ChartLoadingService } from '../../services/chart-loading-service/chart-loading.service';
-import { DynamicTreeDatabase } from '../../services/dynamic-tree-database/dynamic-tree-database.service';
+import { MappingProfilesService } from 'src/app/services/mapping-profiles-service/mapping-profiles.service';
+import { DynamicTreeDatabase } from 'src/app/services/dynamic-tree-database/dynamic-tree-database.service';
+import { ChartLoadingService } from 'src/app/services/chart-loading-service/chart-loading.service';
 
 @Component({
 	selector: 'select-attribute',
@@ -79,7 +79,7 @@ export class SelectAttributeComponent implements ControlValueAccessor, OnChanges
 		if (entity === null || entity === undefined) {
 
 			this.nestedEntityDataSource.data = [];
-			this.selectedFieldChanged(null);
+			this.selectedFieldChanged(new FieldNode());
 			return;
 		}
 
@@ -88,18 +88,18 @@ export class SelectAttributeComponent implements ControlValueAccessor, OnChanges
 
 		// Check if the Data Source is connected and if it is, populate the Tree Root node
 		this.nestedEntityDataSource.connected$.subscribe(
-			connected => { if (connected) this.populateRootNode(entity, resetSelectField) }
+			connected => { if (connected && resetSelectField !== undefined) this.populateRootNode(entity, resetSelectField) }
 		);
 
 		// Set the field untouched
 		if (resetSelectField)
-			this.selectedFieldChanged(null);
+			this.selectedFieldChanged(new FieldNode());
 	}
 
 	private populateRootNode(entity: string, resetSelectField: boolean) {
 
-		this.dynamicTreeDB.getRootNode(entity).pipe(takeWhile(() => this.chosenEntity == entity))
-			.subscribe((rootNode: DynamicEntityNode) => {
+		this.dynamicTreeDB.getRootNode(entity)!.pipe(takeWhile(() => this.chosenEntity == entity))
+			.subscribe((rootNode: DynamicEntityNode | null) => {
 
 				if (rootNode != null) {
 					// Initialise the NestedTree's data
@@ -183,7 +183,7 @@ export class SelectAttributeComponent implements ControlValueAccessor, OnChanges
 	 */
 
 	_onChange = (arg: any) => { };
-	_onTouched = (arg: boolean) => { };
+	_onTouched = (arg: any) => { };
 
 	handleChange(arg: FieldNode) { if (this.checkValidFieldNode(arg) !== null) this.formControl.markAsDirty(); }
 	handleTouch(opened: boolean) { if (!opened) this.formControl.markAsTouched(); }
