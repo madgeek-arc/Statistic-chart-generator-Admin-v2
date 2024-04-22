@@ -14,6 +14,8 @@ export class DashboardComponent implements OnInit {
 
 	formGroup: FormGroup;
 
+	firstTime: boolean = true;
+
 	isStep1Done: boolean = false;
 	isStep2Done: boolean = false;
 	isLinear: boolean = true;
@@ -31,24 +33,13 @@ export class DashboardComponent implements OnInit {
 	constructor(
 		private formBuilder: FormBuilder
 	) {
-		this.formGroup = this.formBuilder.group({
-			profile: this.formBuilder.control(null, Validators.required),
-			category: this.formBuilder.control(null, Validators.required),
-			dataseries: this.formBuilder.group({
-				entity: this.formBuilder.control(null, Validators.required),
-				aggregate: this.formBuilder.control(null, Validators.required),
-				entityField: this.formBuilder.control(null, Validators.required)
-			}),
-			appearance: this.formBuilder.group({
-				color: this.formBuilder.control(null)
-			})
-		})
+		this.createDefaultFormGroup();
 	}
 
 
 	ngOnInit(): void {
 		this.profile.valueChanges.subscribe((profile: Profile) => {
-			if (profile) {
+			if (profile && !this.firstTime) {
 				this.newViewSelected();
 			}
 		});
@@ -75,6 +66,7 @@ export class DashboardComponent implements OnInit {
 	}
 
 	updateStepper(event: any): void {
+		this.firstTime = false;
 		if (event) {
 			if (event.step === 'profile') {
 				this.selectedProfile = event.name;
@@ -97,10 +89,44 @@ export class DashboardComponent implements OnInit {
 		this.category.reset();
 		this.dataseries.reset();
 		this.appearance.reset();
+
+		this.updateDefaultFormGroupValues();
 		this.formGroup.updateValueAndValidity();
+
 		this.selectedCategory = '';
 		this.selectedDataseries = '';
 		this.selectedAppearance = '';
+	}
+
+	createDefaultFormGroup(): void {
+		this.formGroup = this.formBuilder.group({
+			profile: this.formBuilder.control(null, Validators.required),
+			category: this.formBuilder.control(null, Validators.required),
+			dataseries: this.formBuilder.group({
+				entity: this.formBuilder.control(null, Validators.required),
+				aggregate: this.formBuilder.control(null, Validators.required),
+				entityField: this.formBuilder.control(null, Validators.required),
+				stackedData: this.formBuilder.control(null)
+			}),
+			appearance: this.formBuilder.group({
+				chartAppearance: this.formBuilder.group({
+					generalOptions: this.formBuilder.group({
+						visualisationLibrary: this.formBuilder.control("highCharts", Validators.required),
+						resultsLimit: this.formBuilder.control(30 as number, [Validators.required, Validators.min(1)]),
+						orderBy: this.formBuilder.control(null, Validators.required),
+					}),
+				}),
+				tableAppearance: this.formBuilder.group({
+					tablePageSize: this.formBuilder.control(30 as number, [Validators.required, Validators.min(1)])
+				}),
+			})
+		})
+	}
+
+	updateDefaultFormGroupValues(): void {
+		this.appearance.get('tableAppearance')?.get('tablePageSize')?.setValue(30);
+		this.appearance.get('chartAppearance')?.get('generalOptions')?.get('visualisationLibrary')?.setValue("highCharts");
+		this.appearance.get('chartAppearance')?.get('generalOptions')?.get('resultsLimit')?.setValue(30);
 	}
 
 	testLog() {

@@ -23,6 +23,7 @@ import { ChartLoadingService } from './services/chart-loading-service/chart-load
 import { SelectAttributeComponent } from './dashboard/helper-components/select-attribute/select-attribute.component';
 import { DynamicTreeDatabase } from './services/dynamic-tree-database/dynamic-tree-database.service';
 import { DbSchemaService } from './services/db-schema-service/db-schema.service';
+import { CustomiseAppearanceComponent } from './dashboard/customise-appearance/customise-appearance.component';
 
 @NgModule({
 	declarations: [
@@ -38,6 +39,7 @@ import { DbSchemaService } from './services/db-schema-service/db-schema.service'
 		DataseriesSelectorComponent,
 		EntitySelectionComponentComponent,
 		SelectAttributeComponent,
+		CustomiseAppearanceComponent,
 
 		// Pipes
 		CapitalizePipe,

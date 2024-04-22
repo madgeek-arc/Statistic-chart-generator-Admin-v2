@@ -9,6 +9,8 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatTreeModule } from '@angular/material/tree';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatInputModule } from '@angular/material/input';
 
 @NgModule({
 	exports: [
@@ -20,7 +22,9 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 		MatExpansionModule,
 		MatTreeModule,
 		MatIconModule,
-		MatProgressBarModule
+		MatProgressBarModule,
+		MatTabsModule,
+		MatInputModule
 	]
 })
 export class MaterialModule { }

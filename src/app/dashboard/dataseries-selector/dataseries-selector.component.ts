@@ -47,22 +47,35 @@ export class DataseriesSelectorComponent implements OnInit {
 		{ name: 'Average', code: 'avg' }
 	];
 
+	protected stackedDataList = [
+		{ name: 'Disabled', value: 'null' },
+		{ name: 'Stacked by Value', value: 'normal' },
+		{ name: 'Stacked by Percentage', value: 'percent' }
+	];
+
 	constructor(
-		private formBuilder: FormBuilder,
 		private http: HttpClient,
 		private entityProvider: EntityProviderService,
 		private urlProvider: UrlProviderService
-	) {
-		this.dataseriesForm = new FormGroup({
-			entity: this.formBuilder.control(null, Validators.required)
-		});
-	}
+	) { }
 
 	hasChild = (_: number, node: EntityNode) => !!node.relations && node.relations.length > 0;
 
 
 	get entity(): FormControl {
 		return this.dataseriesForm.get('entity') as FormControl;
+	}
+
+	get aggregate(): FormControl {
+		return this.dataseriesForm.get('aggregate') as FormControl;
+	}
+
+	get entityField(): FormControl {
+		return this.dataseriesForm.get('entityField') as FormControl;
+	}
+
+	get stackedData(): FormControl {
+		return this.dataseriesForm.get('stackedData') as FormControl;
 	}
 
 	ngOnInit(): void {
@@ -102,15 +115,9 @@ export class DataseriesSelectorComponent implements OnInit {
 	}
 
 
-	// selectEntity(entity: string): void {
-	// 	this.dataseriesForm.get('entity')?.setValue(entity);
-	// }
-
-
-
 	selectEntity(event: MatSelectChange): void {
 		console.log("selectEntity event:", event);
-		this.dataseriesForm.get('entity')?.setValue(event.value);
+		// this.entity.setValue(event.value);
 
 		this.selectedEntity = event.value;
 
@@ -129,19 +136,6 @@ export class DataseriesSelectorComponent implements OnInit {
 		console.log("selectedEntityMap:", this.selectedEntityMap);
 	}
 
-	selectAggregate(event: MatSelectChange): void {
-		console.log("selectAggregate event:", event);
-		this.dataseriesForm.get('aggregate')?.setValue(event.value);
-	}
-
-	testLog(): void {
-		console.log("this.dataseriesForm.value:", this.dataseriesForm.value);
-	}
-
-	selectEntityField(event: MatSelectChange): void {
-		this.dataseriesForm.get('entityField')?.setValue(event.value);
-	}
-
 	isExpandionPanelOpen(event: any): boolean {
 		let isPanelOpenFlag: boolean = false;
 
@@ -154,6 +148,9 @@ export class DataseriesSelectorComponent implements OnInit {
 		console.log("FINAL PATH:", event);
 	}
 
+	testLog(): void {
+		console.log("this.dataseriesForm.value:", this.dataseriesForm.value);
+	}
 }
 
 

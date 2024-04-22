@@ -2,6 +2,9 @@
 <button style="float: right;" (click)="submitTest()" [disabled]="!(this.profile.valid && this.category.valid && this.dataseries.valid)">SUBMIT</button>
 <div class="container">
 	<form [formGroup]="this.formGroup">
+		<app-customise-appearance [appearanceForm]="this.appearance"></app-customise-appearance>
+		<br>
+
 		<mat-stepper #stepper linear (selectionChange)="onStepChange($event)">
 			<mat-step [stepControl]="this.profile">
 				<ng-template matStepLabel>
@@ -29,7 +32,7 @@
 				<app-dataseries-selector [dataseriesForm]="this.dataseries" [selectedProfile]="this.profile"></app-dataseries-selector>
 			</mat-step>
 			<mat-step [stepControl]="this.appearance" [label]="customiseAppearanceLabel" [optional]="true" [completed]="this.profile.valid && this.category.valid">
-				Customise Appearance
+				<app-customise-appearance [appearanceForm]="this.appearance"></app-customise-appearance>
 			</mat-step>
 		</mat-stepper>
 	</form>

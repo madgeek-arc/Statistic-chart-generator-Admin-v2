@@ -16,76 +16,79 @@
 	</div>
 </div> -->
 
-<button (click)="testLog()">TEST</button>
 
 <div>
-	<h3>Y Axis</h3>
-	<mat-form-field>
-		<mat-label>Select Entity</mat-label>
-		<mat-select (selectionChange)="selectEntity($event)">
-			<mat-option>None</mat-option>
-			<mat-option [value]="entity" *ngFor="let entity of entities">
-				{{entity}}
-			</mat-option>
-		</mat-select>
-	</mat-form-field>
-	<mat-form-field>
-		<mat-label>Select Aggregate</mat-label>
-		<mat-select (selectionChange)="selectAggregate($event)">
-			<mat-option>None</mat-option>
-			<mat-option [value]="aggregate.code" *ngFor="let aggregate of aggregates">
-				{{aggregate.name}}
-			</mat-option>
-		</mat-select>
-	</mat-form-field>
-</div>
+	<h1>Data Selection</h1>
+	<mat-divider></mat-divider>
+
+	<button (click)="testLog()">TEST</button>
+
+	<div>
+		<h3>Y Axis</h3>
+		<mat-form-field>
+			<mat-label>Select Entity</mat-label>
+			<mat-select [formControl]="this.entity" (selectionChange)="selectEntity($event)">
+				<mat-option>None</mat-option>
+				<mat-option [value]="entity" *ngFor="let entity of entities">
+					{{entity}}
+				</mat-option>
+			</mat-select>
+		</mat-form-field>
+		<mat-form-field>
+			<mat-label>Select Aggregate</mat-label>
+			<mat-select [formControl]="this.aggregate" >
+				<mat-option>None</mat-option>
+				<mat-option [value]="aggregate.code" *ngFor="let aggregate of aggregates">
+					{{aggregate.name}}
+				</mat-option>
+			</mat-select>
+		</mat-form-field>
+	</div>
 
 
-<div>
-	<h3>X Axis</h3>
+	<div>
+		<h3>X Axis</h3>
 
-	<select-attribute [chosenEntity]="selectedEntity" [formControl]="entity" [attr.name]="selectedEntity" [isDisabled]="false"></select-attribute>
+		<select-attribute [chosenEntity]="selectedEntity" [formControl]="entity" [attr.name]="selectedEntity" [isDisabled]="false"></select-attribute>
 
-	<mat-form-field class="mat-select-panel">
-		<mat-label>Entity Field</mat-label>
-		<mat-select (selectionChange)="selectEntityField($event)">
+		<mat-form-field class="mat-select-panel">
+			<mat-label>Entity Field</mat-label>
+			<mat-select [formControl]="entityField">
 
-			<ng-container *ngIf="selectedEntity">
-				<select-attribute [chosenEntity]="selectedEntity" [formControl]="entity"></select-attribute>
-
-				<!-- <app-entity-selection-component [entityMap]="this.entityMap" [selectedEntity]="this.selectedEntityMap"></app-entity-selection-component> -->
+				<ng-container *ngIf="selectedEntity">
+					<!-- <app-entity-selection-component [entityMap]="this.entityMap" [selectedEntity]="this.selectedEntityMap"></app-entity-selection-component> -->
 
 
-				<!-- Fields -->
-				<!-- <ng-container *ngFor="let entityField of this.selectedEntityMap[0].fields">
-					<mat-option [value]="entityField.name">
-						{{entityField.name}}
-					</mat-option>
-				</ng-container> -->
+					<!-- Fields -->
+					<ng-container *ngFor="let entityField of this.selectedEntityMap[0].fields">
+						<mat-option [value]="entityField.name">
+							{{entityField.name}}
+						</mat-option>
+					</ng-container>
 
-				<!-- Also check mat-tree which might be optimal -->
-				<!-- Also check for component in component like a recurring function -->
-				<!-- Relations  -->
-				<!-- <ng-container *ngFor="let entityFieldRelation of selectedEntityMap[0].relations">
-					<mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
-						<mat-expansion-panel-header>
-							{{entityFieldRelation | uppercase}}
-						</mat-expansion-panel-header>
-						<ng-container *ngIf="panelOpenState">
-							<app-entity-selection-component [entityMap]="this.entityMap" [entityFieldRelation]="entityFieldRelation" (outputEvent)="outputResult($event)"></app-entity-selection-component>
-						</ng-container>
-					</mat-expansion-panel>
-				</ng-container> -->
+					<!-- Also check mat-tree which might be optimal -->
+					<!-- Also check for component in component like a recurring function -->
+					<!-- Relations  -->
+					<ng-container *ngFor="let entityFieldRelation of selectedEntityMap[0].relations">
+						<mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
+							<mat-expansion-panel-header>
+								{{entityFieldRelation | uppercase}}
+							</mat-expansion-panel-header>
+							<ng-container *ngIf="panelOpenState">
+								<app-entity-selection-component [entityMap]="this.entityMap" [entityFieldRelation]="entityFieldRelation" (outputEvent)="outputResult($event)"></app-entity-selection-component>
+							</ng-container>
+						</mat-expansion-panel>
+					</ng-container>
 
 
 
 
 
-				<!-- <mat-tree [dataSource]="dataSource" [treeControl]="treeControl" class="example-tree">
-					<mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle>
-						{{node.name}}
-					</mat-tree-node>
-					<mat-nested-tree-node *matTreeNodeDef="let node; when: hasChild">
+					<!-- <mat-tree [dataSource]="dataSource" [treeControl]="treeControl" class="example-tree">
+						<mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle>
+							{{node.name}}
+						</mat-tree-node>
+						<mat-nested-tree-node *matTreeNodeDef="let node; when: hasChild">
 						<div class="mat-tree-node">
 							<button mat-icon-button matTreeNodeToggle [attr.aria-label]="'Toggle ' + node.name">
 								<mat-icon class="mat-icon-rtl-mirror">
@@ -99,10 +102,10 @@
 						</div>
 					</mat-nested-tree-node>
 				</mat-tree> -->
-			</ng-container>
+				</ng-container>
 
 
-			<!-- <ng-container *ngFor="let entityField of selectedEntityMap">
+				<!-- <ng-container *ngFor="let entityField of selectedEntityMap">
 				<mat-option [value]="entityField.name">
 
 				</mat-option>
@@ -120,6 +123,30 @@
 					</mat-option>
 				</mat-optgroup>
 			</ng-container> -->
+			</mat-select>
+		</mat-form-field>
+	</div>
+</div>
+<br>
+<br>
+<br>
+<div>
+	<h1>Options</h1>
+	<mat-divider></mat-divider>
+
+	<mat-form-field>
+		<mat-label>Stacked Data</mat-label>
+		<mat-select [formControl]="this.stackedData">
+			<mat-option disabled="true">Select One</mat-option>
+			<mat-option [value]="stackedData.value" *ngFor="let stackedData of stackedDataList">
+				{{stackedData.name}}
+			</mat-option>
 		</mat-select>
 	</mat-form-field>
+
+	<!-- TODO Colorpicker -->
+	<!-- <mat-form-field>
+		<mat-label>Dataseries Color</mat-label>
+	</mat-form-field> -->
+
 </div>
