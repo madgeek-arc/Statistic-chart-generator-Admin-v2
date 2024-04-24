@@ -119,7 +119,10 @@ export class DashboardComponent implements OnInit {
 						highCharts: this.formBuilder.group({
 							title: this.formBuilder.group({
 								titleText: this.formBuilder.control(null),
-								titleColor: this.formBuilder.control(null)
+								titleColor: this.formBuilder.control("#333333"),
+								horizontalAlignment: this.formBuilder.control('center'),
+								margin: this.formBuilder.control(15),
+								fontSize: this.formBuilder.control(18)
 							}),
 							chartArea: this.formBuilder.group({
 								backgroundColor: this.formBuilder.control(null),
@@ -140,6 +143,10 @@ export class DashboardComponent implements OnInit {
 		this.appearance.get('chartAppearance')?.get('generalOptions')?.get('visualisationLibrary')?.setValue("highCharts");
 		this.appearance.get('chartAppearance')?.get('generalOptions')?.get('resultsLimit')?.setValue(30);
 		this.appearance.get('chartAppearance')?.get('visualisationOptions')?.get('highCharts')?.get('chartArea')?.get('borderColor')?.setValue("#335cad");
+		this.appearance.get('chartAppearance')?.get('visualisationOptions')?.get('highCharts')?.get('title')?.get('titleColor')?.setValue('#333333');
+		this.appearance.get('chartAppearance')?.get('visualisationOptions')?.get('highCharts')?.get('title')?.get('horizontalAlignment')?.setValue('center');
+		this.appearance.get('chartAppearance')?.get('visualisationOptions')?.get('highCharts')?.get('title')?.get('margin')?.setValue(15);
+		this.appearance.get('chartAppearance')?.get('visualisationOptions')?.get('highCharts')?.get('title')?.get('fontSize')?.setValue(18);
 	}
 
 	testLog() {

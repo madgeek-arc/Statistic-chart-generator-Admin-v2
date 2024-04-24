@@ -10,6 +10,12 @@ export class HighChartsComponent implements OnInit {
 
 	@Input('highChartsForm') highChartsForm: FormGroup;
 
+	protected horizontalAlignmentList = [
+		{ name: 'Left', value: 'left' },
+		{ name: 'Center', value: 'center' },
+		{ name: 'Right', value: 'right' }
+	];
+
 	constructor() { }
 
 	get title(): FormGroup {
@@ -22,6 +28,18 @@ export class HighChartsComponent implements OnInit {
 
 	get titleColor(): FormControl {
 		return this.title.get('titleColor') as FormControl;
+	}
+
+	get titleHorizontalAlignment(): FormControl {
+		return this.title.get('horizontalAlignment') as FormControl;
+	}
+
+	get titleMargin(): FormControl {
+		return this.title.get('margin') as FormControl;
+	}
+
+	get titleFontSize(): FormControl {
+		return this.title.get('fontSize') as FormControl;
 	}
 
 
