@@ -24,6 +24,9 @@ import { SelectAttributeComponent } from './dashboard/helper-components/select-a
 import { DynamicTreeDatabase } from './services/dynamic-tree-database/dynamic-tree-database.service';
 import { DbSchemaService } from './services/db-schema-service/db-schema.service';
 import { CustomiseAppearanceComponent } from './dashboard/customise-appearance/customise-appearance.component';
+import { HighChartsComponent } from './dashboard/customise-appearance/visualisation-options/high-charts/high-charts.component';
+import { GoogleChartsComponent } from './dashboard/customise-appearance/visualisation-options/google-charts/google-charts.component';
+import { EChartsComponent } from './dashboard/customise-appearance/visualisation-options/e-charts/e-charts.component';
 
 @NgModule({
 	declarations: [
@@ -43,6 +46,9 @@ import { CustomiseAppearanceComponent } from './dashboard/customise-appearance/c
 
 		// Pipes
 		CapitalizePipe,
+    HighChartsComponent,
+    GoogleChartsComponent,
+    EChartsComponent,
 	],
 	imports: [
 		BrowserModule,

@@ -45,6 +45,14 @@ export class CustomiseAppearanceComponent implements OnInit {
 		return this.generalOptions.get('orderBy') as FormControl;
 	}
 
+	get visualisationOptions(): FormGroup {
+		return this.chartAppearance.get('visualisationOptions') as FormGroup;
+	}
+
+	get highCharts(): FormGroup {
+		return this.visualisationOptions.get('highCharts') as FormGroup;
+	}
+
 
 	get tableAppearance(): FormGroup {
 		return this.appearanceForm.get('tableAppearance') as FormGroup;

@@ -115,6 +115,18 @@ export class DashboardComponent implements OnInit {
 						resultsLimit: this.formBuilder.control(30 as number, [Validators.required, Validators.min(1)]),
 						orderBy: this.formBuilder.control(null, Validators.required),
 					}),
+					visualisationOptions: this.formBuilder.group({
+						highCharts: this.formBuilder.group({
+							title: this.formBuilder.group({
+								titleText: this.formBuilder.control(null),
+								titleColor: this.formBuilder.control(null)
+							}),
+							chartArea: this.formBuilder.group({
+								backgroundColor: this.formBuilder.control(null),
+								borderColor: this.formBuilder.control("#335cad")
+							})
+						})
+					})
 				}),
 				tableAppearance: this.formBuilder.group({
 					tablePageSize: this.formBuilder.control(30 as number, [Validators.required, Validators.min(1)])
@@ -127,6 +139,7 @@ export class DashboardComponent implements OnInit {
 		this.appearance.get('tableAppearance')?.get('tablePageSize')?.setValue(30);
 		this.appearance.get('chartAppearance')?.get('generalOptions')?.get('visualisationLibrary')?.setValue("highCharts");
 		this.appearance.get('chartAppearance')?.get('generalOptions')?.get('resultsLimit')?.setValue(30);
+		this.appearance.get('chartAppearance')?.get('visualisationOptions')?.get('highCharts')?.get('chartArea')?.get('borderColor')?.setValue("#335cad");
 	}
 
 	testLog() {
