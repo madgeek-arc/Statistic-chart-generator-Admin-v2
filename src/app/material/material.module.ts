@@ -11,6 +11,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatInputModule } from '@angular/material/input';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 @NgModule({
 	exports: [
@@ -24,7 +25,8 @@ import { MatInputModule } from '@angular/material/input';
 		MatIconModule,
 		MatProgressBarModule,
 		MatTabsModule,
-		MatInputModule
+		MatInputModule,
+		MatSlideToggleModule
 	]
 })
 export class MaterialModule { }

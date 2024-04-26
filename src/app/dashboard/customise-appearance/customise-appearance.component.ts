@@ -12,6 +12,8 @@ export class CustomiseAppearanceComponent implements OnInit {
 	@Input('appearanceForm') appearanceForm: FormGroup;
 
 
+	// TODO
+	// comes from backend!
 	protected visualisationLibraryList = [
 		{ name: 'HighCharts', value: 'highCharts' },
 		{ name: 'GoogleCharts', value: 'googleCharts' },

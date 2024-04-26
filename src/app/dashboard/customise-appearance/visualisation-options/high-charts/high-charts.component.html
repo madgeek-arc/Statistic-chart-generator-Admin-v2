@@ -1,7 +1,7 @@
 <div style="width: 100%;">
 	<div style="width: 50%; display: inline-block;">
 		<div>
-			<h5>Title</h5>
+			<h5 style="font-weight: bold;">Title</h5>
 			<mat-divider></mat-divider>
 
 			<div>
@@ -12,7 +12,6 @@
 						<input matInput placeholder="Title" [formControl]="this.titleText">
 					</mat-form-field>
 				</div>
-
 				<div style="display: inline-block;">
 					<mat-label>Title Color</mat-label>
 					<br>
@@ -20,7 +19,6 @@
 						<input matInput type="color" [formControl]="this.titleColor">
 					</mat-form-field>
 				</div>
-
 			</div>
 			<div>
 				<div style="display: inline-block; margin-right: 40px;">
@@ -35,7 +33,6 @@
 						</mat-select>
 					</mat-form-field>
 				</div>
-
 				<div style="display: inline-block; margin-right: 40px;">
 					<mat-label>Margin</mat-label>
 					<br>
@@ -43,7 +40,6 @@
 						<input matInput type="number" [formControl]="this.titleMargin">
 					</mat-form-field>
 				</div>
-
 				<div style="display: inline-block;">
 					<mat-label>Font Size</mat-label>
 					<br>
@@ -51,9 +47,132 @@
 						<input matInput type="number" [formControl]="this.titleFontSize">
 					</mat-form-field>
 				</div>
+			</div>
+		</div>
+		<div>
+			<h5 style="font-weight: bold;">Subtitle</h5>
+			<mat-divider></mat-divider>
+
+			<div>
+				<div style="display: inline-block; margin-right: 40px;">
+					<mat-label>Subtitle Text</mat-label>
+					<br>
+					<mat-form-field>
+						<input matInput placeholder="Subtitle" [formControl]="this.subtitleText">
+					</mat-form-field>
+				</div>
+				<div style="display: inline-block;">
+					<mat-label>Subtitle Color</mat-label>
+					<br>
+					<mat-form-field>
+						<input matInput type="color" [formControl]="this.subtitleColor">
+					</mat-form-field>
+				</div>
+			</div>
+			<div>
+				<div style="display: inline-block; margin-right: 40px;">
+					<mat-label>Horizontal Alignment</mat-label>
+					<br>
+					<mat-form-field>
+						<mat-select [formControl]="this.subtitleHorizontalAlignment">
+							<mat-option disabled="true">Select One</mat-option>
+							<mat-option [value]="horizontalAlignment.value" *ngFor="let horizontalAlignment of horizontalAlignmentList">
+								{{horizontalAlignment.name}}
+							</mat-option>
+						</mat-select>
+					</mat-form-field>
+				</div>
+				<div style="display: inline-block;">
+					<mat-label>Font Size</mat-label>
+					<br>
+					<mat-form-field>
+						<input matInput type="number" [formControl]="this.subtitleFontSize">
+					</mat-form-field>
+				</div>
 
 			</div>
+		</div>
+		<div>
+			<h5 style="font-weight: bold;">X Axis</h5>
+			<mat-divider></mat-divider>
 
+			<div>
+				<div style="width: 100%;">
+					<mat-label>Name</mat-label>
+					<br>
+					<mat-form-field>
+						<input matInput placeholder="X Axis Name" [formControl]="this.xAxisName">
+					</mat-form-field>
+				</div>
+			</div>
+			<div>
+				<div style="display: inline-block; margin-right: 40px;">
+					<mat-label>Font Size</mat-label>
+					<br>
+					<mat-form-field>
+						<input matInput type="number" [formControl]="this.xAxisFontSize">
+					</mat-form-field>
+				</div>
+				<div style="display: inline-block;">
+					<mat-label>X Axis Color</mat-label>
+					<br>
+					<mat-form-field>
+						<input matInput type="color" [formControl]="this.xAxisColor">
+					</mat-form-field>
+				</div>
+			</div>
+		</div>
+		<div>
+			<h5 style="font-weight: bold;">Y Axis</h5>
+			<mat-divider></mat-divider>
+
+			<div>
+				<div style="width: 100%;">
+					<mat-label>Name</mat-label>
+					<br>
+					<mat-form-field>
+						<input matInput placeholder="Y Axis Name" [formControl]="this.yAxisName">
+					</mat-form-field>
+				</div>
+			</div>
+			<div>
+				<div style="display: inline-block; margin-right: 40px;">
+					<mat-label>Font Size</mat-label>
+					<br>
+					<mat-form-field>
+						<input matInput type="number" [formControl]="this.yAxisFontSize">
+					</mat-form-field>
+				</div>
+				<div style="display: inline-block;">
+					<mat-label>Y Axis Color</mat-label>
+					<br>
+					<mat-form-field>
+						<input matInput type="color" [formControl]="this.yAxisColor">
+					</mat-form-field>
+				</div>
+			</div>
+		</div>
+		<div>
+			<h5 style="font-weight: bold;">Misc Options</h5>
+			<mat-divider style="margin-bottom: 30px;"></mat-divider>
+
+			<div>
+				<div>
+					<mat-slide-toggle [formControl]="this.enableExporting">Enable Exporting</mat-slide-toggle>
+				</div>
+			</div>
+			<div style="margin-top: 20px;">
+				<mat-label>Stacked Graph</mat-label>
+				<br>
+				<mat-form-field>
+					<mat-select [formControl]="this.stackedGraph">
+						<mat-option disabled="true">Select One</mat-option>
+						<mat-option [value]="stackedGraph.value" *ngFor="let stackedGraph of stackedGraphList">
+							{{stackedGraph.name}}
+						</mat-option>
+					</mat-select>
+				</mat-form-field>
+			</div>
 		</div>
 	</div>
 	<div style="width: 50%; display: inline-block;">

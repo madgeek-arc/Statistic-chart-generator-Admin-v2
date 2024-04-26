@@ -124,6 +124,26 @@ export class DashboardComponent implements OnInit {
 								margin: this.formBuilder.control(15),
 								fontSize: this.formBuilder.control(18)
 							}),
+							subtitle: this.formBuilder.group({
+								subtitleText: this.formBuilder.control(null),
+								subtitleColor: this.formBuilder.control("#666666"),
+								horizontalAlignment: this.formBuilder.control('center'),
+								fontSize: this.formBuilder.control(12)
+							}),
+							xAxis: this.formBuilder.group({
+								xAxisName: this.formBuilder.control(null),
+								fontSize: this.formBuilder.control(11),
+								color: this.formBuilder.control("#666666")
+							}),
+							yAxis: this.formBuilder.group({
+								yAxisName: this.formBuilder.control(null),
+								fontSize: this.formBuilder.control(11),
+								color: this.formBuilder.control("#666666")
+							}),
+							miscOptions: this.formBuilder.group({
+								enableExporting: this.formBuilder.control(true),
+								stackedGraph: this.formBuilder.control('disabled'),
+							}),
 							chartArea: this.formBuilder.group({
 								backgroundColor: this.formBuilder.control(null),
 								borderColor: this.formBuilder.control("#335cad")
@@ -147,6 +167,15 @@ export class DashboardComponent implements OnInit {
 		this.appearance.get('chartAppearance')?.get('visualisationOptions')?.get('highCharts')?.get('title')?.get('horizontalAlignment')?.setValue('center');
 		this.appearance.get('chartAppearance')?.get('visualisationOptions')?.get('highCharts')?.get('title')?.get('margin')?.setValue(15);
 		this.appearance.get('chartAppearance')?.get('visualisationOptions')?.get('highCharts')?.get('title')?.get('fontSize')?.setValue(18);
+		this.appearance.get('chartAppearance')?.get('visualisationOptions')?.get('highCharts')?.get('subtitle')?.get('subtitleColor')?.setValue('#666666');
+		this.appearance.get('chartAppearance')?.get('visualisationOptions')?.get('highCharts')?.get('subtitle')?.get('horizontalAlignment')?.setValue('center');
+		this.appearance.get('chartAppearance')?.get('visualisationOptions')?.get('highCharts')?.get('xAxis')?.get('fontSize')?.setValue(11);
+		this.appearance.get('chartAppearance')?.get('visualisationOptions')?.get('highCharts')?.get('xAxis')?.get('xAxisColor')?.setValue("#666666");
+		this.appearance.get('chartAppearance')?.get('visualisationOptions')?.get('highCharts')?.get('yAxis')?.get('fontSize')?.setValue(11);
+		this.appearance.get('chartAppearance')?.get('visualisationOptions')?.get('highCharts')?.get('yAxis')?.get('yAxisColor')?.setValue("#666666");
+		this.appearance.get('chartAppearance')?.get('visualisationOptions')?.get('highCharts')?.get('miscOptions')?.get('enableExporting')?.setValue(true);
+		this.appearance.get('chartAppearance')?.get('visualisationOptions')?.get('highCharts')?.get('miscOptions')?.get('enableExporting')?.setValue('disabled');
+
 	}
 
 	testLog() {
