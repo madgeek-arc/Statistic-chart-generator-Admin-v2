@@ -27,6 +27,8 @@ import { CustomiseAppearanceComponent } from './dashboard/customise-appearance/c
 import { HighChartsComponent } from './dashboard/customise-appearance/visualisation-options/high-charts/high-charts.component';
 import { GoogleChartsComponent } from './dashboard/customise-appearance/visualisation-options/google-charts/google-charts.component';
 import { EChartsComponent } from './dashboard/customise-appearance/visualisation-options/e-charts/e-charts.component';
+import { SupportedChartTypesService } from './dashboard/customise-appearance/visualisation-options/supported-chart-types-service/supported-chart-types.service';
+import { ChartExportingService } from './services/chart-exporting-service/chart-exporting.service';
 
 @NgModule({
 	declarations: [
@@ -46,9 +48,9 @@ import { EChartsComponent } from './dashboard/customise-appearance/visualisation
 
 		// Pipes
 		CapitalizePipe,
-    HighChartsComponent,
-    GoogleChartsComponent,
-    EChartsComponent,
+		HighChartsComponent,
+		GoogleChartsComponent,
+		EChartsComponent,
 	],
 	imports: [
 		BrowserModule,
@@ -63,7 +65,9 @@ import { EChartsComponent } from './dashboard/customise-appearance/visualisation
 	providers: [
 		ChartLoadingService,
 		DynamicTreeDatabase,
-		DbSchemaService
+		DbSchemaService,
+		SupportedChartTypesService,
+		ChartExportingService
 	],
 	bootstrap: [AppComponent]
 })

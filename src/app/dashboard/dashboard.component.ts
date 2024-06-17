@@ -3,6 +3,18 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatStepper } from '@angular/material/stepper';
 import { Profile } from '../services/profile-provider/profile-provider.service';
+import { SCGAFormSchema } from './customise-appearance/visualisation-options/chart-form-schema.classes';
+import { BehaviorSubject, first, forkJoin } from 'rxjs';
+import { DiagramCategoryService } from './customise-appearance/visualisation-options/diagram-category-service/diagram-category.service';
+import { DiagramCreator } from './dynamic-form-handling-diagram-creator';
+import { HighChartsChart } from './customise-appearance/visualisation-options/supported-libraries-service/chart-description-HighCharts.model';
+import { GoogleChartsChart, GoogleChartsTable } from './customise-appearance/visualisation-options/supported-libraries-service/chart-description-GoogleCharts.model';
+import { HighMapsMap } from './customise-appearance/visualisation-options/supported-libraries-service/chart-description-HighMaps.model';
+import { EChartsChart } from './customise-appearance/visualisation-options/supported-libraries-service/chart-description-eCharts.model';
+import { RawChartDataModel } from './customise-appearance/visualisation-options/supported-libraries-service/chart-description-rawChartData.model';
+import { RawDataModel } from './customise-appearance/visualisation-options/supported-libraries-service/description-rawData.model';
+import { ChartExportingService } from '../services/chart-exporting-service/chart-exporting.service';
+import { ChartLoadingService } from '../services/chart-loading-service/chart-loading.service';
 
 @Component({
 	selector: 'app-dashboard',
@@ -30,11 +42,95 @@ export class DashboardComponent implements OnInit {
 	selectedAppearance: string = '';
 
 
+	private _chartObject = new Object();
+	private _tableObject = new Object();
+	private _rawChartDataObject = new Object();
+	private _rawDataObject = new Object();
+	private _formSchemaObject: BehaviorSubject<SCGAFormSchema>;
+	private _resetFormValue = null;
+	private _formErrorObject: BehaviorSubject<Array<any>> = null as any;
+	private _xAxisRequired: boolean = false;
+	private _loadFormObject: Object;
+	private _loadFormObjectFile: File = null as any;
+
+	private _diagramCreator: DiagramCreator;
+
+
+
 	constructor(
-		private formBuilder: FormBuilder
+		private formBuilder: FormBuilder,
+		private diagramcategoryService: DiagramCategoryService,
+		private chartExportingService: ChartExportingService,
+		private chartLoadingService: ChartLoadingService
 	) {
+		this._formSchemaObject = new BehaviorSubject(null as any);
+		this._formErrorObject = new BehaviorSubject([] as any);
+
 		this.createDefaultFormGroup();
 	}
+
+	set formSchemaObject(value: SCGAFormSchema) { this._formSchemaObject.next(value); }
+	get formSchemaObject(): SCGAFormSchema { return this._formSchemaObject.getValue(); }
+	get diagramCreator(): DiagramCreator { return this.diagramCreator; }
+	get $formErrorObject(): BehaviorSubject<Array<any>> { return this._formErrorObject; }
+	get ChartObject(): Object { return this._chartObject; }
+	get TableObject(): Object { return this._tableObject; }
+	get RawChartDataObject(): Object { return this._rawChartDataObject; }
+	get RawDataObject(): Object { return this._rawDataObject; }
+	get loadFormObject(): Object { return this._loadFormObject; }
+	get loadFormObjectFile(): File { return this._loadFormObjectFile; }
+	get isxAxisRequired(): boolean { return this._xAxisRequired; }
+
+	set resetFormValue(value: SCGAFormSchema) { this._resetFormValue = value as any; }
+	get isFormValid(): boolean {
+		if (this.$formErrorObject.value === null) {
+			return true;
+		} else if (!this._xAxisRequired && this.isOnlyxAxisRequirementError()) {
+			return true;
+		} else {
+			return false;
+		}
+		// return this.$formErrorObject.value === null;
+	}
+
+	// resetForm(root: FormProperty) {
+	// 	// Reset through the root property of the dynamic form
+	// 	root.reset(this._resetFormValue, false);
+
+	// 	// Reset table and chart objects
+	// 	this._chartObject = new Object();
+	// 	this.chartExportingService.changeChartUrl(this._chartObject);
+
+	// 	this._tableObject = new Object();
+	// 	this.chartExportingService.changeTableUrl(this._tableObject);
+
+	// 	this._rawChartDataObject = new Object();
+	// 	this.chartExportingService.changeRawChartDataUrl(this._rawChartDataObject);
+
+	// 	this._rawDataObject = new Object();
+	// 	this.chartExportingService.changeRawDataUrl(this._rawDataObject);
+	// }
+
+	loadForm(event: any) {
+		// console.log('Load Event', event);
+		this._loadFormObjectFile = null as any;
+
+		if (!(event === null || event === undefined)) {
+			const fr: FileReader = new FileReader();
+
+			fr.onload = () => this._loadFormObject = JSON.parse(<string>fr.result)
+			fr.onloadstart = () => this.chartLoadingService.chartLoadingStatus = true
+			fr.onloadend = () => this._loadFormObjectFile = event.target.files[0]
+
+			fr.readAsText(event.target.files[0]);
+		}
+	}
+
+	resetLoadForm() {
+		this._loadFormObjectFile = null as any;
+		this.chartLoadingService.isChartLoaded = false;
+	}
+
 
 
 	ngOnInit(): void {
@@ -178,11 +274,77 @@ export class DashboardComponent implements OnInit {
 
 	}
 
+	isOnlyxAxisRequirementError() {
+
+		for (const value of this._formErrorObject.getValue())
+			if (value.code !== 'ARRAY_LENGTH_SHORT' || !value.path.endsWith('/data/xaxisData'))
+				return false;
+
+		return true;
+	}
+
+	private changeDataObjects(chartObject: HighChartsChart | GoogleChartsChart | HighMapsMap | EChartsChart,
+		tableObject: GoogleChartsTable, rawChartDataObject: RawChartDataModel, rawDataObject: RawDataModel) {
+		this._chartObject = chartObject;
+		this.chartExportingService.changeChartUrl(chartObject);
+
+		this._tableObject = tableObject;
+		this.chartExportingService.changeTableUrl(tableObject);
+
+		this._rawChartDataObject = rawChartDataObject;
+		this.chartExportingService.changeRawChartDataUrl(rawChartDataObject);
+
+		this._rawDataObject = rawDataObject;
+		this.chartExportingService.changeRawDataUrl(rawDataObject);
+	}
+
+
 	testLog() {
 		console.log("TESTING formGroup:", this.formGroup.value);
 	}
 
 	submitTest() {
 		console.log("SUBMIT:", this.formGroup.value);
+
+		let visualisationOptions = this.appearance.get('chartAppearance')?.get('visualisationOptions')?.get('highCharts')?.value;
+
+		console.log("visualisationOptions:", visualisationOptions);
+
+		// if (this.formSchemaObject !== null && this.isFormValid)
+			this.createDataObjectsFromSchemaObject(this.formSchemaObject);
+
 	}
+
+	private createDataObjectsFromSchemaObject(value: SCGAFormSchema) {
+
+		console.log("DATA POINT 2:", value);
+
+		if (this.diagramcategoryService.selectedDiagramCategory$.value?.type === "numbers") {
+			this._diagramCreator.createRawData(value).pipe(first()).subscribe(rawDataObject => {
+				console.log("DATA POINT 3:", rawDataObject);
+
+				return this.changeDataObjects(null as any, null as any, null as any, rawDataObject)
+
+			})
+			return;
+		}
+
+		forkJoin([this._diagramCreator.createChart(value), this._diagramCreator.createTable(value),
+		this._diagramCreator.createRawChartData(value), this._diagramCreator.createRawData(value)])
+			.pipe(first())
+			.subscribe(([chartObject, tableObject, rawChartDataObject, rawDataObject]) => {
+
+				console.log("DATA POINT 4:", [chartObject, tableObject, rawChartDataObject, rawDataObject]);
+				// return;
+
+				if(chartObject && tableObject && rawChartDataObject && rawDataObject) {
+					return this.changeDataObjects(chartObject, tableObject, rawChartDataObject, rawDataObject)
+				}
+				return;
+			});
+		return;
+	}
+
+
+
 }
