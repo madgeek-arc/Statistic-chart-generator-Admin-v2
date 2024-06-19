@@ -32,8 +32,8 @@ export class DashboardComponent implements OnInit {
 	isStep2Done: boolean = false;
 	isLinear: boolean = true;
 
-	profileSelectionLabel: string = "Select Profile";
-	selectedProfile: string = "";
+	viewSelectionLabel: string = "Select View";
+	selectedView: string = "";
 	categorySelectionLabel: string = "Select Category";
 	selectedCategory: string = "";
 	configureDatasieriesLabel: string = "Configure Dataseries";
@@ -63,6 +63,7 @@ export class DashboardComponent implements OnInit {
 		private chartExportingService: ChartExportingService,
 		private chartLoadingService: ChartLoadingService
 	) {
+		this._diagramCreator = new DiagramCreator(diagramcategoryService);
 		this._formSchemaObject = new BehaviorSubject(null as any);
 		this._formErrorObject = new BehaviorSubject([] as any);
 
@@ -134,15 +135,23 @@ export class DashboardComponent implements OnInit {
 
 
 	ngOnInit(): void {
-		this.profile.valueChanges.subscribe((profile: Profile) => {
+		this.view.valueChanges.subscribe((profile: Profile) => {
 			if (profile && !this.firstTime) {
 				this.newViewSelected();
 			}
 		});
 	}
 
+	get testingView() {
+		return this.formGroup.get('testingView') as FormControl;
+	}
+
+	get view() {
+		return this.formGroup.get('view') as FormGroup;
+	}
+
 	get profile() {
-		return this.formGroup.get('profile') as FormControl;
+		return this.view.get('profile') as FormControl;
 	}
 
 	get category() {
@@ -164,8 +173,8 @@ export class DashboardComponent implements OnInit {
 	updateStepper(event: any): void {
 		this.firstTime = false;
 		if (event) {
-			if (event.step === 'profile') {
-				this.selectedProfile = event.name;
+			if (event.step === 'view') {
+				this.selectedView = event.profile;
 			} else if (event.step === 'category') {
 				this.selectedCategory = event.name;
 			}
@@ -196,7 +205,10 @@ export class DashboardComponent implements OnInit {
 
 	createDefaultFormGroup(): void {
 		this.formGroup = this.formBuilder.group({
-			profile: this.formBuilder.control(null, Validators.required),
+			testingView: this.formBuilder.control(null),
+			view: this.formBuilder.group({
+				profile: this.formBuilder.control(null)
+			}),
 			category: this.formBuilder.control(null, Validators.required),
 			dataseries: this.formBuilder.group({
 				entity: this.formBuilder.control(null, Validators.required),
@@ -209,53 +221,79 @@ export class DashboardComponent implements OnInit {
 					generalOptions: this.formBuilder.group({
 						visualisationLibrary: this.formBuilder.control("highCharts", Validators.required),
 						resultsLimit: this.formBuilder.control(30 as number, [Validators.required, Validators.min(1)]),
-						orderBy: this.formBuilder.control(null, Validators.required),
+						orderBy: this.formBuilder.control(null),
 					}),
 					visualisationOptions: this.formBuilder.group({
 						highCharts: this.formBuilder.group({
 							title: this.formBuilder.group({
-								titleText: this.formBuilder.control(null),
-								titleColor: this.formBuilder.control("#333333"),
+								text: this.formBuilder.control(null),
+								color: this.formBuilder.control("#333333"),
 								horizontalAlignment: this.formBuilder.control('center'),
 								margin: this.formBuilder.control(15),
 								fontSize: this.formBuilder.control(18)
 							}),
 							subtitle: this.formBuilder.group({
-								subtitleText: this.formBuilder.control(null),
-								subtitleColor: this.formBuilder.control("#666666"),
+								text: this.formBuilder.control(null),
+								color: this.formBuilder.control("#666666"),
 								horizontalAlignment: this.formBuilder.control('center'),
 								fontSize: this.formBuilder.control(12)
 							}),
 							xAxis: this.formBuilder.group({
-								xAxisName: this.formBuilder.control(null),
+								name: this.formBuilder.control(null),
 								fontSize: this.formBuilder.control(11),
 								color: this.formBuilder.control("#666666")
 							}),
 							yAxis: this.formBuilder.group({
-								yAxisName: this.formBuilder.control(null),
+								name: this.formBuilder.control(null),
 								fontSize: this.formBuilder.control(11),
 								color: this.formBuilder.control("#666666")
 							}),
 							miscOptions: this.formBuilder.group({
 								enableExporting: this.formBuilder.control(true),
+								enableDrilldown: this.formBuilder.control(false),
 								stackedGraph: this.formBuilder.control('disabled'),
 							}),
 							chartArea: this.formBuilder.group({
 								backgroundColor: this.formBuilder.control(null),
-								borderColor: this.formBuilder.control("#335cad")
-							})
+								borderColor: this.formBuilder.control("#335cad"),
+								borderCornerRadius: this.formBuilder.control(0),
+								borderWidth: this.formBuilder.control(0)
+							}),
+							plotArea: this.formBuilder.group({
+								backgroundColor: this.formBuilder.control("#ffffff"),
+								borderColor: this.formBuilder.control("#cccccc"),
+								backgroundImageUrl: this.formBuilder.control(""),
+								borderWidth: this.formBuilder.control(0)
+							}),
+							dataLabels: this.formBuilder.group({
+								enableData: this.formBuilder.control(false)
+							}),
+							credits: this.formBuilder.group({
+								enableCredits: this.formBuilder.control(false)
+							}),
+							legend: this.formBuilder.group({
+								enableLegend: this.formBuilder.control(true),
+								itemlayout: this.formBuilder.control("horizontal"),
+								horizontalAlignment: this.formBuilder.control("center"),
+								verticalAlignment: this.formBuilder.control("bottom")
+							}),
+							zoomOptions: this.formBuilder.group({
+								enableXAxisZoom: this.formBuilder.control(false),
+								enableYAxisZoom: this.formBuilder.control(false)
+							}),
+							dataSeriesColorPalette: this.formBuilder.array([])
 						})
 					})
 				}),
 				tableAppearance: this.formBuilder.group({
-					tablePageSize: this.formBuilder.control(30 as number, [Validators.required, Validators.min(1)])
+					paginationSize: this.formBuilder.control(30 as number, [Validators.required, Validators.min(1)])
 				}),
 			})
 		})
 	}
 
 	updateDefaultFormGroupValues(): void {
-		this.appearance.get('tableAppearance')?.get('tablePageSize')?.setValue(30);
+		this.appearance.get('tableAppearance')?.get('paginationSize')?.setValue(30);
 		this.appearance.get('chartAppearance')?.get('generalOptions')?.get('visualisationLibrary')?.setValue("highCharts");
 		this.appearance.get('chartAppearance')?.get('generalOptions')?.get('resultsLimit')?.setValue(30);
 		this.appearance.get('chartAppearance')?.get('visualisationOptions')?.get('highCharts')?.get('chartArea')?.get('borderColor')?.setValue("#335cad");
@@ -275,7 +313,6 @@ export class DashboardComponent implements OnInit {
 	}
 
 	isOnlyxAxisRequirementError() {
-
 		for (const value of this._formErrorObject.getValue())
 			if (value.code !== 'ARRAY_LENGTH_SHORT' || !value.path.endsWith('/data/xaxisData'))
 				return false;
@@ -304,15 +341,36 @@ export class DashboardComponent implements OnInit {
 	}
 
 	submitTest() {
-		console.log("SUBMIT:", this.formGroup.value);
+		console.log("SUBMIT this form:", this.formGroup.value);
+
+		const cloneValue = this.formGroup.value;
+		const finalValue = this.makeChangesToForm(cloneValue);
+
+		return;
+		this.formSchemaObject = finalValue;
 
 		let visualisationOptions = this.appearance.get('chartAppearance')?.get('visualisationOptions')?.get('highCharts')?.value;
 
 		console.log("visualisationOptions:", visualisationOptions);
+		console.log("this.formSchemaObject:", this.formSchemaObject);
 
-		// if (this.formSchemaObject !== null && this.isFormValid)
+		return
+		if (this.formSchemaObject !== null && this.isFormValid)
 			this.createDataObjectsFromSchemaObject(this.formSchemaObject);
 
+	}
+
+	makeChangesToForm(form: any): SCGAFormSchema {
+		// remove testingView for development purposes
+		delete form.testingView;
+
+		form['appearance']['tableAppearance']['paginationSize'] = form['appearance']['tableAppearance']['tablePageSize'];
+		// delete form.appearance.tableAppearance.tablePageSize;
+
+
+
+		console.log("form:", form);
+		return form;
 	}
 
 	private createDataObjectsFromSchemaObject(value: SCGAFormSchema) {
@@ -337,7 +395,7 @@ export class DashboardComponent implements OnInit {
 				console.log("DATA POINT 4:", [chartObject, tableObject, rawChartDataObject, rawDataObject]);
 				// return;
 
-				if(chartObject && tableObject && rawChartDataObject && rawDataObject) {
+				if (chartObject && tableObject && rawChartDataObject && rawDataObject) {
 					return this.changeDataObjects(chartObject, tableObject, rawChartDataObject, rawDataObject)
 				}
 				return;

@@ -33,7 +33,9 @@ export class DiagramCreator {
 
 	public createChart(formObj: SCGAFormSchema): Observable<HighChartsChart | GoogleChartsChart | HighMapsMap | EChartsChart | null> {
 
+		console.log("TEST 1:", formObj);
 		const view: ViewFormSchema = formObj.view;
+		console.log("TEST 2:", view);
 		const category: CategoryFormSchema = formObj.category;
 		const dataseries: DataseriesFormSchema[] = formObj.dataseries;
 		const appearanceOptions: AppearanceFormSchema = formObj.appearance;

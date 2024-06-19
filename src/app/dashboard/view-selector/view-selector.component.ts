@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 import { ProfileProviderService } from 'src/app/services/profile-provider/profile-provider.service';
 
 @Component({
@@ -10,6 +10,7 @@ import { ProfileProviderService } from 'src/app/services/profile-provider/profil
 export class ViewSelectorComponent {
 
 	@Input('viewForm') viewForm: FormControl = new FormControl();
+	@Input('profileControl') profileControl: FormControl = new FormControl();
 	@Output() showViewSelection = new EventEmitter<any>;
 
 	isLinear: boolean = true;
@@ -25,6 +26,7 @@ export class ViewSelectorComponent {
 	moveToNextStep(event: any): void {
 		if (event.name) {
 			this.viewForm.setValue(event);
+			this.profileControl.setValue(event.name);
 			this.showViewSelection.emit({
 				name: event.name,
 				step: "profile"

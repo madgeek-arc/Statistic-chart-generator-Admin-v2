@@ -18,7 +18,7 @@ import { CachedEntityNode, EntityNode } from '../helper-components/select-attrib
 export class DataseriesSelectorComponent implements OnInit {
 
 	@Input('dataseriesForm') dataseriesForm: FormGroup;
-	@Input('selectedProfile') selectedProfile: FormControl = new FormControl;
+	@Input('selectedView') selectedView: FormControl = new FormControl();
 
 	// dataSource = new MatTreeNestedDataSource<EntityNode>();
 	// treeControl = new NestedTreeControl<EntityNode>(node => node.relations);
@@ -79,7 +79,7 @@ export class DataseriesSelectorComponent implements OnInit {
 	}
 
 	ngOnInit(): void {
-		this.selectedProfile.valueChanges.subscribe((profile: Profile) => {
+		this.selectedView.valueChanges.subscribe((profile: Profile) => {
 			if (profile) {
 				this.entityProvider.getAvailableEntities(profile).pipe(first()).subscribe((entityNames: Array<string>) => {
 					console.log("Entity Names:", entityNames);

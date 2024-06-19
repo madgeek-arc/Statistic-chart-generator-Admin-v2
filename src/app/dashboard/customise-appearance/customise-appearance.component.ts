@@ -60,8 +60,8 @@ export class CustomiseAppearanceComponent implements OnInit {
 		return this.appearanceForm.get('tableAppearance') as FormGroup;
 	}
 
-	get tablePageSize(): FormControl {
-		return this.tableAppearance.get('tablePageSize') as FormControl;
+	get paginationSize(): FormControl {
+		return this.tableAppearance.get('paginationSize') as FormControl;
 	}
 
 	ngOnInit(): void { }
