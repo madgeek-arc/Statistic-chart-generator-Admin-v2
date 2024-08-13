@@ -94,6 +94,7 @@ export class DashboardComponent implements OnInit {
 		// return this.$formErrorObject.value === null;
 	}
 
+	// TODO Find where FormProperty comes from and add it
 	// resetForm(root: FormProperty) {
 	// 	// Reset through the root property of the dynamic form
 	// 	root.reset(this._resetFormValue, false);
@@ -214,7 +215,7 @@ export class DashboardComponent implements OnInit {
 				entity: this.formBuilder.control(null, Validators.required),
 				aggregate: this.formBuilder.control(null, Validators.required),
 				entityField: this.formBuilder.control(null, Validators.required),
-				stackedData: this.formBuilder.control(null)
+				stackedData: this.formBuilder.control('null')
 			}),
 			appearance: this.formBuilder.group({
 				chartAppearance: this.formBuilder.group({
@@ -322,6 +323,8 @@ export class DashboardComponent implements OnInit {
 
 	private changeDataObjects(chartObject: HighChartsChart | GoogleChartsChart | HighMapsMap | EChartsChart,
 		tableObject: GoogleChartsTable, rawChartDataObject: RawChartDataModel, rawDataObject: RawDataModel) {
+
+		console.log("TEST");
 		this._chartObject = chartObject;
 		this.chartExportingService.changeChartUrl(chartObject);
 
@@ -346,7 +349,7 @@ export class DashboardComponent implements OnInit {
 		const cloneValue = this.formGroup.value;
 		const finalValue = this.makeChangesToForm(cloneValue);
 
-		return;
+		// return;
 		this.formSchemaObject = finalValue;
 
 		let visualisationOptions = this.appearance.get('chartAppearance')?.get('visualisationOptions')?.get('highCharts')?.value;
@@ -354,7 +357,7 @@ export class DashboardComponent implements OnInit {
 		console.log("visualisationOptions:", visualisationOptions);
 		console.log("this.formSchemaObject:", this.formSchemaObject);
 
-		return
+		// return
 		if (this.formSchemaObject !== null && this.isFormValid)
 			this.createDataObjectsFromSchemaObject(this.formSchemaObject);
 
@@ -364,12 +367,40 @@ export class DashboardComponent implements OnInit {
 		// remove testingView for development purposes
 		delete form.testingView;
 
-		form['appearance']['tableAppearance']['paginationSize'] = form['appearance']['tableAppearance']['tablePageSize'];
-		// delete form.appearance.tableAppearance.tablePageSize;
+		const tempDiagram = form['category'];
+		form['category'] = {};
+		form['category']['diagram'] = tempDiagram;
+
+
+		// return form;
+		// TODO change the way you control the dataseries because it will be a dynamic array (FormArray) and not one object
+		// TODO check and see how dataseries works. ex where is the dataseries name: "Data" coming from
+		const tempDataseries = form['dataseries'];
+		form['dataseries'] = [];
+		form['dataseries'][0] = {};
+		form['dataseries'][0]['chartProperties'] = {};
+		form['dataseries'][0]['chartProperties']['dataseriesName'] = "Data";
+		form['dataseries'][0]['chartProperties']['stacking'] = tempDataseries.stackedData;
+		form['dataseries'][0]['data'] = {};
+		form['dataseries'][0]['data']['filters'] = [];
+		// TODO add funcionality for array (FormArray) for xaxisData
+		form['dataseries'][0]['data']['xaxisData'] = [];
+		// TODO add funcionality for path creation
+		form['dataseries'][0]['data']['xaxisData'] = [];
+		form['dataseries'][0]['data']['xaxisData'][0] = {};
+		form['dataseries'][0]['data']['xaxisData'][0]['xaxisEntityField'] = {};
+		form['dataseries'][0]['data']['xaxisData'][0]['xaxisEntityField']['name'] = tempDataseries.entity + "." + tempDataseries.entityField;
+		// TODO find out where the type is coming from or if we infer it
+		form['dataseries'][0]['data']['xaxisData'][0]['xaxisEntityField']['type'] = "text";
+		form['dataseries'][0]['data']['yaxisData'] = {};
+		form['dataseries'][0]['data']['yaxisData']['entity'] = tempDataseries.entity;
+		form['dataseries'][0]['data']['yaxisData']['yaxisAggregate'] = tempDataseries.aggregate;
+
+		// form['dataseries'][0] = tempDataseries;
 
 
 
-		console.log("form:", form);
+		console.log("TESTING FORM:", form);
 		return form;
 	}
 

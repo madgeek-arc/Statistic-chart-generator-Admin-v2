@@ -2,8 +2,8 @@
 <button style="float: right;" (click)="submitTest()" [disabled]="!(this.view.valid && this.category.valid && this.dataseries.valid)">SUBMIT</button>
 <div class="container">
 	<form [formGroup]="this.formGroup">
-		<app-customise-appearance [appearanceForm]="this.appearance"></app-customise-appearance>
-		<br>
+		<!-- <app-customise-appearance [appearanceForm]="this.appearance"></app-customise-appearance>
+		<br> -->
 
 		<mat-stepper #stepper linear (selectionChange)="onStepChange($event)">
 			<mat-step [stepControl]="this.view">

@@ -118,6 +118,7 @@ export class ChartExportingService {
 			return;
 		}
 
+		console.log("chartObject", chartObject);
 		this._chartUrl.next(this.urlProvider.createChartURL(chartObject));
 	}
 
