@@ -427,9 +427,9 @@ export class DashboardComponent implements OnInit {
 				// return;
 
 				if (chartObject && tableObject && rawChartDataObject && rawDataObject) {
-					return this.changeDataObjects(chartObject, tableObject, rawChartDataObject, rawDataObject)
+					this.changeDataObjects(chartObject, tableObject, rawChartDataObject, rawDataObject)
 				}
-				return;
+				// return;
 			});
 		return;
 	}

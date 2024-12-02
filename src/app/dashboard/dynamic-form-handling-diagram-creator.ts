@@ -33,13 +33,16 @@ export class DiagramCreator {
 
 	public createChart(formObj: SCGAFormSchema): Observable<HighChartsChart | GoogleChartsChart | HighMapsMap | EChartsChart | null> {
 
-		console.log("TEST 1:", formObj);
+		// console.log('Form values ->', formObj);
 		const view: ViewFormSchema = formObj.view;
-		console.log("TEST 2:", view);
+		// console.log('View ->', view);
 		const category: CategoryFormSchema = formObj.category;
-		const dataseries: DataseriesFormSchema[] = formObj.dataseries;
+    // console.log('Category ->', category);
+    const dataseries: DataseriesFormSchema[] = formObj.dataseries;
+    // console.log('Dataseries ->', dataseries);
 		const appearanceOptions: AppearanceFormSchema = formObj.appearance;
-		const library: string = appearanceOptions.chartAppearance.generalOptions.library;
+    // console.log('Appearance ->', appearanceOptions);
+    const library: string = appearanceOptions.chartAppearance.generalOptions.visualisationLibrary;
 
 		// TODO we can make sure we dont send to the back end queries with unsupported libraries
 		// ----------------------
@@ -47,7 +50,6 @@ export class DiagramCreator {
 		// (data: Array<string>) =>  {
 		//     if (data.includes(library)) {
 
-		console.log('Appearance', appearanceOptions);
 		switch (library) {
 
 			case ('HighCharts'): {
@@ -106,7 +108,7 @@ export class DiagramCreator {
 		const category: CategoryFormSchema = formObj.category;
 		const dataseries: DataseriesFormSchema[] = formObj.dataseries;
 		const appearanceOptions: AppearanceFormSchema = formObj.appearance;
-		const library: string = appearanceOptions.chartAppearance.generalOptions.library;
+		const library: string = appearanceOptions.chartAppearance.generalOptions.visualisationLibrary;
 
 		const rawChartDataModel = new RawChartDataModel(library);
 		if (appearanceOptions.chartAppearance.generalOptions && appearanceOptions.chartAppearance.generalOptions.orderByAxis !== null) {
@@ -491,7 +493,7 @@ export class DiagramCreator {
 		dataseries: DataseriesFormSchema[], appearanceOptions: AppearanceFormSchema): HighMapsMap {
 
 		const mapObj = new HighMapsMap();
-		mapObj.library = appearanceOptions.chartAppearance.generalOptions.library;
+		mapObj.library = appearanceOptions.chartAppearance.generalOptions.visualisationLibrary;
 
 		// tslint:disable-next-line:max-line-length
 		if (appearanceOptions.chartAppearance.highmapsAppearanceOptions !== undefined && appearanceOptions.chartAppearance.highmapsAppearanceOptions !== null) {

@@ -15,8 +15,8 @@ export class CustomiseAppearanceComponent implements OnInit {
 	// TODO
 	// comes from backend!
 	protected visualisationLibraryList = [
-		{ name: 'HighCharts', value: 'highCharts' },
-		{ name: 'GoogleCharts', value: 'googleCharts' },
+		{ name: 'HighCharts', value: 'HighCharts' },
+		{ name: 'GoogleCharts', value: 'GoogleCharts' },
 		{ name: 'eCharts', value: 'eCharts' }
 	];
 
