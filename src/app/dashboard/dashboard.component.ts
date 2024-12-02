@@ -295,7 +295,7 @@ export class DashboardComponent implements OnInit {
 
 	updateDefaultFormGroupValues(): void {
 		this.appearance.get('tableAppearance')?.get('paginationSize')?.setValue(30);
-		this.appearance.get('chartAppearance')?.get('generalOptions')?.get('visualisationLibrary')?.setValue("highCharts");
+		this.appearance.get('chartAppearance')?.get('generalOptions')?.get('visualisationLibrary')?.setValue('HighCharts');
 		this.appearance.get('chartAppearance')?.get('generalOptions')?.get('resultsLimit')?.setValue(30);
 		this.appearance.get('chartAppearance')?.get('visualisationOptions')?.get('highCharts')?.get('chartArea')?.get('borderColor')?.setValue("#335cad");
 		this.appearance.get('chartAppearance')?.get('visualisationOptions')?.get('highCharts')?.get('title')?.get('titleColor')?.setValue('#333333');
