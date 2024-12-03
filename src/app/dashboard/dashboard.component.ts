@@ -215,7 +215,8 @@ export class DashboardComponent implements OnInit {
 				entity: this.formBuilder.control(null, Validators.required),
 				aggregate: this.formBuilder.control(null, Validators.required),
 				entityField: this.formBuilder.control(null, Validators.required),
-				stackedData: this.formBuilder.control('null')
+				stackedData: this.formBuilder.control('null'),
+				filters: this.formBuilder.array([])
 			}),
 			appearance: this.formBuilder.group({
 				chartAppearance: this.formBuilder.group({
@@ -382,7 +383,7 @@ export class DashboardComponent implements OnInit {
 		form['dataseries'][0]['chartProperties']['dataseriesName'] = "Data";
 		form['dataseries'][0]['chartProperties']['stacking'] = tempDataseries.stackedData;
 		form['dataseries'][0]['data'] = {};
-		form['dataseries'][0]['data']['filters'] = [];
+		form['dataseries'][0]['data']['filters'] = tempDataseries.filters;
 		// TODO add funcionality for array (FormArray) for xaxisData
 		form['dataseries'][0]['data']['xaxisData'] = [];
 		// TODO add funcionality for path creation
