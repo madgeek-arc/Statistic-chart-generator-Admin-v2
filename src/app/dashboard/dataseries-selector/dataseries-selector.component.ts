@@ -1,10 +1,10 @@
 import { NestedTreeControl } from '@angular/cdk/tree';
 import { HttpClient } from '@angular/common/http';
 import { Component, Input, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatSelectChange } from '@angular/material/select';
 import { MatTreeNestedDataSource } from '@angular/material/tree';
-import { BehaviorSubject, Observable, distinctUntilChanged, first, forkJoin } from 'rxjs';
+import { BehaviorSubject, Observable, distinctUntilChanged, filter, first, forkJoin } from 'rxjs';
 import { EntityProviderService } from 'src/app/services/entity-provider/entity-provider.service';
 import { Profile } from 'src/app/services/profile-provider/profile-provider.service';
 import { UrlProviderService } from 'src/app/services/url-provider/url-provider.service';
@@ -53,10 +53,26 @@ export class DataseriesSelectorComponent implements OnInit {
 		{ name: 'Stacked by Percentage', value: 'percent' }
 	];
 
+
+	protected filterFields = [
+		"name",
+		"number"
+	]
+
+	protected filterOperators = [
+		'Equals',
+		'Not Equals',
+		'Contains',
+		'Starts With',
+		'Ends With'
+	]
+
+
 	constructor(
 		private http: HttpClient,
 		private entityProvider: EntityProviderService,
-		private urlProvider: UrlProviderService
+		private urlProvider: UrlProviderService,
+		private formBuilder: FormBuilder
 	) { }
 
 	hasChild = (_: number, node: EntityNode) => !!node.relations && node.relations.length > 0;
@@ -76,6 +92,10 @@ export class DataseriesSelectorComponent implements OnInit {
 
 	get stackedData(): FormControl {
 		return this.dataseriesForm.get('stackedData') as FormControl;
+	}
+
+	get filters(): FormArray {
+		return this.dataseriesForm.get('filters') as FormArray;
 	}
 
 	ngOnInit(): void {
@@ -144,6 +164,44 @@ export class DataseriesSelectorComponent implements OnInit {
 		return isPanelOpenFlag;
 	}
 
+	createfilter() {
+		let groupFilters = this.formBuilder.array([]) as FormArray;
+
+		groupFilters.push(this.createGroupFilter())
+
+		return filter;
+	}
+
+	addFilter() {
+		this.filters.push(this.createfilter());
+
+		console.log("Filter Added");
+	}
+
+	removeFilter(i: any) {
+		this.filters.removeAt(i)
+
+		console.log("Filter Removed");
+	}
+
+	createGroupFilter(): FormGroup {
+		let formGroup = new FormGroup({
+			field: this.formBuilder.group({
+				name: this.formBuilder.control(null),
+				type: this.formBuilder.control(null)
+			}),
+			type: this.formBuilder.control(null),
+			values: this.formBuilder.control([])
+		});
+
+		return formGroup;
+	}
+
+
+	testFilters() {
+		console.log("Filters:", this.filters);
+	}
+
 	outputResult(event: any): void {
 		console.log("FINAL PATH:", event);
 	}
@@ -151,6 +209,12 @@ export class DataseriesSelectorComponent implements OnInit {
 	testLog(): void {
 		console.log("this.dataseriesForm.value:", this.dataseriesForm.value);
 	}
+}
+
+export class DataSelectionFilter {
+	entityField: string;
+	filterOperator: string;
+	filterValue: string;
 }
 
 
