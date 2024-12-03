@@ -217,6 +217,7 @@ export interface ECZoomOptionsFormSchema {
 
 export interface HCMiscOptionsFormSchema {
   exporting?: boolean;
+  drilldown?: boolean;
   hcEnableDataLabels?: boolean;
   stackedChart?: "null" | "normal" | "percent" | "stream" | "overlap";
 }

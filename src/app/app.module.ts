@@ -31,44 +31,44 @@ import { SupportedChartTypesService } from './dashboard/customise-appearance/vis
 import { ChartExportingService } from './services/chart-exporting-service/chart-exporting.service';
 
 @NgModule({
-	declarations: [
-		AppComponent,
-		DashboardComponent,
-		HeaderComponent,
-		FooterComponent,
-		ViewSelectorComponent,
-		CategorySelectorComponent,
-		PageNotFoundComponent,
-		CardComponentComponent,
-		DiagramCardComponentComponent,
-		DataseriesSelectorComponent,
-		EntitySelectionComponentComponent,
-		SelectAttributeComponent,
-		CustomiseAppearanceComponent,
+  declarations: [
+    AppComponent,
+    DashboardComponent,
+    HeaderComponent,
+    FooterComponent,
+    ViewSelectorComponent,
+    CategorySelectorComponent,
+    PageNotFoundComponent,
+    CardComponentComponent,
+    DiagramCardComponentComponent,
+    DataseriesSelectorComponent,
+    EntitySelectionComponentComponent,
+    SelectAttributeComponent,
+    CustomiseAppearanceComponent,
 
-		// Pipes
-		CapitalizePipe,
-		HighChartsComponent,
-		GoogleChartsComponent,
-		EChartsComponent,
-	],
-	imports: [
-		BrowserModule,
-		ReactiveFormsModule,
-		FormsModule,
-		BrowserAnimationsModule,
-		AppRoutingModule,
-		HttpClientModule,
-		MaterialModule,
-		CommonModule
-	],
-	providers: [
-		ChartLoadingService,
-		DynamicTreeDatabase,
-		DbSchemaService,
-		SupportedChartTypesService,
-		ChartExportingService
-	],
-	bootstrap: [AppComponent]
+    // Pipes
+    CapitalizePipe,
+    HighChartsComponent,
+    GoogleChartsComponent,
+    EChartsComponent,
+  ],
+  imports: [
+    BrowserModule,
+    ReactiveFormsModule,
+    FormsModule,
+    BrowserAnimationsModule,
+    AppRoutingModule,
+    HttpClientModule,
+    MaterialModule,
+    CommonModule
+  ],
+  providers: [
+    ChartLoadingService,
+    DynamicTreeDatabase,
+    DbSchemaService,
+    SupportedChartTypesService,
+    ChartExportingService
+  ],
+  bootstrap: [AppComponent]
 })
 export class AppModule { }

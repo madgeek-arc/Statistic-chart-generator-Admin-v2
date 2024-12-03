@@ -1,9 +1,10 @@
-import { HttpClient } from '@angular/common/http';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { first } from 'rxjs';
-import { ChartProviderService, ISupportedMap, ISupportedMiscType, ISupportedPolar, ISupportedSpecialChartType } from 'src/app/services/chart-provider/chart-provider.service';
-import { UrlProviderService } from 'src/app/services/url-provider/url-provider.service';
+import {
+  ISupportedMap, ISupportedMiscType,
+  ISupportedPolar, ISupportedSpecialChartType, SupportedChartTypesService
+} from "../customise-appearance/visualisation-options/supported-chart-types-service/supported-chart-types.service";
 
 @Component({
 	selector: 'app-category-selector',
@@ -27,23 +28,23 @@ export class CategorySelectorComponent implements OnInit {
 
 
 	constructor(
-		private chartProvider: ChartProviderService
+		private chartProvider: SupportedChartTypesService
 	) { }
 
 	ngOnInit(): void {
-		this.chartProvider.getSupportedChartTypes().pipe(first()).subscribe(
-			(data: Array<ISupportedChart>) => {
-				this.supportedChartTypes = data.filter(this.hideChartFilter);
-			},
-			error => {
-				console.log("ERROR getSupportedChartTypes:", error);
-			},
-			() => {
-				this.supportedChartTypes.map((elem: ISupportedChart) => {
-					this.availableDiagrams.push(elem);
-				});
-			}
-		);
+		this.chartProvider.getSupportedChartTypes().pipe(first()).subscribe({
+      next: (data: Array<ISupportedChart>) => {
+        this.supportedChartTypes = data.filter(this.hideChartFilter);
+      },
+      error: (err) => {
+        console.log("ERROR getSupportedChartTypes:", err);
+      },
+      complete: () => {
+        this.supportedChartTypes.map((elem: ISupportedChart) => {
+          this.availableDiagrams.push(elem);
+        });
+      }
+    });
 
 		this.chartProvider.getSupportedPolarTypes().pipe(first()).subscribe(
 			(data: Array<ISupportedPolar>) => {

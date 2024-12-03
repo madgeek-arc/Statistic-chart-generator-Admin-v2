@@ -1,0 +1,16 @@
+<!--<h1 mat-dialog-title>Favorite Animal</h1>-->
+<div mat-dialog-content>
+  <mat-tab-group mat-stretch-tabs="true" mat-align-tabs="start" animationDuration="250ms">
+    <mat-tab label="Diagram">
+      <div class="">
+        <chart-frame [chart]="data.chartObj"></chart-frame>
+      </div>
+      <div class="">
+        <generated-short-url-field [shortUrl]="chartExportingService.chartTinyUrl$"></generated-short-url-field>
+      </div>
+    </mat-tab>
+    <mat-tab label="Table">Content 2</mat-tab>
+    <mat-tab label="Raw Chart Data">Content 3</mat-tab>
+    <mat-tab label="Raw Data">Content 4</mat-tab>
+  </mat-tab-group>
+</div>

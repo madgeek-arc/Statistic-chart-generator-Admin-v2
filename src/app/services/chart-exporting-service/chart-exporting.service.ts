@@ -4,6 +4,24 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { catchError, distinctUntilChanged, first } from 'rxjs/operators';
 import { UrlProviderService } from '../url-provider-service/url-provider.service';
 import { ErrorHandlerService } from 'src/app/dashboard/customise-appearance/visualisation-options/error-handler-service/error-handler.service';
+import {
+  HighChartsChart
+} from "../../dashboard/customise-appearance/visualisation-options/supported-libraries-service/chart-description-HighCharts.model";
+import {
+  GoogleChartsChart, GoogleChartsTable
+} from "../../dashboard/customise-appearance/visualisation-options/supported-libraries-service/chart-description-GoogleCharts.model";
+import {
+  HighMapsMap
+} from "../../dashboard/customise-appearance/visualisation-options/supported-libraries-service/chart-description-HighMaps.model";
+import {
+  EChartsChart
+} from "../../dashboard/customise-appearance/visualisation-options/supported-libraries-service/chart-description-eCharts.model";
+import {
+  RawChartDataModel
+} from "../../dashboard/customise-appearance/visualisation-options/supported-libraries-service/chart-description-rawChartData.model";
+import {
+  RawDataModel
+} from "../../dashboard/customise-appearance/visualisation-options/supported-libraries-service/description-rawData.model";
 
 type PostTinyUrlCallback = (shortUrl: string) => void;
 
@@ -117,7 +135,7 @@ export class ChartExportingService {
 			);
 	}
 
-	public changeChartUrl(chartObject: Object) {
+	public changeChartUrl(chartObject: HighChartsChart | GoogleChartsChart | HighMapsMap | EChartsChart | null) {
 
 		if (!chartObject) {
 			this._chartUrl.next(null);
@@ -128,7 +146,7 @@ export class ChartExportingService {
 		this._chartUrl.next(this.urlProvider.createChartURL(chartObject));
 	}
 
-	public changeTableUrl(tableObject: Object) {
+	public changeTableUrl(tableObject: GoogleChartsTable | null) {
 
 		if (!tableObject) {
 			this._tableUrl.next(null as any)
@@ -138,7 +156,7 @@ export class ChartExportingService {
 		this._tableUrl.next(this.urlProvider.createTableURL(tableObject));
 	}
 
-	public changeRawChartDataUrl(rawChartDataObject: Object) {
+	public changeRawChartDataUrl(rawChartDataObject: RawChartDataModel | null) {
 
 		if (!rawChartDataObject) {
 			this._rawChartDataUrl.next(null as any)
@@ -148,7 +166,7 @@ export class ChartExportingService {
 		this._rawChartDataUrl.next(this.urlProvider.createRawChartDataUrl(rawChartDataObject));
 	}
 
-	public changeRawDataUrl(rawDataObject: Object) {
+	public changeRawDataUrl(rawDataObject: RawDataModel | null) {
 
 		if (!rawDataObject) {
 			this._rawDataUrl.next(null as any)
