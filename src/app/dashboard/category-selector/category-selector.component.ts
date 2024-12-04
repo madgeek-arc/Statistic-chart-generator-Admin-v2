@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { first } from 'rxjs';
 import {
   ISupportedMap, ISupportedMiscType,
@@ -13,7 +13,7 @@ import {
 })
 export class CategorySelectorComponent implements OnInit {
 
-	@Input('categoryForm') categoryForm: FormControl = new FormControl();
+	@Input('categoryForm') categoryForm: FormGroup;
 	@Output() showCategorySelection = new EventEmitter<any>;
 
 	supportedChartTypes: Array<ISupportedChart> = [];
@@ -107,13 +107,17 @@ export class CategorySelectorComponent implements OnInit {
 
 	}
 
-	moveToNextStep(event: any): void {
+	moveToNextStep(event: ISupportedCategory): void {
 		if (event.name) {
-			this.categoryForm.setValue(event);
-			this.showCategorySelection.emit({
+      this.categoryForm.get('diagram.supportedLibraries')?.reset();
+      for (let i = 0; i < event.supportedLibraries.length; i++) {
+        (this.categoryForm.get('diagram.supportedLibraries') as FormArray).push(new FormControl<string | null>(null));
+      }
+      this.categoryForm.get('diagram')?.setValue(event);
+      this.showCategorySelection.emit({
 				name: event.name,
 				step: "category"
-			})
+			});
 		} else {
 			this.showCategorySelection.emit({
 				name: "PlaceHolder Category",

@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { DynamicFormHandlingService } from "../services/dynamic-form-handling-service/dynamic-form-handling.service";
 
 @Component({
   selector: 'app-header',
@@ -6,5 +7,11 @@ import { Component } from '@angular/core';
   styleUrls: ['./header.component.less']
 })
 export class HeaderComponent {
+
+  constructor(public dynamicFormHandlingService: DynamicFormHandlingService) {}
+
+  saveChart(): void {
+    this.dynamicFormHandlingService.exportForm();
+  }
 
 }

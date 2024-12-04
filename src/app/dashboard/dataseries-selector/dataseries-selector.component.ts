@@ -17,7 +17,7 @@ import { CachedEntityNode, EntityNode } from '../helper-components/select-attrib
 })
 export class DataseriesSelectorComponent implements OnInit {
 
-	@Input('dataseriesForm') dataseriesForm: FormGroup;
+	@Input('dataseriesForm') dataseriesForm: FormArray;
 	@Input('selectedView') selectedView: FormControl = new FormControl();
 
 	// dataSource = new MatTreeNestedDataSource<EntityNode>();
@@ -78,24 +78,25 @@ export class DataseriesSelectorComponent implements OnInit {
 	hasChild = (_: number, node: EntityNode) => !!node.relations && node.relations.length > 0;
 
 
-	get entity(): FormControl {
-		return this.dataseriesForm.get('entity') as FormControl;
+	entity(index: number): FormControl {
+    return this.dataseriesForm.controls[index].get('data.yaxisData.entity') as FormControl;
 	}
 
-	get aggregate(): FormControl {
-		return this.dataseriesForm.get('aggregate') as FormControl;
+	aggregate(index: number): FormControl {
+		return this.dataseriesForm.controls[index].get('data.yaxisData.yaxisAggregate') as FormControl;
 	}
 
-	get entityField(): FormControl {
-		return this.dataseriesForm.get('entityField') as FormControl;
+	entityField(index: number): FormControl {
+    // FIXME: I return fist control (controls[0]), this is bad and should be fixed!
+    return (this.dataseriesForm.controls[index].get('data.xaxisData') as FormArray).controls[0].get('xaxisEntityField.name') as FormControl;
 	}
 
-	get stackedData(): FormControl {
-		return this.dataseriesForm.get('stackedData') as FormControl;
+	stackedData(index: number): FormControl {
+    return this.dataseriesForm.controls[index].get('chartProperties.stacking') as FormControl;
 	}
 
-	get filters(): FormArray {
-		return this.dataseriesForm.get('filters') as FormArray;
+	filters(index: number): FormArray {
+    return this.dataseriesForm.controls[index].get('data.filters') as FormArray;
 	}
 
 	ngOnInit(): void {
@@ -172,14 +173,14 @@ export class DataseriesSelectorComponent implements OnInit {
 		return filter;
 	}
 
-	addFilter() {
-		this.filters.push(this.createfilter());
+	addFilter(index: number) {
+		this.filters(index).push(this.createfilter());
 
 		console.log("Filter Added");
 	}
 
-	removeFilter(i: any) {
-		this.filters.removeAt(i)
+	removeFilter(index: number, position: number) {
+		this.filters(index).removeAt(position);
 
 		console.log("Filter Removed");
 	}
