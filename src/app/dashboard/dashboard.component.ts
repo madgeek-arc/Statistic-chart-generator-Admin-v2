@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup, RequiredValidator, Validators } from '@angular/forms';
 import { MatStepper } from '@angular/material/stepper';
 import { Profile } from '../services/profile-provider/profile-provider.service';
 import { SCGAFormSchema } from './customise-appearance/visualisation-options/chart-form-schema.classes';
@@ -147,6 +147,10 @@ export class DashboardComponent implements OnInit {
 				this.newViewSelected();
 			}
 		});
+
+    this.formGroup.valueChanges.subscribe(value => {
+      this.dynamicFormHandlingService.formSchemaObject = value;
+    });
 	}
 
 	get testingView() {
@@ -162,11 +166,11 @@ export class DashboardComponent implements OnInit {
 	}
 
 	get category() {
-		return this.formGroup.get('category') as FormControl;
+		return this.formGroup.get('category') as FormGroup;
 	}
 
 	get dataseries() {
-		return this.formGroup.get('dataseries') as FormGroup;
+		return this.formGroup.get('dataseries') as FormArray;
 	}
 
 	get appearance() {
@@ -216,18 +220,66 @@ export class DashboardComponent implements OnInit {
 			view: this.formBuilder.group({
 				profile: this.formBuilder.control(null)
 			}),
-			category: this.formBuilder.control(null, Validators.required),
-			dataseries: this.formBuilder.group({
-				entity: this.formBuilder.control(null, Validators.required),
-				aggregate: this.formBuilder.control(null, Validators.required),
-				entityField: this.formBuilder.control(null, Validators.required),
-				stackedData: this.formBuilder.control('null'),
-				filters: this.formBuilder.array([])
-			}),
+			category: this.formBuilder.group({
+        diagram: this.formBuilder.group({
+          type: new FormControl<string | null>(null),
+          supportedLibraries: new FormArray([]),
+          name: new FormControl<string | null>(null),
+          diagramId: new FormControl<number | null>(null),
+          description: new FormControl<string | null>(null),
+          imageURL: new FormControl<string | null>(null),
+          isPolar: new FormControl<string | null>(null),
+          isHidden: new FormControl<string | null>(null)
+        })
+      }),
+			dataseries: new FormArray([
+        new FormGroup({
+          data: new FormGroup({
+            yaxisData: new FormGroup({
+              entity: new FormControl<string | null>(null, Validators.required),
+              yaxisAggregate: new FormControl<string | null>(null, Validators.required),
+              yaxisEntityField: new FormGroup({
+                name: new FormControl<string | null>(null),
+                type: new FormControl<string | null>(null)
+              }),
+            }),
+            xaxisData: new FormArray([
+              new FormGroup({
+                xaxisEntityField: new FormGroup({
+                  name: new FormControl<string | null>(null),
+                  type: new FormControl<string | null>(null)
+                })
+              })
+            ]),
+            filters: new FormArray([
+              new FormGroup({
+                groupFilters: new FormArray([
+                  new FormGroup({
+                    field: new FormGroup({
+                      name: new FormControl<string | null>(null),
+                      type: new FormControl<string | null>(null)
+                    }),
+                    type: new FormControl<string | null>(null),
+                    values: new FormArray([])
+                  })
+                ]),
+                op: new FormControl<string | null>(null)
+              })
+            ])
+          }),
+          chartProperties: new FormGroup({
+            chartType: new FormControl<string | null>(null),
+            dataseriesColor: new FormControl<string | null>(null),
+            dataseriesName: new FormControl<string | null>(null),
+            stacking: new FormControl<'null' | 'normal' | 'percent' | 'stream' | 'overlap'>('null', Validators.required),
+          }),
+        })
+      ]),
+        // this.formBuilder.group({}),
 			appearance: this.formBuilder.group({
 				chartAppearance: this.formBuilder.group({
 					generalOptions: this.formBuilder.group({
-						visualisationLibrary: this.formBuilder.control("highCharts", Validators.required),
+						visualisationLibrary: this.formBuilder.control('HighCharts', Validators.required),
 						resultsLimit: this.formBuilder.control(30 as number, [Validators.required, Validators.min(1)]),
 						orderBy: this.formBuilder.control(null),
 					}),
@@ -352,30 +404,17 @@ export class DashboardComponent implements OnInit {
 	submitTest() {
 		console.log("SUBMIT this form:", this.formGroup.value);
 
-		const cloneValue = this.formGroup.value;
-		const finalValue = this.makeChangesToForm(cloneValue);
+    this.dynamicFormHandlingService.submitForm();
 
-		// return;
-		this.formSchemaObject = finalValue;
+    const data: ChartTableModalContext = {
+      chartObj: this.dynamicFormHandlingService.ChartObject,
+      tableObj: this.dynamicFormHandlingService.TableObject,
+      rawChartDataObj: this.dynamicFormHandlingService.RawChartDataObject,
+      rawDataObj: this.dynamicFormHandlingService.RawDataObject
+    }
 
-		let visualisationOptions = this.appearance.get('chartAppearance')?.get('visualisationOptions')?.get('highCharts')?.value;
-
-		console.log("visualisationOptions:", visualisationOptions);
-		console.log("this.formSchemaObject:", this.formSchemaObject);
-
-		// return
-		if (this.formSchemaObject !== null && this.isFormValid)
-			this.createDataObjectsFromSchemaObject(this.formSchemaObject);
-
-    // const data: ChartTableModalContext = {
-    //   chartObj: this.dynamicFormHandlingService.ChartObject,
-    //   tableObj: this.dynamicFormHandlingService.TableObject,
-    //   rawChartDataObj: this.dynamicFormHandlingService.RawChartDataObject,
-    //   rawDataObj: this.dynamicFormHandlingService.RawDataObject
-    // }
-    //
-    // console.log(data);
-    // this.openDialog(data);
+    console.log(data);
+    this.openDialog(data);
 	}
 
 	makeChangesToForm(form: any): SCGAFormSchema {

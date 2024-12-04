@@ -166,7 +166,9 @@ export class DynamicFormHandlingService {
       this.createDataObjectsFromSchemaObject(this.formSchemaObject);
   }
 
-  public exportForm() { this.createAndDownloadJSON(this.formSchemaObject, 'chart.json'); }
+  public exportForm() {
+    this.createAndDownloadJSON(this.formSchemaObject, 'chart.json');
+  }
 
   public createAndDownloadJSON(jsonObj: SCGAFormSchema | null, filename: string) {
 

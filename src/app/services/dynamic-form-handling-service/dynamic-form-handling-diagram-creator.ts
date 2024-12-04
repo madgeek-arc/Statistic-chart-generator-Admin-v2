@@ -45,7 +45,7 @@ export class DiagramCreator {
 
 	public createChart(formObj: SCGAFormSchema): Observable<HighChartsChart | GoogleChartsChart | HighMapsMap | EChartsChart | null> {
 
-		// console.log('Form values ->', formObj);
+		console.log('Form values ->', formObj);
 		const view: ViewFormSchema = formObj.view;
 		// console.log('View ->', view);
 		const category: CategoryFormSchema = formObj.category;
@@ -53,7 +53,7 @@ export class DiagramCreator {
     const dataseries: DataseriesFormSchema[] = formObj.dataseries;
     // console.log('Dataseries ->', dataseries);
 		const appearanceOptions: AppearanceFormSchema = formObj.appearance;
-    console.log('Appearance ->', appearanceOptions);
+    // console.log('Appearance ->', appearanceOptions);
     const library: string = appearanceOptions.chartAppearance.generalOptions.visualisationLibrary;
 
 		// TODO we can make sure we dont send to the back end queries with unsupported libraries
