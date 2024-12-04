@@ -21,7 +21,6 @@ import {
 import {
   RawDataModel
 } from "../../dashboard/customise-appearance/visualisation-options/supported-libraries-service/description-rawData.model";
-import { JsonPipe } from "@angular/common";
 import { ChartExportingService } from "../../services/chart-exporting-service/chart-exporting.service";
 
 export interface ChartTableModalContext {
@@ -34,6 +33,7 @@ export interface ChartTableModalContext {
 @Component({
   selector: 'chart-table-modal',
   templateUrl: 'chart-table-modal.component.html',
+  styleUrls: ['chart-table-modal.component.scss'],
   standalone: true,
   imports: [MaterialModule, FrameModule]
 })

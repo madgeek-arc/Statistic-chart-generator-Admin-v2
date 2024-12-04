@@ -27,6 +27,10 @@ export class CustomiseAppearanceComponent implements OnInit {
 
 	constructor() { }
 
+  ngOnInit() {
+    this.visualisationLibrary.setValue('HighCharts');
+  }
+
 	get chartAppearance(): FormGroup {
 		return this.appearanceForm.get('chartAppearance') as FormGroup;
 	}
@@ -63,6 +67,4 @@ export class CustomiseAppearanceComponent implements OnInit {
 	get paginationSize(): FormControl {
 		return this.tableAppearance.get('paginationSize') as FormControl;
 	}
-
-	ngOnInit(): void { }
 }

@@ -1,6 +1,9 @@
 import { Component, ElementRef, Input, OnChanges, OnInit, SimpleChanges, ViewChild } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { UrlProviderService } from '../../services/url-provider-service/url-provider.service';
+import {
+  RawChartDataModel
+} from "../../dashboard/customise-appearance/visualisation-options/supported-libraries-service/chart-description-rawChartData.model";
 
 @Component({
   selector: 'raw-chart-data-frame',
@@ -9,7 +12,7 @@ import { UrlProviderService } from '../../services/url-provider-service/url-prov
 export class RawChartDataFrameComponent implements OnInit, OnChanges {
 
   @ViewChild('rawChartDataIframe', {static: true}) iframe: ElementRef<HTMLIFrameElement>;
-  @Input() rawChartData: Object;
+  @Input() rawChartData: RawChartDataModel | null;
   frameUrl: SafeResourceUrl;
 
   frameHeight: number;
@@ -23,18 +26,17 @@ export class RawChartDataFrameComponent implements OnInit, OnChanges {
 
     // const iframe = <HTMLIFrameElement>document.getElementById('rawChartDataIframe');
     if (this.iframe.nativeElement) {
-      window.addEventListener('message',
-        (event: any) => {
+      window.addEventListener('message', (event: any) => {
 
-          if (event.origin !== this.urlProvider.serviceURL &&
-            event.origin !== this.urlProvider.iframeURL) {
-            console.log('Untrusted message', event.origin);
-            return;
-          }
+        if (event.origin !== this.urlProvider.serviceURL &&
+          event.origin !== this.urlProvider.iframeURL) {
+          console.log('Untrusted message', event.origin);
+          return;
+        }
 
-          // console.log('Table:', event);
-          this.iframe.nativeElement.style.height = event.data + 'px';
-        });
+        // console.log('Table:', event);
+        this.iframe.nativeElement.style.height = event.data + 'px';
+      });
     }
   }
 

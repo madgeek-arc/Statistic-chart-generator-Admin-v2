@@ -1,6 +1,9 @@
 import { Component, ElementRef, Input, OnChanges, OnInit, SimpleChanges, ViewChild } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { UrlProviderService } from '../../services/url-provider-service/url-provider.service';
+import {
+  RawDataModel
+} from "../../dashboard/customise-appearance/visualisation-options/supported-libraries-service/description-rawData.model";
 
 @Component({
   selector: 'raw-data-frame',
@@ -9,7 +12,7 @@ import { UrlProviderService } from '../../services/url-provider-service/url-prov
 export class RawDataFrameComponent implements OnInit, OnChanges {
 
   @ViewChild('rawDataIframe', {static: true}) iframe: ElementRef;
-  @Input() rawData: Object;
+  @Input() rawData: RawDataModel | null;
   frameUrl: SafeResourceUrl;
 
   frameHeight: number;

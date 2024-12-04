@@ -1,6 +1,9 @@
 import { Component, OnInit, SecurityContext, Input, OnChanges, SimpleChanges, ElementRef, ViewChild } from '@angular/core';
 import { DomSanitizer, SafeUrl, SafeResourceUrl } from '@angular/platform-browser';
 import { UrlProviderService } from '../../services/url-provider-service/url-provider.service';
+import {
+  GoogleChartsTable
+} from "../../dashboard/customise-appearance/visualisation-options/supported-libraries-service/chart-description-GoogleCharts.model";
 
 @Component({
   selector: 'table-frame',
@@ -10,7 +13,7 @@ import { UrlProviderService } from '../../services/url-provider-service/url-prov
 export class TableFrameComponent implements OnInit, OnChanges {
 
   @ViewChild('tableIframe', {static:true}) iframe: ElementRef;
-  @Input() table: Object;
+  @Input() table: GoogleChartsTable | null;
   frameUrl: SafeResourceUrl;
 
   frameHeight: number;
