@@ -12,9 +12,8 @@
 				<div style="flex-grow: 1;">
 					<mat-form-field>
 						<mat-label>Visualisation Library</mat-label>
-						<mat-select [formControl]="this.visualisationLibrary">
-							<mat-option disabled="true">Select Library</mat-option>
-							<mat-option [value]="visualisationLibrary.value" *ngFor="let visualisationLibrary of visualisationLibraryList">
+						<mat-select [formControl]="this.visualisationLibrary" [placeholder]="'Select Library'">
+							<mat-option *ngFor="let visualisationLibrary of visualisationLibraryList" [value]="visualisationLibrary.value" >
 								{{visualisationLibrary.name}}
 							</mat-option>
 						</mat-select>
@@ -50,10 +49,10 @@
 			<mat-divider></mat-divider>
 			<br>
 
-			<ng-container *ngIf="this.visualisationLibrary.value === 'highCharts'">
+			<ng-container *ngIf="this.visualisationLibrary.value === 'HighCharts'">
 				<app-high-charts [highChartsForm]="this.highCharts"></app-high-charts>
 			</ng-container>
-			<ng-container *ngIf="this.visualisationLibrary.value === 'googleCharts'">
+			<ng-container *ngIf="this.visualisationLibrary.value === 'GoogleCharts'">
 				<app-google-charts></app-google-charts>
 			</ng-container>
 			<ng-container *ngIf="this.visualisationLibrary.value === 'eCharts'">

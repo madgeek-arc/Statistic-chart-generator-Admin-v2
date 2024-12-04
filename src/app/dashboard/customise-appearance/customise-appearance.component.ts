@@ -15,8 +15,8 @@ export class CustomiseAppearanceComponent implements OnInit {
 	// TODO
 	// comes from backend!
 	protected visualisationLibraryList = [
-		{ name: 'HighCharts', value: 'highCharts' },
-		{ name: 'GoogleCharts', value: 'googleCharts' },
+		{ name: 'HighCharts', value: 'HighCharts' },
+		{ name: 'GoogleCharts', value: 'GoogleCharts' },
 		{ name: 'eCharts', value: 'eCharts' }
 	];
 
@@ -26,6 +26,10 @@ export class CustomiseAppearanceComponent implements OnInit {
 	];
 
 	constructor() { }
+
+  ngOnInit() {
+    this.visualisationLibrary.setValue('HighCharts');
+  }
 
 	get chartAppearance(): FormGroup {
 		return this.appearanceForm.get('chartAppearance') as FormGroup;
@@ -63,6 +67,4 @@ export class CustomiseAppearanceComponent implements OnInit {
 	get paginationSize(): FormControl {
 		return this.tableAppearance.get('paginationSize') as FormControl;
 	}
-
-	ngOnInit(): void { }
 }

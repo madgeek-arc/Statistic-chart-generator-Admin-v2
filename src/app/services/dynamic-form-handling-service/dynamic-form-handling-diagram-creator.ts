@@ -1,27 +1,39 @@
 import { Observable, of } from 'rxjs';
-// import {SCGAFormSchema, ViewFormSchema, CategoryFormSchema, DataseriesFormSchema, AppearanceFormSchema } from '../../chart-creator/chart-form-schema.classes';
-// import {GoogleChartsTable, GoogleChartsChart } from '../supported-libraries-service/chart-description-GoogleCharts.model';
-// import {ChartInfo, Query} from '../../chart-creator/chart-query.model';
-// import {HighChartsChart} from '../supported-libraries-service/chart-description-HighCharts.model';
-// import {HighMapsMap, HMSeriesInfo} from '../supported-libraries-service/chart-description-HighMaps.model';
-// import {DiagramCategoryService} from '../diagram-category-service/diagram-category.service';
-// import {ISupportedMap} from '../supported-chart-types-service/supported-chart-types.service';
-// import {EChartsChart, ECToolboxFeature} from '../supported-libraries-service/chart-description-eCharts.model';
-// import {RawChartDataModel} from '../supported-libraries-service/chart-description-rawChartData.model';
-// import {QueryInfo, RawDataModel} from '../supported-libraries-service/description-rawData.model';
-// import type { EChartOption } from 'echarts';
 import { Color, ColorType } from 'highcharts';
-import { DiagramCategoryService } from './customise-appearance/visualisation-options/diagram-category-service/diagram-category.service';
-import { AppearanceFormSchema, CategoryFormSchema, DataseriesFormSchema, SCGAFormSchema, ViewFormSchema } from './customise-appearance/visualisation-options/chart-form-schema.classes';
-import { HCLegend, HighChartsChart } from './customise-appearance/visualisation-options/supported-libraries-service/chart-description-HighCharts.model';
-import { GoogleChartsChart, GoogleChartsTable } from './customise-appearance/visualisation-options/supported-libraries-service/chart-description-GoogleCharts.model';
-import { HMSeriesInfo, HighMapsMap } from './customise-appearance/visualisation-options/supported-libraries-service/chart-description-HighMaps.model';
-import { ECToolboxFeature, EChartsChart } from './customise-appearance/visualisation-options/supported-libraries-service/chart-description-eCharts.model';
-import { ChartInfo } from './customise-appearance/visualisation-options/chart-query.model';
-import { RawChartDataModel } from './customise-appearance/visualisation-options/supported-libraries-service/chart-description-rawChartData.model';
-import { QueryInfo, RawDataModel } from './customise-appearance/visualisation-options/supported-libraries-service/description-rawData.model';
-import { EChartOption } from 'echarts';
-import { ISupportedMap } from '../services/chart-provider/chart-provider.service';
+import {
+  HighChartsChart
+} from "../../dashboard/customise-appearance/visualisation-options/supported-libraries-service/chart-description-HighCharts.model";
+import {
+  DiagramCategoryService
+} from "../../dashboard/customise-appearance/visualisation-options/diagram-category-service/diagram-category.service";
+import {
+  AppearanceFormSchema,
+  CategoryFormSchema, DataseriesFormSchema,
+  SCGAFormSchema,
+  ViewFormSchema
+} from "../../dashboard/customise-appearance/visualisation-options/chart-form-schema.classes";
+import {
+  GoogleChartsChart, GoogleChartsTable
+} from "../../dashboard/customise-appearance/visualisation-options/supported-libraries-service/chart-description-GoogleCharts.model";
+import {
+  HighMapsMap, HMSeriesInfo
+} from "../../dashboard/customise-appearance/visualisation-options/supported-libraries-service/chart-description-HighMaps.model";
+import {
+  EChartsChart, ECToolboxFeature
+} from "../../dashboard/customise-appearance/visualisation-options/supported-libraries-service/chart-description-eCharts.model";
+import { ChartInfo } from "../../dashboard/customise-appearance/visualisation-options/chart-query.model";
+import {
+  RawChartDataModel
+} from "../../dashboard/customise-appearance/visualisation-options/supported-libraries-service/chart-description-rawChartData.model";
+import {
+  QueryInfo,
+  RawDataModel
+} from "../../dashboard/customise-appearance/visualisation-options/supported-libraries-service/description-rawData.model";
+import { EChartOption } from "echarts";
+import {
+  ISupportedMap
+} from "../../dashboard/customise-appearance/visualisation-options/supported-chart-types-service/supported-chart-types.service";
+
 
 export class DiagramCreator {
 
@@ -33,13 +45,16 @@ export class DiagramCreator {
 
 	public createChart(formObj: SCGAFormSchema): Observable<HighChartsChart | GoogleChartsChart | HighMapsMap | EChartsChart | null> {
 
-		console.log("TEST 1:", formObj);
+		// console.log('Form values ->', formObj);
 		const view: ViewFormSchema = formObj.view;
-		console.log("TEST 2:", view);
+		// console.log('View ->', view);
 		const category: CategoryFormSchema = formObj.category;
-		const dataseries: DataseriesFormSchema[] = formObj.dataseries;
+    // console.log('Category ->', category);
+    const dataseries: DataseriesFormSchema[] = formObj.dataseries;
+    // console.log('Dataseries ->', dataseries);
 		const appearanceOptions: AppearanceFormSchema = formObj.appearance;
-		const library: string = appearanceOptions.chartAppearance.generalOptions.library;
+    console.log('Appearance ->', appearanceOptions);
+    const library: string = appearanceOptions.chartAppearance.generalOptions.visualisationLibrary;
 
 		// TODO we can make sure we dont send to the back end queries with unsupported libraries
 		// ----------------------
@@ -47,7 +62,6 @@ export class DiagramCreator {
 		// (data: Array<string>) =>  {
 		//     if (data.includes(library)) {
 
-		console.log('Appearance', appearanceOptions);
 		switch (library) {
 
 			case ('HighCharts'): {
@@ -106,7 +120,7 @@ export class DiagramCreator {
 		const category: CategoryFormSchema = formObj.category;
 		const dataseries: DataseriesFormSchema[] = formObj.dataseries;
 		const appearanceOptions: AppearanceFormSchema = formObj.appearance;
-		const library: string = appearanceOptions.chartAppearance.generalOptions.library;
+		const library: string = appearanceOptions.chartAppearance.generalOptions.visualisationLibrary;
 
 		const rawChartDataModel = new RawChartDataModel(library);
 		if (appearanceOptions.chartAppearance.generalOptions && appearanceOptions.chartAppearance.generalOptions.orderByAxis !== null) {
@@ -491,7 +505,7 @@ export class DiagramCreator {
 		dataseries: DataseriesFormSchema[], appearanceOptions: AppearanceFormSchema): HighMapsMap {
 
 		const mapObj = new HighMapsMap();
-		mapObj.library = appearanceOptions.chartAppearance.generalOptions.library;
+		mapObj.library = appearanceOptions.chartAppearance.generalOptions.visualisationLibrary;
 
 		// tslint:disable-next-line:max-line-length
 		if (appearanceOptions.chartAppearance.highmapsAppearanceOptions !== undefined && appearanceOptions.chartAppearance.highmapsAppearanceOptions !== null) {

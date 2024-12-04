@@ -1,4 +1,3 @@
-import { CdkStepper } from '@angular/cdk/stepper';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatStepper } from '@angular/material/stepper';
@@ -6,7 +5,6 @@ import { Profile } from '../services/profile-provider/profile-provider.service';
 import { SCGAFormSchema } from './customise-appearance/visualisation-options/chart-form-schema.classes';
 import { BehaviorSubject, first, forkJoin } from 'rxjs';
 import { DiagramCategoryService } from './customise-appearance/visualisation-options/diagram-category-service/diagram-category.service';
-import { DiagramCreator } from './dynamic-form-handling-diagram-creator';
 import { HighChartsChart } from './customise-appearance/visualisation-options/supported-libraries-service/chart-description-HighCharts.model';
 import { GoogleChartsChart, GoogleChartsTable } from './customise-appearance/visualisation-options/supported-libraries-service/chart-description-GoogleCharts.model';
 import { HighMapsMap } from './customise-appearance/visualisation-options/supported-libraries-service/chart-description-HighMaps.model';
@@ -15,6 +13,12 @@ import { RawChartDataModel } from './customise-appearance/visualisation-options/
 import { RawDataModel } from './customise-appearance/visualisation-options/supported-libraries-service/description-rawData.model';
 import { ChartExportingService } from '../services/chart-exporting-service/chart-exporting.service';
 import { ChartLoadingService } from '../services/chart-loading-service/chart-loading.service';
+import { MatDialog } from "@angular/material/dialog";
+import {
+  ChartTableModalComponent, ChartTableModalContext
+} from "../modals/chart-table-modal/chart-table-modal.component";
+import { DynamicFormHandlingService } from "../services/dynamic-form-handling-service/dynamic-form-handling.service";
+import { DiagramCreator } from "../services/dynamic-form-handling-service/dynamic-form-handling-diagram-creator";
 
 @Component({
 	selector: 'app-dashboard',
@@ -61,7 +65,9 @@ export class DashboardComponent implements OnInit {
 		private formBuilder: FormBuilder,
 		private diagramcategoryService: DiagramCategoryService,
 		private chartExportingService: ChartExportingService,
-		private chartLoadingService: ChartLoadingService
+		private chartLoadingService: ChartLoadingService,
+    public dynamicFormHandlingService: DynamicFormHandlingService,
+    public dialog: MatDialog
 	) {
 		this._diagramCreator = new DiagramCreator(diagramcategoryService);
 		this._formSchemaObject = new BehaviorSubject(null as any);
@@ -296,7 +302,7 @@ export class DashboardComponent implements OnInit {
 
 	updateDefaultFormGroupValues(): void {
 		this.appearance.get('tableAppearance')?.get('paginationSize')?.setValue(30);
-		this.appearance.get('chartAppearance')?.get('generalOptions')?.get('visualisationLibrary')?.setValue("highCharts");
+		this.appearance.get('chartAppearance')?.get('generalOptions')?.get('visualisationLibrary')?.setValue('HighCharts');
 		this.appearance.get('chartAppearance')?.get('generalOptions')?.get('resultsLimit')?.setValue(30);
 		this.appearance.get('chartAppearance')?.get('visualisationOptions')?.get('highCharts')?.get('chartArea')?.get('borderColor')?.setValue("#335cad");
 		this.appearance.get('chartAppearance')?.get('visualisationOptions')?.get('highCharts')?.get('title')?.get('titleColor')?.setValue('#333333');
@@ -325,7 +331,6 @@ export class DashboardComponent implements OnInit {
 	private changeDataObjects(chartObject: HighChartsChart | GoogleChartsChart | HighMapsMap | EChartsChart,
 		tableObject: GoogleChartsTable, rawChartDataObject: RawChartDataModel, rawDataObject: RawDataModel) {
 
-		console.log("TEST");
 		this._chartObject = chartObject;
 		this.chartExportingService.changeChartUrl(chartObject);
 
@@ -362,6 +367,15 @@ export class DashboardComponent implements OnInit {
 		if (this.formSchemaObject !== null && this.isFormValid)
 			this.createDataObjectsFromSchemaObject(this.formSchemaObject);
 
+    // const data: ChartTableModalContext = {
+    //   chartObj: this.dynamicFormHandlingService.ChartObject,
+    //   tableObj: this.dynamicFormHandlingService.TableObject,
+    //   rawChartDataObj: this.dynamicFormHandlingService.RawChartDataObject,
+    //   rawDataObj: this.dynamicFormHandlingService.RawDataObject
+    // }
+    //
+    // console.log(data);
+    // this.openDialog(data);
 	}
 
 	makeChangesToForm(form: any): SCGAFormSchema {
@@ -428,13 +442,27 @@ export class DashboardComponent implements OnInit {
 				// return;
 
 				if (chartObject && tableObject && rawChartDataObject && rawDataObject) {
-					return this.changeDataObjects(chartObject, tableObject, rawChartDataObject, rawDataObject)
+					this.changeDataObjects(chartObject, tableObject, rawChartDataObject, rawDataObject)
+          const data: ChartTableModalContext = {
+            chartObj: chartObject,
+            tableObj: tableObject,
+            rawChartDataObj: rawChartDataObject,
+            rawDataObj: rawDataObject
+          }
+
+          console.log(data);
+          this.openDialog(data);
 				}
-				return;
+				// return;
 			});
-		return;
 	}
 
-
+  openDialog(data: ChartTableModalContext) {
+    this.dialog.open(ChartTableModalComponent, {
+      data: data,
+      minWidth: '75svw',
+      minHeight: '80svh'
+    });
+  }
 
 }

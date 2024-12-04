@@ -1,0 +1,30 @@
+
+.content {
+    display: block;
+    width: 100%;
+    font-size: 1em;
+    line-height: 1.4;
+    padding: 1.5rem;
+    background: #fff;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  margin: 50px 100px;
+}
+
+.actions {
+  background: #f9fafb;
+  padding: 1rem;
+  border-top: 1px solid rgba(34,36,38,.15);
+  text-align: right;
+  display: flex;
+}
+
+.label {
+  font-size: 1.2rem;
+  background: none #fff;
+  margin-left: auto;
+}

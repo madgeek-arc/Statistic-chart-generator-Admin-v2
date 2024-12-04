@@ -4,6 +4,24 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { catchError, distinctUntilChanged, first } from 'rxjs/operators';
 import { UrlProviderService } from '../url-provider-service/url-provider.service';
 import { ErrorHandlerService } from 'src/app/dashboard/customise-appearance/visualisation-options/error-handler-service/error-handler.service';
+import {
+  HighChartsChart
+} from "../../dashboard/customise-appearance/visualisation-options/supported-libraries-service/chart-description-HighCharts.model";
+import {
+  GoogleChartsChart, GoogleChartsTable
+} from "../../dashboard/customise-appearance/visualisation-options/supported-libraries-service/chart-description-GoogleCharts.model";
+import {
+  HighMapsMap
+} from "../../dashboard/customise-appearance/visualisation-options/supported-libraries-service/chart-description-HighMaps.model";
+import {
+  EChartsChart
+} from "../../dashboard/customise-appearance/visualisation-options/supported-libraries-service/chart-description-eCharts.model";
+import {
+  RawChartDataModel
+} from "../../dashboard/customise-appearance/visualisation-options/supported-libraries-service/chart-description-rawChartData.model";
+import {
+  RawDataModel
+} from "../../dashboard/customise-appearance/visualisation-options/supported-libraries-service/description-rawData.model";
 
 type PostTinyUrlCallback = (shortUrl: string) => void;
 
@@ -18,7 +36,7 @@ export class ShortenUrlResponse {
 export class ChartExportingService {
 
 	// Chart Url
-	private _chartUrl = new BehaviorSubject<string>(null as any);
+	private _chartUrl = new BehaviorSubject<string | null>(null);
 	private _chartTinyUrl = new BehaviorSubject<string>(null as any);
 	get chartTinyUrl$() { return this._chartTinyUrl.asObservable(); }
 	// Chart Load Url
@@ -52,31 +70,37 @@ export class ChartExportingService {
 	constructor(private http: HttpClient, private errorHandler: ErrorHandlerService, private urlProvider: UrlProviderService) {
 
 		// Chart Url Loader
-		this._chartUrl.pipe(distinctUntilChanged()).subscribe(
-			(chartUrl: string) => this.handleStringURL(chartUrl, this._loadingChartTinyUrl, this._chartTinyUrl), // success path
-			error => this.errorHandler.handleError(error) // error path
-		);
+		this._chartUrl.pipe(distinctUntilChanged()).subscribe({
+      next: chartUrl => {
+        this.handleStringURL(chartUrl, this._loadingChartTinyUrl, this._chartTinyUrl)
+      },
+      error: err =>  {
+        this.errorHandler.handleError(err) // error path
+      }
+    });
 
 		// Table Url Loader
 		this._tableUrl.pipe(distinctUntilChanged()).subscribe(
-			(tableUrl: string) => this.handleStringURL(tableUrl, this._loadingTableTinyUrl, this._tableTinyUrl), // success path 
+			(tableUrl: string) => this.handleStringURL(tableUrl, this._loadingTableTinyUrl, this._tableTinyUrl), // success path
 			error => this.errorHandler.handleError(error) // error path
 		);
 
 		// Raw Chart Data Url Loader
 		this._rawChartDataUrl.pipe(distinctUntilChanged()).subscribe(
-			(rawChartDataUrl: string) => this.handleStringURL(rawChartDataUrl, this._loadingRawChartDataTinyUrl, this._rawChartDataTinyUrl), // success path  
+			(rawChartDataUrl: string) => this.handleStringURL(rawChartDataUrl, this._loadingRawChartDataTinyUrl, this._rawChartDataTinyUrl), // success path
 			error => this.errorHandler.handleError(error) // error path
 		);
 
 		// Raw Data Url Loader
 		this._rawDataUrl.pipe(distinctUntilChanged()).subscribe(
-			(rawDataUrl: string) => this.handleStringURL(rawDataUrl, this._loadingRawDataTinyUrl, this._rawDataTinyUrl), // success path  
+			(rawDataUrl: string) => this.handleStringURL(rawDataUrl, this._loadingRawDataTinyUrl, this._rawDataTinyUrl), // success path
 			error => this.errorHandler.handleError(error) // error path
 		);
 	}
 
-	private handleStringURL(stringURL: string, _loadingTinyUrl: BehaviorSubject<boolean>, _tinyUrl: BehaviorSubject<string>) { stringURL ? this.postTinyUrl(stringURL, _loadingTinyUrl, _tinyUrl) : _tinyUrl.next(null as any); }
+	private handleStringURL(stringURL: string | null, _loadingTinyUrl: BehaviorSubject<boolean>, _tinyUrl: BehaviorSubject<string>) {
+    stringURL ? this.postTinyUrl(stringURL, _loadingTinyUrl, _tinyUrl) : _tinyUrl.next(null as any);
+  }
 
 	private postTinyUrl(chartUrl: string, loader: BehaviorSubject<boolean>, tinyUrlSubject: BehaviorSubject<string>) {
 
@@ -111,10 +135,10 @@ export class ChartExportingService {
 			);
 	}
 
-	public changeChartUrl(chartObject: Object) {
+	public changeChartUrl(chartObject: HighChartsChart | GoogleChartsChart | HighMapsMap | EChartsChart | null) {
 
 		if (!chartObject) {
-			this._chartUrl.next(null as any);
+			this._chartUrl.next(null);
 			return;
 		}
 
@@ -122,7 +146,7 @@ export class ChartExportingService {
 		this._chartUrl.next(this.urlProvider.createChartURL(chartObject));
 	}
 
-	public changeTableUrl(tableObject: Object) {
+	public changeTableUrl(tableObject: GoogleChartsTable | null) {
 
 		if (!tableObject) {
 			this._tableUrl.next(null as any)
@@ -132,7 +156,7 @@ export class ChartExportingService {
 		this._tableUrl.next(this.urlProvider.createTableURL(tableObject));
 	}
 
-	public changeRawChartDataUrl(rawChartDataObject: Object) {
+	public changeRawChartDataUrl(rawChartDataObject: RawChartDataModel | null) {
 
 		if (!rawChartDataObject) {
 			this._rawChartDataUrl.next(null as any)
@@ -142,7 +166,7 @@ export class ChartExportingService {
 		this._rawChartDataUrl.next(this.urlProvider.createRawChartDataUrl(rawChartDataObject));
 	}
 
-	public changeRawDataUrl(rawDataObject: Object) {
+	public changeRawDataUrl(rawDataObject: RawDataModel | null) {
 
 		if (!rawDataObject) {
 			this._rawDataUrl.next(null as any)
