@@ -115,20 +115,20 @@ export class DynamicFormHandlingService {
   //   this.chartExportingService.changeRawDataUrl(this._rawDataObject);
   // }
 
-  // loadForm(event: any) {
-  //   // console.log('Load Event', event);
-  //   this._loadFormObjectFile = null;
-  //
-  //   if (!(event === null || event === undefined)) {
-  //     const fr: FileReader = new FileReader();
-  //
-  //     fr.onload = () => this._loadFormObject = JSON.parse(<string>fr.result)
-  //     fr.onloadstart = () => this.chartLoadingService.chartLoadingStatus = true
-  //     fr.onloadend = () => this._loadFormObjectFile = event.target.files[0]
-  //
-  //     fr.readAsText(event.target.files[0]);
-  //   }
-  // }
+  loadForm(event: any) {
+    // console.log('Load Event', event);
+    this._loadFormObjectFile = null;
+
+    if (!(event === null || event === undefined)) {
+      const fr: FileReader = new FileReader();
+
+      fr.onload = () => this._loadFormObject = JSON.parse(<string>fr.result)
+      fr.onloadstart = () => this.chartLoadingService.chartLoadingStatus = true
+      fr.onloadend = () => this._loadFormObjectFile = event.target.files[0]
+
+      fr.readAsText(event.target.files[0]);
+    }
+  }
 
   resetLoadForm() {
     this._loadFormObjectFile = null;

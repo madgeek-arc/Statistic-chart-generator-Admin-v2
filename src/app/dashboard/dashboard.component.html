@@ -8,14 +8,13 @@
 		<mat-stepper #stepper linear (selectionChange)="onStepChange($event)">
 			<mat-step [stepControl]="this.view">
 				<ng-template matStepLabel>
-					<span style="display: block;">
-						{{viewSelectionLabel}}
-					</span>
-					<span *ngIf="true" style="display: block;">
-						{{selectedView}}
-					</span>
+					<span style="display: block;">{{viewSelectionLabel}}</span>
+					<span *ngIf="true" style="display: block;">{{selectedView}}</span>
 				</ng-template>
-				<app-view-selector (showViewSelection)="updateStepper($event)" [viewForm]="this.testingView" [profileControl]="this.profile"></app-view-selector>
+				<app-view-selector
+          (showViewSelection)="updateStepper($event)" [viewForm]="this.testingView" [profileControl]="this.profile">
+        </app-view-selector>
+        <pre>{{ dynamicFormHandlingService.loadFormObject | json }}</pre>
 			</mat-step>
 			<mat-step [stepControl]="this.category">
 				<ng-template matStepLabel>
