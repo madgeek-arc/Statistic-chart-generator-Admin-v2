@@ -19,6 +19,33 @@
               </li>
               <li class="uk-animation-fade">
                 <a class="uk-button">Load</a>
+                <div uk-dropdown="mode: click">
+                  <input id="fileElem" type="file" style="display:none" accept=".json" (change)="loadChart($event)">
+                  <button class="btn btn-block btn-outline-secondary " type="button" (click)="initiateFilePicker()">
+                    <!-- TODO chart loading status maybe async -->
+                    <div class="d-inline-flex flex-row justify-content-around">
+                      <div class="mr-2">
+                        <span *ngIf="chartLoadingService.chartLoadingStatus; else showPlusSign"
+                              class="spinner-border-sm" role="status" aria-hidden="true"></span>
+                        <ng-template #showPlusSign>
+                          <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="currentColor"
+                               class="bi bi-plus-square" viewBox="0 0 16 16">
+                            <path
+                              d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+                          </svg>
+                        </ng-template>
+                      </div>
+
+                      <div class="ml-2" style="font-size: 1.1em;">
+                        {{ ((dynamicFormHandlingService.loadFormObjectFile !== null) ? dynamicFormHandlingService.loadFormObjectFile.name : 'Select File') | slice:0:20 }}
+                      </div>
+                    </div>
+                  </button>
+                  <div *ngIf="chartLoadingService.isChartLoaded">
+                    <hr/>
+                    <p class="text-center">Chart model is loaded!</p>
+                  </div>
+                </div>
               </li>
               <li class="uk-animation-fade">
                 <a class="uk-button" (click)="saveChart()">Save</a>

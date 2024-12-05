@@ -109,15 +109,18 @@ export class CategorySelectorComponent implements OnInit {
 
 	moveToNextStep(event: ISupportedCategory): void {
 		if (event.name) {
-      this.categoryForm.get('diagram.supportedLibraries')?.reset();
+      (this.categoryForm.get('diagram.supportedLibraries') as FormArray).clear();
+
       for (let i = 0; i < event.supportedLibraries.length; i++) {
         (this.categoryForm.get('diagram.supportedLibraries') as FormArray).push(new FormControl<string | null>(null));
       }
       this.categoryForm.get('diagram')?.setValue(event);
+
       this.showCategorySelection.emit({
 				name: event.name,
 				step: "category"
 			});
+
 		} else {
 			this.showCategorySelection.emit({
 				name: "PlaceHolder Category",
@@ -125,6 +128,7 @@ export class CategorySelectorComponent implements OnInit {
 			})
 		}
 	}
+
 }
 
 export interface ISupportedCategory {

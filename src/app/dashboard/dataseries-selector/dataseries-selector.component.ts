@@ -1,9 +1,7 @@
-import { NestedTreeControl } from '@angular/cdk/tree';
 import { HttpClient } from '@angular/common/http';
 import { Component, Input, OnInit } from '@angular/core';
-import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup, FormGroupDirective, Validators } from '@angular/forms';
 import { MatSelectChange } from '@angular/material/select';
-import { MatTreeNestedDataSource } from '@angular/material/tree';
 import { BehaviorSubject, Observable, distinctUntilChanged, filter, first, forkJoin } from 'rxjs';
 import { EntityProviderService } from 'src/app/services/entity-provider/entity-provider.service';
 import { Profile } from 'src/app/services/profile-provider/profile-provider.service';
@@ -17,7 +15,6 @@ import { CachedEntityNode, EntityNode } from '../helper-components/select-attrib
 })
 export class DataseriesSelectorComponent implements OnInit {
 
-	@Input('dataseriesForm') dataseriesForm: FormArray;
 	@Input('selectedView') selectedView: FormControl = new FormControl();
 
 	// dataSource = new MatTreeNestedDataSource<EntityNode>();
@@ -27,6 +24,7 @@ export class DataseriesSelectorComponent implements OnInit {
 	entities: Array<string> = [];
 	selectedEntity: string = '';
 	entitySelection: string = 'Select Entity';
+  form: FormArray;
 
 	openedPanels: Array<number> = [];
 
@@ -72,60 +70,64 @@ export class DataseriesSelectorComponent implements OnInit {
 		private http: HttpClient,
 		private entityProvider: EntityProviderService,
 		private urlProvider: UrlProviderService,
-		private formBuilder: FormBuilder
+		private formBuilder: FormBuilder,
+    private rootFormGroup: FormGroupDirective
 	) { }
 
 	hasChild = (_: number, node: EntityNode) => !!node.relations && node.relations.length > 0;
 
+  ngOnInit(): void {
+    this.selectedView.valueChanges.subscribe((profile: Profile) => {
+      if (profile) {
+        this.entityProvider.getAvailableEntities(profile).pipe(first()).subscribe((entityNames: Array<string>) => {
+          console.log("Entity Names:", entityNames);
+          this.entities = entityNames;
+
+          let entityArray = entityNames.map((entity: string) => {
+            return this.getEntityRelations(profile, entity).pipe(first());
+          });
+
+          forkJoin(entityArray).subscribe((cachedEntityNodes: CachedEntityNode[]) => {
+            console.log("Cached Entity Nodes:", cachedEntityNodes);
+
+            for (let i = 0; i < entityNames.length; i++) {
+              this.entityMap.set(entityNames[i], cachedEntityNodes[i]);
+            }
+
+            console.log("Cached Entity Map:", this.entityMap);
+
+            if (this.entityMap.size > 0) {
+              this._entityMap$.next(this.entityMap);
+            }
+          });
+        })
+      }
+    });
+
+    this.form = this.rootFormGroup.control.get('dataseries') as FormArray;
+    console.log(this.form);
+  }
+
 
 	entity(index: number): FormControl {
-    return this.dataseriesForm.controls[index].get('data.yaxisData.entity') as FormControl;
+    return this.form.controls[index].get('data.yaxisData.entity') as FormControl;
 	}
 
 	aggregate(index: number): FormControl {
-		return this.dataseriesForm.controls[index].get('data.yaxisData.yaxisAggregate') as FormControl;
+		return this.form.controls[index].get('data.yaxisData.yaxisAggregate') as FormControl;
 	}
 
 	entityField(index: number): FormControl {
     // FIXME: I return fist control (controls[0]), this is bad and should be fixed!
-    return (this.dataseriesForm.controls[index].get('data.xaxisData') as FormArray).controls[0].get('xaxisEntityField.name') as FormControl;
+    return (this.form.controls[index].get('data.xaxisData') as FormArray).controls[0].get('xaxisEntityField.name') as FormControl;
 	}
 
 	stackedData(index: number): FormControl {
-    return this.dataseriesForm.controls[index].get('chartProperties.stacking') as FormControl;
+    return this.form.controls[index].get('chartProperties.stacking') as FormControl;
 	}
 
 	filters(index: number): FormArray {
-    return this.dataseriesForm.controls[index].get('data.filters') as FormArray;
-	}
-
-	ngOnInit(): void {
-		this.selectedView.valueChanges.subscribe((profile: Profile) => {
-			if (profile) {
-				this.entityProvider.getAvailableEntities(profile).pipe(first()).subscribe((entityNames: Array<string>) => {
-					console.log("Entity Names:", entityNames);
-					this.entities = entityNames;
-
-					let entityArray = entityNames.map((entity: string) => {
-						return this.getEntityRelations(profile, entity).pipe(first());
-					});
-
-					forkJoin(entityArray).subscribe((cachedEntityNodes: CachedEntityNode[]) => {
-						console.log("Cached Entity Nodes:", cachedEntityNodes);
-
-						for (let i = 0; i < entityNames.length; i++) {
-							this.entityMap.set(entityNames[i], cachedEntityNodes[i]);
-						}
-
-						console.log("Cached Entity Map:", this.entityMap);
-
-						if (this.entityMap.size > 0) {
-							this._entityMap$.next(this.entityMap);
-						}
-					});
-				})
-			}
-		});
+    return this.form.controls[index].get('data.filters') as FormArray;
 	}
 
 	private getEntityRelations(profile: Profile, entity: string): Observable<CachedEntityNode> {
@@ -208,7 +210,7 @@ export class DataseriesSelectorComponent implements OnInit {
 	}
 
 	testLog(): void {
-		console.log("this.dataseriesForm.value:", this.dataseriesForm.value);
+		console.log("this.dataseriesForm.value:", this.form.value);
 	}
 }
 
