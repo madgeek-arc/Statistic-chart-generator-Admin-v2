@@ -260,7 +260,7 @@ export class DashboardComponent implements OnInit {
                       type: new FormControl<string | null>(null)
                     }),
                     type: new FormControl<string | null>(null),
-                    values: new FormArray([])
+                    values: new FormControl([]) // TODO: At model the control is set as array!!! Check for compatibility issues
                   })
                 ]),
                 op: new FormControl<string | null>(null)
@@ -273,7 +273,48 @@ export class DashboardComponent implements OnInit {
             dataseriesName: new FormControl<string | null>(null),
             stacking: new FormControl<'null' | 'normal' | 'percent' | 'stream' | 'overlap'>('null', Validators.required),
           }),
-        })
+        }),
+        // new FormGroup({
+        //   data: new FormGroup({
+        //     yaxisData: new FormGroup({
+        //       entity: new FormControl<string | null>(null, Validators.required),
+        //       yaxisAggregate: new FormControl<string | null>(null, Validators.required),
+        //       yaxisEntityField: new FormGroup({
+        //         name: new FormControl<string | null>(null),
+        //         type: new FormControl<string | null>(null)
+        //       }),
+        //     }),
+        //     xaxisData: new FormArray([
+        //       new FormGroup({
+        //         xaxisEntityField: new FormGroup({
+        //           name: new FormControl<string | null>(null),
+        //           type: new FormControl<string | null>(null)
+        //         })
+        //       })
+        //     ]),
+        //     filters: new FormArray([
+        //       new FormGroup({
+        //         groupFilters: new FormArray([
+        //           new FormGroup({
+        //             field: new FormGroup({
+        //               name: new FormControl<string | null>(null),
+        //               type: new FormControl<string | null>(null)
+        //             }),
+        //             type: new FormControl<string | null>(null),
+        //             values: new FormArray([])
+        //           })
+        //         ]),
+        //         op: new FormControl<string | null>(null)
+        //       })
+        //     ])
+        //   }),
+        //   chartProperties: new FormGroup({
+        //     chartType: new FormControl<string | null>(null),
+        //     dataseriesColor: new FormControl<string | null>(null),
+        //     dataseriesName: new FormControl<string | null>(null),
+        //     stacking: new FormControl<'null' | 'normal' | 'percent' | 'stream' | 'overlap'>('null', Validators.required),
+        //   }),
+        // })
       ]),
         // this.formBuilder.group({}),
 			appearance: this.formBuilder.group({
