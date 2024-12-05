@@ -1,0 +1,121 @@
+@button-font-size: @global-small-font-size;
+@button-small-font-size: @global-xsmall-font-size;
+@button-large-font-size: @global-font-size;
+@button-font-weight: 600;
+@button-border-width: @global-border-width;
+@button-text-transform: none;
+@button-border-radius: 4px;
+
+/* Default */
+@button-default-background: transparent;
+@button-default-color: @secondary-color;
+@button-default-box-shadow: none;
+@button-default-border: @secondary-color;
+@button-default-hover-background: @secondary-color;
+@button-default-hover-color: @white;
+@button-default-hover-box-shadow: @global-small-box-shadow;
+@button-default-hover-border: transparent;
+@button-default-active-background: @global-background;
+@button-default-active-color: @global-secondary-background;
+@button-default-active-box-shadow: @global-small-box-shadow;
+@button-default-active-border: transparent;
+
+/* Primary */
+@button-primary-background: @global-primary-background;
+@button-primary-background-gradient: @global-primary-gradient;
+@button-primary-color: @global-inverse-color;
+@button-primary-box-shadow: @global-medium-box-shadow;
+@button-primary-border: transparent;
+@button-primary-hover-background: @global-secondary-background;
+@button-primary-hover-background-gradient: none;
+@button-primary-hover-color: @global-inverse-color;
+@button-primary-hover-box-shadow: @global-small-box-shadow;
+@button-primary-hover-border: transparent;
+@button-primary-active-background: @global-secondary-background;
+@button-primary-active-background-gradient: none;
+@button-primary-active-color: @global-inverse-color;
+@button-primary-active-box-shadow: @global-small-box-shadow;
+@button-primary-active-border: transparent;
+
+/* Secondary */
+@button-secondary-background: @global-background;
+@button-secondary-background-gradient: none;
+@button-secondary-color: @global-primary-background;
+@button-secondary-box-shadow: @global-medium-box-shadow;
+@button-secondary-border: @global-primary-background;
+@button-secondary-hover-background: @global-primary-background;
+@button-secondary-hover-background-gradient: @global-primary-gradient;
+@button-secondary-hover-color: @global-inverse-color;
+@button-secondary-hover-box-shadow: @global-small-box-shadow;
+@button-secondary-hover-border: transparent;
+@button-secondary-active-background: @global-primary-background;
+@button-secondary-active-background-gradient: @global-primary-gradient;
+@button-secondary-active-color: @global-inverse-color;
+@button-secondary-active-box-shadow: @global-small-box-shadow;
+@button-secondary-active-border: transparent;
+
+.hook-button() {
+  font-weight: @button-font-weight;
+  text-transform: @button-text-transform;
+  border-radius: @button-border-radius;
+}
+
+/* Default */
+.hook-button-default() {
+  background-color: @button-default-background;
+  box-shadow: @button-default-box-shadow;
+  border: @button-border-width solid @button-default-border;
+  background-origin: border-box;
+}
+
+.hook-button-default-hover() {
+  background-color: @button-default-hover-background;
+  color: @button-default-hover-color;
+  border: @button-border-width solid @button-default-hover-border;
+}
+
+.hook-button-default-active() {
+  background-color: @button-default-hover-background;
+  color: @button-default-hover-color;
+  border: @button-border-width solid @button-default-hover-border;
+}
+
+///* Primary */
+//.hook-button-primary() {
+//  box-shadow: @button-primary-box-shadow;
+//  border: @button-border-width solid @button-primary-border;
+//  background-image: @button-primary-background-gradient;
+//  background-origin: border-box;
+//}
+//
+//.hook-button-primary-hover() {
+//  box-shadow: @button-primary-hover-box-shadow;
+//  border: @button-border-width solid @button-primary-hover-border;
+//  background-image: @button-primary-hover-background-gradient;
+//}
+//
+//.hook-button-primary-active() {
+//  box-shadow: @button-primary-active-box-shadow;
+//  border: @button-border-width solid @button-primary-active-border;
+//  background-image: @button-primary-active-background-gradient;
+//}
+
+///* Secondary */
+//.hook-button-secondary() {
+//  box-shadow: @button-secondary-box-shadow;
+//  border: @button-border-width solid @button-secondary-border;
+//  background-image: @button-secondary-background-gradient;
+//  background-origin: border-box;
+//}
+//
+//.hook-button-secondary-hover() {
+//  box-shadow: @button-secondary-hover-box-shadow;
+//  border: @button-border-width solid @button-secondary-hover-border;
+//  background-image: @button-secondary-hover-background-gradient;
+//}
+//
+//.hook-button-secondary-active() {
+//  box-shadow: @button-secondary-active-box-shadow;
+//  border: @button-border-width solid @button-secondary-active-border;
+//  background-image: @button-secondary-active-background-gradient;
+//}

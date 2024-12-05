@@ -1,0 +1,146 @@
+@card-background-hover: @ciel-color;
+
+@card-body-padding-horizontal: @global-small-gutter;
+@card-body-padding-vertical: @global-small-gutter;
+@card-border-radius: @global-border-radius;
+
+@card-default-background: @global-inverse-color;
+@card-default-box-shadow-m: @global-large-box-shadow;
+@card-default-border-width: @global-border-width;
+@card-default-border: @global-border;
+@card-default-border-m: none;
+@card-default-hover-background: @card-default-background;
+@card-default-hover-box-shadow: @global-small-box-shadow;
+@card-default-header-border-width: @global-border-width;
+@card-default-header-border: @global-border;
+@card-default-footer-border-width: @global-border-width;
+@card-default-footer-border: @global-border;
+
+@card-primary-background: @global-primary-background;
+@card-primary-background-gradient: @global-primary-gradient;
+@card-primary-box-shadow-m: @global-large-box-shadow;
+@card-primary-hover-background: @card-primary-background;
+@card-primary-hover-box-shadow: @global-small-box-shadow;
+@card-primary-hover-background-gradient: @global-primary-gradient;
+
+@card-secondary-background: @global-secondary-background;
+@card-secondary-box-shadow-m: @global-large-box-shadow;
+@card-secondary-color: @global-color;
+@card-secondary-color-mode: light;
+@card-secondary-hover-background: @card-secondary-background;
+@card-secondary-hover-box-shadow: @global-small-box-shadow;
+
+@card-disabled-box-shadow: none;
+@card-disabled-border: @global-border;
+@card-disabled-border-width: @global-border-width;
+@card-disabled-opacity: 0.4;
+@card-disabled-opacity-m: 1;
+
+.hook-card() {
+  transition: .1s ease-in-out;
+  transition-property: color,background-color,background-size,border-color,box-shadow,transform,top;
+  border-radius: @card-border-radius;
+
+  &.uk-disabled {
+    box-shadow: @card-disabled-box-shadow;
+    border: @card-disabled-border-width solid @card-disabled-border;
+
+    .uk-card-media-top, .uk-card-body, .uk-card-media-bottom {
+      opacity: @card-disabled-opacity;
+    }
+  }
+
+  &:not(.uk-card-default, .uk-card-primary, .uk-card-secondary):hover {
+    background-color: @card-background-hover;
+  }
+}
+
+.hook-card-header() {
+  border-radius: @card-border-radius @card-border-radius 0 0;
+}
+
+.hook-card-footer() {
+  border-radius: 0 0 @card-border-radius @card-border-radius;
+}
+
+.hook-card-default() {
+  border: @card-default-border-width solid @card-default-border;
+}
+
+.hook-card-default-hover() {
+  box-shadow: @card-default-hover-box-shadow;
+}
+
+.hook-card-default-header() {
+  border-bottom: @card-default-header-border-width solid @card-default-header-border;
+}
+
+.hook-card-default-footer() {
+  border-top: @card-default-footer-border-width solid @card-default-footer-border;
+}
+
+.hook-card-primary() {
+  background-image: @card-primary-background-gradient;
+}
+
+.hook-card-primary-hover() {
+  box-shadow: @card-primary-hover-box-shadow;
+}
+
+.hook-card-secondary-hover() {
+  box-shadow: @card-secondary-hover-box-shadow;
+}
+
+.hook-card-misc() {
+  @media (min-width: @breakpoint-medium) {
+    .uk-card {
+      &.uk-disabled {
+        .uk-card-media-top, .uk-card-body, .uk-card-media-bottom {
+          opacity: @card-disabled-opacity-m;
+        }
+      }
+    }
+
+    .uk-card-default {
+      border: @card-default-border-m;
+      box-shadow: @card-default-box-shadow-m;
+    }
+
+    .uk-card-primary{
+      box-shadow: @card-primary-box-shadow-m;
+    }
+
+    .uk-card-secondary {
+      box-shadow: @card-secondary-box-shadow-m;
+    }
+  }
+}
+
+@inverse-card-box-shadow: @inverse-global-large-box-shadow;
+@inverse-card-hover-box-shadow: @inverse-global-medium-box-shadow;
+
+.hook-inverse-misc() {
+  .uk-card-default {
+    box-shadow: @inverse-card-box-shadow;
+
+    &.uk-card-hover:hover {
+      box-shadow: @inverse-card-hover-box-shadow;
+    }
+  }
+
+  .uk-card-primary {
+    box-shadow: @inverse-card-box-shadow;
+
+    &.uk-card-hover:hover {
+      box-shadow: @inverse-card-hover-box-shadow;
+    }
+  }
+
+  .uk-card-secondary {
+    box-shadow: @inverse-card-box-shadow;
+
+    &.uk-card-hover:hover {
+      box-shadow: @inverse-card-hover-box-shadow;
+    }
+  }
+}

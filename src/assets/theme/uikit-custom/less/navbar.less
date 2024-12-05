@@ -1,0 +1,27 @@
+@navbar-background: @global-inverse-color;
+//@navbar-background: @opix-secondary-color;
+
+.hook-navbar-container() {
+  background-color: @navbar-background;
+  background-image: none;
+  background-size: cover;
+  box-shadow: 0 3px 6px #0000001a;
+  position: relative;
+  transition: background .35s ease-out;
+  z-index: 990;
+  height: var(--header-height);
+  //background-size: cover;
+  //box-shadow: @navbar-box-shadow;
+  //position: relative;
+  //transition: background 0.35s ease-out;
+  //z-index: @navbar-z-index;
+}
+
+.hook-navbar-item {
+  min-height: var(--header-height);
+}
+
+.hook-navbar-item {
+  //color: #fff;
+  color: @base-body-color;
+}
