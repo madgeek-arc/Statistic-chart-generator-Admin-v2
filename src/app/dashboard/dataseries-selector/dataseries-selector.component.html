@@ -16,7 +16,7 @@
 	</div>
 </div> -->
 
-<div *ngFor="let ctrl of dataseriesForm.controls; let i = index">
+<div *ngFor="let ctrl of form.controls; let i = index">
 
     <div class="dataSelectionDiv" >
       <h1>Data Selection</h1>
@@ -195,4 +195,3 @@
 
   <pre>{{ ctrl.value | json }}</pre>
 </div>
-

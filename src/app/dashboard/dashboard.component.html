@@ -1,7 +1,7 @@
 <button (click)="testLog()">TEST</button>
 <button style="float: right;" (click)="submitTest()" [disabled]="!(this.view.valid && this.category.valid && this.dataseries.valid)">SUBMIT</button>
 <div class="container">
-	<form [formGroup]="this.formGroup">
+	<form [formGroup]="formGroup">
 		<!-- <app-customise-appearance [appearanceForm]="this.appearance"></app-customise-appearance>
 		<br> -->
 
@@ -28,7 +28,7 @@
 				<app-category-selector (showCategorySelection)="updateStepper($event)" [categoryForm]="this.category"></app-category-selector>
 			</mat-step>
 			<mat-step [stepControl]="this.dataseries" [label]="configureDatasieriesLabel">
-				<app-dataseries-selector [dataseriesForm]="this.dataseries" [selectedView]="this.testingView"></app-dataseries-selector>
+				<app-dataseries-selector [selectedView]="testingView"></app-dataseries-selector>
 			</mat-step>
 			<mat-step [stepControl]="this.appearance" [label]="customiseAppearanceLabel" [optional]="true" [completed]="this.view.valid && this.category.valid">
 				<app-customise-appearance [appearanceForm]="this.appearance"></app-customise-appearance>
