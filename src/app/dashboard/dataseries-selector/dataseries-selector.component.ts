@@ -24,7 +24,7 @@ export class DataseriesSelectorComponent implements OnInit {
 	entities: Array<string> = [];
 	selectedEntity: string = '';
 	entitySelection: string = 'Select Entity';
-  form: FormArray;
+  form: FormArray<FormGroup>;
 
 	openedPanels: Array<number> = [];
 
@@ -108,27 +108,20 @@ export class DataseriesSelectorComponent implements OnInit {
     console.log(this.form);
   }
 
+  getXAxisData(form: any) {
+    // console.log(form.controls.data.controls.xaxisData.controls[0].controls.xaxisEntityField);
+    return form.controls.data.controls.xaxisData.controls;
+  }
 
-	entity(index: number): FormControl {
-    return this.form.controls[index].get('data.yaxisData.entity') as FormControl;
-	}
+  getFilters(form: any) {
+    // console.log(form.controls.data.controls.filters.controls);
+    return form.controls.data.controls.filters.controls;
+  }
 
-	aggregate(index: number): FormControl {
-		return this.form.controls[index].get('data.yaxisData.yaxisAggregate') as FormControl;
-	}
-
-	entityField(index: number): FormControl {
-    // FIXME: I return fist control (controls[0]), this is bad and should be fixed!
-    return (this.form.controls[index].get('data.xaxisData') as FormArray).controls[0].get('xaxisEntityField.name') as FormControl;
-	}
-
-	stackedData(index: number): FormControl {
-    return this.form.controls[index].get('chartProperties.stacking') as FormControl;
-	}
-
-	filters(index: number): FormArray {
-    return this.form.controls[index].get('data.filters') as FormArray;
-	}
+  getGroups(form: any) {
+    // console.log(form.controls.data.controls.filters.controls);
+    return form.controls.groupFilters.controls;
+  }
 
 	private getEntityRelations(profile: Profile, entity: string): Observable<CachedEntityNode> {
 		// const entityRelationsUrl = 'http://stats.madgik.di.uoa.gr:8180/schema/' + profile.name +'/entities/' + entity;
@@ -167,51 +160,51 @@ export class DataseriesSelectorComponent implements OnInit {
 		return isPanelOpenFlag;
 	}
 
-	createfilter() {
-		let groupFilters = this.formBuilder.array([]) as FormArray;
+	addFilter(form: any) {
+    form.controls.data.controls.filters.push(
+      new FormGroup({
+        groupFilters: new FormArray([
+          new FormGroup({
+            field: new FormGroup({
+              name: new FormControl<string | null>(null),
+              type: new FormControl<string | null>(null)
+            }),
+            type: new FormControl<string | null>(null),
+            values: new FormControl([]) // TODO: At model the control is set as array!!! Check for compatibility issues
+          })
+        ]),
+        op: new FormControl<string | null>(null)
+      })
+    );
 
-		groupFilters.push(this.createGroupFilter())
-
-		return filter;
 	}
 
-	addFilter(index: number) {
-		this.filters(index).push(this.createfilter());
+  addFilterRule(form: any) {
+    form.controls.groupFilters.push(
+      new FormGroup({
+        field: new FormGroup({
+          name: new FormControl<string | null>(null),
+          type: new FormControl<string | null>(null)
+        }),
+        type: new FormControl<string | null>(null),
+        values: new FormControl([]) // TODO: At model the control is set as array!!! Check for compatibility issues
+      })
+    )
+  }
 
-		console.log("Filter Added");
+  removeFilterRule(form: any, index: number) {
+    form.controls.groupFilters.removeAt(index)
+  }
+
+	removeFilter(form: any, index: number) {
+    form.controls.data.controls.filters.removeAt(index);
 	}
 
-	removeFilter(index: number, position: number) {
-		this.filters(index).removeAt(position);
-
-		console.log("Filter Removed");
-	}
-
-	createGroupFilter(): FormGroup {
-		let formGroup = new FormGroup({
-			field: this.formBuilder.group({
-				name: this.formBuilder.control(null),
-				type: this.formBuilder.control(null)
-			}),
-			type: this.formBuilder.control(null),
-			values: this.formBuilder.control([])
-		});
-
-		return formGroup;
-	}
-
-
-	testFilters() {
-		console.log("Filters:", this.filters);
-	}
 
 	outputResult(event: any): void {
 		console.log("FINAL PATH:", event);
 	}
 
-	testLog(): void {
-		console.log("this.dataseriesForm.value:", this.form.value);
-	}
 }
 
 export class DataSelectionFilter {
