@@ -24,12 +24,14 @@ export class DataseriesSelectorComponent implements OnInit {
 	entities: Array<string> = [];
 	selectedEntity: string = '';
 	entitySelection: string = 'Select Entity';
-  form: FormArray<FormGroup>;
+	form: FormArray<FormGroup>;
 
 	openedPanels: Array<number> = [];
 
 	// testing
 	panelOpenState: boolean = false;
+
+	hasTwoEntityFields: boolean = false;
 
 	private _entityMap$: BehaviorSubject<Map<string, CachedEntityNode>> = new BehaviorSubject(new Map<string, CachedEntityNode>());
 	protected entityMap = new Map<string, CachedEntityNode>(new Map<string, CachedEntityNode>());
@@ -71,57 +73,57 @@ export class DataseriesSelectorComponent implements OnInit {
 		private entityProvider: EntityProviderService,
 		private urlProvider: UrlProviderService,
 		private formBuilder: FormBuilder,
-    private rootFormGroup: FormGroupDirective
+		private rootFormGroup: FormGroupDirective
 	) { }
 
 	hasChild = (_: number, node: EntityNode) => !!node.relations && node.relations.length > 0;
 
-  ngOnInit(): void {
-    this.selectedView.valueChanges.subscribe((profile: Profile) => {
-      if (profile) {
-        this.entityProvider.getAvailableEntities(profile).pipe(first()).subscribe((entityNames: Array<string>) => {
-          console.log("Entity Names:", entityNames);
-          this.entities = entityNames;
+	ngOnInit(): void {
+		this.selectedView.valueChanges.subscribe((profile: Profile) => {
+			if (profile) {
+				this.entityProvider.getAvailableEntities(profile).pipe(first()).subscribe((entityNames: Array<string>) => {
+					console.log("Entity Names:", entityNames);
+					this.entities = entityNames;
 
-          let entityArray = entityNames.map((entity: string) => {
-            return this.getEntityRelations(profile, entity).pipe(first());
-          });
+					let entityArray = entityNames.map((entity: string) => {
+						return this.getEntityRelations(profile, entity).pipe(first());
+					});
 
-          forkJoin(entityArray).subscribe((cachedEntityNodes: CachedEntityNode[]) => {
-            console.log("Cached Entity Nodes:", cachedEntityNodes);
+					forkJoin(entityArray).subscribe((cachedEntityNodes: CachedEntityNode[]) => {
+						console.log("Cached Entity Nodes:", cachedEntityNodes);
 
-            for (let i = 0; i < entityNames.length; i++) {
-              this.entityMap.set(entityNames[i], cachedEntityNodes[i]);
-            }
+						for (let i = 0; i < entityNames.length; i++) {
+							this.entityMap.set(entityNames[i], cachedEntityNodes[i]);
+						}
 
-            console.log("Cached Entity Map:", this.entityMap);
+						console.log("Cached Entity Map:", this.entityMap);
 
-            if (this.entityMap.size > 0) {
-              this._entityMap$.next(this.entityMap);
-            }
-          });
-        })
-      }
-    });
+						if (this.entityMap.size > 0) {
+							this._entityMap$.next(this.entityMap);
+						}
+					});
+				})
+			}
+		});
 
-    this.form = this.rootFormGroup.control.get('dataseries') as FormArray;
-    console.log(this.form);
-  }
+		this.form = this.rootFormGroup.control.get('dataseries') as FormArray;
+		console.log(this.form);
+	}
 
-  getXAxisData(form: any) {
-    // console.log(form.controls.data.controls.xaxisData.controls[0].controls.xaxisEntityField);
-    return form.controls.data.controls.xaxisData.controls;
-  }
+	getXAxisData(form: any) {
+		// console.log(form.controls.data.controls.xaxisData.controls[0].controls.xaxisEntityField);
+		return form.controls.data.controls.xaxisData.controls;
+	}
 
-  getFilters(form: any) {
-    // console.log(form.controls.data.controls.filters.controls);
-    return form.controls.data.controls.filters.controls;
-  }
+	getFilters(form: any) {
+		// console.log(form.controls.data.controls.filters.controls);
+		return form.controls.data.controls.filters.controls;
+	}
 
-  getGroups(form: any) {
-    // console.log(form.controls.data.controls.filters.controls);
-    return form.controls.groupFilters.controls;
-  }
+	getGroups(form: any) {
+		// console.log(form.controls.data.controls.filters.controls);
+		return form.controls.groupFilters.controls;
+	}
 
 	private getEntityRelations(profile: Profile, entity: string): Observable<CachedEntityNode> {
 		// const entityRelationsUrl = 'http://stats.madgik.di.uoa.gr:8180/schema/' + profile.name +'/entities/' + entity;
@@ -161,44 +163,71 @@ export class DataseriesSelectorComponent implements OnInit {
 	}
 
 	addFilter(form: any) {
-    form.controls.data.controls.filters.push(
-      new FormGroup({
-        groupFilters: new FormArray([
-          new FormGroup({
-            field: new FormGroup({
-              name: new FormControl<string | null>(null),
-              type: new FormControl<string | null>(null)
-            }),
-            type: new FormControl<string | null>(null),
-            values: new FormControl([]) // TODO: At model the control is set as array!!! Check for compatibility issues
-          })
-        ]),
-        op: new FormControl<string | null>(null)
-      })
-    );
+		form.controls.data.controls.filters.push(
+			new FormGroup({
+				groupFilters: new FormArray([
+					new FormGroup({
+						field: new FormGroup({
+							name: new FormControl<string | null>(null),
+							type: new FormControl<string | null>(null)
+						}),
+						type: new FormControl<string | null>(null),
+						values: new FormControl([]) // TODO: At model the control is set as array!!! Check for compatibility issues
+					})
+				]),
+				op: new FormControl<string | null>(null)
+			})
+		);
 
 	}
 
-  addFilterRule(form: any) {
-    form.controls.groupFilters.push(
-      new FormGroup({
-        field: new FormGroup({
-          name: new FormControl<string | null>(null),
-          type: new FormControl<string | null>(null)
-        }),
-        type: new FormControl<string | null>(null),
-        values: new FormControl([]) // TODO: At model the control is set as array!!! Check for compatibility issues
-      })
-    )
-  }
+	addFilterRule(form: any) {
+		form.controls.groupFilters.push(
+			new FormGroup({
+				field: new FormGroup({
+					name: new FormControl<string | null>(null),
+					type: new FormControl<string | null>(null)
+				}),
+				type: new FormControl<string | null>(null),
+				values: new FormControl([]) // TODO: At model the control is set as array!!! Check for compatibility issues
+			})
+		)
+	}
 
-  removeFilterRule(form: any, index: number) {
-    form.controls.groupFilters.removeAt(index)
-  }
+	removeFilterRule(form: any, index: number) {
+		form.controls.groupFilters.removeAt(index);
+	}
 
 	removeFilter(form: any, index: number) {
-    form.controls.data.controls.filters.removeAt(index);
+		form.controls.data.controls.filters.removeAt(index);
 	}
+
+	addEntityField(form: any) {
+		form.controls.data.controls.xaxisData.push(
+			new FormGroup({
+				xaxisEntityField: new FormGroup({
+					name: new FormControl<string | null>(null),
+					type: new FormControl<string | null>(null)
+				})
+			})
+		);
+
+		if (form.controls.data.controls.xaxisData.length === 2) {
+			this.hasTwoEntityFields = true;
+		}
+	}
+
+	removeEntityField(form: any, index: number) {
+		form.controls.data.controls.xaxisData.removeAt(index);
+
+		if (form.controls.data.controls.xaxisData.length < 2) {
+			this.hasTwoEntityFields = false;
+		}
+
+	}
+
+
+
 
 
 	outputResult(event: any): void {
