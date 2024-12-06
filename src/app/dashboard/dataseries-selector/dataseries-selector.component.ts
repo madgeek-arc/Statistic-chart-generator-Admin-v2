@@ -32,6 +32,7 @@ export class DataseriesSelectorComponent implements OnInit {
 	panelOpenState: boolean = false;
 
 	hasTwoEntityFields: boolean = false;
+	dataseriesIncremment: number = 0;
 
 	private _entityMap$: BehaviorSubject<Map<string, CachedEntityNode>> = new BehaviorSubject(new Map<string, CachedEntityNode>());
 	protected entityMap = new Map<string, CachedEntityNode>(new Map<string, CachedEntityNode>());
@@ -172,7 +173,9 @@ export class DataseriesSelectorComponent implements OnInit {
 							type: new FormControl<string | null>(null)
 						}),
 						type: new FormControl<string | null>(null),
-						values: new FormControl([]) // TODO: At model the control is set as array!!! Check for compatibility issues
+						values: new FormArray([
+							new FormControl(null)
+						]) // TODO: Add shortcut through addFilterRule
 					})
 				]),
 				op: new FormControl<string | null>(null)
@@ -189,7 +192,9 @@ export class DataseriesSelectorComponent implements OnInit {
 					type: new FormControl<string | null>(null)
 				}),
 				type: new FormControl<string | null>(null),
-				values: new FormControl([]) // TODO: At model the control is set as array!!! Check for compatibility issues
+				values: new FormArray([
+					new FormControl(null)
+				]) // TODO: At model the control is set as array!!! Check for compatibility issues
 			})
 		)
 	}
@@ -226,7 +231,57 @@ export class DataseriesSelectorComponent implements OnInit {
 
 	}
 
+	addDataseries() {
+		this.dataseriesIncremment++;
+		this.form.push(new FormGroup({
+			data: new FormGroup({
+				yaxisData: new FormGroup({
+					entity: new FormControl<string | null>(null, Validators.required),
+					yaxisAggregate: new FormControl<string | null>(null, Validators.required),
+					yaxisEntityField: new FormGroup({
+						name: new FormControl<string | null>(null),
+						type: new FormControl<string | null>(null)
+					}),
+				}),
+				xaxisData: new FormArray([
+					new FormGroup({
+						xaxisEntityField: new FormGroup({
+							name: new FormControl<string | null>(null),
+							type: new FormControl<string | null>(null)
+						})
+					})
+				]),
+				filters: new FormArray([
+					new FormGroup({
+						groupFilters: new FormArray([
+							new FormGroup({
+								field: new FormGroup({
+									name: new FormControl<string | null>(null),
+									type: new FormControl<string | null>(null)
+								}),
+								type: new FormControl<string | null>(null),
+								values: new FormArray([
+									new FormControl(null)
+								]) // TODO: At model the control is set as array!!! Check for compatibility issues
+							})
+						]),
+						op: new FormControl<string | null>(null)
+					})
+				])
+			}),
+			chartProperties: new FormGroup({
+				chartType: new FormControl<string | null>(null),
+				dataseriesColor: new FormControl<string | null>(null),
+				dataseriesName: new FormControl<string | null>('Data(' + this.dataseriesIncremment + ')'),
+				stacking: new FormControl<'null' | 'normal' | 'percent' | 'stream' | 'overlap'>('null', Validators.required),
+			}),
+		}),);
 
+	}
+
+	removeDataseries(index: number) {
+		this.form.removeAt(index);
+	}
 
 
 
