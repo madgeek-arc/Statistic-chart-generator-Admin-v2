@@ -1,13 +1,31 @@
 import { DynamicDataSource } from './dynamic-entity-tree/dynamic-entity-tree';
-import { EntityTreeNode, FieldNode, EntityNode, DynamicEntityNode } from './dynamic-entity-tree/entity-tree-nodes.types';
-import { Component, Input, Output, EventEmitter, forwardRef, OnChanges, SimpleChanges, AfterViewInit, ChangeDetectorRef, ViewRef } from '@angular/core';
-import { ControlContainer, FormGroupDirective, ControlValueAccessor, NG_VALUE_ACCESSOR, FormControl } from '@angular/forms';
+import { DynamicEntityNode, EntityNode, EntityTreeNode, FieldNode } from './dynamic-entity-tree/entity-tree-nodes.types';
+import {
+  AfterViewInit,
+  ChangeDetectorRef,
+  Component,
+  EventEmitter,
+  forwardRef,
+  Input,
+  OnChanges,
+  OnInit,
+  Output,
+  SimpleChanges,
+  ViewRef
+} from '@angular/core';
+import {
+  ControlContainer,
+  ControlValueAccessor,
+  FormControl,
+  FormGroupDirective,
+  NG_VALUE_ACCESSOR
+} from '@angular/forms';
 import { NestedTreeControl } from '@angular/cdk/tree';
-import { BehaviorSubject, of as observableOf } from 'rxjs';
-import { filter, first, takeWhile } from 'rxjs/operators';
+import { takeWhile } from 'rxjs/operators';
 import { MappingProfilesService } from 'src/app/services/mapping-profiles-service/mapping-profiles.service';
 import { DynamicTreeDatabase } from 'src/app/services/dynamic-tree-database/dynamic-tree-database.service';
 import { ChartLoadingService } from 'src/app/services/chart-loading-service/chart-loading.service';
+import {MatTreeNestedDataSource, MatTreeModule} from '@angular/material/tree';
 
 @Component({
 	selector: 'select-attribute',
@@ -18,13 +36,13 @@ import { ChartLoadingService } from 'src/app/services/chart-loading-service/char
 	],
 	providers: [{ provide: NG_VALUE_ACCESSOR, useExisting: forwardRef(() => SelectAttributeComponent), multi: true }]
 })
-export class SelectAttributeComponent implements ControlValueAccessor, OnChanges, AfterViewInit {
+export class SelectAttributeComponent implements ControlValueAccessor, OnChanges, AfterViewInit, OnInit {
 
 	nestedEntityTreeControl: NestedTreeControl<DynamicEntityNode>;
 	nestedEntityDataSource: DynamicDataSource;
 
 	@Input() isDisabled = false;
-	@Input() formControl: FormControl;
+	@Input() control: FormControl;
 	@Input() chosenEntity: string = '';
 	@Output() fieldChanged = new EventEmitter<FieldNode>();
 
@@ -34,17 +52,30 @@ export class SelectAttributeComponent implements ControlValueAccessor, OnChanges
 		private profileMappingService: MappingProfilesService,
 		private chartLoadingService: ChartLoadingService,
 		private cdr: ChangeDetectorRef,
-		private dynamicTreeDB: DynamicTreeDatabase
+		private dynamicTreeDB: DynamicTreeDatabase,
+    private rootFormGroup: FormGroupDirective
 	) {
 
-		this.nestedEntityTreeControl = new NestedTreeControl<DynamicEntityNode>(node => node.relations);
-		this.nestedEntityDataSource = new DynamicDataSource(this.nestedEntityTreeControl, this.dynamicTreeDB);
-	}
+		this.nestedEntityTreeControl = new NestedTreeControl<DynamicEntityNode>((node) => {
+      console.log(node);
+      return node.relations
+    });
+    console.log(this.nestedEntityTreeControl);
+    this.nestedEntityDataSource = new DynamicDataSource(this.nestedEntityTreeControl, this.dynamicTreeDB);
+    console.log(this.nestedEntityDataSource);
+
+  }
 	/**
 	 * Angular callbacks
 	 */
 
-	ngAfterViewInit() {
+  ngOnInit() {
+    // console.log(this.rootFormGroup.control.get('xaxisEntityField'));
+    this.control = this.rootFormGroup.control.get('xaxisEntityField') as FormControl<FieldNode>;
+    console.log(this.control);
+  }
+
+  ngAfterViewInit() {
 		this.registerOnChange(this.handleChange);
 		this.registerOnTouched(this.handleTouch);
 	}
@@ -121,8 +152,8 @@ export class SelectAttributeComponent implements ControlValueAccessor, OnChanges
 		selectedFieldNode.type = field.type;
 
 		// Change the control into the updated value
-		this.formControl.setValue(selectedFieldNode);
-		console.log(this.formControl);
+		this.control.setValue(selectedFieldNode);
+		console.log(this.control);
 
 		// Emit the event that the field value has changed
 		this.fieldChanged.emit(selectedFieldNode);
@@ -185,8 +216,8 @@ export class SelectAttributeComponent implements ControlValueAccessor, OnChanges
 	_onChange = (arg: any) => { };
 	_onTouched = (arg: any) => { };
 
-	handleChange(arg: FieldNode) { if (this.checkValidFieldNode(arg) !== null) this.formControl.markAsDirty(); }
-	handleTouch(opened: boolean) { if (!opened) this.formControl.markAsTouched(); }
+	handleChange(arg: FieldNode) { if (this.checkValidFieldNode(arg) !== null) this.control.markAsDirty(); }
+	handleTouch(opened: boolean) { if (!opened) this.control.markAsTouched(); }
 
 	registerOnChange(fn: (_: any) => void): void { /* console.log('On Change method updated');*/ this._onChange = fn; }
 	registerOnTouched(fn: any): void { /* console.log('On Touched method updated'); */ this._onTouched = fn; }
@@ -213,4 +244,6 @@ export class SelectAttributeComponent implements ControlValueAccessor, OnChanges
 		//  (this.selectedNode === null ? null : '{' + this.selectedNode.name + ' , ' + this.selectedNode.type + '}'));
 
 	}
+
+  protected readonly console = console;
 }

@@ -1,12 +1,15 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, Input, OnInit } from '@angular/core';
-import { FormArray, FormBuilder, FormControl, FormGroup, FormGroupDirective, Validators } from '@angular/forms';
+import { FormArray, FormControl, FormGroup, FormGroupDirective, Validators } from '@angular/forms';
 import { MatSelectChange } from '@angular/material/select';
-import { BehaviorSubject, Observable, distinctUntilChanged, filter, first, forkJoin } from 'rxjs';
-import { EntityProviderService } from 'src/app/services/entity-provider/entity-provider.service';
+import { BehaviorSubject, first, forkJoin, Observable } from 'rxjs';
 import { Profile } from 'src/app/services/profile-provider/profile-provider.service';
 import { UrlProviderService } from 'src/app/services/url-provider/url-provider.service';
-import { CachedEntityNode, EntityNode } from '../helper-components/select-attribute/dynamic-entity-tree/entity-tree-nodes.types';
+import {
+  CachedEntityNode,
+  EntityNode
+} from '../helper-components/select-attribute/dynamic-entity-tree/entity-tree-nodes.types';
+import { DbSchemaService } from "../../services/db-schema-service/db-schema.service";
 
 @Component({
 	selector: 'app-dataseries-selector',
@@ -71,9 +74,8 @@ export class DataseriesSelectorComponent implements OnInit {
 
 	constructor(
 		private http: HttpClient,
-		private entityProvider: EntityProviderService,
+		private entityProvider: DbSchemaService,
 		private urlProvider: UrlProviderService,
-		private formBuilder: FormBuilder,
 		private rootFormGroup: FormGroupDirective
 	) { }
 
@@ -282,7 +284,6 @@ export class DataseriesSelectorComponent implements OnInit {
 	removeDataseries(index: number) {
 		this.form.removeAt(index);
 	}
-
 
 
 	outputResult(event: any): void {

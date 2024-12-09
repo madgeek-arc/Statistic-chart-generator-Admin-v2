@@ -1,8 +1,8 @@
-import { distinctUntilChanged, filter, first, takeUntil } from 'rxjs/operators';
-import { UrlProviderService } from './../url-provider-service/url-provider.service';
+import { distinctUntilChanged, filter, first } from 'rxjs/operators';
+import { UrlProviderService } from '../url-provider-service/url-provider.service';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, forkJoin } from 'rxjs';
-import { Injectable, OnDestroy } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { DbSchemaService } from '../db-schema-service/db-schema.service';
 import { MappingProfilesService, Profile } from '../mapping-profiles-service/mapping-profiles.service';
 import { CachedEntityNode, DynamicEntityNode } from 'src/app/dashboard/helper-components/select-attribute/dynamic-entity-tree/entity-tree-nodes.types';

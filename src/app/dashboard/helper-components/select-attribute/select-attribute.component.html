@@ -1,27 +1,28 @@
 <div class="simple segment">
 
   <div class="ui fluid selection" *ngIf="isDisabled; else activeDropdown">
-      <div *ngIf="this.checkValidFieldNode(selectedNode) !== null; else nullSelectedField">
-        <div class="ui breadcrumb" #selectedFieldLength *ngFor="let field of selectedNode.name.split('.'); let i = index">
-          <div *ngIf="i !== selectedNode.name.split('.').length - 1 ; else activeField">
-            <span class="section">{{field | titlecase}}</span>
-            <span class="divider"> > </span>
-          </div>
-          <ng-template #activeField>
-            <span class="active section">{{field | titlecase}}</span>
-          </ng-template>
+    <div *ngIf="this.checkValidFieldNode(selectedNode) !== null; else nullSelectedField">
+      <div class="ui breadcrumb" #selectedFieldLength *ngFor="let field of selectedNode.name.split('.'); let i = index">
+        <div *ngIf="i !== selectedNode.name.split('.').length - 1 ; else activeField">
+          <span class="section">{{field | titlecase}}</span>
+          <span class="divider"> > </span>
         </div>
+        <ng-template #activeField>
+          <span class="active section">{{field | titlecase}}</span>
+        </ng-template>
       </div>
-      <ng-template #nullSelectedField>
-        <div class="default text">Select Entity Field</div>
-      </ng-template>
+    </div>
+    <ng-template #nullSelectedField>
+      <div class="default text">Select Entity Field 1</div>
+    </ng-template>
   </div>
 
   <ng-template #activeDropdown>
-    <div class="ui fluid selection" id="attributeDropdownField"  ngbDropdown ngbDropdownToggle (openChange)="this._onTouched($event)" display="'static'" autoClose="'inside'">
-      <!-- This is the input field that appears when the dropdown is closed -->  
+<!--    <div class="ui fluid selection" id="attributeDropdownField"  ngbDropdown ngbDropdownToggle (openChange)="this._onTouched($event)" display="'static'" autoClose="'inside'">-->
+    <div id="attributeDropdownField"  >
+      <!-- This is the input field that appears when the dropdown is closed -->
       <div *ngIf="this.checkValidFieldNode(selectedNode) !== null; else nullSelectedField">
-          <!-- Showing the breadcrump of entities -->  
+          <!-- Showing the breadcrump of entities -->
           <div class="ui breadcrumb" #selectedFieldLength *ngFor="let field of selectedNode.name.split('.'); let i = index">
             <div *ngIf="i !== selectedNode.name.split('.').length - 1 ; else activeField">
               <span class="section">{{field | titlecase}}</span>
@@ -34,17 +35,20 @@
         </div>
           <!-- The template when nothing is selected -->
         <ng-template #nullSelectedField>
-          <div>Select Entity Field</div>
+          <div>Select Entity Field 2</div>
         </ng-template>
 
       <!-- This is the tree that appears when the dropdown is expanded -->
-      <div ngbDropdownMenu>
+<!--      <div ngbDropdownMenu>-->
+      <div >
         <div class="mat-app-background basic-container">
-          <mat-tree [dataSource]="nestedEntityDataSource" [treeControl]="nestedEntityTreeControl" class="data-tree ui link list" >
+          {{chosenEntity}}
+          {{control.value | json}}
+          <mat-tree [dataSource]="nestedEntityDataSource" [treeControl]="nestedEntityTreeControl" class="data-tree ui link list">
             <!-- This is the tree node template for expandable nodes -->
             <mat-nested-tree-node *matTreeNodeDef="let node; when: hasNestedChild">
               <div class="item">
-                <div class="mat-tree-node  header" id="data-tree-entity-field" matTreeNodeToggle [attr.aria-label]="'toggle ' + node.name">
+                <div class="mat-tree-node header" id="data-tree-entity-field" matTreeNodeToggle [attr.aria-label]="'toggle ' + node.name">
                   <button type="button" id="data-tree-button" class="ui compact icon button" mat-icon-button>
                     <mat-icon class="mat-icon-rtl-mirror">
                       {{nestedEntityTreeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
@@ -54,7 +58,7 @@
                 </div>
                 <div class="ui fitted divider"></div>
               </div>
-              
+
               <!-- This is the content when the leaf is expanded -->
               <div class="ui link list" [class.data-tree-invisible]="!nestedEntityTreeControl.isExpanded(node)">
                 <div class="content">

@@ -63,6 +63,12 @@
 								<button (click)="removeEntityField(ctrl, j)">Remove Entity Field</button>
 							</div>
 							<div formGroupName="xaxisEntityField">
+
+                <select-attribute [chosenEntity]="ctrl.get('data.yaxisData.entity')?.value">
+<!--                                  [control]="data.get('xaxisEntityField')">-->
+
+                </select-attribute>
+
 								<mat-form-field class="mat-select-panel">
 									<mat-label>Entity Field</mat-label>
 									<mat-select formControlName="name">
@@ -93,10 +99,12 @@
 												</mat-expansion-panel>
 											</ng-container>
 
-										</ng-container>
+
+                    </ng-container>
 
 									</mat-select>
 								</mat-form-field>
+
 							</div>
 
 						</div>
@@ -133,12 +141,12 @@
 										</mat-select>
 									</mat-form-field>
 
-									<ng-containter formArrayName="values">
+									<ng-container formArrayName="values">
 										<mat-form-field>
 											<mat-label>Value</mat-label>
 											<input matInput formControlName="0">
 										</mat-form-field>
-									</ng-containter>
+									</ng-container>
 
 									<button (click)="removeFilterRule(filter, k)">Remove Rule</button>
 								</div>
