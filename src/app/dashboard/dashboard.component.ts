@@ -1,24 +1,17 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormArray, FormBuilder, FormControl, FormGroup, RequiredValidator, Validators } from '@angular/forms';
+import { Component, DestroyRef, OnInit, ViewChild, inject } from '@angular/core';
+import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatStepper } from '@angular/material/stepper';
 import { Profile } from '../services/profile-provider/profile-provider.service';
 import { SCGAFormSchema } from './customise-appearance/visualisation-options/chart-form-schema.classes';
-import { BehaviorSubject, first, forkJoin } from 'rxjs';
-import { DiagramCategoryService } from './customise-appearance/visualisation-options/diagram-category-service/diagram-category.service';
-import { HighChartsChart } from './customise-appearance/visualisation-options/supported-libraries-service/chart-description-HighCharts.model';
-import { GoogleChartsChart, GoogleChartsTable } from './customise-appearance/visualisation-options/supported-libraries-service/chart-description-GoogleCharts.model';
-import { HighMapsMap } from './customise-appearance/visualisation-options/supported-libraries-service/chart-description-HighMaps.model';
-import { EChartsChart } from './customise-appearance/visualisation-options/supported-libraries-service/chart-description-eCharts.model';
-import { RawChartDataModel } from './customise-appearance/visualisation-options/supported-libraries-service/chart-description-rawChartData.model';
-import { RawDataModel } from './customise-appearance/visualisation-options/supported-libraries-service/description-rawData.model';
-import { ChartExportingService } from '../services/chart-exporting-service/chart-exporting.service';
-import { ChartLoadingService } from '../services/chart-loading-service/chart-loading.service';
+import { BehaviorSubject } from 'rxjs';
 import { MatDialog } from "@angular/material/dialog";
 import {
-	ChartTableModalComponent, ChartTableModalContext
+  ChartTableModalComponent,
+  ChartTableModalContext
 } from "../modals/chart-table-modal/chart-table-modal.component";
 import { DynamicFormHandlingService } from "../services/dynamic-form-handling-service/dynamic-form-handling.service";
-import { DiagramCreator } from "../services/dynamic-form-handling-service/dynamic-form-handling-diagram-creator";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
+
 
 @Component({
 	selector: 'app-dashboard',
@@ -26,15 +19,13 @@ import { DiagramCreator } from "../services/dynamic-form-handling-service/dynami
 	styleUrls: ['./dashboard.component.less']
 })
 export class DashboardComponent implements OnInit {
-	@ViewChild('stepper') stepper !: MatStepper;
+  private destroyRef = inject(DestroyRef);
+
+  @ViewChild('stepper') stepper !: MatStepper;
 
 	formGroup: FormGroup;
 
 	firstTime: boolean = true;
-
-	isStep1Done: boolean = false;
-	isStep2Done: boolean = false;
-	isLinear: boolean = true;
 
 	viewSelectionLabel: string = "Select View";
 	selectedView: string = "";
@@ -46,99 +37,18 @@ export class DashboardComponent implements OnInit {
 	selectedAppearance: string = '';
 
 
-	private _chartObject = new Object();
-	private _tableObject = new Object();
-	private _rawChartDataObject = new Object();
-	private _rawDataObject = new Object();
-	private _formSchemaObject: BehaviorSubject<SCGAFormSchema>;
-	private _resetFormValue = null;
 	private _formErrorObject: BehaviorSubject<Array<any>> = null as any;
-	private _xAxisRequired: boolean = false;
-	private _loadFormObject: Object;
-	private _loadFormObjectFile: File = null as any;
-
-	private _diagramCreator: DiagramCreator;
-
 
 
 	constructor(
 		private formBuilder: FormBuilder,
-		private diagramcategoryService: DiagramCategoryService,
-		private chartExportingService: ChartExportingService,
-		private chartLoadingService: ChartLoadingService,
 		public dynamicFormHandlingService: DynamicFormHandlingService,
 		public dialog: MatDialog
 	) {
-		this._diagramCreator = new DiagramCreator(diagramcategoryService);
-		this._formSchemaObject = new BehaviorSubject(null as any);
 		this._formErrorObject = new BehaviorSubject([] as any);
 
 		this.createDefaultFormGroup();
 	}
-
-	set formSchemaObject(value: SCGAFormSchema) { this._formSchemaObject.next(value); }
-	get formSchemaObject(): SCGAFormSchema { return this._formSchemaObject.getValue(); }
-	get diagramCreator(): DiagramCreator { return this.diagramCreator; }
-	get $formErrorObject(): BehaviorSubject<Array<any>> { return this._formErrorObject; }
-	get ChartObject(): Object { return this._chartObject; }
-	get TableObject(): Object { return this._tableObject; }
-	get RawChartDataObject(): Object { return this._rawChartDataObject; }
-	get RawDataObject(): Object { return this._rawDataObject; }
-	get loadFormObject(): Object { return this._loadFormObject; }
-	get loadFormObjectFile(): File { return this._loadFormObjectFile; }
-	get isxAxisRequired(): boolean { return this._xAxisRequired; }
-
-	set resetFormValue(value: SCGAFormSchema) { this._resetFormValue = value as any; }
-	get isFormValid(): boolean {
-		if (this.$formErrorObject.value === null) {
-			return true;
-		} else if (!this._xAxisRequired && this.isOnlyxAxisRequirementError()) {
-			return true;
-		} else {
-			return false;
-		}
-		// return this.$formErrorObject.value === null;
-	}
-
-	// TODO Find where FormProperty comes from and add it
-	// resetForm(root: FormProperty) {
-	// 	// Reset through the root property of the dynamic form
-	// 	root.reset(this._resetFormValue, false);
-
-	// 	// Reset table and chart objects
-	// 	this._chartObject = new Object();
-	// 	this.chartExportingService.changeChartUrl(this._chartObject);
-
-	// 	this._tableObject = new Object();
-	// 	this.chartExportingService.changeTableUrl(this._tableObject);
-
-	// 	this._rawChartDataObject = new Object();
-	// 	this.chartExportingService.changeRawChartDataUrl(this._rawChartDataObject);
-
-	// 	this._rawDataObject = new Object();
-	// 	this.chartExportingService.changeRawDataUrl(this._rawDataObject);
-	// }
-
-	loadForm(event: any) {
-		// console.log('Load Event', event);
-		this._loadFormObjectFile = null as any;
-
-		if (!(event === null || event === undefined)) {
-			const fr: FileReader = new FileReader();
-
-			fr.onload = () => this._loadFormObject = JSON.parse(<string>fr.result)
-			fr.onloadstart = () => this.chartLoadingService.chartLoadingStatus = true
-			fr.onloadend = () => this._loadFormObjectFile = event.target.files[0]
-
-			fr.readAsText(event.target.files[0]);
-		}
-	}
-
-	resetLoadForm() {
-		this._loadFormObjectFile = null as any;
-		this.chartLoadingService.isChartLoaded = false;
-	}
-
 
 
 	ngOnInit(): void {
@@ -148,9 +58,20 @@ export class DashboardComponent implements OnInit {
 			}
 		});
 
-		this.formGroup.valueChanges.subscribe(value => {
+		this.formGroup.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(value => {
 			this.dynamicFormHandlingService.formSchemaObject = value;
 		});
+
+    this.dynamicFormHandlingService.jsonLoaded.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+      next: data => {
+        if (data) {
+          this.dynamicFormHandlingService.adjustAndPatchForm(this.formGroup);
+          console.log(this.formGroup.value);
+          this.formGroup.setValue(this.dynamicFormHandlingService.loadFormObject)
+
+        }
+      }
+    });
 	}
 
 	get testingView() {
@@ -275,50 +196,8 @@ export class DashboardComponent implements OnInit {
 						dataseriesName: new FormControl<string | null>('Data'),
 						stacking: new FormControl<'null' | 'normal' | 'percent' | 'stream' | 'overlap'>('null', Validators.required),
 					}),
-				}),
-				// new FormGroup({
-				//   data: new FormGroup({
-				//     yaxisData: new FormGroup({
-				//       entity: new FormControl<string | null>(null, Validators.required),
-				//       yaxisAggregate: new FormControl<string | null>(null, Validators.required),
-				//       yaxisEntityField: new FormGroup({
-				//         name: new FormControl<string | null>(null),
-				//         type: new FormControl<string | null>(null)
-				//       }),
-				//     }),
-				//     xaxisData: new FormArray([
-				//       new FormGroup({
-				//         xaxisEntityField: new FormGroup({
-				//           name: new FormControl<string | null>(null),
-				//           type: new FormControl<string | null>(null)
-				//         })
-				//       })
-				//     ]),
-				//     filters: new FormArray([
-				//       new FormGroup({
-				//         groupFilters: new FormArray([
-				//           new FormGroup({
-				//             field: new FormGroup({
-				//               name: new FormControl<string | null>(null),
-				//               type: new FormControl<string | null>(null)
-				//             }),
-				//             type: new FormControl<string | null>(null),
-				//             values: new FormArray([])
-				//           })
-				//         ]),
-				//         op: new FormControl<string | null>(null)
-				//       })
-				//     ])
-				//   }),
-				//   chartProperties: new FormGroup({
-				//     chartType: new FormControl<string | null>(null),
-				//     dataseriesColor: new FormControl<string | null>(null),
-				//     dataseriesName: new FormControl<string | null>(null),
-				//     stacking: new FormControl<'null' | 'normal' | 'percent' | 'stream' | 'overlap'>('null', Validators.required),
-				//   }),
-				// })
+				})
 			]),
-			// this.formBuilder.group({}),
 			appearance: this.formBuilder.group({
 				chartAppearance: this.formBuilder.group({
 					generalOptions: this.formBuilder.group({
@@ -423,27 +302,6 @@ export class DashboardComponent implements OnInit {
 		return true;
 	}
 
-	private changeDataObjects(chartObject: HighChartsChart | GoogleChartsChart | HighMapsMap | EChartsChart,
-		tableObject: GoogleChartsTable, rawChartDataObject: RawChartDataModel, rawDataObject: RawDataModel) {
-
-		this._chartObject = chartObject;
-		this.chartExportingService.changeChartUrl(chartObject);
-
-		this._tableObject = tableObject;
-		this.chartExportingService.changeTableUrl(tableObject);
-
-		this._rawChartDataObject = rawChartDataObject;
-		this.chartExportingService.changeRawChartDataUrl(rawChartDataObject);
-
-		this._rawDataObject = rawDataObject;
-		this.chartExportingService.changeRawDataUrl(rawDataObject);
-	}
-
-
-	testLog() {
-		console.log("TESTING formGroup:", this.formGroup.value);
-	}
-
 	submitTest() {
 		console.log("SUBMIT this form:", this.formGroup.value);
 
@@ -499,44 +357,6 @@ export class DashboardComponent implements OnInit {
 
 		console.log("TESTING FORM:", form);
 		return form;
-	}
-
-	private createDataObjectsFromSchemaObject(value: SCGAFormSchema) {
-
-		console.log("DATA POINT 2:", value);
-
-		if (this.diagramcategoryService.selectedDiagramCategory$.value?.type === "numbers") {
-			this._diagramCreator.createRawData(value).pipe(first()).subscribe(rawDataObject => {
-				console.log("DATA POINT 3:", rawDataObject);
-
-				return this.changeDataObjects(null as any, null as any, null as any, rawDataObject)
-
-			})
-			return;
-		}
-
-		forkJoin([this._diagramCreator.createChart(value), this._diagramCreator.createTable(value),
-		this._diagramCreator.createRawChartData(value), this._diagramCreator.createRawData(value)])
-			.pipe(first())
-			.subscribe(([chartObject, tableObject, rawChartDataObject, rawDataObject]) => {
-
-				console.log("DATA POINT 4:", [chartObject, tableObject, rawChartDataObject, rawDataObject]);
-				// return;
-
-				if (chartObject && tableObject && rawChartDataObject && rawDataObject) {
-					this.changeDataObjects(chartObject, tableObject, rawChartDataObject, rawDataObject)
-					const data: ChartTableModalContext = {
-						chartObj: chartObject,
-						tableObj: tableObject,
-						rawChartDataObj: rawChartDataObject,
-						rawDataObj: rawDataObject
-					}
-
-					console.log(data);
-					this.openDialog(data);
-				}
-				// return;
-			});
 	}
 
 	openDialog(data: ChartTableModalContext) {
