@@ -2,8 +2,8 @@
 
   <div class="ui fluid selection" *ngIf="isDisabled; else activeDropdown">
     <div *ngIf="this.checkValidFieldNode(selectedNode) !== null; else nullSelectedField">
-      <div class="ui breadcrumb" #selectedFieldLength *ngFor="let field of selectedNode.name.split('.'); let i = index">
-        <div *ngIf="i !== selectedNode.name.split('.').length - 1 ; else activeField">
+      <div class="ui breadcrumb" #selectedFieldLength *ngFor="let field of selectedNode!.name.split('.'); let i = index">
+        <div *ngIf="i !== selectedNode!.name.split('.').length - 1 ; else activeField">
           <span class="section">{{field | titlecase}}</span>
           <span class="divider"> > </span>
         </div>
@@ -21,10 +21,11 @@
 <!--    <div class="ui fluid selection" id="attributeDropdownField"  ngbDropdown ngbDropdownToggle (openChange)="this._onTouched($event)" display="'static'" autoClose="'inside'">-->
     <div id="attributeDropdownField"  >
       <!-- This is the input field that appears when the dropdown is closed -->
+      <pre>{{selectedNode | json}}</pre>
       <div *ngIf="this.checkValidFieldNode(selectedNode) !== null; else nullSelectedField">
           <!-- Showing the breadcrump of entities -->
-          <div class="ui breadcrumb" #selectedFieldLength *ngFor="let field of selectedNode.name.split('.'); let i = index">
-            <div *ngIf="i !== selectedNode.name.split('.').length - 1 ; else activeField">
+          <div class="ui breadcrumb" #selectedFieldLength *ngFor="let field of selectedNode!.name.split('.'); let i = index">
+            <div *ngIf="i !== selectedNode!.name.split('.').length - 1 ; else activeField">
               <span class="section">{{field | titlecase}}</span>
               <span class="divider"> > </span>
             </div>
@@ -35,15 +36,13 @@
         </div>
           <!-- The template when nothing is selected -->
         <ng-template #nullSelectedField>
-          <div>Select Entity Field 2</div>
+          <div>Select Entity Field</div>
         </ng-template>
 
       <!-- This is the tree that appears when the dropdown is expanded -->
 <!--      <div ngbDropdownMenu>-->
       <div >
         <div class="mat-app-background basic-container">
-          {{chosenEntity}}
-          {{control.value | json}}
           <mat-tree [dataSource]="nestedEntityDataSource" [treeControl]="nestedEntityTreeControl" class="data-tree ui link list">
             <!-- This is the tree node template for expandable nodes -->
             <mat-nested-tree-node *matTreeNodeDef="let node; when: hasNestedChild">

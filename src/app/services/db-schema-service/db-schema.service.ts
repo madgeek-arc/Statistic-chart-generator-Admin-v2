@@ -7,7 +7,9 @@ import { UrlProviderService } from '../url-provider-service/url-provider.service
 import { Profile } from '../mapping-profiles-service/mapping-profiles.service';
 // import { ErrorHandlerService } from '../error-handler-service/error-handler.service';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class DbSchemaService {
 
 	constructor(
