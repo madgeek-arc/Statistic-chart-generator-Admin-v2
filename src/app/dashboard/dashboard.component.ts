@@ -260,7 +260,9 @@ export class DashboardComponent implements OnInit {
 											type: new FormControl<string | null>(null)
 										}),
 										type: new FormControl<string | null>(null),
-										values: new FormControl([]) // TODO: At model the control is set as array!!! Check for compatibility issues
+										values: new FormArray([
+											new FormControl(null)
+										]) // TODO: At model the control is set as array!!! Check for compatibility issues
 									})
 								]),
 								op: new FormControl<string | null>(null)
@@ -270,7 +272,7 @@ export class DashboardComponent implements OnInit {
 					chartProperties: new FormGroup({
 						chartType: new FormControl<string | null>(null),
 						dataseriesColor: new FormControl<string | null>(null),
-						dataseriesName: new FormControl<string | null>(null),
+						dataseriesName: new FormControl<string | null>('Data'),
 						stacking: new FormControl<'null' | 'normal' | 'percent' | 'stream' | 'overlap'>('null', Validators.required),
 					}),
 				}),

@@ -13,6 +13,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatInputModule } from '@angular/material/input';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatDialogModule } from "@angular/material/dialog";
+import {MatCheckboxModule} from '@angular/material/checkbox';
 
 @NgModule({
 	exports: [
@@ -28,7 +29,8 @@ import { MatDialogModule } from "@angular/material/dialog";
 		MatTabsModule,
 		MatInputModule,
 		MatSlideToggleModule,
-    MatDialogModule
+		MatDialogModule,
+		MatCheckboxModule
 	]
 })
 
