@@ -1,6 +1,11 @@
-<div style="width: 100%;">
+<div style="width: 100%;" [formGroup]="this.highChartsForm">
+
+	<div>
+		<button (click)="testButton()">Click</button>
+	</div>
+
 	<div style="width: 50%; display: inline-block;">
-		<div>
+		<div formGroupName="title">
 			<h5 style="font-weight: bold;">Title</h5>
 			<mat-divider></mat-divider>
 
@@ -9,14 +14,14 @@
 					<mat-label>Title Text</mat-label>
 					<br>
 					<mat-form-field>
-						<input matInput placeholder="Title" [formControl]="this.titleText">
+						<input matInput placeholder="Title" formControlName="titleText">
 					</mat-form-field>
 				</div>
 				<div style="display: inline-block;">
 					<mat-label>Title Color</mat-label>
 					<br>
 					<mat-form-field>
-						<input matInput type="color" [formControl]="this.titleColor">
+						<input matInput type="color" formControlName="color">
 					</mat-form-field>
 				</div>
 			</div>
@@ -25,7 +30,7 @@
 					<mat-label>Horizontal Alignment</mat-label>
 					<br>
 					<mat-form-field>
-						<mat-select [formControl]="this.titleHorizontalAlignment">
+						<mat-select formControlName="align">
 							<mat-option disabled="true">Select One</mat-option>
 							<mat-option [value]="horizontalAlignment.value" *ngFor="let horizontalAlignment of horizontalAlignmentList">
 								{{horizontalAlignment.name}}
@@ -37,14 +42,14 @@
 					<mat-label>Margin</mat-label>
 					<br>
 					<mat-form-field>
-						<input matInput type="number" [formControl]="this.titleMargin">
+						<input matInput type="number" formControlName="margin">
 					</mat-form-field>
 				</div>
 				<div style="display: inline-block;">
 					<mat-label>Font Size</mat-label>
 					<br>
 					<mat-form-field>
-						<input matInput type="number" [formControl]="this.titleFontSize">
+						<input matInput type="number" formControlName="fontSize">
 					</mat-form-field>
 				</div>
 			</div>
@@ -364,9 +369,4 @@
 		</div>
 
 	</div>
-
-	<div>
-		<button (click)="testButton()">Click</button>
-	</div>
-
 </div>

@@ -15,7 +15,7 @@ import { ChartExportingService } from '../services/chart-exporting-service/chart
 import { ChartLoadingService } from '../services/chart-loading-service/chart-loading.service';
 import { MatDialog } from "@angular/material/dialog";
 import {
-  ChartTableModalComponent, ChartTableModalContext
+	ChartTableModalComponent, ChartTableModalContext
 } from "../modals/chart-table-modal/chart-table-modal.component";
 import { DynamicFormHandlingService } from "../services/dynamic-form-handling-service/dynamic-form-handling.service";
 import { DiagramCreator } from "../services/dynamic-form-handling-service/dynamic-form-handling-diagram-creator";
@@ -66,8 +66,8 @@ export class DashboardComponent implements OnInit {
 		private diagramcategoryService: DiagramCategoryService,
 		private chartExportingService: ChartExportingService,
 		private chartLoadingService: ChartLoadingService,
-    public dynamicFormHandlingService: DynamicFormHandlingService,
-    public dialog: MatDialog
+		public dynamicFormHandlingService: DynamicFormHandlingService,
+		public dialog: MatDialog
 	) {
 		this._diagramCreator = new DiagramCreator(diagramcategoryService);
 		this._formSchemaObject = new BehaviorSubject(null as any);
@@ -148,9 +148,9 @@ export class DashboardComponent implements OnInit {
 			}
 		});
 
-    this.formGroup.valueChanges.subscribe(value => {
-      this.dynamicFormHandlingService.formSchemaObject = value;
-    });
+		this.formGroup.valueChanges.subscribe(value => {
+			this.dynamicFormHandlingService.formSchemaObject = value;
+		});
 	}
 
 	get testingView() {
@@ -221,102 +221,102 @@ export class DashboardComponent implements OnInit {
 				profile: this.formBuilder.control(null)
 			}),
 			category: this.formBuilder.group({
-        diagram: this.formBuilder.group({
-          type: new FormControl<string | null>(null),
-          supportedLibraries: new FormArray([]),
-          name: new FormControl<string | null>(null),
-          diagramId: new FormControl<number | null>(null),
-          description: new FormControl<string | null>(null),
-          imageURL: new FormControl<string | null>(null),
-          isPolar: new FormControl<string | null>(null),
-          isHidden: new FormControl<string | null>(null)
-        })
-      }),
+				diagram: this.formBuilder.group({
+					type: new FormControl<string | null>(null),
+					supportedLibraries: new FormArray([]),
+					name: new FormControl<string | null>(null),
+					diagramId: new FormControl<number | null>(null),
+					description: new FormControl<string | null>(null),
+					imageURL: new FormControl<string | null>(null),
+					isPolar: new FormControl<string | null>(null),
+					isHidden: new FormControl<string | null>(null)
+				})
+			}),
 			dataseries: new FormArray([
-        new FormGroup({
-          data: new FormGroup({
-            yaxisData: new FormGroup({
-              entity: new FormControl<string | null>(null, Validators.required),
-              yaxisAggregate: new FormControl<string | null>(null, Validators.required),
-              yaxisEntityField: new FormGroup({
-                name: new FormControl<string | null>(null),
-                type: new FormControl<string | null>(null)
-              }),
-            }),
-            xaxisData: new FormArray([
-              new FormGroup({
-                xaxisEntityField: new FormGroup({
-                  name: new FormControl<string | null>(null),
-                  type: new FormControl<string | null>(null)
-                })
-              })
-            ]),
-            filters: new FormArray([
-              new FormGroup({
-                groupFilters: new FormArray([
-                  new FormGroup({
-                    field: new FormGroup({
-                      name: new FormControl<string | null>(null),
-                      type: new FormControl<string | null>(null)
-                    }),
-                    type: new FormControl<string | null>(null),
-                    values: new FormControl([]) // TODO: At model the control is set as array!!! Check for compatibility issues
-                  })
-                ]),
-                op: new FormControl<string | null>(null)
-              })
-            ])
-          }),
-          chartProperties: new FormGroup({
-            chartType: new FormControl<string | null>(null),
-            dataseriesColor: new FormControl<string | null>(null),
-            dataseriesName: new FormControl<string | null>(null),
-            stacking: new FormControl<'null' | 'normal' | 'percent' | 'stream' | 'overlap'>('null', Validators.required),
-          }),
-        }),
-        // new FormGroup({
-        //   data: new FormGroup({
-        //     yaxisData: new FormGroup({
-        //       entity: new FormControl<string | null>(null, Validators.required),
-        //       yaxisAggregate: new FormControl<string | null>(null, Validators.required),
-        //       yaxisEntityField: new FormGroup({
-        //         name: new FormControl<string | null>(null),
-        //         type: new FormControl<string | null>(null)
-        //       }),
-        //     }),
-        //     xaxisData: new FormArray([
-        //       new FormGroup({
-        //         xaxisEntityField: new FormGroup({
-        //           name: new FormControl<string | null>(null),
-        //           type: new FormControl<string | null>(null)
-        //         })
-        //       })
-        //     ]),
-        //     filters: new FormArray([
-        //       new FormGroup({
-        //         groupFilters: new FormArray([
-        //           new FormGroup({
-        //             field: new FormGroup({
-        //               name: new FormControl<string | null>(null),
-        //               type: new FormControl<string | null>(null)
-        //             }),
-        //             type: new FormControl<string | null>(null),
-        //             values: new FormArray([])
-        //           })
-        //         ]),
-        //         op: new FormControl<string | null>(null)
-        //       })
-        //     ])
-        //   }),
-        //   chartProperties: new FormGroup({
-        //     chartType: new FormControl<string | null>(null),
-        //     dataseriesColor: new FormControl<string | null>(null),
-        //     dataseriesName: new FormControl<string | null>(null),
-        //     stacking: new FormControl<'null' | 'normal' | 'percent' | 'stream' | 'overlap'>('null', Validators.required),
-        //   }),
-        // })
-      ]),
-        // this.formBuilder.group({}),
+				new FormGroup({
+					data: new FormGroup({
+						yaxisData: new FormGroup({
+							entity: new FormControl<string | null>(null, Validators.required),
+							yaxisAggregate: new FormControl<string | null>(null, Validators.required),
+							yaxisEntityField: new FormGroup({
+								name: new FormControl<string | null>(null),
+								type: new FormControl<string | null>(null)
+							}),
+						}),
+						xaxisData: new FormArray([
+							new FormGroup({
+								xaxisEntityField: new FormGroup({
+									name: new FormControl<string | null>(null),
+									type: new FormControl<string | null>(null)
+								})
+							})
+						]),
+						filters: new FormArray([
+							new FormGroup({
+								groupFilters: new FormArray([
+									new FormGroup({
+										field: new FormGroup({
+											name: new FormControl<string | null>(null),
+											type: new FormControl<string | null>(null)
+										}),
+										type: new FormControl<string | null>(null),
+										values: new FormControl([]) // TODO: At model the control is set as array!!! Check for compatibility issues
+									})
+								]),
+								op: new FormControl<string | null>(null)
+							})
+						])
+					}),
+					chartProperties: new FormGroup({
+						chartType: new FormControl<string | null>(null),
+						dataseriesColor: new FormControl<string | null>(null),
+						dataseriesName: new FormControl<string | null>(null),
+						stacking: new FormControl<'null' | 'normal' | 'percent' | 'stream' | 'overlap'>('null', Validators.required),
+					}),
+				}),
+				// new FormGroup({
+				//   data: new FormGroup({
+				//     yaxisData: new FormGroup({
+				//       entity: new FormControl<string | null>(null, Validators.required),
+				//       yaxisAggregate: new FormControl<string | null>(null, Validators.required),
+				//       yaxisEntityField: new FormGroup({
+				//         name: new FormControl<string | null>(null),
+				//         type: new FormControl<string | null>(null)
+				//       }),
+				//     }),
+				//     xaxisData: new FormArray([
+				//       new FormGroup({
+				//         xaxisEntityField: new FormGroup({
+				//           name: new FormControl<string | null>(null),
+				//           type: new FormControl<string | null>(null)
+				//         })
+				//       })
+				//     ]),
+				//     filters: new FormArray([
+				//       new FormGroup({
+				//         groupFilters: new FormArray([
+				//           new FormGroup({
+				//             field: new FormGroup({
+				//               name: new FormControl<string | null>(null),
+				//               type: new FormControl<string | null>(null)
+				//             }),
+				//             type: new FormControl<string | null>(null),
+				//             values: new FormArray([])
+				//           })
+				//         ]),
+				//         op: new FormControl<string | null>(null)
+				//       })
+				//     ])
+				//   }),
+				//   chartProperties: new FormGroup({
+				//     chartType: new FormControl<string | null>(null),
+				//     dataseriesColor: new FormControl<string | null>(null),
+				//     dataseriesName: new FormControl<string | null>(null),
+				//     stacking: new FormControl<'null' | 'normal' | 'percent' | 'stream' | 'overlap'>('null', Validators.required),
+				//   }),
+				// })
+			]),
+			// this.formBuilder.group({}),
 			appearance: this.formBuilder.group({
 				chartAppearance: this.formBuilder.group({
 					generalOptions: this.formBuilder.group({
@@ -327,11 +327,11 @@ export class DashboardComponent implements OnInit {
 					visualisationOptions: this.formBuilder.group({
 						highCharts: this.formBuilder.group({
 							title: this.formBuilder.group({
-								text: this.formBuilder.control(null),
-								color: this.formBuilder.control("#333333"),
-								horizontalAlignment: this.formBuilder.control('center'),
-								margin: this.formBuilder.control(15),
-								fontSize: this.formBuilder.control(18)
+								titleText: this.formBuilder.control<string>(''),
+								color: this.formBuilder.control<string>("#333333"),
+								align: this.formBuilder.control<'right' | 'center' | 'left'>('center'),
+								margin: this.formBuilder.control<number>(15),
+								fontSize: this.formBuilder.control<number>(18)
 							}),
 							subtitle: this.formBuilder.group({
 								text: this.formBuilder.control(null),
@@ -445,17 +445,17 @@ export class DashboardComponent implements OnInit {
 	submitTest() {
 		console.log("SUBMIT this form:", this.formGroup.value);
 
-    this.dynamicFormHandlingService.submitForm();
+		this.dynamicFormHandlingService.submitForm();
 
-    const data: ChartTableModalContext = {
-      chartObj: this.dynamicFormHandlingService.ChartObject,
-      tableObj: this.dynamicFormHandlingService.TableObject,
-      rawChartDataObj: this.dynamicFormHandlingService.RawChartDataObject,
-      rawDataObj: this.dynamicFormHandlingService.RawDataObject
-    }
+		const data: ChartTableModalContext = {
+			chartObj: this.dynamicFormHandlingService.ChartObject,
+			tableObj: this.dynamicFormHandlingService.TableObject,
+			rawChartDataObj: this.dynamicFormHandlingService.RawChartDataObject,
+			rawDataObj: this.dynamicFormHandlingService.RawDataObject
+		}
 
-    console.log(data);
-    this.openDialog(data);
+		console.log(data);
+		this.openDialog(data);
 	}
 
 	makeChangesToForm(form: any): SCGAFormSchema {
@@ -523,26 +523,26 @@ export class DashboardComponent implements OnInit {
 
 				if (chartObject && tableObject && rawChartDataObject && rawDataObject) {
 					this.changeDataObjects(chartObject, tableObject, rawChartDataObject, rawDataObject)
-          const data: ChartTableModalContext = {
-            chartObj: chartObject,
-            tableObj: tableObject,
-            rawChartDataObj: rawChartDataObject,
-            rawDataObj: rawDataObject
-          }
+					const data: ChartTableModalContext = {
+						chartObj: chartObject,
+						tableObj: tableObject,
+						rawChartDataObj: rawChartDataObject,
+						rawDataObj: rawDataObject
+					}
 
-          console.log(data);
-          this.openDialog(data);
+					console.log(data);
+					this.openDialog(data);
 				}
 				// return;
 			});
 	}
 
-  openDialog(data: ChartTableModalContext) {
-    this.dialog.open(ChartTableModalComponent, {
-      data: data,
-      minWidth: '75svw',
-      minHeight: '80svh'
-    });
-  }
+	openDialog(data: ChartTableModalContext) {
+		this.dialog.open(ChartTableModalComponent, {
+			data: data,
+			minWidth: '75svw',
+			minHeight: '80svh'
+		});
+	}
 
 }

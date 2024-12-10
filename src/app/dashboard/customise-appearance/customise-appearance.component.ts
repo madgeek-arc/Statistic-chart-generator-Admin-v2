@@ -27,9 +27,10 @@ export class CustomiseAppearanceComponent implements OnInit {
 
 	constructor() { }
 
-  ngOnInit() {
-    this.visualisationLibrary.setValue('HighCharts');
-  }
+	ngOnInit() {
+		console.log("Appearance Form:", this.appearanceForm);
+		console.log("Appearance Form Value:", this.appearanceForm.value);
+	}
 
 	get chartAppearance(): FormGroup {
 		return this.appearanceForm.get('chartAppearance') as FormGroup;

@@ -35,30 +35,6 @@ export class HighChartsComponent implements OnInit {
 
 	constructor() { }
 
-	// title 
-	get title(): FormGroup {
-		return this.highChartsForm.get('title') as FormGroup;
-	}
-
-	get titleText(): FormControl {
-		return this.title.get('text') as FormControl;
-	}
-
-	get titleColor(): FormControl {
-		return this.title.get('color') as FormControl;
-	}
-
-	get titleHorizontalAlignment(): FormControl {
-		return this.title.get('horizontalAlignment') as FormControl;
-	}
-
-	get titleMargin(): FormControl {
-		return this.title.get('margin') as FormControl;
-	}
-
-	get titleFontSize(): FormControl {
-		return this.title.get('fontSize') as FormControl;
-	}
 
 	// subtitle 
 	get subtitle(): FormGroup {
