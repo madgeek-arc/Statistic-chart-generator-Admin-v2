@@ -16,6 +16,7 @@ import { DynamicTreeDatabase } from "../../../services/dynamic-tree-database/dyn
   ],
   providers: [{ provide: NG_VALUE_ACCESSOR, useExisting: forwardRef(() => SelectAttributeComponent), multi: true }]
 })
+
 export class SelectAttributeComponent implements ControlValueAccessor, OnChanges, AfterViewInit {
 
   nestedEntityTreeControl: NestedTreeControl<DynamicEntityNode>;
@@ -56,6 +57,7 @@ export class SelectAttributeComponent implements ControlValueAccessor, OnChanges
 
     console.log("Changed to "+change.currentValue);
 
+    this.control.reset();
 
     if (this.chartLoadingService.chartLoadingStatus) {
       this.getEntityTreeNode(change.currentValue, false);
@@ -119,6 +121,7 @@ export class SelectAttributeComponent implements ControlValueAccessor, OnChanges
     // Change the control into the updated value
     this.control.setValue(selectedFieldNode);
     console.log(this.control);
+  this.selectedNode = selectedFieldNode;
 
     // Emit the event that the field value has changed
     this.fieldChanged.emit(selectedFieldNode);
@@ -136,7 +139,7 @@ export class SelectAttributeComponent implements ControlValueAccessor, OnChanges
       else
         parentPath = nodeName;
     });
-    return parentPath + '.' + field.name;;
+    return parentPath + '.' + field.name;
   }
   trackByFieldName(index: number, item: FieldNode) { return item.name; }
 
