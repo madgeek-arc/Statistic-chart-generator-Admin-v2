@@ -1,9 +1,10 @@
-<div class="simple segment">
+<div class="uk-width-medium menu-button">
+  <button mat-button [matMenuTriggerFor]="belowMenu" class="mat-button uk-width-1-1">
 
-  <div class="ui fluid selection" *ngIf="isDisabled; else activeDropdown">
+    <div class="ui fluid selection" *ngIf="isDisabled; else activeDropdown">
       <div *ngIf="this.checkValidFieldNode(selectedNode) !== null; else nullSelectedField">
-        <div class="ui breadcrumb" #selectedFieldLength *ngFor="let field of selectedNode.name.split('.'); let i = index">
-          <div *ngIf="i !== selectedNode.name.split('.').length - 1 ; else activeField">
+        <div class="ui breadcrumb" #selectedFieldLength *ngFor="let field of selectedNode!.name.split('.'); let i = index">
+          <div *ngIf="i !== selectedNode!.name.split('.').length - 1 ; else activeField">
             <span class="section">{{field | titlecase}}</span>
             <span class="divider"> > </span>
           </div>
@@ -13,69 +14,158 @@
         </div>
       </div>
       <ng-template #nullSelectedField>
-        <div class="default text">Select Entity Field</div>
+        <div class="default text">Select Entity Field 1</div>
       </ng-template>
-  </div>
+    </div>
 
-  <ng-template #activeDropdown>
-    <div class="ui fluid selection" id="attributeDropdownField"  ngbDropdown ngbDropdownToggle (openChange)="this._onTouched($event)" display="'static'" autoClose="'inside'">
-      <!-- This is the input field that appears when the dropdown is closed -->  
-      <div *ngIf="this.checkValidFieldNode(selectedNode) !== null; else nullSelectedField">
-          <!-- Showing the breadcrump of entities -->  
-          <div class="ui breadcrumb" #selectedFieldLength *ngFor="let field of selectedNode.name.split('.'); let i = index">
-            <div *ngIf="i !== selectedNode.name.split('.').length - 1 ; else activeField">
-              <span class="section">{{field | titlecase}}</span>
-              <span class="divider"> > </span>
+    <ng-template #activeDropdown>
+      <div class="uk-flex uk-flex-middle uk-flex-between">
+        <div class="">
+          <div *ngIf="this.checkValidFieldNode(selectedNode) !== null; else nullSelectedField">
+            <!-- Showing the breadcrump of entities -->
+            <div class="ui breadcrumb" #selectedFieldLength *ngFor="let field of selectedNode!.name.split('.'); let i = index">
+              <div *ngIf="i !== selectedNode!.name.split('.').length - 1 ; else activeField">
+                <span class="section">{{field | titlecase}}</span>
+                <span class="divider"> > </span>
+              </div>
+              <ng-template #activeField>
+                <span class="active section">{{field | titlecase}}</span>
+              </ng-template>
             </div>
-            <ng-template #activeField>
-              <span class="active section">{{field | titlecase}}</span>
-            </ng-template>
           </div>
-        </div>
           <!-- The template when nothing is selected -->
-        <ng-template #nullSelectedField>
-          <div>Select Entity Field</div>
-        </ng-template>
-
-      <!-- This is the tree that appears when the dropdown is expanded -->
-      <div ngbDropdownMenu>
-        <div class="mat-app-background basic-container">
-          <mat-tree [dataSource]="nestedEntityDataSource" [treeControl]="nestedEntityTreeControl" class="data-tree ui link list" >
-            <!-- This is the tree node template for expandable nodes -->
-            <mat-nested-tree-node *matTreeNodeDef="let node; when: hasNestedChild">
-              <div class="item">
-                <div class="mat-tree-node  header" id="data-tree-entity-field" matTreeNodeToggle [attr.aria-label]="'toggle ' + node.name">
-                  <button type="button" id="data-tree-button" class="ui compact icon button" mat-icon-button>
-                    <mat-icon class="mat-icon-rtl-mirror">
-                      {{nestedEntityTreeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
-                    </mat-icon>
-                  </button>
-                  {{node.name | titlecase}}
-                </div>
-                <div class="ui fitted divider"></div>
-              </div>
-              
-              <!-- This is the content when the leaf is expanded -->
-              <div class="ui link list" [class.data-tree-invisible]="!nestedEntityTreeControl.isExpanded(node)">
-                <div class="content">
-                  <div *ngFor="let field of node.fields; let first = first" >
-                    <div *ngIf="field !== null">
-                      <a class="mat-tree-node item" (click)="nodeSelected(field, node)" style="padding-inline-start: 1em">
-                        {{field.name | titlecase}}
-                      </a>
-                      <div class="ui fitted divider"></div>
-                    </div>
-                  </div>
-                  <mat-progress-bar *ngIf="node.loading"  class="example-tree-progress-bar"></mat-progress-bar>
-                  <ng-container matTreeNodeOutlet></ng-container>
-                </div>
-              </div>
-
-            </mat-nested-tree-node>
-          </mat-tree>
+          <ng-template #nullSelectedField>
+            <div>Select Entity Field</div>
+          </ng-template>
         </div>
+
+        <div><mat-icon class="material-symbols-outlined">arrow_drop_down</mat-icon></div>
       </div>
 
-    </div>
-  </ng-template>
+
+    </ng-template>
+  </button>
+
+  <mat-menu #belowMenu="matMenu" yPosition="below">
+<!--    <ng-template matMenuContent class="mat-app-background basic-container" >-->
+      <mat-tree [dataSource]="nestedEntityDataSource" [treeControl]="nestedEntityTreeControl" class="ui link list uk-width-medium">
+        <!-- This is the tree node template for expandable nodes -->
+        <mat-nested-tree-node *matTreeNodeDef="let node; when: hasNestedChild">
+          <div class="item">
+            <div class="mat-tree-node header" id="data-tree-entity-field" matTreeNodeToggle [attr.aria-label]="'toggle ' + node.name">
+              <button type="button" id="data-tree-button" class="ui compact icon button" mat-icon-button>
+                <mat-icon class="mat-icon-rtl-mirror">
+                  {{nestedEntityTreeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
+                </mat-icon>
+              </button>
+              {{node.name | titlecase}}
+            </div>
+            <div class="ui fitted divider"></div>
+          </div>
+
+          <!-- This is the content when the leaf is expanded -->
+          <div class="ui link list" [class.data-tree-invisible]="!nestedEntityTreeControl.isExpanded(node)">
+            <div class="content">
+              <div *ngFor="let field of node.fields; let first = first" >
+                <div *ngIf="field !== null">
+                  <a class="mat-tree-node item" (click)="nodeSelected(field, node)" style="padding-inline-start: 1em">
+                    {{field.name | titlecase}}
+                  </a>
+                  <div class="ui fitted divider"></div>
+                </div>
+              </div>
+              <mat-progress-bar *ngIf="node.loading"  class="example-tree-progress-bar"></mat-progress-bar>
+              <ng-container matTreeNodeOutlet></ng-container>
+            </div>
+          </div>
+
+        </mat-nested-tree-node>
+      </mat-tree>
+<!--    </ng-template>-->
+  </mat-menu>
 </div>
+<!--<div class="simple segment">-->
+
+<!--  <div class="ui fluid selection" *ngIf="isDisabled; else activeDropdown">-->
+<!--    <div *ngIf="this.checkValidFieldNode(selectedNode) !== null; else nullSelectedField">-->
+<!--      <div class="ui breadcrumb" #selectedFieldLength *ngFor="let field of selectedNode!.name.split('.'); let i = index">-->
+<!--        <div *ngIf="i !== selectedNode!.name.split('.').length - 1 ; else activeField">-->
+<!--          <span class="section">{{field | titlecase}}</span>-->
+<!--          <span class="divider"> > </span>-->
+<!--        </div>-->
+<!--        <ng-template #activeField>-->
+<!--          <span class="active section">{{field | titlecase}}</span>-->
+<!--        </ng-template>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--    <ng-template #nullSelectedField>-->
+<!--      <div class="default text">Select Entity Field 1</div>-->
+<!--    </ng-template>-->
+<!--  </div>-->
+
+<!--  <ng-template #activeDropdown>-->
+<!--&lt;!&ndash;    <div class="ui fluid selection" id="attributeDropdownField"  ngbDropdown ngbDropdownToggle (openChange)="this._onTouched($event)" display="'static'" autoClose="'inside'">&ndash;&gt;-->
+<!--    <div id="attributeDropdownField" class="uk-inline uk-width-1-1">-->
+<!--      &lt;!&ndash; This is the input field that appears when the dropdown is closed &ndash;&gt;-->
+<!--      <div class="uk-width-1-1">-->
+<!--        <div *ngIf="this.checkValidFieldNode(selectedNode) !== null; else nullSelectedField">-->
+<!--          &lt;!&ndash; Showing the breadcrump of entities &ndash;&gt;-->
+<!--          <div class="ui breadcrumb" #selectedFieldLength *ngFor="let field of selectedNode!.name.split('.'); let i = index">-->
+<!--            <div *ngIf="i !== selectedNode!.name.split('.').length - 1 ; else activeField">-->
+<!--              <span class="section">{{field | titlecase}}</span>-->
+<!--              <span class="divider"> > </span>-->
+<!--            </div>-->
+<!--            <ng-template #activeField>-->
+<!--              <span class="active section">{{field | titlecase}}</span>-->
+<!--            </ng-template>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--          &lt;!&ndash; The template when nothing is selected &ndash;&gt;-->
+<!--        <ng-template #nullSelectedField>-->
+<!--          <div>Select Entity Field</div>-->
+<!--        </ng-template>-->
+<!--      </div>-->
+
+<!--      &lt;!&ndash; This is the tree that appears when the dropdown is expanded &ndash;&gt;-->
+<!--&lt;!&ndash;      <div ngbDropdownMenu>&ndash;&gt;-->
+<!--      <div uk-dropdown="mode: click">-->
+<!--        <div class="mat-app-background basic-container">-->
+<!--          <mat-tree [dataSource]="nestedEntityDataSource" [treeControl]="nestedEntityTreeControl" class="data-tree ui link list">-->
+<!--            &lt;!&ndash; This is the tree node template for expandable nodes &ndash;&gt;-->
+<!--            <mat-nested-tree-node *matTreeNodeDef="let node; when: hasNestedChild">-->
+<!--              <div class="item">-->
+<!--                <div class="mat-tree-node header" id="data-tree-entity-field" matTreeNodeToggle [attr.aria-label]="'toggle ' + node.name">-->
+<!--                  <button type="button" id="data-tree-button" class="ui compact icon button" mat-icon-button>-->
+<!--                    <mat-icon class="mat-icon-rtl-mirror">-->
+<!--                      {{nestedEntityTreeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}-->
+<!--                    </mat-icon>-->
+<!--                  </button>-->
+<!--                  {{node.name | titlecase}}-->
+<!--                </div>-->
+<!--                <div class="ui fitted divider"></div>-->
+<!--              </div>-->
+
+<!--              &lt;!&ndash; This is the content when the leaf is expanded &ndash;&gt;-->
+<!--              <div class="ui link list" [class.data-tree-invisible]="!nestedEntityTreeControl.isExpanded(node)">-->
+<!--                <div class="content">-->
+<!--                  <div *ngFor="let field of node.fields; let first = first" >-->
+<!--                    <div *ngIf="field !== null">-->
+<!--                      <a class="mat-tree-node item" (click)="nodeSelected(field, node)" style="padding-inline-start: 1em">-->
+<!--                        {{field.name | titlecase}}-->
+<!--                      </a>-->
+<!--                      <div class="ui fitted divider"></div>-->
+<!--                    </div>-->
+<!--                  </div>-->
+<!--                  <mat-progress-bar *ngIf="node.loading"  class="example-tree-progress-bar"></mat-progress-bar>-->
+<!--                  <ng-container matTreeNodeOutlet></ng-container>-->
+<!--                </div>-->
+<!--              </div>-->
+
+<!--            </mat-nested-tree-node>-->
+<!--          </mat-tree>-->
+<!--        </div>-->
+<!--      </div>-->
+
+<!--    </div>-->
+<!--  </ng-template>-->
+<!--</div>-->

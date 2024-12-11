@@ -6,6 +6,7 @@ import { CategorySelectorComponent } from './dashboard/category-selector/categor
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 
 const routes: Routes = [
+  { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
 	{
 		path: 'dashboard',
 		component: DashboardComponent,
@@ -20,7 +21,6 @@ const routes: Routes = [
 			}
 		]
 	},
-	{ path: '', redirectTo: '/dashboard', pathMatch: 'full' },
 	{ path: '**', component: PageNotFoundComponent }
 ];
 

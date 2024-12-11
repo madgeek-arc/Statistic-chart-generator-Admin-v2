@@ -1,4 +1,3 @@
-<button (click)="testLog()">TEST</button>
 <button style="float: right;" (click)="submitTest()" [disabled]="!(this.view.valid && this.category.valid && this.dataseries.valid)">SUBMIT</button>
 <div class="container">
 	<form [formGroup]="formGroup">
@@ -8,8 +7,8 @@
 		<mat-stepper #stepper linear (selectionChange)="onStepChange($event)">
 			<mat-step [stepControl]="this.view">
 				<ng-template matStepLabel>
-					<span style="display: block;">{{viewSelectionLabel}}</span>
-					<span *ngIf="true" style="display: block;">{{selectedView}}</span>
+          <span style="display: block;">{{ viewSelectionLabel }}</span>
+          <span *ngIf="true" style="display: block;">{{ selectedView }}</span>
 				</ng-template>
 				<app-view-selector
           (showViewSelection)="updateStepper($event)" [viewForm]="this.testingView" [profileControl]="this.profile">
@@ -36,3 +35,4 @@
 		</mat-stepper>
 	</form>
 </div>
+<pre>{{ formGroup.value | json }}</pre>

@@ -39,3 +39,10 @@ $custom-typography: mat.define-typography-config(
 );
 
 @include mat.all-component-typographies($custom-typography);
+
+// Menu
+.menu-button .mdc-button .mdc-button__label { // make button expand to full given width
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+}

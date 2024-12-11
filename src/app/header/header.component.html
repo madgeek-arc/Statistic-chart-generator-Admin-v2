@@ -19,7 +19,7 @@
               </li>
               <li class="uk-animation-fade">
                 <a class="uk-button">Load</a>
-                <div uk-dropdown="mode: click">
+                <div uk-dropdown="mode: click" (hidden)="clearSelection()">
                   <input id="fileElem" type="file" style="display:none" accept=".json" (change)="loadChart($event)">
                   <button class="btn btn-block btn-outline-secondary " type="button" (click)="initiateFilePicker()">
                     <!-- TODO chart loading status maybe async -->

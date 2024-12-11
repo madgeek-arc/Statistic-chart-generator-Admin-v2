@@ -28,4 +28,9 @@ export class HeaderComponent {
 
   }
 
+  clearSelection(): void {
+    this.dynamicFormHandlingService.resetLoadForm();
+  }
+
+  protected readonly console = console;
 }

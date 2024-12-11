@@ -24,7 +24,7 @@ export class DynamicDataSource implements DataSource<DynamicEntityNode> {
 
 	connect(collectionViewer: CollectionViewer): Observable<DynamicEntityNode[]> {
 
-		this._treeControl.expansionModel.changed.subscribe(
+    this._treeControl.expansionModel.changed.subscribe(
 			(change: SelectionChange<DynamicEntityNode>) => { if (change.added || change.removed) this.handleTreeControl(change); }
 		);
 

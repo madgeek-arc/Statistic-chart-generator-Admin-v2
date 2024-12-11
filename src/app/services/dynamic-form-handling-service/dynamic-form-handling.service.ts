@@ -26,6 +26,7 @@ import {
 import {
   RawDataModel
 } from "../../dashboard/customise-appearance/visualisation-options/supported-libraries-service/description-rawData.model";
+import { AbstractControl, FormArray, FormControl, FormGroup } from "@angular/forms";
 
 @Injectable({
   providedIn: 'root'
@@ -41,6 +42,8 @@ export class DynamicFormHandlingService {
   private _formErrorObject: BehaviorSubject<any[]>;
   private _loadFormObject: Object;
   private _loadFormObjectFile: File | null = null;
+  private updateFormFromFile = new BehaviorSubject(false);
+  jsonLoaded = this.updateFormFromFile.asObservable();
 
   private _diagramCreator: DiagramCreator;
 
@@ -48,6 +51,7 @@ export class DynamicFormHandlingService {
 
   // fixme when find another solution
   private _xAxisRequired: boolean = false;
+
 
   constructor(private diagramcategoryService: DiagramCategoryService,
               private chartExportingService: ChartExportingService,
@@ -122,9 +126,13 @@ export class DynamicFormHandlingService {
     if (!(event === null || event === undefined)) {
       const fr: FileReader = new FileReader();
 
-      fr.onload = () => this._loadFormObject = JSON.parse(<string>fr.result)
-      fr.onloadstart = () => this.chartLoadingService.chartLoadingStatus = true
-      fr.onloadend = () => this._loadFormObjectFile = event.target.files[0]
+      fr.onload = () => {
+        this._loadFormObject = JSON.parse(<string>fr.result);
+        this.updateFormFromFile.next(true);
+      }
+      fr.onloadstart = () => this.chartLoadingService.chartLoadingStatus = true;
+      fr.onloadend = () => this._loadFormObjectFile = event.target.files[0];
+
 
       fr.readAsText(event.target.files[0]);
     }
@@ -133,6 +141,43 @@ export class DynamicFormHandlingService {
   resetLoadForm() {
     this._loadFormObjectFile = null;
     this.chartLoadingService.isChartLoaded = false;
+  }
+
+  adjustAndPatchForm(form: AbstractControl, json: any = this._loadFormObject): void {
+    if (form instanceof FormGroup) {
+      Object.keys(json).forEach(key => {
+        if (!form.get(key)) {
+          form.addControl(key, this.createControl(json[key])); // Add missing control
+        }
+        this.adjustAndPatchForm(form.get(key)!, json[key]); // Recurse
+      });
+    } else if (form instanceof FormArray) {
+      while (form.length < json.length) {
+        form.push(this.createControl(json[0])); // Add controls to match array size
+      }
+      while (form.length > json.length) {
+        form.removeAt(form.length - 1); // Remove extra controls
+      }
+      json.forEach((item: any, index: number) => {
+        this.adjustAndPatchForm(form.at(index), item); // Recurse
+      });
+    } else {
+      form.setValue(json, { emitEvent: false }); // Set value for FormControl
+    }
+  }
+
+  createControl(value: any): AbstractControl {
+    if (value && typeof value === 'object' && !Array.isArray(value)) {
+      const group = new FormGroup({});
+      Object.keys(value).forEach(key => group.addControl(key, this.createControl(value[key])));
+      return group;
+    } else if (Array.isArray(value)) {
+      const array = new FormArray<any>([]);
+      value.forEach(item => array.push(this.createControl(item)));
+      return array;
+    } else {
+      return new FormControl(value);
+    }
   }
 
   public submitForm() {

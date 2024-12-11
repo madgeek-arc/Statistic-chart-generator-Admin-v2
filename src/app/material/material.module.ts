@@ -13,25 +13,27 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatInputModule } from '@angular/material/input';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatDialogModule } from "@angular/material/dialog";
-import {MatCheckboxModule} from '@angular/material/checkbox';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatMenuModule } from "@angular/material/menu";
 
 @NgModule({
-	exports: [
-		MatStepperModule,
-		MatSliderModule,
-		MatButtonModule,
-		MatSelectModule,
-		MatDividerModule,
-		MatExpansionModule,
-		MatTreeModule,
-		MatIconModule,
-		MatProgressBarModule,
-		MatTabsModule,
-		MatInputModule,
-		MatSlideToggleModule,
-		MatDialogModule,
-		MatCheckboxModule
-	]
+  exports: [
+    MatStepperModule,
+    MatSliderModule,
+    MatButtonModule,
+    MatSelectModule,
+    MatDividerModule,
+    MatExpansionModule,
+    MatTreeModule,
+    MatIconModule,
+    MatProgressBarModule,
+    MatTabsModule,
+    MatInputModule,
+    MatSlideToggleModule,
+    MatDialogModule,
+    MatCheckboxModule,
+    MatMenuModule
+  ]
 })
 
-export class MaterialModule { }
+export class MaterialModule {}
