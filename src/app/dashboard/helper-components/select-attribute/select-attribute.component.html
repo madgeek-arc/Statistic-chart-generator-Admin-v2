@@ -2,7 +2,7 @@
   <button mat-button [matMenuTriggerFor]="belowMenu" class="mat-button uk-width-1-1">
 
     <div class="ui fluid selection" *ngIf="isDisabled; else activeDropdown">
-      <div *ngIf="this.checkValidFieldNode(selectedNode) !== null; else nullSelectedField">
+      <div *ngIf="checkValidFieldNode(selectedNode) !== null; else nullSelectedField">
         <div class="ui breadcrumb" #selectedFieldLength *ngFor="let field of selectedNode!.name.split('.'); let i = index">
           <div *ngIf="i !== selectedNode!.name.split('.').length - 1 ; else activeField">
             <span class="section">{{field | titlecase}}</span>
@@ -21,7 +21,7 @@
     <ng-template #activeDropdown>
       <div class="uk-flex uk-flex-middle uk-flex-between">
         <div class="">
-          <div *ngIf="this.checkValidFieldNode(selectedNode) !== null; else nullSelectedField">
+          <div *ngIf="checkValidFieldNode(selectedNode) !== null; else nullSelectedField">
             <!-- Showing the breadcrump of entities -->
             <div class="ui breadcrumb" #selectedFieldLength *ngFor="let field of selectedNode!.name.split('.'); let i = index">
               <div *ngIf="i !== selectedNode!.name.split('.').length - 1 ; else activeField">
@@ -39,7 +39,7 @@
           </ng-template>
         </div>
 
-        <div><mat-icon class="material-symbols-outlined">arrow_drop_down</mat-icon></div>
+        <div><span class="material-symbols-outlined">arrow_drop_down</span></div>
       </div>
 
 
