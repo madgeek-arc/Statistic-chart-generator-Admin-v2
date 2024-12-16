@@ -242,7 +242,7 @@ export interface ChartAppearanceFormSchema {
 }
 
 export interface AppearanceGeneralOptionsFormSchema {
-  visualisationLibrary: string;
+  library: string;
   resultsLimit: number;
   orderByAxis?: string;
 }

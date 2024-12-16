@@ -54,7 +54,7 @@ export class DiagramCreator {
     // console.log('Dataseries ->', dataseries);
 		const appearanceOptions: AppearanceFormSchema = formObj.appearance;
     // console.log('Appearance ->', appearanceOptions);
-    const library: string = appearanceOptions.chartAppearance.generalOptions.visualisationLibrary;
+    const library: string = appearanceOptions.chartAppearance.generalOptions.library;
 
 		// TODO we can make sure we dont send to the back end queries with unsupported libraries
 		// ----------------------
@@ -120,7 +120,7 @@ export class DiagramCreator {
 		const category: CategoryFormSchema = formObj.category;
 		const dataseries: DataseriesFormSchema[] = formObj.dataseries;
 		const appearanceOptions: AppearanceFormSchema = formObj.appearance;
-		const library: string = appearanceOptions.chartAppearance.generalOptions.visualisationLibrary;
+		const library: string = appearanceOptions.chartAppearance.generalOptions.library;
 
 		const rawChartDataModel = new RawChartDataModel(library);
 		if (appearanceOptions.chartAppearance.generalOptions && appearanceOptions.chartAppearance.generalOptions.orderByAxis !== null) {
@@ -505,7 +505,7 @@ export class DiagramCreator {
 		dataseries: DataseriesFormSchema[], appearanceOptions: AppearanceFormSchema): HighMapsMap {
 
 		const mapObj = new HighMapsMap();
-		mapObj.library = appearanceOptions.chartAppearance.generalOptions.visualisationLibrary;
+		mapObj.library = appearanceOptions.chartAppearance.generalOptions.library;
 
 		// tslint:disable-next-line:max-line-length
 		if (appearanceOptions.chartAppearance.highmapsAppearanceOptions !== undefined && appearanceOptions.chartAppearance.highmapsAppearanceOptions !== null) {
