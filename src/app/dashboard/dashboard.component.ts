@@ -314,7 +314,10 @@ export class DashboardComponent implements OnInit {
 					paginationSize: this.formBuilder.control(30 as number, [Validators.required, Validators.min(1)])
 				}),
 			})
-		})
+		});
+
+		this.formGroup.get('appearance')?.get('chartAppearance')?.get('visualisationOptions')?.get('googlechartsAppearanceOptions')?.disable();
+		this.formGroup.get('appearance')?.get('chartAppearance')?.get('visualisationOptions')?.get('echartsAppearanceOptions')?.disable();
 	}
 
 	updateDefaultFormGroupValues(): void {

@@ -64,46 +64,44 @@
 							</div>
 							<div formGroupName="xaxisEntityField">
 
-                <select-attribute class="uk-padding"
-                                  [chosenEntity]="ctrl.get('data.yaxisData.entity')?.value"
-                                  [control]="data.get('xaxisEntityField')">
-                </select-attribute>
+								<select-attribute class="uk-padding" [chosenEntity]="ctrl.get('data.yaxisData.entity')?.value" [control]="data.get('xaxisEntityField')">
+								</select-attribute>
 
-<!--								<mat-form-field class="mat-select-panel">-->
-<!--									<mat-label>Entity Field</mat-label>-->
-<!--									<mat-select formControlName="name">-->
+								<!--								<mat-form-field class="mat-select-panel">-->
+								<!--									<mat-label>Entity Field</mat-label>-->
+								<!--									<mat-select formControlName="name">-->
 
-<!--										<ng-container *ngIf="selectedEntity">-->
-<!--											&lt;!&ndash; <app-entity-selection-component [entityMap]="this.entityMap" [selectedEntity]="this.selectedEntityMap"></app-entity-selection-component> &ndash;&gt;-->
+								<!--										<ng-container *ngIf="selectedEntity">-->
+								<!--											&lt;!&ndash; <app-entity-selection-component [entityMap]="this.entityMap" [selectedEntity]="this.selectedEntityMap"></app-entity-selection-component> &ndash;&gt;-->
 
 
-<!--											&lt;!&ndash; Fields &ndash;&gt;-->
-<!--											<ng-container *ngFor="let entityField of this.selectedEntityMap[0].fields">-->
-<!--												<mat-option [value]="entityField.name">-->
-<!--													{{ entityField.name }}-->
-<!--												</mat-option>-->
-<!--											</ng-container>-->
+								<!--											&lt;!&ndash; Fields &ndash;&gt;-->
+								<!--											<ng-container *ngFor="let entityField of this.selectedEntityMap[0].fields">-->
+								<!--												<mat-option [value]="entityField.name">-->
+								<!--													{{ entityField.name }}-->
+								<!--												</mat-option>-->
+								<!--											</ng-container>-->
 
-<!--											&lt;!&ndash; Also check mat-tree which might be optimal &ndash;&gt;-->
-<!--											&lt;!&ndash; Also check for component in component like a recurring function &ndash;&gt;-->
-<!--											&lt;!&ndash; Relations  &ndash;&gt;-->
-<!--											<ng-container *ngFor="let entityFieldRelation of selectedEntityMap[0].relations">-->
-<!--												<mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">-->
-<!--													<mat-expansion-panel-header>-->
-<!--														{{ entityFieldRelation | uppercase }}-->
-<!--													</mat-expansion-panel-header>-->
-<!--													<ng-container *ngIf="panelOpenState">-->
-<!--														<app-entity-selection-component [entityMap]="this.entityMap" [entityFieldRelation]="entityFieldRelation" (outputEvent)="outputResult($event)">-->
-<!--														</app-entity-selection-component>-->
-<!--													</ng-container>-->
-<!--												</mat-expansion-panel>-->
-<!--											</ng-container>-->
+								<!--											&lt;!&ndash; Also check mat-tree which might be optimal &ndash;&gt;-->
+								<!--											&lt;!&ndash; Also check for component in component like a recurring function &ndash;&gt;-->
+								<!--											&lt;!&ndash; Relations  &ndash;&gt;-->
+								<!--											<ng-container *ngFor="let entityFieldRelation of selectedEntityMap[0].relations">-->
+								<!--												<mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">-->
+								<!--													<mat-expansion-panel-header>-->
+								<!--														{{ entityFieldRelation | uppercase }}-->
+								<!--													</mat-expansion-panel-header>-->
+								<!--													<ng-container *ngIf="panelOpenState">-->
+								<!--														<app-entity-selection-component [entityMap]="this.entityMap" [entityFieldRelation]="entityFieldRelation" (outputEvent)="outputResult($event)">-->
+								<!--														</app-entity-selection-component>-->
+								<!--													</ng-container>-->
+								<!--												</mat-expansion-panel>-->
+								<!--											</ng-container>-->
 
 
-<!--                    </ng-container>-->
+								<!--                    </ng-container>-->
 
-<!--									</mat-select>-->
-<!--								</mat-form-field>-->
+								<!--									</mat-select>-->
+								<!--								</mat-form-field>-->
 
 							</div>
 

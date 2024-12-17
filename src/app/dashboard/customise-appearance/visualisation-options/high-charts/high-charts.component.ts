@@ -35,6 +35,11 @@ export class HighChartsComponent implements OnInit {
 
 	constructor() { }
 
+	getSeriesColors(form: any) {
+		// console.log(form.controls.data.controls.filters.controls);
+		return form.controls.dataSeriesColorPalette.controls;
+	}
+
 
 	ngOnInit(): void {
 		if (this.highChartsForm && this.highChartsForm.value) {
@@ -42,10 +47,13 @@ export class HighChartsComponent implements OnInit {
 		}
 	}
 
-	addSeriesColor(): void {
-		console.log("Add series color.");
+	addSeriesColor(form: any): void {
+		form.controls.dataSeriesColorPalette.push(new FormControl<string>('#ffffff'));
 	}
 
+	removeSeriesColor(form: any, index: number) {
+		form.controls.dataSeriesColorPalette.removeAt(index);
+	}
 
 	testButton(): void {
 		console.log("this.highChartsForm:", this.highChartsForm.value);

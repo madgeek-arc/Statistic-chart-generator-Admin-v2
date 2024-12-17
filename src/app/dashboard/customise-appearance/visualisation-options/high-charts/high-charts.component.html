@@ -363,10 +363,17 @@
 			<h5>Data Series Color Palette</h5>
 			<mat-divider></mat-divider>
 
-			<button (click)="addSeriesColor()">Add Series Color</button>
+			<ng-container *ngFor="let dataSeriesColor of getSeriesColors(this.highChartsForm) ; let i = index">
+				<div>
+					<input type="color" [formControlName]="i">
+					<button (click)="removeSeriesColor(this.highChartsForm, i)">X</button>
+				</div>
+			</ng-container>
 
+			<div>
+				<button (click)="addSeriesColor(this.highChartsForm)">+ Add Series Color</button>
+			</div>
 
 		</div>
-
 	</div>
 </div>

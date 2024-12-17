@@ -15,7 +15,7 @@
 						<div style="flex-grow: 1;">
 							<mat-form-field>
 								<mat-label>Visualisation Library</mat-label>
-								<mat-select formControlName="visualisationLibrary">
+								<mat-select (selectionChange)="libraryChange($event)" formControlName="visualisationLibrary">
 									<mat-option disabled="true">Select Library</mat-option>
 									<mat-option *ngFor="let visualisationLibrary of visualisationLibraryList" [value]="visualisationLibrary.value">
 										{{visualisationLibrary.name}}
@@ -52,6 +52,8 @@
 					<h5 style="opacity: 0.5; margin-top: 0px;">Available options based on the selected Visualisation Library</h5>
 					<mat-divider></mat-divider>
 					<br>
+
+					<button (click)="testing()">TESTING</button>
 
 					<ng-container *ngIf="this.visualisationLibrary.value === 'HighCharts'">
 						<app-high-charts [highChartsForm]="this.highCharts"></app-high-charts>

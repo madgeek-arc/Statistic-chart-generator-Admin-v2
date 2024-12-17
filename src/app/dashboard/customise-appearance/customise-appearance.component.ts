@@ -27,7 +27,28 @@ export class CustomiseAppearanceComponent implements OnInit {
 
 	constructor() { }
 
-	ngOnInit() {
+	ngOnInit() { }
+
+	libraryChange(event: any) {
+		console.log("Event:", event);
+		const newLibrary: string = event.value;
+
+		if (newLibrary === 'HighCharts') {
+			this.appearanceForm.get('chartAppearance')?.get('visualisationOptions')?.get('highchartsAppearanceOptions')?.enable();
+			this.appearanceForm.get('chartAppearance')?.get('visualisationOptions')?.get('googlechartsAppearanceOptions')?.disable();
+			this.appearanceForm.get('chartAppearance')?.get('visualisationOptions')?.get('echartsAppearanceOptions')?.disable();
+		} else if (newLibrary === 'GoogleCharts') {
+			this.appearanceForm.get('chartAppearance')?.get('visualisationOptions')?.get('highchartsAppearanceOptions')?.disable();
+			this.appearanceForm.get('chartAppearance')?.get('visualisationOptions')?.get('googlechartsAppearanceOptions')?.enable();
+			this.appearanceForm.get('chartAppearance')?.get('visualisationOptions')?.get('echartsAppearanceOptions')?.disable();
+		} else if (newLibrary === 'eCharts') {
+			this.appearanceForm.get('chartAppearance')?.get('visualisationOptions')?.get('highchartsAppearanceOptions')?.disable();
+			this.appearanceForm.get('chartAppearance')?.get('visualisationOptions')?.get('googlechartsAppearanceOptions')?.disable();
+			this.appearanceForm.get('chartAppearance')?.get('visualisationOptions')?.get('echartsAppearanceOptions')?.enable();
+		}
+	}
+
+	testing() {
 		console.log("Appearance Form:", this.appearanceForm);
 		console.log("Appearance Form Value:", this.appearanceForm.value);
 	}

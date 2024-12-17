@@ -1,1 +1,176 @@
-<p>e-charts works!</p>
+<div style="width: 100%;" [formGroup]="this.eChartsForm">
+
+	<div>
+		<button (click)="testButton()">Click</button>
+	</div>
+
+	<div style="width: 50%; display: inline-block;">
+		<div formGroupName="titles">
+			<h5 style="font-weight: bold;">Diagram Title</h5>
+			<mat-divider></mat-divider>
+
+			<div>
+				<div style="display: inline-block; margin-right: 40px;">
+					<mat-label>Title</mat-label>
+					<br>
+					<mat-form-field>
+						<input matInput placeholder="Title" formControlName="title">
+					</mat-form-field>
+				</div>
+				<div style="display: inline-block;">
+					<mat-label>Title Color</mat-label>
+					<br>
+					<mat-form-field>
+						<input matInput placeholder="Subtitle" formControlName="subtitle">
+					</mat-form-field>
+				</div>
+			</div>
+		</div>
+		<div formGroupName="axisNames">
+			<h5 style="font-weight: bold;">Axis Names</h5>
+			<mat-divider></mat-divider>
+
+			<div>
+				<div style="display: inline-block; margin-right: 40px;">
+					<mat-label>Yaxis</mat-label>
+					<br>
+					<mat-form-field>
+						<input matInput placeholder="Yaxis" formControlName="yaxisName">
+					</mat-form-field>
+				</div>
+				<div style="display: inline-block;">
+					<mat-label>Xaxis</mat-label>
+					<br>
+					<mat-form-field>
+						<input matInput placeholder="Xaxis" formControlName="xaxisName">
+					</mat-form-field>
+				</div>
+			</div>
+		</div>
+		<div formGroupName="ecMiscOptions">
+			<h5 style="font-weight: bold;">Misc Options</h5>
+			<mat-divider style="margin-bottom: 30px;"></mat-divider>
+
+			<div>
+				<div>
+					<mat-slide-toggle formControlName="exporting">Enable Exporting </mat-slide-toggle><mat-icon>info</mat-icon>
+				</div>
+			</div>
+
+			<div>
+				<div>
+					<mat-slide-toggle formControlName="ecEnableDataLabels">Enable data labels for all series </mat-slide-toggle><mat-icon>info</mat-icon>
+				</div>
+			</div>
+
+			<div>
+				<div>
+					<mat-slide-toggle formControlName="stackedChart">Stacked graph </mat-slide-toggle><mat-icon>info</mat-icon>
+				</div>
+			</div>
+
+		</div>
+	</div>
+	<div style="width: 50%; display: inline-block;">
+		<div formGroupName="ecLegend">
+			<h5>Legend</h5>
+			<mat-divider></mat-divider>
+
+			<div>
+				<div>
+					<mat-slide-toggle formControlName="ecEnableLegend">Enable Legend </mat-slide-toggle><mat-icon>info</mat-icon>
+				</div>
+			</div>
+
+			<div>
+				<div style="width: 30%; display: inline-block; margin-right: 40px;">
+					<mat-label>Item Layouts</mat-label>
+					<br>
+					<mat-form-field>
+						<mat-select formControlName="ecLegendLayout">
+							<mat-option disabled="true">Select One</mat-option>
+							<mat-option [value]="itemLayout.value" *ngFor="let itemLayout of itemLayoutList">
+								{{itemLayout.name}}
+							</mat-option>
+						</mat-select>
+					</mat-form-field>
+				</div>
+
+				<div style="width: 30%; display: inline-block; margin-right: 40px;">
+					<mat-label>Horizontal Alignment</mat-label>
+					<br>
+					<mat-form-field>
+						<mat-select formControlName="ecLegendHorizontalAlignment">
+							<mat-option disabled="true">Select One</mat-option>
+							<mat-option [value]="horizontalAlignment.value" *ngFor="let horizontalAlignment of horizontalAlignmentList">
+								{{horizontalAlignment.name}}
+							</mat-option>
+						</mat-select>
+					</mat-form-field>
+				</div>
+
+				<div style="width: 30%; display: inline-block;">
+					<mat-label>Vertical Alignment</mat-label>
+					<br>
+					<mat-form-field>
+						<mat-select formControlName="ecLegendVerticalAlignment">
+							<mat-option disabled="true">Select One</mat-option>
+							<mat-option [value]="verticalAlignment.value" *ngFor="let verticalAlignment of verticalAlignmentList">
+								{{verticalAlignment.name}}
+							</mat-option>
+						</mat-select>
+					</mat-form-field>
+				</div>
+			</div>
+		</div>
+
+		<div formGroupName="ecZoomOptions">
+			<h5>Zoom Options</h5>
+			<mat-divider></mat-divider>
+
+			<div>
+				<div>
+					<mat-slide-toggle formControlName="enableXaxisZoom">Enable X axis Zoom</mat-slide-toggle><mat-icon>info</mat-icon>
+				</div>
+			</div>
+
+			<div>
+				<div>
+					<mat-slide-toggle formControlName="enableYaxisZoom">Enable Y axis Zoom </mat-slide-toggle><mat-icon>info</mat-icon>
+				</div>
+			</div>
+		</div>
+
+		<div formGroupName="ecChartArea">
+			<h5>Chart Area</h5>
+			<mat-divider></mat-divider>
+
+			<div>
+				<div>
+					<mat-label>Background Color</mat-label>
+					<br>
+					<mat-form-field>
+						<input matInput type="color" formControlName="ecCABackGroundColor">
+					</mat-form-field>
+				</div>
+			</div>
+		</div>
+
+		<div formArrayName="dataSeriesColorArray">
+			<h5>Data Series Color</h5>
+			<mat-divider></mat-divider>
+
+			<ng-container *ngFor="let dataSeriesColor of getSeriesColors(this.eChartsForm) ; let i = index">
+				<div>
+					<input type="color" [formControlName]="i">
+					<button (click)="removeSeriesColor(this.eChartsForm, i)">X</button>
+				</div>
+			</ng-container>
+
+			<div>
+				<button (click)="addSeriesColor(this.eChartsForm)">+ Add Series Color</button>
+			</div>
+
+		</div>
+	</div>
+</div>
