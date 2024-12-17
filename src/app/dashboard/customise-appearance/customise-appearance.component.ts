@@ -44,28 +44,24 @@ export class CustomiseAppearanceComponent implements OnInit {
 		return this.generalOptions.get('visualisationLibrary') as FormControl;
 	}
 
-	get resultsLimit(): FormControl {
-		return this.generalOptions.get('resultsLimit') as FormControl;
-	}
-
-	get orderBy(): FormControl {
-		return this.generalOptions.get('orderBy') as FormControl;
-	}
-
 	get visualisationOptions(): FormGroup {
 		return this.chartAppearance.get('visualisationOptions') as FormGroup;
 	}
 
 	get highCharts(): FormGroup {
-		return this.visualisationOptions.get('highCharts') as FormGroup;
+		return this.appearanceForm.get('chartAppearance')?.get('visualisationOptions')?.get('highchartsAppearanceOptions') as FormGroup;
+		// return this.visualisationOptions.get('highchartsAppearanceOptions') as FormGroup
+	}
+
+	get googleCharts(): FormGroup {
+		return this.appearanceForm.get('chartAppearance')?.get('visualisationOptions')?.get('googlechartsAppearanceOptions') as FormGroup;
+		// return this.visualisationOptions.get('googlechartsAppearanceOptions') as FormGroup
+	}
+
+	get eCharts(): FormGroup {
+		return this.appearanceForm.get('chartAppearance')?.get('visualisationOptions')?.get('echartsAppearanceOptions') as FormGroup;
+		// return this.visualisationOptions.get('echartsAppearanceOptions') as FormGroup
 	}
 
 
-	get tableAppearance(): FormGroup {
-		return this.appearanceForm.get('tableAppearance') as FormGroup;
-	}
-
-	get paginationSize(): FormControl {
-		return this.tableAppearance.get('paginationSize') as FormControl;
-	}
 }

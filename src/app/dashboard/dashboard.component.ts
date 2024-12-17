@@ -6,8 +6,8 @@ import { SCGAFormSchema } from './customise-appearance/visualisation-options/cha
 import { BehaviorSubject } from 'rxjs';
 import { MatDialog } from "@angular/material/dialog";
 import {
-  ChartTableModalComponent,
-  ChartTableModalContext
+	ChartTableModalComponent,
+	ChartTableModalContext
 } from "../modals/chart-table-modal/chart-table-modal.component";
 import { DynamicFormHandlingService } from "../services/dynamic-form-handling-service/dynamic-form-handling.service";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
@@ -19,9 +19,9 @@ import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 	styleUrls: ['./dashboard.component.less']
 })
 export class DashboardComponent implements OnInit {
-  private destroyRef = inject(DestroyRef);
+	private destroyRef = inject(DestroyRef);
 
-  @ViewChild('stepper') stepper !: MatStepper;
+	@ViewChild('stepper') stepper !: MatStepper;
 
 	formGroup: FormGroup;
 
@@ -62,16 +62,16 @@ export class DashboardComponent implements OnInit {
 			this.dynamicFormHandlingService.formSchemaObject = value;
 		});
 
-    this.dynamicFormHandlingService.jsonLoaded.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: data => {
-        if (data) {
-          this.dynamicFormHandlingService.adjustAndPatchForm(this.formGroup);
-          console.log(this.formGroup.value);
-          this.formGroup.setValue(this.dynamicFormHandlingService.loadFormObject)
+		this.dynamicFormHandlingService.jsonLoaded.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+			next: data => {
+				if (data) {
+					this.dynamicFormHandlingService.adjustAndPatchForm(this.formGroup);
+					console.log(this.formGroup.value);
+					this.formGroup.setValue(this.dynamicFormHandlingService.loadFormObject)
 
-        }
-      }
-    });
+				}
+			}
+		});
 	}
 
 	get testingView() {
@@ -206,29 +206,29 @@ export class DashboardComponent implements OnInit {
 						orderBy: this.formBuilder.control(null),
 					}),
 					visualisationOptions: this.formBuilder.group({
-						highCharts: this.formBuilder.group({
+						highchartsAppearanceOptions: this.formBuilder.group({
 							title: this.formBuilder.group({
 								titleText: this.formBuilder.control<string>(''),
-								color: this.formBuilder.control<string>("#333333"),
+								color: this.formBuilder.control<string>('#333333'),
 								align: this.formBuilder.control<'right' | 'center' | 'left'>('center'),
 								margin: this.formBuilder.control<number>(15),
 								fontSize: this.formBuilder.control<number>(18)
 							}),
 							subtitle: this.formBuilder.group({
 								text: this.formBuilder.control(null),
-								color: this.formBuilder.control("#666666"),
+								color: this.formBuilder.control('#666666'),
 								horizontalAlignment: this.formBuilder.control('center'),
 								fontSize: this.formBuilder.control(12)
 							}),
 							xAxis: this.formBuilder.group({
 								name: this.formBuilder.control(null),
 								fontSize: this.formBuilder.control(11),
-								color: this.formBuilder.control("#666666")
+								color: this.formBuilder.control('#666666')
 							}),
 							yAxis: this.formBuilder.group({
 								name: this.formBuilder.control(null),
 								fontSize: this.formBuilder.control(11),
-								color: this.formBuilder.control("#666666")
+								color: this.formBuilder.control('#666666')
 							}),
 							miscOptions: this.formBuilder.group({
 								enableExporting: this.formBuilder.control(true),
@@ -237,14 +237,14 @@ export class DashboardComponent implements OnInit {
 							}),
 							chartArea: this.formBuilder.group({
 								backgroundColor: this.formBuilder.control(null),
-								borderColor: this.formBuilder.control("#335cad"),
+								borderColor: this.formBuilder.control('#335cad'),
 								borderCornerRadius: this.formBuilder.control(0),
 								borderWidth: this.formBuilder.control(0)
 							}),
 							plotArea: this.formBuilder.group({
-								backgroundColor: this.formBuilder.control("#ffffff"),
-								borderColor: this.formBuilder.control("#cccccc"),
-								backgroundImageUrl: this.formBuilder.control(""),
+								backgroundColor: this.formBuilder.control('#ffffff'),
+								borderColor: this.formBuilder.control('#cccccc'),
+								backgroundImageUrl: this.formBuilder.control(''),
 								borderWidth: this.formBuilder.control(0)
 							}),
 							dataLabels: this.formBuilder.group({
@@ -255,15 +255,58 @@ export class DashboardComponent implements OnInit {
 							}),
 							legend: this.formBuilder.group({
 								enableLegend: this.formBuilder.control(true),
-								itemlayout: this.formBuilder.control("horizontal"),
-								horizontalAlignment: this.formBuilder.control("center"),
-								verticalAlignment: this.formBuilder.control("bottom")
+								itemlayout: this.formBuilder.control('horizontal'),
+								horizontalAlignment: this.formBuilder.control('center'),
+								verticalAlignment: this.formBuilder.control('bottom')
 							}),
 							zoomOptions: this.formBuilder.group({
 								enableXAxisZoom: this.formBuilder.control(false),
 								enableYAxisZoom: this.formBuilder.control(false)
 							}),
 							dataSeriesColorPalette: this.formBuilder.array([])
+						}),
+						googlechartsAppearanceOptions: this.formBuilder.group({
+							titles: this.formBuilder.group({
+								title: this.formBuilder.control<string>(''),
+								subtitle: this.formBuilder.control<string>('')
+							}),
+							axisNames: this.formBuilder.group({
+								yaxisName: this.formBuilder.control<string>(''),
+								xaxisName: this.formBuilder.control<string>('')
+							}),
+							exporting: this.formBuilder.control<boolean>(true),
+							stackedChart: this.formBuilder.control<string>('disabled'),
+							gcCABackGroundColor: this.formBuilder.control<string>('#ffffff'),
+							gcPABackgroundColor: this.formBuilder.control<string>('#ffffff')
+						}),
+						echartsAppearanceOptions: this.formBuilder.group({
+							titles: this.formBuilder.group({
+								title: this.formBuilder.control<string>(''),
+								subtitle: this.formBuilder.control<string>('')
+							}),
+							axisNames: this.formBuilder.group({
+								yaxisName: this.formBuilder.control<string>(''),
+								xaxisName: this.formBuilder.control<string>('')
+							}),
+							dataSeriesColorArray: this.formBuilder.array<string>([]),
+							ecChartArea: this.formBuilder.group({
+								ecCABackGroundColor: this.formBuilder.control<string>('#ffffff')
+							}),
+							ecLegend: this.formBuilder.group({
+								ecEnableLegend: this.formBuilder.control<boolean>(true),
+								ecLegendLayout: this.formBuilder.control<'horizontal' | 'vertical'>('horizontal'),
+								ecLegendHorizontalAlignment: this.formBuilder.control<'left' | 'center' | 'right'>('center'),
+								ecLegendVerticalAlignment: this.formBuilder.control<'top' | 'middle' | 'bottom'>('bottom')
+							}),
+							ecMiscOptions: this.formBuilder.group({
+								exporting: this.formBuilder.control<boolean>(true),
+								ecEnableDataLabels: this.formBuilder.control<boolean>(false),
+								stackedChart: this.formBuilder.control<boolean>(false)
+							}),
+							ecZoomOptions: this.formBuilder.group({
+								enableXaxisZoom: this.formBuilder.control<boolean>(false),
+								enableYaxisZoom: this.formBuilder.control<boolean>(false)
+							})
 						})
 					})
 				}),
@@ -278,7 +321,7 @@ export class DashboardComponent implements OnInit {
 		this.appearance.get('tableAppearance')?.get('paginationSize')?.setValue(30);
 		this.appearance.get('chartAppearance')?.get('generalOptions')?.get('visualisationLibrary')?.setValue('HighCharts');
 		this.appearance.get('chartAppearance')?.get('generalOptions')?.get('resultsLimit')?.setValue(30);
-		this.appearance.get('chartAppearance')?.get('visualisationOptions')?.get('highCharts')?.get('chartArea')?.get('borderColor')?.setValue("#335cad");
+		this.appearance.get('chartAppearance')?.get('visualisationOptions')?.get('highCharts')?.get('chartArea')?.get('borderColor')?.setValue('#335cad');
 		this.appearance.get('chartAppearance')?.get('visualisationOptions')?.get('highCharts')?.get('title')?.get('titleColor')?.setValue('#333333');
 		this.appearance.get('chartAppearance')?.get('visualisationOptions')?.get('highCharts')?.get('title')?.get('horizontalAlignment')?.setValue('center');
 		this.appearance.get('chartAppearance')?.get('visualisationOptions')?.get('highCharts')?.get('title')?.get('margin')?.setValue(15);
@@ -286,9 +329,9 @@ export class DashboardComponent implements OnInit {
 		this.appearance.get('chartAppearance')?.get('visualisationOptions')?.get('highCharts')?.get('subtitle')?.get('subtitleColor')?.setValue('#666666');
 		this.appearance.get('chartAppearance')?.get('visualisationOptions')?.get('highCharts')?.get('subtitle')?.get('horizontalAlignment')?.setValue('center');
 		this.appearance.get('chartAppearance')?.get('visualisationOptions')?.get('highCharts')?.get('xAxis')?.get('fontSize')?.setValue(11);
-		this.appearance.get('chartAppearance')?.get('visualisationOptions')?.get('highCharts')?.get('xAxis')?.get('xAxisColor')?.setValue("#666666");
+		this.appearance.get('chartAppearance')?.get('visualisationOptions')?.get('highCharts')?.get('xAxis')?.get('xAxisColor')?.setValue('#666666');
 		this.appearance.get('chartAppearance')?.get('visualisationOptions')?.get('highCharts')?.get('yAxis')?.get('fontSize')?.setValue(11);
-		this.appearance.get('chartAppearance')?.get('visualisationOptions')?.get('highCharts')?.get('yAxis')?.get('yAxisColor')?.setValue("#666666");
+		this.appearance.get('chartAppearance')?.get('visualisationOptions')?.get('highCharts')?.get('yAxis')?.get('yAxisColor')?.setValue('#666666');
 		this.appearance.get('chartAppearance')?.get('visualisationOptions')?.get('highCharts')?.get('miscOptions')?.get('enableExporting')?.setValue(true);
 		this.appearance.get('chartAppearance')?.get('visualisationOptions')?.get('highCharts')?.get('miscOptions')?.get('enableExporting')?.setValue('disabled');
 

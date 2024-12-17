@@ -1,79 +1,86 @@
-<mat-tab-group>
-	<mat-tab label="Chart Appearance">
-		<div>
-			<h2 style="margin-top: 30px;">
-				General Options
-			</h2>
-			<h5 style="opacity: 0.5; margin-top: 0px;">Select a chart Visualisation Library, the upper limit of your results and how they are grouped</h5>
-			<mat-divider></mat-divider>
-			<br>
+<div [formGroup]="this.appearanceForm">
 
-			<div class="flex-container">
-				<div style="flex-grow: 1;">
-					<mat-form-field>
-						<mat-label>Visualisation Library</mat-label>
-						<mat-select [formControl]="this.visualisationLibrary">
-							<mat-option disabled="true">Select Library</mat-option>
-							<mat-option *ngFor="let visualisationLibrary of visualisationLibraryList" [value]="visualisationLibrary.value">
-								{{visualisationLibrary.name}}
-							</mat-option>
-						</mat-select>
-					</mat-form-field>
+	<mat-tab-group>
+		<mat-tab label="Chart Appearance">
+			<div formGroupName="chartAppearance">
+				<div formGroupName="generalOptions">
+					<h2 style="margin-top: 30px;">
+						General Options
+					</h2>
+					<h5 style="opacity: 0.5; margin-top: 0px;">Select a chart Visualisation Library, the upper limit of your results and how they are grouped</h5>
+					<mat-divider></mat-divider>
+					<br>
+
+					<div class="flex-container">
+						<div style="flex-grow: 1;">
+							<mat-form-field>
+								<mat-label>Visualisation Library</mat-label>
+								<mat-select formControlName="visualisationLibrary">
+									<mat-option disabled="true">Select Library</mat-option>
+									<mat-option *ngFor="let visualisationLibrary of visualisationLibraryList" [value]="visualisationLibrary.value">
+										{{visualisationLibrary.name}}
+									</mat-option>
+								</mat-select>
+							</mat-form-field>
+						</div>
+
+						<div style="flex-grow: 1;">
+							<mat-form-field>
+								<mat-label>Results Limit</mat-label>
+								<input type="number" matInput min="1" formControlName="resultsLimit">
+							</mat-form-field>
+						</div>
+
+						<div style="flex-grow: 1;">
+							<mat-form-field>
+								<mat-label>Order By</mat-label>
+								<mat-select formControlName="orderBy">
+									<mat-option disabled="true">Select One</mat-option>
+									<mat-option [value]="orderBy.value" *ngFor="let orderBy of orderByList">
+										{{orderBy.name}}
+									</mat-option>
+								</mat-select>
+							</mat-form-field>
+						</div>
+					</div>
 				</div>
 
-				<div style="flex-grow: 1;">
-					<mat-form-field>
-						<mat-label>Results Limit</mat-label>
-						<input type="number" matInput min="1" [formControl]="this.resultsLimit">
-					</mat-form-field>
-				</div>
+				<div formGroupName="visualisationOptions">
+					<h2 style="margin-top: 30px;">
+						Visualisation Options
+					</h2>
+					<h5 style="opacity: 0.5; margin-top: 0px;">Available options based on the selected Visualisation Library</h5>
+					<mat-divider></mat-divider>
+					<br>
 
-				<div style="flex-grow: 1;">
-					<mat-form-field>
-						<mat-label>Order By</mat-label>
-						<mat-select [formControl]="this.orderBy">
-							<mat-option disabled="true">Select One</mat-option>
-							<mat-option [value]="orderBy.value" *ngFor="let orderBy of orderByList">
-								{{orderBy.name}}
-							</mat-option>
-						</mat-select>
-					</mat-form-field>
+					<ng-container *ngIf="this.visualisationLibrary.value === 'HighCharts'">
+						<app-high-charts [highChartsForm]="this.highCharts"></app-high-charts>
+					</ng-container>
+					<ng-container *ngIf="this.visualisationLibrary.value === 'GoogleCharts'">
+						<app-google-charts [googleChartsForm]="this.googleCharts"></app-google-charts>
+					</ng-container>
+					<ng-container *ngIf="this.visualisationLibrary.value === 'eCharts'">
+						<app-e-charts [eChartsForm]="this.eCharts"></app-e-charts>
+					</ng-container>
+
 				</div>
 			</div>
-		</div>
+		</mat-tab>
 
-		<div>
-			<h2 style="margin-top: 30px;">
-				Visualisation Options
-			</h2>
-			<h5 style="opacity: 0.5; margin-top: 0px;">Available options based on the selected Visualisation Library</h5>
-			<mat-divider></mat-divider>
-			<br>
+		<mat-tab label="Table Appearance">
+			<div formGroupName="tableAppearance">
+				<h2>
+					Visualisation Options
+				</h2>
+				<h5 style="opacity: 0.5;">Available options based on the selected Visualisation Library</h5>
+				<mat-divider></mat-divider>
+				<br>
 
-			<ng-container *ngIf="this.visualisationLibrary.value === 'HighCharts'">
-				<app-high-charts [highChartsForm]="this.highCharts"></app-high-charts>
-			</ng-container>
-			<ng-container *ngIf="this.visualisationLibrary.value === 'GoogleCharts'">
-				<app-google-charts></app-google-charts>
-			</ng-container>
-			<ng-container *ngIf="this.visualisationLibrary.value === 'eCharts'">
-				<app-e-charts></app-e-charts>
-			</ng-container>
-
-		</div>
-	</mat-tab>
-
-	<mat-tab label="Table Appearance">
-		<h2>
-			Visualisation Options
-		</h2>
-		<h5 style="opacity: 0.5;">Available options based on the selected Visualisation Library</h5>
-		<mat-divider></mat-divider>
-		<br>
-
-		<mat-form-field class="example-full-width">
-			<mat-label>Table Page Size</mat-label>
-			<input type="number" matInput min="1" [formControl]="this.paginationSize">
-		</mat-form-field>
-	</mat-tab>
-</mat-tab-group>
+				<mat-form-field class="example-full-width">
+					<mat-label>Table Page Size</mat-label>
+					<input type="number" matInput min="1" formControlName="paginationSize">
+				</mat-form-field>
+			</div>
+		</mat-tab>
+	</mat-tab-group>
+</div>

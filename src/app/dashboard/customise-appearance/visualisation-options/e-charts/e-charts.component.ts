@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
+import { FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-e-charts',
@@ -6,5 +7,8 @@ import { Component } from '@angular/core';
   styleUrls: ['./e-charts.component.less']
 })
 export class EChartsComponent {
+
+	@Input('eChartsForm') eChartsForm: FormGroup;
+
 
 }
