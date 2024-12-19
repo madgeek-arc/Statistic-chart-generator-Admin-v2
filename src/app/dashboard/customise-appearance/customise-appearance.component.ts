@@ -21,8 +21,8 @@ export class CustomiseAppearanceComponent implements OnInit {
 	];
 
 	protected orderByList = [
-		{ name: 'X Axis', value: 'xAxis' },
-		{ name: 'Y Axis', value: 'yAxis' }
+		{ name: 'X Axis', value: 'xaxis' },
+		{ name: 'Y Axis', value: 'yaxis' }
 	];
 
 	constructor() { }

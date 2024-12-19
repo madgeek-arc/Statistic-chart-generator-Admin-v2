@@ -187,7 +187,7 @@ export class DashboardComponent implements OnInit {
 					generalOptions: this.formBuilder.group({
 						visualisationLibrary: this.formBuilder.control('HighCharts', Validators.required),
 						resultsLimit: this.formBuilder.control(30 as number, [Validators.required, Validators.min(1)]),
-						orderBy: this.formBuilder.control(null),
+						orderByAxis: this.formBuilder.control(null),
 					}),
 					visualisationOptions: this.formBuilder.group({
 						highchartsAppearanceOptions: this.formBuilder.group({

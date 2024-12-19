@@ -34,10 +34,10 @@
 						<div style="flex-grow: 1;">
 							<mat-form-field>
 								<mat-label>Order By</mat-label>
-								<mat-select formControlName="orderBy">
+								<mat-select formControlName="orderByAxis">
 									<mat-option disabled="true">Select One</mat-option>
-									<mat-option [value]="orderBy.value" *ngFor="let orderBy of orderByList">
-										{{orderBy.name}}
+									<mat-option [value]="orderByAxis.value" *ngFor="let orderByAxis of orderByList">
+										{{orderByAxis.name}}
 									</mat-option>
 								</mat-select>
 							</mat-form-field>
