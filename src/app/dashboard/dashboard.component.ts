@@ -54,7 +54,7 @@ export class DashboardComponent implements OnInit {
 	ngOnInit(): void {
 		this.view.valueChanges.subscribe((profile: Profile) => {
 			if (profile && !this.firstTime) {
-				this.newViewSelected();
+				this.newViewSelected(profile);
 			}
 		});
 
@@ -122,12 +122,13 @@ export class DashboardComponent implements OnInit {
 		}, 1);
 	}
 
-	newViewSelected(): void {
+	newViewSelected(profile: Profile): void {
 		this.category.reset();
-		this.dataseries.reset();
+		// this.dataseries.reset();
 		this.appearance.reset();
 
-		this.updateDefaultFormGroupValues();
+		this.createDefaultFormGroup(profile);
+		// this.updateDefaultFormGroupValues();
 		this.formGroup.updateValueAndValidity();
 
 		this.selectedCategory = '';
@@ -135,11 +136,11 @@ export class DashboardComponent implements OnInit {
 		this.selectedAppearance = '';
 	}
 
-	createDefaultFormGroup(): void {
+	createDefaultFormGroup(profile?: Profile): void {
 		this.formGroup = this.formBuilder.group({
 			testingView: this.formBuilder.control(null),
 			view: this.formBuilder.group({
-				profile: this.formBuilder.control(null)
+				profile: this.formBuilder.control(profile ? profile : null)
 			}),
 			category: this.formBuilder.group({
 				diagram: this.formBuilder.group({
@@ -176,8 +177,9 @@ export class DashboardComponent implements OnInit {
 					}),
 					chartProperties: new FormGroup({
 						chartType: new FormControl<string | null>(null),
+						// TODO add dataseriesColor to UI 
 						dataseriesColor: new FormControl<string | null>(null),
-						dataseriesName: new FormControl<string | null>('Data'),
+						dataseriesName: new FormControl<string | null>({ value: 'Data', disabled: true }),
 						stacking: new FormControl<'null' | 'normal' | 'percent' | 'stream' | 'overlap'>('null', Validators.required),
 					}),
 				})

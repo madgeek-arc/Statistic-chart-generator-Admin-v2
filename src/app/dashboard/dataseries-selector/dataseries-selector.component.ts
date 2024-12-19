@@ -28,7 +28,7 @@ export class DataseriesSelectorComponent implements OnInit {
 	selectedEntity: string = '';
 	entitySelection: string = 'Select Entity';
 	form: FormArray<FormGroup>;
-
+	editableDataseriesTitleList: Array<boolean> = [false];
 	openedPanels: Array<number> = [];
 
 	// testing
@@ -234,6 +234,8 @@ export class DataseriesSelectorComponent implements OnInit {
 
 	addDataseries() {
 		this.dataseriesIncremment++;
+		this.editableDataseriesTitleList.push(false);
+
 		this.form.push(new FormGroup({
 			data: new FormGroup({
 				yaxisData: new FormGroup({
@@ -252,28 +254,12 @@ export class DataseriesSelectorComponent implements OnInit {
 						})
 					})
 				]),
-				filters: new FormArray([
-					new FormGroup({
-						groupFilters: new FormArray([
-							new FormGroup({
-								field: new FormGroup({
-									name: new FormControl<string | null>(null),
-									type: new FormControl<string | null>(null)
-								}),
-								type: new FormControl<string | null>(null),
-								values: new FormArray([
-									new FormControl(null)
-								]) // TODO: At model the control is set as array!!! Check for compatibility issues
-							})
-						]),
-						op: new FormControl<string | null>(null)
-					})
-				])
+				filters: new FormArray([])
 			}),
 			chartProperties: new FormGroup({
 				chartType: new FormControl<string | null>(null),
 				dataseriesColor: new FormControl<string | null>(null),
-				dataseriesName: new FormControl<string | null>('Data(' + this.dataseriesIncremment + ')'),
+				dataseriesName: new FormControl<string | null>({ value: 'Data(' + this.dataseriesIncremment + ')', disabled: true }),
 				stacking: new FormControl<'null' | 'normal' | 'percent' | 'stream' | 'overlap'>('null', Validators.required),
 			}),
 		}),);
@@ -282,8 +268,40 @@ export class DataseriesSelectorComponent implements OnInit {
 
 	removeDataseries(index: number) {
 		this.form.removeAt(index);
+		this.editableDataseriesTitleList.splice(index, 1);
 	}
 
+	editDataseriesTitle(form: FormGroup) {
+		let chartProperties = form.controls['chartProperties'] as FormGroup;
+		let dataseriesName = chartProperties.controls['dataseriesName'] as FormControl;
+		dataseriesName.enable();
+	}
+
+	saveDataseriesTitle(form: FormGroup) {
+		let chartProperties = form.controls['chartProperties'] as FormGroup;
+		let dataseriesName = chartProperties.controls['dataseriesName'] as FormControl;
+		dataseriesName.disable();
+	}
+
+	checkEnabled(form: FormGroup): boolean {
+		let chartProperties = form.controls['chartProperties'] as FormGroup;
+		let dataseriesName = chartProperties.controls['dataseriesName'] as FormControl;
+		return dataseriesName.enabled;
+	}
+
+	changePosition(direction: string, index: number) {
+		let items = this.form as FormArray;
+		if (direction === 'up') {
+			[items.controls[index - 1], items.controls[index]] = [items.controls[index], items.controls[index - 1]]
+		} else if (direction === 'down') {
+			[items.controls[index], items.controls[index + 1]] = [items.controls[index + 1], items.controls[index]]
+		}
+	}
+
+	printDataseries() {
+		console.log("this.form:", this.form);
+		console.log("this.form.value:", this.form.value);
+	}
 
 	outputResult(event: any): void {
 		console.log("FINAL PATH:", event);
