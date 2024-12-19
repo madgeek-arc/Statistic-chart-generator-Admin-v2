@@ -172,23 +172,7 @@ export class DashboardComponent implements OnInit {
 								})
 							})
 						]),
-						filters: new FormArray([
-							new FormGroup({
-								groupFilters: new FormArray([
-									new FormGroup({
-										field: new FormGroup({
-											name: new FormControl<string | null>(null),
-											type: new FormControl<string | null>(null)
-										}),
-										type: new FormControl<string | null>(null),
-										values: new FormArray([
-											new FormControl(null)
-										]) // TODO: At model the control is set as array!!! Check for compatibility issues
-									})
-								]),
-								op: new FormControl<string | null>(null)
-							})
-						])
+						filters: new FormArray([])
 					}),
 					chartProperties: new FormGroup({
 						chartType: new FormControl<string | null>(null),

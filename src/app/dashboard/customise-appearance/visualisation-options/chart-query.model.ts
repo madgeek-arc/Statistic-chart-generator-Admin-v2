@@ -52,11 +52,11 @@ export class Query {
 
 export class Select {
     field: string;
-    aggregate: string;
+    aggregate: string | null;
 
     constructor() {
         this.field = '';
-        this.aggregate = '';
+        this.aggregate = null;
     }
 }
 

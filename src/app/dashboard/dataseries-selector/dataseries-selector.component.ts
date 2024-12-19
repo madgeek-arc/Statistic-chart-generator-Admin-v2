@@ -6,8 +6,8 @@ import { BehaviorSubject, first, forkJoin, Observable } from 'rxjs';
 import { Profile } from 'src/app/services/profile-provider/profile-provider.service';
 import { UrlProviderService } from 'src/app/services/url-provider/url-provider.service';
 import {
-  CachedEntityNode,
-  EntityNode
+	CachedEntityNode,
+	EntityNode
 } from '../helper-components/select-attribute/dynamic-entity-tree/entity-tree-nodes.types';
 import { DbSchemaService } from "../../services/db-schema-service/db-schema.service";
 
@@ -183,7 +183,10 @@ export class DataseriesSelectorComponent implements OnInit {
 				op: new FormControl<string | null>(null)
 			})
 		);
+	}
 
+	removeFilter(form: any, index: number) {
+		form.controls.data.controls.filters.removeAt(index);
 	}
 
 	addFilterRule(form: any) {
@@ -203,10 +206,6 @@ export class DataseriesSelectorComponent implements OnInit {
 
 	removeFilterRule(form: any, index: number) {
 		form.controls.groupFilters.removeAt(index);
-	}
-
-	removeFilter(form: any, index: number) {
-		form.controls.data.controls.filters.removeAt(index);
 	}
 
 	addEntityField(form: any) {

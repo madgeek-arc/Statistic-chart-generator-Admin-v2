@@ -1,37 +1,37 @@
 import { Observable, of } from 'rxjs';
 import { Color, ColorType } from 'highcharts';
 import {
-  HighChartsChart
+	HighChartsChart
 } from "../../dashboard/customise-appearance/visualisation-options/supported-libraries-service/chart-description-HighCharts.model";
 import {
-  DiagramCategoryService
+	DiagramCategoryService
 } from "../../dashboard/customise-appearance/visualisation-options/diagram-category-service/diagram-category.service";
 import {
-  AppearanceFormSchema,
-  CategoryFormSchema, DataseriesFormSchema,
-  SCGAFormSchema,
-  ViewFormSchema
+	AppearanceFormSchema,
+	CategoryFormSchema, DataseriesFormSchema,
+	SCGAFormSchema,
+	ViewFormSchema
 } from "../../dashboard/customise-appearance/visualisation-options/chart-form-schema.classes";
 import {
-  GoogleChartsChart, GoogleChartsTable
+	GoogleChartsChart, GoogleChartsTable
 } from "../../dashboard/customise-appearance/visualisation-options/supported-libraries-service/chart-description-GoogleCharts.model";
 import {
-  HighMapsMap, HMSeriesInfo
+	HighMapsMap, HMSeriesInfo
 } from "../../dashboard/customise-appearance/visualisation-options/supported-libraries-service/chart-description-HighMaps.model";
 import {
-  EChartsChart, ECToolboxFeature
+	EChartsChart, ECToolboxFeature
 } from "../../dashboard/customise-appearance/visualisation-options/supported-libraries-service/chart-description-eCharts.model";
 import { ChartInfo } from "../../dashboard/customise-appearance/visualisation-options/chart-query.model";
 import {
-  RawChartDataModel
+	RawChartDataModel
 } from "../../dashboard/customise-appearance/visualisation-options/supported-libraries-service/chart-description-rawChartData.model";
 import {
-  QueryInfo,
-  RawDataModel
+	QueryInfo,
+	RawDataModel
 } from "../../dashboard/customise-appearance/visualisation-options/supported-libraries-service/description-rawData.model";
 import { EChartOption } from "echarts";
 import {
-  ISupportedMap
+	ISupportedMap
 } from "../../dashboard/customise-appearance/visualisation-options/supported-chart-types-service/supported-chart-types.service";
 
 
@@ -49,12 +49,12 @@ export class DiagramCreator {
 		const view: ViewFormSchema = formObj.view;
 		// console.log('View ->', view);
 		const category: CategoryFormSchema = formObj.category;
-    // console.log('Category ->', category);
-    const dataseries: DataseriesFormSchema[] = formObj.dataseries;
-    // console.log('Dataseries ->', dataseries);
+		// console.log('Category ->', category);
+		const dataseries: DataseriesFormSchema[] = formObj.dataseries;
+		// console.log('Dataseries ->', dataseries);
 		const appearanceOptions: AppearanceFormSchema = formObj.appearance;
-    // console.log('Appearance ->', appearanceOptions);
-    const library: string = appearanceOptions.chartAppearance.generalOptions.visualisationLibrary;
+		// console.log('Appearance ->', appearanceOptions);
+		const library: string = appearanceOptions.chartAppearance.generalOptions.visualisationLibrary;
 
 		// TODO we can make sure we dont send to the back end queries with unsupported libraries
 		// ----------------------
