@@ -271,6 +271,20 @@ export class DataseriesSelectorComponent implements OnInit {
 		this.editableDataseriesTitleList.splice(index, 1);
 	}
 
+	getDataSeriesName(form: FormGroup) {
+		let chartProperties = form.controls['chartProperties'] as FormGroup;
+		let dataseriesName = chartProperties.controls['dataseriesName'] as FormControl;
+
+		return dataseriesName.value;
+	}
+
+	isEditableDataseriesTitle(form: FormGroup) {
+		let chartProperties = form.controls['chartProperties'] as FormGroup;
+		let dataseriesName = chartProperties.controls['dataseriesName'] as FormControl;
+
+		return dataseriesName.enabled;
+	}
+
 	editDataseriesTitle(form: FormGroup) {
 		let chartProperties = form.controls['chartProperties'] as FormGroup;
 		let dataseriesName = chartProperties.controls['dataseriesName'] as FormControl;
@@ -295,6 +309,26 @@ export class DataseriesSelectorComponent implements OnInit {
 			[items.controls[index - 1], items.controls[index]] = [items.controls[index], items.controls[index - 1]]
 		} else if (direction === 'down') {
 			[items.controls[index], items.controls[index + 1]] = [items.controls[index + 1], items.controls[index]]
+		}
+	}
+
+	getClass(length: number, position: number): string {
+		switch (true) {
+			case (length === 1):
+				return '2';
+			case (length === 2):
+				return '4'
+			case (length >= 3):
+				switch (position) {
+					case 0:
+						return '4';
+					case (length - 1):
+						return '4'
+					default:
+						return '5';
+				}
+			default:
+				return '2';
 		}
 	}
 

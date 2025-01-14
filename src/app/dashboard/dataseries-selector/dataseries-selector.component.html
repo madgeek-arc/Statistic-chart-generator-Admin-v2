@@ -1,40 +1,56 @@
 <div uk-grid>
-	<!-- <div class="uk-width-1-6"> -->
-	<div class="uk-width-auto">
+	<div class="uk-width-1-5">
+		<!-- <div class="uk-width-auto"> -->
 		<ul class="uk-tab-left" uk-tab="connect: #dataseriesList">
 			<li *ngFor="let ctrl of form.controls; let i = index" [formGroup]="ctrl" style="display: contents;">
-				<div class="dataseriesTitle" formGroupName="chartProperties">
-					<div style="text-align:center;">
-						<input matInput type="text" class="dataseriesTitleButton" (keydown.enter)="saveDataseriesTitle(ctrl)" formControlName="dataseriesName">
-					</div>
-				</div>
+				<a>
+					<div class="d-flex flex-column dataseriesTitle" formGroupName="chartProperties">
+						<div *ngIf="this.isEditableDataseriesTitle(ctrl) ; else notEditable" class="uk-width-1-1" style="text-align: center !important">
+							<input matInput type="text" class="h4 form-control mb-1 dataseriesTitleButton uk-width-auto" (keydown.enter)="saveDataseriesTitle(ctrl)" (blur)="saveDataseriesTitle(ctrl)" formControlName="dataseriesName">
+						</div>
+						<ng-template #notEditable>
+							<p (dblclick)="editDataseriesTitle(ctrl)" style="word-break: break-all; font-weight: bold; text-align: center !important" class="h3 text-center font-weight-bold mb-3 px-0">
+								{{getDataSeriesName(ctrl)}}
+							</p>
+						</ng-template>
 
-				<div>
-					<ng-container *ngIf="!checkEnabled(ctrl)">
-						<button mat-stroked-button (click)="editDataseriesTitle(ctrl)"><mat-icon style="margin: 0;">edit</mat-icon></button>
-					</ng-container>
-					<ng-container *ngIf="checkEnabled(ctrl)">
-						<button mat-stroked-button (click)="saveDataseriesTitle(ctrl)" style="border-color: green; color: green">
-							<mat-icon style="margin: 0;">check</mat-icon>
-						</button>
-					</ng-container>
-					<button mat-stroked-button><mat-icon style="margin: 0;">content_copy</mat-icon></button>
-					<ng-container *ngIf="form.controls.length > 1">
-						<ng-container *ngIf="form.controls.indexOf(ctrl) !== 0">
-							<button mat-stroked-button (click)="changePosition('up', i)">
-								<mat-icon style="margin: 0;">arrow_upward</mat-icon>
-							</button>
-						</ng-container>
-						<ng-container *ngIf="form.controls.indexOf(ctrl) !== form.controls.length - 1">
-							<button mat-stroked-button (click)="changePosition('down', i)">
-								<mat-icon style="margin: 0;">arrow_downward</mat-icon>
-							</button>
-						</ng-container>
-						<button mat-stroked-button (click)="removeDataseries(i)" style="border-color: red; color: red">
-							<mat-icon style="margin: 0;">delete_forever</mat-icon>
-						</button>
-					</ng-container>
-				</div>
+
+						<!-- <div *ngIf="this.isEditableName(i) ; else notEditable" #editDataseriesName tabindex="0">
+							<input id="editDataseriesName-{{i}}" type="text" (blur)="disableEditable(i)" (keydown.enter)="changeOnEnter($event, i)" [value]="getDataSeriesName(i) | async" (change)="setDataSeriesName(i, $event)" class="h4 form-control mb-1" style="font-size: 1.5rem;">
+						</div> -->
+
+
+
+						<div class="uk-button-group">
+							<div class="uk-width-1-1 ">
+								<ng-container *ngIf="!checkEnabled(ctrl)">
+									<button mat-stroked-button class="uk-button uk-button-primary uk-width-1-{{this.getClass(form.controls.length, i)}}" (click)="editDataseriesTitle(ctrl)"><mat-icon style="margin: 0;">edit</mat-icon></button>
+								</ng-container>
+								<ng-container *ngIf="checkEnabled(ctrl)">
+									<button mat-stroked-button class="uk-button uk-button-primary uk-width-1-{{this.getClass(form.controls.length, i)}}" (click)="saveDataseriesTitle(ctrl)" style="border-color: green; color: green">
+										<mat-icon style="margin: 0;">check</mat-icon>
+									</button>
+								</ng-container>
+								<button mat-stroked-button class="uk-button uk-button-default uk-width-1-{{this.getClass(form.controls.length, i)}}"><mat-icon style="margin: 0;">content_copy</mat-icon></button>
+								<ng-container *ngIf="form.controls.length > 1">
+									<ng-container *ngIf="form.controls.indexOf(ctrl) !== 0">
+										<button mat-stroked-button class="uk-button uk-button-default uk-width-1-{{this.getClass(form.controls.length, i)}}" (click)="changePosition('up', i)">
+											<mat-icon style="margin: 0;">arrow_upward</mat-icon>
+										</button>
+									</ng-container>
+									<ng-container *ngIf="form.controls.indexOf(ctrl) !== form.controls.length - 1">
+										<button mat-stroked-button class="uk-button uk-button-default uk-width-1-{{this.getClass(form.controls.length, i)}}" (click)="changePosition('down', i)">
+											<mat-icon style="margin: 0;">arrow_downward</mat-icon>
+										</button>
+									</ng-container>
+									<button mat-stroked-button class="uk-button uk-button-danger uk-width-1-{{this.getClass(form.controls.length, i)}}" (click)="removeDataseries(i)" style="border-color: red; color: red">
+										<mat-icon style="margin: 0;">delete_forever</mat-icon>
+									</button>
+								</ng-container>
+							</div>
+						</div>
+					</div>
+				</a>
 			</li>
 		</ul>
 
@@ -42,8 +58,8 @@
 			Add Data
 		</button>
 	</div>
-	<!-- <div class="uk-width-4-5"> -->
-	<div class="uk-width-expand">
+	<div class="uk-width-4-5">
+		<!-- <div class="uk-width-expand"> -->
 		<div id="dataseriesList" class="uk-switcher">
 			<div *ngFor="let ctrl of form.controls; let i = index" [formGroup]="ctrl">
 				<h1>{{ctrl.get('chartProperties')?.get('dataseriesName')?.value}}</h1>
