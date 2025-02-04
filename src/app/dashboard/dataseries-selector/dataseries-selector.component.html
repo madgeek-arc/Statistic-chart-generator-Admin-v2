@@ -5,19 +5,14 @@
 			<li *ngFor="let ctrl of form.controls; let i = index" [formGroup]="ctrl" style="display: contents;">
 				<a>
 					<div class="d-flex flex-column dataseriesTitle" formGroupName="chartProperties">
-						<div *ngIf="this.isEditableDataseriesTitle(ctrl) ; else notEditable" class="uk-width-1-1" style="text-align: center !important">
-							<input matInput type="text" class="h4 form-control mb-1 dataseriesTitleButton uk-width-auto" (keydown.enter)="saveDataseriesTitle(ctrl)" (blur)="saveDataseriesTitle(ctrl)" formControlName="dataseriesName">
+						<div *ngIf="this.isEditableDataseriesTitle(ctrl) ; else notEditable" tabindex="0" #editDataseriesName class="uk-width-1-1" style="text-align: center !important">
+							<input type="text" class="dataseriesTitleButton" (keydown.enter)="saveDataseriesTitle(ctrl)" (blur)="testBlur(ctrl); saveDataseriesTitle(ctrl)" formControlName="dataseriesName">
 						</div>
 						<ng-template #notEditable>
 							<p (dblclick)="editDataseriesTitle(ctrl)" style="word-break: break-all; font-weight: bold; text-align: center !important" class="h3 text-center font-weight-bold mb-3 px-0">
 								{{getDataSeriesName(ctrl)}}
 							</p>
 						</ng-template>
-
-
-						<!-- <div *ngIf="this.isEditableName(i) ; else notEditable" #editDataseriesName tabindex="0">
-							<input id="editDataseriesName-{{i}}" type="text" (blur)="disableEditable(i)" (keydown.enter)="changeOnEnter($event, i)" [value]="getDataSeriesName(i) | async" (change)="setDataSeriesName(i, $event)" class="h4 form-control mb-1" style="font-size: 1.5rem;">
-						</div> -->
 
 
 
@@ -58,6 +53,8 @@
 			Add Data
 		</button>
 	</div>
+
+
 	<div class="uk-width-4-5">
 		<!-- <div class="uk-width-expand"> -->
 		<div id="dataseriesList" class="uk-switcher">

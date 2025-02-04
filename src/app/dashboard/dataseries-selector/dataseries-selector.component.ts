@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { FormArray, FormControl, FormGroup, FormGroupDirective, Validators } from '@angular/forms';
 import { MatSelectChange } from '@angular/material/select';
 import { BehaviorSubject, first, forkJoin, Observable } from 'rxjs';
@@ -19,7 +19,7 @@ import { DbSchemaService } from "../../services/db-schema-service/db-schema.serv
 export class DataseriesSelectorComponent implements OnInit {
 
 	@Input('selectedView') selectedView: FormControl = new FormControl();
-
+	@ViewChild('editDataseriesName') editDataseriesName: ElementRef;
 	// dataSource = new MatTreeNestedDataSource<EntityNode>();
 	// treeControl = new NestedTreeControl<EntityNode>(node => node.relations);
 
@@ -289,12 +289,22 @@ export class DataseriesSelectorComponent implements OnInit {
 		let chartProperties = form.controls['chartProperties'] as FormGroup;
 		let dataseriesName = chartProperties.controls['dataseriesName'] as FormControl;
 		dataseriesName.enable();
+
+
+		if (this.editDataseriesName) {
+			console.log("this.editDataseriesName:", this.editDataseriesName);
+			this.editDataseriesName.nativeElement.focus();
+		}
 	}
 
 	saveDataseriesTitle(form: FormGroup) {
 		let chartProperties = form.controls['chartProperties'] as FormGroup;
 		let dataseriesName = chartProperties.controls['dataseriesName'] as FormControl;
 		dataseriesName.disable();
+	}
+
+	testBlur(form: FormGroup) {
+		console.log("BLUR");
 	}
 
 	checkEnabled(form: FormGroup): boolean {
