@@ -59,150 +59,128 @@
 		<!-- <div class="uk-width-expand"> -->
 		<div id="dataseriesList" class="uk-switcher">
 			<div *ngFor="let ctrl of form.controls; let i = index" [formGroup]="ctrl">
-				<h1>{{ctrl.get('chartProperties')?.get('dataseriesName')?.value}}</h1>
+				<!-- <h2>{{ctrl.get('chartProperties')?.get('dataseriesName')?.value}}</h2> -->
 				<ng-container *ngIf="form.length > 1">
 					<button (click)="removeDataseries(i)">Remove Dataseries</button>
 				</ng-container>
 
 				<div class="dataSelectionDiv" formGroupName="data">
-					<h1>Data Selection</h1>
-					<mat-divider></mat-divider>
+					<h1 class="borderBottomClass">Data Selection</h1>
 
-					<div class="axisDiv">
-						<div formGroupName="yaxisData">
-							<h3>Y Axis</h3>
-							<mat-form-field>
-								<mat-label>Select Entity</mat-label>
-								<mat-select formControlName="entity" (selectionChange)="selectEntity($event)">
-									<mat-option>None</mat-option>
-									<mat-option [value]="entity" *ngFor="let entity of entities">{{ entity }}</mat-option>
-								</mat-select>
-							</mat-form-field>
-							<mat-form-field>
-								<mat-label>Select Aggregate</mat-label>
-								<mat-select formControlName="yaxisAggregate">
-									<mat-option>None</mat-option>
-									<mat-option [value]="aggregate.code" *ngFor="let aggregate of aggregates">
-										{{ aggregate.name }}
-									</mat-option>
-								</mat-select>
-							</mat-form-field>
-						</div>
+					<div style="margin: 20px;">
 
-						<div formArrayName="xaxisData">
-							<h3>X Axis</h3>
+						<div class="axisDiv">
+							<div formGroupName="yaxisData">
+								<h3 class="borderBottomClass">Y Axis</h3>
 
-							<div *ngFor="let data of getXAxisData(ctrl); let j = index" [formGroup]="data">
-								<!--            <select-attribute [chosenEntity]="selectedEntity" formControlName="" [attr.name]="selectedEntity"-->
-								<!--                              [isDisabled]="false"></select-attribute>-->
+								<div style="width: 50%; display: inline-block;">
 
-								<div>
-									<button (click)="removeEntityField(ctrl, j)">Remove Entity Field</button>
+									<div>Entity</div>
+									<mat-form-field>
+										<mat-label>Select Entity</mat-label>
+										<mat-select formControlName="entity" (selectionChange)="selectEntity($event)">
+											<mat-option>None</mat-option>
+											<mat-option [value]="entity" *ngFor="let entity of entities">{{ entity }}</mat-option>
+										</mat-select>
+									</mat-form-field>
 								</div>
-								<div formGroupName="xaxisEntityField">
-
-									<select-attribute class="uk-padding" [chosenEntity]="ctrl.get('data.yaxisData.entity')?.value" [control]="data.get('xaxisEntityField')">
-									</select-attribute>
-
-									<!--								<mat-form-field class="mat-select-panel">-->
-									<!--									<mat-label>Entity Field</mat-label>-->
-									<!--									<mat-select formControlName="name">-->
-
-									<!--										<ng-container *ngIf="selectedEntity">-->
-									<!--											&lt;!&ndash; <app-entity-selection-component [entityMap]="this.entityMap" [selectedEntity]="this.selectedEntityMap"></app-entity-selection-component> &ndash;&gt;-->
 
 
-									<!--											&lt;!&ndash; Fields &ndash;&gt;-->
-									<!--											<ng-container *ngFor="let entityField of this.selectedEntityMap[0].fields">-->
-									<!--												<mat-option [value]="entityField.name">-->
-									<!--													{{ entityField.name }}-->
-									<!--												</mat-option>-->
-									<!--											</ng-container>-->
+								<div style="width: 50%; display: inline-block;	">
 
-									<!--											&lt;!&ndash; Also check mat-tree which might be optimal &ndash;&gt;-->
-									<!--											&lt;!&ndash; Also check for component in component like a recurring function &ndash;&gt;-->
-									<!--											&lt;!&ndash; Relations  &ndash;&gt;-->
-									<!--											<ng-container *ngFor="let entityFieldRelation of selectedEntityMap[0].relations">-->
-									<!--												<mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">-->
-									<!--													<mat-expansion-panel-header>-->
-									<!--														{{ entityFieldRelation | uppercase }}-->
-									<!--													</mat-expansion-panel-header>-->
-									<!--													<ng-container *ngIf="panelOpenState">-->
-									<!--														<app-entity-selection-component [entityMap]="this.entityMap" [entityFieldRelation]="entityFieldRelation" (outputEvent)="outputResult($event)">-->
-									<!--														</app-entity-selection-component>-->
-									<!--													</ng-container>-->
-									<!--												</mat-expansion-panel>-->
-									<!--											</ng-container>-->
+									<div>Y axis Aggregate</div>
+									<mat-form-field>
+										<mat-label>Select Aggregate</mat-label>
+										<mat-select formControlName="yaxisAggregate">
+											<mat-option>None</mat-option>
+											<mat-option [value]="aggregate.code" *ngFor="let aggregate of aggregates">
+												{{ aggregate.name }}
+											</mat-option>
+										</mat-select>
+									</mat-form-field>
+								</div>
+							</div>
 
+							<div formArrayName="xaxisData">
+								<h3 class="borderBottomClass">X Axis</h3>
 
-									<!--                    </ng-container>-->
+								<div *ngFor="let data of getXAxisData(ctrl); let j = index" [formGroup]="data">
+									<div formGroupName="xaxisEntityField" style="width: 100%;">
+										<div>Entity Field</div>
+										<div style="display: inline-block; width: 90%; vertical-align: middle;">
 
-									<!--									</mat-select>-->
-									<!--								</mat-form-field>-->
+											<select-attribute class="uk-padding" [chosenEntity]="ctrl.get('data.yaxisData.entity')?.value" [control]="data.get('xaxisEntityField')">
+											</select-attribute>
+										</div>
+										<div style="display: inline-block; width: 10%; vertical-align: middle;">
 
+											<button mat-icon-button (click)="removeEntityField(ctrl, j)">
+												<mat-icon>delete</mat-icon>
+											</button>
+										</div>
+									</div>
+
+								</div>
+								<div *ngIf="!hasTwoEntityFields">
+									<button mat-button class="addEntityButtonClass" (click)="addEntityField(ctrl)"><mat-icon>add</mat-icon>Add Group By</button>
 								</div>
 
 							</div>
-							<div *ngIf="!hasTwoEntityFields">
-								<button (click)="addEntityField(ctrl)">Add Entity Field</button>
-							</div>
-
 						</div>
-					</div>
 
-					<div class="filtersDiv" formArrayName="filters">
-						<div>
-							<h3>Filters</h3>
-							<ng-container *ngFor="let filter of getFilters(ctrl); let j = index" [formGroup]="filter">
-								<div>
-									<button (click)="removeFilter(ctrl, j)">Remove Filter</button>
-								</div>
-								<ng-container formArrayName="groupFilters">
-									<div *ngFor="let group of getGroups(filter); let k = index" [formGroup]="group">
-										<ng-container formGroupName="field">
+						<div class="filtersDiv" formArrayName="filters">
+							<div>
+								<h3 class="borderBottomClass">Filters</h3>
+
+								<ng-container *ngFor="let filter of getFilters(ctrl); let j = index" [formGroup]="filter">
+									<div>
+										<button (click)="removeFilter(ctrl, j)">Remove Filter</button>
+									</div>
+									<ng-container formArrayName="groupFilters">
+										<div *ngFor="let group of getGroups(filter); let k = index" [formGroup]="group">
+											<ng-container formGroupName="field">
+												<mat-form-field>
+													<mat-label>Field</mat-label>
+													<mat-select formControlName="name">
+														<mat-option *ngFor="let filterField of filterFields" [value]="filterField">{{ filterField }}</mat-option>
+													</mat-select>
+												</mat-form-field>
+											</ng-container>
+
 											<mat-form-field>
-												<mat-label>Field</mat-label>
-												<mat-select formControlName="name">
-													<!-- <mat-option *ngFor="let filterField of filterFields" formControlName="field">{{filterField}}</mat-option> -->
-													<mat-option *ngFor="let filterField of filterFields" [value]="filterField">{{ filterField }}</mat-option>
+												<mat-label>Operator</mat-label>
+												<mat-select formControlName="type">
+													<mat-option *ngFor="let operator of filterOperators" [value]="operator">{{ operator }}</mat-option>
 												</mat-select>
 											</mat-form-field>
-										</ng-container>
 
-										<mat-form-field>
-											<mat-label>Operator</mat-label>
-											<mat-select formControlName="type">
-												<mat-option *ngFor="let operator of filterOperators" [value]="operator">{{ operator }}</mat-option>
-											</mat-select>
-										</mat-form-field>
+											<ng-container formArrayName="values">
+												<mat-form-field>
+													<mat-label>Value</mat-label>
+													<input matInput formControlName="0">
+												</mat-form-field>
+											</ng-container>
 
-										<ng-container formArrayName="values">
-											<mat-form-field>
-												<mat-label>Value</mat-label>
-												<input matInput formControlName="0">
-											</mat-form-field>
-										</ng-container>
+											<button (click)="removeFilterRule(filter, k)">Remove Rule</button>
+										</div>
+										<button (click)="addFilterRule(filter)">Add Filter Rule</button>
 
-										<button (click)="removeFilterRule(filter, k)">Remove Rule</button>
-									</div>
-									<button (click)="addFilterRule(filter)">Add Filter Rule</button>
+									</ng-container>
 
 								</ng-container>
 
-							</ng-container>
-
-							<div>
-								<hr>
-								<br>
-								<button (click)="addFilter(ctrl)">Add Filter</button>
+								<div>
+									<br>
+									<button (click)="addFilter(ctrl)">Add Filter</button>
+								</div>
 							</div>
 						</div>
 					</div>
 				</div>
 
+
 				<div formGroupName="chartProperties">
-					<h1>Options</h1>
-					<mat-divider></mat-divider>
+					<h2 class="borderBottomClass">Options</h2>
 
 					<mat-form-field>
 						<mat-label>Stacked Data</mat-label>
