@@ -15,25 +15,28 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatDialogModule } from "@angular/material/dialog";
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatMenuModule } from "@angular/material/menu";
+import { MatRadioModule } from '@angular/material/radio';
+
 
 @NgModule({
-  exports: [
-    MatStepperModule,
-    MatSliderModule,
-    MatButtonModule,
-    MatSelectModule,
-    MatDividerModule,
-    MatExpansionModule,
-    MatTreeModule,
-    MatIconModule,
-    MatProgressBarModule,
-    MatTabsModule,
-    MatInputModule,
-    MatSlideToggleModule,
-    MatDialogModule,
-    MatCheckboxModule,
-    MatMenuModule
-  ]
+	exports: [
+		MatStepperModule,
+		MatSliderModule,
+		MatButtonModule,
+		MatSelectModule,
+		MatDividerModule,
+		MatExpansionModule,
+		MatTreeModule,
+		MatIconModule,
+		MatProgressBarModule,
+		MatTabsModule,
+		MatInputModule,
+		MatSlideToggleModule,
+		MatDialogModule,
+		MatCheckboxModule,
+		MatMenuModule,
+		MatRadioModule
+	]
 })
 
-export class MaterialModule {}
+export class MaterialModule { }
