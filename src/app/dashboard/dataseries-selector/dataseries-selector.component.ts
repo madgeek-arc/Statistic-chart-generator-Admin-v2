@@ -330,11 +330,14 @@ export class DataseriesSelectorComponent implements OnInit {
 		console.log("yaxisAggregate:", yaxisAggregate)
 		console.log("yaxisAggregate.value:", yaxisAggregate.value)
 
-		if (yaxisAggregate && yaxisAggregate.value === 'total') {
-			return false;
-		} else {
-			return true;
+		if (yaxisAggregate && yaxisAggregate.value !== null) {
+			if (yaxisAggregate.value === 'total') {
+				return false;
+			} else {
+				return true;
+			}
 		}
+		return false;
 	}
 
 	getClass(length: number, position: number): string {

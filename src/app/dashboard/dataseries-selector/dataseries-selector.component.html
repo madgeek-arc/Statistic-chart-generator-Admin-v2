@@ -103,16 +103,16 @@
 								</div>
 
 								<!-- Issue with TypeError regusterOnChange -->
-								<div *ngIf="checkYAxisAggregate(ctrl)">
+								<ng-container *ngIf="checkYAxisAggregate(ctrl)">
+									<!-- <ng-container> -->
 									<div>
 										<div>Entity Field</div>
 										<div style=" display: inline-block; width: 90%; vertical-align: middle;">
 
-											<select-attribute class="uk-padding" [chosenEntity]="ctrl.get('data.yaxisData.entity')?.value" formControlName="yaxisEntityField">
-											</select-attribute>
+											<select-attribute class="uk-padding" [chosenEntity]="ctrl.get('data.yaxisData.entity')?.value" [control]="ctrl.get('data.yaxisData.yaxisEntityField')"></select-attribute>
 										</div>
 									</div>
-								</div>
+								</ng-container>
 							</div>
 
 							<div formArrayName="xaxisData">
@@ -123,8 +123,7 @@
 										<div>Entity Field</div>
 										<div style="display: inline-block; width: 90%; vertical-align: middle;">
 
-											<select-attribute class="uk-padding" [chosenEntity]="ctrl.get('data.yaxisData.entity')?.value" [control]="data.get('xaxisEntityField')">
-											</select-attribute>
+											<select-attribute class="uk-padding" [chosenEntity]="ctrl.get('data.yaxisData.entity')?.value" [control]="data.get('xaxisEntityField')"></select-attribute>
 										</div>
 										<div style="display: inline-block; width: 10%; vertical-align: middle;">
 
@@ -149,8 +148,8 @@
 								<ng-container *ngFor="let filter of getFilters(ctrl); let j = index" [formGroup]="filter">
 									<div>
 										<mat-radio-group labelPosition="after" formControlName="op">
+											<mat-radio-button value="AND" [checked]="true">Match all of the values</mat-radio-button>
 											<mat-radio-button value="OR">Match any of the values</mat-radio-button>
-											<mat-radio-button value="AND">Match all of the values</mat-radio-button>
 										</mat-radio-group>
 									</div>
 
@@ -167,23 +166,23 @@
 															<mat-option *ngFor="let filterField of filterFields" [value]="filterField">{{ filterField }}</mat-option>
 														</mat-select>
 													</mat-form-field>
-
-													<mat-form-field>
-														<mat-label>Operator</mat-label>
-														<mat-select formControlName="type">
-															<mat-option *ngFor="let operator of filterOperators" [value]="operator">{{ operator }}</mat-option>
-														</mat-select>
-													</mat-form-field>
-
-													<ng-container formArrayName="values">
-														<mat-form-field>
-															<mat-label>Value</mat-label>
-															<input matInput formControlName="0">
-														</mat-form-field>
-													</ng-container>
-
-													<button mat-icon-button style="color: red;" (click)="removeFilterRule(filter, k)"><mat-icon>highlight_off</mat-icon></button>
 												</ng-container>
+
+												<mat-form-field>
+													<mat-label>Operator</mat-label>
+													<mat-select formControlName="type">
+														<mat-option *ngFor="let operator of filterOperators" [value]="operator">{{ operator }}</mat-option>
+													</mat-select>
+												</mat-form-field>
+
+												<ng-container formArrayName="values">
+													<mat-form-field>
+														<mat-label>Value</mat-label>
+														<input matInput formControlName="0">
+													</mat-form-field>
+												</ng-container>
+
+												<button mat-icon-button style="color: red;" (click)="removeFilterRule(filter, k)"><mat-icon>highlight_off</mat-icon></button>
 											</div>
 											<button mat-button class="addEntityButtonClass" (click)="addFilterRule(filter)"><mat-icon>add</mat-icon>Add Filter Rule</button>
 										</ng-container>
@@ -212,6 +211,14 @@
 									{{ stackedData.name }}
 								</mat-option>
 							</mat-select>
+						</mat-form-field>
+					</div>
+
+					<div>
+						<mat-form-field>
+							<mat-label>Stack Name</mat-label>
+							<br>
+							<input matInput type="text" formControlName="chartType">
 						</mat-form-field>
 					</div>
 
