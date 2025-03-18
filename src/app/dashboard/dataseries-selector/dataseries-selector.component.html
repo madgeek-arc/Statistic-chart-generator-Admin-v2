@@ -115,7 +115,7 @@
 										<div style="display: inline-block; width: 10%; vertical-align: middle;">
 
 											<button mat-icon-button (click)="removeEntityField(ctrl, j)">
-												<mat-icon>delete</mat-icon>
+												<mat-icon>highlight_off</mat-icon>
 											</button>
 										</div>
 									</div>
@@ -133,45 +133,45 @@
 								<h3 class="borderBottomClass">Filters</h3>
 
 								<ng-container *ngFor="let filter of getFilters(ctrl); let j = index" [formGroup]="filter">
-									<div>
-										<button (click)="removeFilter(ctrl, j)">Remove Filter</button>
-									</div>
-									<ng-container formArrayName="groupFilters">
-										<div *ngFor="let group of getGroups(filter); let k = index" [formGroup]="group">
-											<ng-container formGroupName="field">
+									<div class="groupFiltersClass">
+										<div class="uk-flex uk-flex-right">
+											<button mat-icon-button (click)="removeFilter(ctrl, j)"><mat-icon>highlight_off</mat-icon></button>
+										</div>
+										<ng-container formArrayName="groupFilters">
+											<div *ngFor="let group of getGroups(filter); let k = index" [formGroup]="group">
+												<ng-container formGroupName="field">
+													<mat-form-field>
+														<mat-label>Field</mat-label>
+														<mat-select formControlName="name">
+															<mat-option *ngFor="let filterField of filterFields" [value]="filterField">{{ filterField }}</mat-option>
+														</mat-select>
+													</mat-form-field>
+												</ng-container>
+
 												<mat-form-field>
-													<mat-label>Field</mat-label>
-													<mat-select formControlName="name">
-														<mat-option *ngFor="let filterField of filterFields" [value]="filterField">{{ filterField }}</mat-option>
+													<mat-label>Operator</mat-label>
+													<mat-select formControlName="type">
+														<mat-option *ngFor="let operator of filterOperators" [value]="operator">{{ operator }}</mat-option>
 													</mat-select>
 												</mat-form-field>
-											</ng-container>
 
-											<mat-form-field>
-												<mat-label>Operator</mat-label>
-												<mat-select formControlName="type">
-													<mat-option *ngFor="let operator of filterOperators" [value]="operator">{{ operator }}</mat-option>
-												</mat-select>
-											</mat-form-field>
+												<ng-container formArrayName="values">
+													<mat-form-field>
+														<mat-label>Value</mat-label>
+														<input matInput formControlName="0">
+													</mat-form-field>
+												</ng-container>
 
-											<ng-container formArrayName="values">
-												<mat-form-field>
-													<mat-label>Value</mat-label>
-													<input matInput formControlName="0">
-												</mat-form-field>
-											</ng-container>
-
-											<button (click)="removeFilterRule(filter, k)">Remove Rule</button>
-										</div>
-										<button (click)="addFilterRule(filter)">Add Filter Rule</button>
-
-									</ng-container>
-
+												<button mat-icon-button style="color: red;" (click)="removeFilterRule(filter, k)"><mat-icon>highlight_off</mat-icon></button>
+											</div>
+											<button mat-button class="addEntityButtonClass" (click)="addFilterRule(filter)"><mat-icon>add</mat-icon>Add Filter Rule</button>
+										</ng-container>
+									</div>
 								</ng-container>
 
 								<div>
 									<br>
-									<button (click)="addFilter(ctrl)">Add Filter</button>
+									<button mat-button class="addEntityButtonClass" (click)="addFilter(ctrl)"><mat-icon>add</mat-icon>Add Filter</button>
 								</div>
 							</div>
 						</div>
