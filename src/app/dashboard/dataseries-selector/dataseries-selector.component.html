@@ -73,31 +73,45 @@
 							<div formGroupName="yaxisData">
 								<h3 class="borderBottomClass">Y Axis</h3>
 
-								<div style="width: 50%; display: inline-block;">
+								<div>
+									<div style="width: 50%; display: inline-block;">
 
-									<div>Entity</div>
-									<mat-form-field>
-										<mat-label>Select Entity</mat-label>
-										<mat-select formControlName="entity" (selectionChange)="selectEntity($event)">
-											<mat-option>None</mat-option>
-											<mat-option [value]="entity" *ngFor="let entity of entities">{{ entity }}</mat-option>
-										</mat-select>
-									</mat-form-field>
+										<div>Entity</div>
+										<mat-form-field>
+											<mat-label>Select Entity</mat-label>
+											<mat-select formControlName="entity" (selectionChange)="selectEntity($event)">
+												<mat-option>None</mat-option>
+												<mat-option [value]="entity" *ngFor="let entity of entities">{{ entity }}</mat-option>
+											</mat-select>
+										</mat-form-field>
+									</div>
+
+
+									<div style="width: 50%; display: inline-block;	">
+
+										<div>Y axis Aggregate</div>
+										<mat-form-field>
+											<mat-label>Select Aggregate</mat-label>
+											<mat-select formControlName="yaxisAggregate">
+												<mat-option>None</mat-option>
+												<mat-option [value]="aggregate.code" *ngFor="let aggregate of aggregates">
+													{{ aggregate.name }}
+												</mat-option>
+											</mat-select>
+										</mat-form-field>
+									</div>
 								</div>
 
+								<!-- Issue with TypeError regusterOnChange -->
+								<div *ngIf="checkYAxisAggregate(ctrl)">
+									<div>
+										<div>Entity Field</div>
+										<div style=" display: inline-block; width: 90%; vertical-align: middle;">
 
-								<div style="width: 50%; display: inline-block;	">
-
-									<div>Y axis Aggregate</div>
-									<mat-form-field>
-										<mat-label>Select Aggregate</mat-label>
-										<mat-select formControlName="yaxisAggregate">
-											<mat-option>None</mat-option>
-											<mat-option [value]="aggregate.code" *ngFor="let aggregate of aggregates">
-												{{ aggregate.name }}
-											</mat-option>
-										</mat-select>
-									</mat-form-field>
+											<select-attribute class="uk-padding" [chosenEntity]="ctrl.get('data.yaxisData.entity')?.value" formControlName="yaxisEntityField">
+											</select-attribute>
+										</div>
+									</div>
 								</div>
 							</div>
 
@@ -133,6 +147,16 @@
 								<h3 class="borderBottomClass">Filters</h3>
 
 								<ng-container *ngFor="let filter of getFilters(ctrl); let j = index" [formGroup]="filter">
+
+									<div>
+										<mat-radio-group labelPosition="after" formControlName="op">
+											<mat-radio-button value="OR">Match any of the values</mat-radio-button>
+											<mat-radio-button value="AND">Match all of the values</mat-radio-button>
+										</mat-radio-group>
+									</div>
+
+
+
 									<div>
 										<button (click)="removeFilter(ctrl, j)">Remove Filter</button>
 									</div>
@@ -182,20 +206,25 @@
 				<div formGroupName="chartProperties">
 					<h2 class="borderBottomClass">Options</h2>
 
-					<mat-form-field>
-						<mat-label>Stacked Data</mat-label>
-						<mat-select formControlName="stacking">
-							<mat-option disabled="true">Select One</mat-option>
-							<mat-option [value]="stackedData.value" *ngFor="let stackedData of stackedDataList">
-								{{ stackedData.name }}
-							</mat-option>
-						</mat-select>
-					</mat-form-field>
+					<div>
+						<mat-form-field>
+							<mat-label>Stacked Data</mat-label>
+							<mat-select formControlName="stacking">
+								<mat-option disabled="true">Select One</mat-option>
+								<mat-option [value]="stackedData.value" *ngFor="let stackedData of stackedDataList">
+									{{ stackedData.name }}
+								</mat-option>
+							</mat-select>
+						</mat-form-field>
+					</div>
 
-					<!-- TODO Colorpicker -->
-					<!-- <mat-form-field>
-						   <mat-label>Dataseries Color</mat-label>
-					</mat-form-field> -->
+					<div>
+						<mat-form-field>
+							<mat-label>Dataseries Color</mat-label>
+							<br>
+							<input matInput type="color" formControlName="dataseriesColor">
+						</mat-form-field>
+					</div>
 
 				</div>
 			</div>
