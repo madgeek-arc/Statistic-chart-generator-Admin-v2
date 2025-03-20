@@ -5,6 +5,8 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
+    "analyze:stats": "ng build --stats-json && npx webpack-bundle-analyzer dist/$(node -p \"require('./package.json').name\")/stats.json",
+    "analyze:source-maps": "ng build --source-map && npx source-map-explorer dist/$(node -p \"require('./package.json').name\")/*.js",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },
