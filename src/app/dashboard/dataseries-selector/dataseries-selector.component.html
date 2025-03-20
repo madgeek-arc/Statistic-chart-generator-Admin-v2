@@ -81,7 +81,7 @@
 											<mat-label>Select Entity</mat-label>
 											<mat-select formControlName="entity" (selectionChange)="selectEntity($event)">
 												<mat-option>None</mat-option>
-												<mat-option [value]="entity" *ngFor="let entity of entities">{{ entity }}</mat-option>
+												<mat-option [value]="entity" *ngFor="let entity of entities">{{ entity | capitalize }}</mat-option>
 											</mat-select>
 										</mat-form-field>
 									</div>
@@ -202,13 +202,14 @@
 				<div formGroupName="chartProperties">
 					<h2 class="borderBottomClass">Options</h2>
 
-					<div *ngIf="true">
+					<div *ngIf="this.selectedCategoryName?.value === 'combo'">
+						<!-- <div *ngIf="true"> -->
 						<mat-form-field>
 							<mat-label>Chart Type</mat-label>
-							<mat-select formControlName="stacking">
-								<mat-option disabled="true">Select One</mat-option>
-								<mat-option [value]="stackedData.value" *ngFor="let stackedData of stackedDataList">
-									{{ stackedData.name }}
+							<mat-select formControlName="chartType">
+								<mat-option disabled="true">Select Chart Type</mat-option>
+								<mat-option [value]="chartType.value" *ngFor="let chartType of chartTypeList">
+									{{ chartType.name }}
 								</mat-option>
 							</mat-select>
 						</mat-form-field>
@@ -232,7 +233,7 @@
 						<mat-form-field>
 							<mat-label>Stack Name</mat-label>
 							<br>
-							<input matInput type="text" formControlName="chartType">
+							<input matInput type="text" formControlName="stackName">
 						</mat-form-field>
 					</div> -->
 

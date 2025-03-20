@@ -62,6 +62,7 @@ export interface ChartPropertiesFormSchema {
   chartType?: string;
   dataseriesColor?: string;
   dataseriesName?: string;
+  stackName?: string;
   stacking?: 'null' | 'normal' | 'percent' | 'stream' | 'overlap';
 }
 

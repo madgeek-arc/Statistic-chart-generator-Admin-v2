@@ -24,7 +24,7 @@
 				<app-category-selector (showCategorySelection)="updateStepper($event)" [categoryForm]="this.category"></app-category-selector>
 			</mat-step>
 			<mat-step [stepControl]="this.dataseries" [label]="configureDatasieriesLabel">
-				<app-dataseries-selector [selectedView]="testingView"></app-dataseries-selector>
+				<app-dataseries-selector [selectedView]="testingView" [selectedCategory]="categoryName"></app-dataseries-selector>
 			</mat-step>
 			<mat-step [stepControl]="this.appearance" [label]="customiseAppearanceLabel" [optional]="true" [completed]="this.view.valid && this.category.valid">
 				<app-customise-appearance [appearanceForm]="this.appearance"></app-customise-appearance>

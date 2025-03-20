@@ -90,6 +90,10 @@ export class DashboardComponent implements OnInit {
 		return this.formGroup.get('category') as FormGroup;
 	}
 
+	get categoryName() {
+		return this.formGroup.get('category')?.get('diagram')?.get('name') as FormControl;
+	}
+
 	get dataseries() {
 		return this.formGroup.get('dataseries') as FormArray;
 	}

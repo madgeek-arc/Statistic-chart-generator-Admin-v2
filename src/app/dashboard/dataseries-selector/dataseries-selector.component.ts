@@ -19,6 +19,7 @@ import { DbSchemaService } from "../../services/db-schema-service/db-schema.serv
 export class DataseriesSelectorComponent implements OnInit {
 
 	@Input('selectedView') selectedView: FormControl = new FormControl();
+	@Input('selectedCategory') selectedCategoryName: FormControl = new FormControl();;
 	@ViewChild('editDataseriesName') editDataseriesName: ElementRef;
 	// dataSource = new MatTreeNestedDataSource<EntityNode>();
 	// treeControl = new NestedTreeControl<EntityNode>(node => node.relations);
@@ -57,6 +58,18 @@ export class DataseriesSelectorComponent implements OnInit {
 		{ name: 'Stacked by Percentage', value: 'percent' }
 	];
 
+	protected chartTypeList = [
+		{ name: 'Disabled', value: 'null' },
+		{ name: 'Area', value: 'area' },
+		{ name: 'Bar', value: 'bar' },
+		{ name: 'Column', value: 'column' },
+		{ name: 'Line', value: 'line' },
+		{ name: 'Pie', value: 'pie' },
+		{ name: 'Treemap', value: 'treemap' },
+		{ name: 'Dependencywheel', value: 'dependencywheel' },
+		{ name: 'Sankey', value: 'sankey' }
+	];
+
 
 	protected filterFields = [
 		"name",
@@ -82,6 +95,13 @@ export class DataseriesSelectorComponent implements OnInit {
 	hasChild = (_: number, node: EntityNode) => !!node.relations && node.relations.length > 0;
 
 	ngOnInit(): void {
+		this.selectedCategoryName.valueChanges.subscribe((categoryName: string) => {
+			if (categoryName) {
+				console.log("Category name:", categoryName);
+			}
+		})
+
+
 		this.selectedView.valueChanges.subscribe((profile: Profile) => {
 			if (profile) {
 				this.entityProvider.getAvailableEntities(profile).pipe(first()).subscribe((entityNames: Array<string>) => {
