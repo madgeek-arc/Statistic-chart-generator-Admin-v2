@@ -155,34 +155,32 @@
 
 									<div class="groupFiltersClass">
 										<div class="uk-flex uk-flex-right">
-											<button mat-icon-button (click)="removeFilter(ctrl, j)"><mat-icon>highlight_off</mat-icon></button>
+											<button mat-icon-button style="color: red;" (click)="removeFilter(ctrl, j)"><mat-icon>highlight_off</mat-icon></button>
 										</div>
 										<ng-container formArrayName="groupFilters">
 											<div *ngFor="let group of getGroups(filter); let k = index" [formGroup]="group">
 												<ng-container formGroupName="field">
-													<mat-form-field>
-														<mat-label>Field</mat-label>
-														<mat-select formControlName="name">
-															<mat-option *ngFor="let filterField of filterFields" [value]="filterField">{{ filterField }}</mat-option>
-														</mat-select>
-													</mat-form-field>
+													<div style="display: inline-block; width: 50%; vertical-align: middle;">
+														<div>Entity Field</div>
+														<select-attribute class="uk-padding" [chosenEntity]="ctrl.get('data.yaxisData.entity')?.value" [control]="group.get('field.name')"></select-attribute>
+													</div>
 												</ng-container>
 
-												<mat-form-field>
-													<mat-label>Operator</mat-label>
+												<mat-form-field style="width: 20%;">
+													<mat-label>Filter Operator</mat-label>
 													<mat-select formControlName="type">
 														<mat-option *ngFor="let operator of filterOperators" [value]="operator">{{ operator }}</mat-option>
 													</mat-select>
 												</mat-form-field>
 
 												<ng-container formArrayName="values">
-													<mat-form-field>
+													<mat-form-field style="width: 20%;">
 														<mat-label>Value</mat-label>
 														<input matInput formControlName="0">
 													</mat-form-field>
 												</ng-container>
 
-												<button mat-icon-button style="color: red;" (click)="removeFilterRule(filter, k)"><mat-icon>highlight_off</mat-icon></button>
+												<button mat-icon-button style="color: red;" (click)="removeFilterRule(filter, k)"><mat-icon>delete</mat-icon></button>
 											</div>
 											<button mat-button class="addEntityButtonClass" (click)="addFilterRule(filter)"><mat-icon>add</mat-icon>Add Filter Rule</button>
 										</ng-container>

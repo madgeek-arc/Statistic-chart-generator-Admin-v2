@@ -95,13 +95,6 @@ export class DataseriesSelectorComponent implements OnInit {
 	hasChild = (_: number, node: EntityNode) => !!node.relations && node.relations.length > 0;
 
 	ngOnInit(): void {
-		this.selectedCategoryName.valueChanges.subscribe((categoryName: string) => {
-			if (categoryName) {
-				console.log("Category name:", categoryName);
-			}
-		})
-
-
 		this.selectedView.valueChanges.subscribe((profile: Profile) => {
 			if (profile) {
 				this.entityProvider.getAvailableEntities(profile).pipe(first()).subscribe((entityNames: Array<string>) => {
