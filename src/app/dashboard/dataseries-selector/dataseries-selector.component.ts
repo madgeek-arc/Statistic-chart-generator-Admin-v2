@@ -327,9 +327,6 @@ export class DataseriesSelectorComponent implements OnInit {
 		let yAxisData = data.controls['yaxisData'] as FormGroup;
 		let yaxisAggregate = yAxisData.controls['yaxisAggregate'] as FormControl;
 
-		console.log("yaxisAggregate:", yaxisAggregate)
-		console.log("yaxisAggregate.value:", yaxisAggregate.value)
-
 		if (yaxisAggregate && yaxisAggregate.value !== null) {
 			if (yaxisAggregate.value === 'total') {
 				return false;

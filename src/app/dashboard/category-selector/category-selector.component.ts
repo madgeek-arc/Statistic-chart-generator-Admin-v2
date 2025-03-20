@@ -2,8 +2,8 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { first } from 'rxjs';
 import {
-  ISupportedMap, ISupportedMiscType,
-  ISupportedPolar, ISupportedSpecialChartType, SupportedChartTypesService
+	ISupportedMap, ISupportedMiscType,
+	ISupportedPolar, ISupportedSpecialChartType, SupportedChartTypesService
 } from "../customise-appearance/visualisation-options/supported-chart-types-service/supported-chart-types.service";
 
 @Component({
@@ -33,18 +33,18 @@ export class CategorySelectorComponent implements OnInit {
 
 	ngOnInit(): void {
 		this.chartProvider.getSupportedChartTypes().pipe(first()).subscribe({
-      next: (data: Array<ISupportedChart>) => {
-        this.supportedChartTypes = data.filter(this.hideChartFilter);
-      },
-      error: (err) => {
-        console.log("ERROR getSupportedChartTypes:", err);
-      },
-      complete: () => {
-        this.supportedChartTypes.map((elem: ISupportedChart) => {
-          this.availableDiagrams.push(elem);
-        });
-      }
-    });
+			next: (data: Array<ISupportedChart>) => {
+				this.supportedChartTypes = data.filter(this.hideChartFilter);
+			},
+			error: (err) => {
+				console.log("ERROR getSupportedChartTypes:", err);
+			},
+			complete: () => {
+				this.supportedChartTypes.map((elem: ISupportedChart) => {
+					this.availableDiagrams.push(elem);
+				});
+			}
+		});
 
 		this.chartProvider.getSupportedPolarTypes().pipe(first()).subscribe(
 			(data: Array<ISupportedPolar>) => {
@@ -109,14 +109,14 @@ export class CategorySelectorComponent implements OnInit {
 
 	moveToNextStep(event: ISupportedCategory): void {
 		if (event.name) {
-      (this.categoryForm.get('diagram.supportedLibraries') as FormArray).clear();
+			(this.categoryForm.get('diagram.supportedLibraries') as FormArray).clear();
 
-      for (let i = 0; i < event.supportedLibraries.length; i++) {
-        (this.categoryForm.get('diagram.supportedLibraries') as FormArray).push(new FormControl<string | null>(null));
-      }
-      this.categoryForm.get('diagram')?.setValue(event);
+			for (let i = 0; i < event.supportedLibraries.length; i++) {
+				(this.categoryForm.get('diagram.supportedLibraries') as FormArray).push(new FormControl<string | null>(null));
+			}
+			this.categoryForm.get('diagram')?.setValue(event);
 
-      this.showCategorySelection.emit({
+			this.showCategorySelection.emit({
 				name: event.name,
 				step: "category"
 			});

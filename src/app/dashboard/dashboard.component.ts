@@ -119,6 +119,7 @@ export class DashboardComponent implements OnInit {
 		setTimeout(() => {
 			this.stepper.next();
 			this.formGroup.updateValueAndValidity();
+			window.scroll(0, 0);
 		}, 1);
 	}
 
@@ -177,7 +178,6 @@ export class DashboardComponent implements OnInit {
 					}),
 					chartProperties: new FormGroup({
 						chartType: new FormControl<string | null>(null),
-						// TODO add dataseriesColor to UI 
 						dataseriesColor: new FormControl<string | null>(null),
 						dataseriesName: new FormControl<string | null>({ value: 'Data', disabled: true }),
 						stacking: new FormControl<'null' | 'normal' | 'percent' | 'stream' | 'overlap'>('null', Validators.required),

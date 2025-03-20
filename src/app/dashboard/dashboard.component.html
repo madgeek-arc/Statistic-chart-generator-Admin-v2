@@ -1,19 +1,16 @@
 <button style="float: right;" (click)="submitTest()" [disabled]="!(this.view.valid && this.category.valid && this.dataseries.valid)">SUBMIT</button>
 <div class="container">
 	<form [formGroup]="formGroup">
-		<!-- <app-customise-appearance [appearanceForm]="this.appearance"></app-customise-appearance> -->
 		<br>
-
 		<mat-stepper #stepper linear (selectionChange)="onStepChange($event)">
 			<mat-step [stepControl]="this.view">
 				<ng-template matStepLabel>
-          <span style="display: block;">{{ viewSelectionLabel }}</span>
-          <span *ngIf="true" style="display: block;">{{ selectedView }}</span>
+					<span style="display: block;">{{ viewSelectionLabel }}</span>
+					<span *ngIf="true" style="display: block;">{{ selectedView }}</span>
 				</ng-template>
-				<app-view-selector
-          (showViewSelection)="updateStepper($event)" [viewForm]="this.testingView" [profileControl]="this.profile">
-        </app-view-selector>
-        <pre>{{ dynamicFormHandlingService.loadFormObject | json }}</pre>
+				<app-view-selector (showViewSelection)="updateStepper($event)" [viewForm]="this.testingView" [profileControl]="this.profile">
+				</app-view-selector>
+				<pre>{{ dynamicFormHandlingService.loadFormObject | json }}</pre>
 			</mat-step>
 			<mat-step [stepControl]="this.category">
 				<ng-template matStepLabel>
@@ -35,4 +32,4 @@
 		</mat-stepper>
 	</form>
 </div>
-<pre>{{ formGroup.value | json }}</pre>
+<!-- <pre>{{ formGroup.value | json }}</pre> -->

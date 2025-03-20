@@ -147,7 +147,7 @@
 
 								<ng-container *ngFor="let filter of getFilters(ctrl); let j = index" [formGroup]="filter">
 									<div>
-										<mat-radio-group labelPosition="after" formControlName="op">
+										<mat-radio-group color="primary" labelPosition="after" formControlName="op">
 											<mat-radio-button value="AND" [checked]="true">Match all of the values</mat-radio-button>
 											<mat-radio-button value="OR">Match any of the values</mat-radio-button>
 										</mat-radio-group>
@@ -202,6 +202,18 @@
 				<div formGroupName="chartProperties">
 					<h2 class="borderBottomClass">Options</h2>
 
+					<div *ngIf="true">
+						<mat-form-field>
+							<mat-label>Chart Type</mat-label>
+							<mat-select formControlName="stacking">
+								<mat-option disabled="true">Select One</mat-option>
+								<mat-option [value]="stackedData.value" *ngFor="let stackedData of stackedDataList">
+									{{ stackedData.name }}
+								</mat-option>
+							</mat-select>
+						</mat-form-field>
+					</div>
+
 					<div>
 						<mat-form-field>
 							<mat-label>Stacked Data</mat-label>
@@ -214,13 +226,15 @@
 						</mat-form-field>
 					</div>
 
-					<div>
+
+					<!-- There is Stack Name in local version of Stats Tools but NOT of online version. -->
+					<!-- <div>
 						<mat-form-field>
 							<mat-label>Stack Name</mat-label>
 							<br>
 							<input matInput type="text" formControlName="chartType">
 						</mat-form-field>
-					</div>
+					</div> -->
 
 					<div>
 						<mat-form-field>
