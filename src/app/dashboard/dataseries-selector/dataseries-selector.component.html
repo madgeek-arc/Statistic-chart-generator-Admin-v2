@@ -162,14 +162,19 @@
 												<ng-container formGroupName="field">
 													<div style="display: inline-block; width: 50%; vertical-align: middle;">
 														<div>Entity Field</div>
-														<select-attribute class="uk-padding" [chosenEntity]="ctrl.get('data.yaxisData.entity')?.value" [control]="group.get('field.name')"></select-attribute>
+														<select-attribute class="uk-padding" [chosenEntity]="ctrl.get('data.yaxisData.entity')?.value" [control]="group.get('field')"></select-attribute>
 													</div>
 												</ng-container>
 
 												<mat-form-field style="width: 20%;">
 													<mat-label>Filter Operator</mat-label>
 													<mat-select formControlName="type">
-														<mat-option *ngFor="let operator of filterOperators" [value]="operator">{{ operator }}</mat-option>
+														<ng-container *ngIf="group.get('field.name').value === null">
+															<mat-option disabled="true">Select Operator</mat-option>
+														</ng-container>
+														<ng-container *ngIf="group.get('field.name').value !== null">
+															<mat-option *ngFor="let filterOperator of filterOperators | filterOperators: group.get('field.type').value" [value]="filterOperator.filterOperator">{{ filterOperator.filterName }}</mat-option>
+														</ng-container>
 													</mat-select>
 												</mat-form-field>
 

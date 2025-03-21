@@ -11,6 +11,8 @@ import {
 } from '../helper-components/select-attribute/dynamic-entity-tree/entity-tree-nodes.types';
 import { DbSchemaService } from "../../services/db-schema-service/db-schema.service";
 
+export enum FieldType { text, int, float, date }
+
 @Component({
 	selector: 'app-dataseries-selector',
 	templateUrl: './dataseries-selector.component.html',
@@ -23,6 +25,8 @@ export class DataseriesSelectorComponent implements OnInit {
 	@ViewChild('editDataseriesName') editDataseriesName: ElementRef;
 	// dataSource = new MatTreeNestedDataSource<EntityNode>();
 	// treeControl = new NestedTreeControl<EntityNode>(node => node.relations);
+
+	// filterOperators: Observable<Array<FilterType>> | null = null;
 
 	testingSelect: string = '';
 	entities: Array<string> = [];
@@ -70,20 +74,22 @@ export class DataseriesSelectorComponent implements OnInit {
 		{ name: 'Sankey', value: 'sankey' }
 	];
 
-
 	protected filterFields = [
 		"name",
 		"number"
 	]
 
 	protected filterOperators = [
-		'Equals',
-		'Not Equals',
-		'Contains',
-		'Starts With',
-		'Ends With'
-	]
-
+		{ filterOperator: '=', filterName: 'Equals', filterType: [FieldType.text, FieldType.int, FieldType.float, FieldType.date] },
+		{ filterOperator: '!=', filterName: 'Not equals', filterType: [FieldType.text, FieldType.int, FieldType.float, FieldType.date] },
+		{ filterOperator: '>', filterName: 'Greater than', filterType: [FieldType.int, FieldType.float, FieldType.date] },
+		{ filterOperator: '>=', filterName: 'Greater / Equal than', filterType: [FieldType.int, FieldType.float, FieldType.date] },
+		{ filterOperator: '<', filterName: 'Less than', filterType: [FieldType.int, FieldType.float, FieldType.date] },
+		{ filterOperator: '<=', filterName: 'Less / Equal than', filterType: [FieldType.int, FieldType.float, FieldType.date] },
+		{ filterOperator: 'contains', filterName: 'Contains', filterType: [FieldType.text] },
+		{ filterOperator: 'starts_with', filterName: 'Starts with', filterType: [FieldType.text] },
+		{ filterOperator: 'ends_with', filterName: 'Ends with', filterType: [FieldType.text] }
+	];
 
 	constructor(
 		private http: HttpClient,

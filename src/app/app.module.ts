@@ -29,6 +29,7 @@ import { GoogleChartsComponent } from './dashboard/customise-appearance/visualis
 import { EChartsComponent } from './dashboard/customise-appearance/visualisation-options/e-charts/e-charts.component';
 import { SupportedChartTypesService } from './dashboard/customise-appearance/visualisation-options/supported-chart-types-service/supported-chart-types.service';
 import { ChartExportingService } from './services/chart-exporting-service/chart-exporting.service';
+import { FilterOperatorsPipe } from './dashboard/pipes/filter-operators.pipe';
 
 @NgModule({
   declarations: [
@@ -48,6 +49,7 @@ import { ChartExportingService } from './services/chart-exporting-service/chart-
 
     // Pipes
     CapitalizePipe,
+	FilterOperatorsPipe,
     HighChartsComponent,
     GoogleChartsComponent,
     EChartsComponent,
