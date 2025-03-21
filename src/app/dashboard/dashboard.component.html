@@ -1,35 +1,161 @@
-<button style="float: right;" (click)="submitTest()" [disabled]="!(this.view.valid && this.category.valid && this.dataseries.valid)">SUBMIT</button>
-<div class="container">
-	<form [formGroup]="formGroup">
-		<br>
-		<mat-stepper #stepper linear (selectionChange)="onStepChange($event)">
-			<mat-step [stepControl]="this.view">
-				<ng-template matStepLabel>
-					<span style="display: block;">{{ viewSelectionLabel }}</span>
-					<span *ngIf="true" style="display: block;">{{ selectedView }}</span>
-				</ng-template>
-				<app-view-selector (showViewSelection)="updateStepper($event)" [viewForm]="this.testingView" [profileControl]="this.profile">
-				</app-view-selector>
-				<pre>{{ dynamicFormHandlingService.loadFormObject | json }}</pre>
-			</mat-step>
-			<mat-step [stepControl]="this.category">
-				<ng-template matStepLabel>
-					<span style="display: block;">
-						{{categorySelectionLabel}}
-					</span>
-					<span *ngIf="true" style="display: block;">
-						{{selectedCategory | capitalize}}
-					</span>
-				</ng-template>
-				<app-category-selector (showCategorySelection)="updateStepper($event)" [categoryForm]="this.category"></app-category-selector>
-			</mat-step>
-			<mat-step [stepControl]="this.dataseries" [label]="configureDatasieriesLabel">
-				<app-dataseries-selector [selectedView]="testingView" [selectedCategory]="categoryName"></app-dataseries-selector>
-			</mat-step>
-			<mat-step [stepControl]="this.appearance" [label]="customiseAppearanceLabel" [optional]="true" [completed]="this.view.valid && this.category.valid">
-				<app-customise-appearance [appearanceForm]="this.appearance"></app-customise-appearance>
-			</mat-step>
-		</mat-stepper>
-	</form>
-</div>
+<!--<button style="float: right;" (click)="submitTest()" [disabled]="!(this.view.valid && this.category.valid && this.dataseries.valid)">SUBMIT</button>-->
+<!--<div class="container">-->
+<!--	<form [formGroup]="formGroup">-->
+<!--		<br>-->
+<!--		<mat-stepper #stepper linear (selectionChange)="onStepChange($event)">-->
+<!--			<mat-step [stepControl]="this.view">-->
+<!--				<ng-template matStepLabel>-->
+<!--					<span style="display: block;">{{ viewSelectionLabel }}</span>-->
+<!--					<span *ngIf="true" style="display: block;">{{ selectedView }}</span>-->
+<!--				</ng-template>-->
+<!--				<app-view-selector (showViewSelection)="updateStepper($event)" [viewForm]="this.testingView" [profileControl]="this.profile">-->
+<!--				</app-view-selector>-->
+<!--				<pre>{{ dynamicFormHandlingService.loadFormObject | json }}</pre>-->
+<!--			</mat-step>-->
+<!--			<mat-step [stepControl]="this.category">-->
+<!--				<ng-template matStepLabel>-->
+<!--					<span style="display: block;">-->
+<!--						{{categorySelectionLabel}}-->
+<!--					</span>-->
+<!--					<span *ngIf="true" style="display: block;">-->
+<!--						{{selectedCategory | capitalize}}-->
+<!--					</span>-->
+<!--				</ng-template>-->
+<!--				<app-category-selector (showCategorySelection)="updateStepper($event)" [categoryForm]="this.category"></app-category-selector>-->
+<!--			</mat-step>-->
+<!--			<mat-step [stepControl]="this.dataseries" [label]="configureDatasieriesLabel">-->
+<!--				<app-dataseries-selector [selectedView]="testingView" [selectedCategory]="categoryName"></app-dataseries-selector>-->
+<!--			</mat-step>-->
+<!--			<mat-step [stepControl]="this.appearance" [label]="customiseAppearanceLabel" [optional]="true" [completed]="this.view.valid && this.category.valid">-->
+<!--				<app-customise-appearance [appearanceForm]="this.appearance"></app-customise-appearance>-->
+<!--			</mat-step>-->
+<!--		</mat-stepper>-->
+<!--	</form>-->
+<!--</div>-->
 <!-- <pre>{{ formGroup.value | json }}</pre> -->
+
+<div id="dashboard-container">
+  <div class="" style="min-height: 90vh" uk-grid>
+    <div class="uk-width-3-5" style="border-right: 1px solid #EAEAEA">
+
+      <div id="sidebar" class="sidebar_main_swipe uk-flex uk-background-default sidebar_main_active" [class.sidebar_main_active]="open" [class.sidebar_mini]="!open">
+
+        <div id="sidebar_main" uk-sticky="end: .sidebar_main_swipe;" offset="90">
+          <div sidebar-content="">
+            <div id="sidebar_toggle" (click)="toggleSidebar()"></div>
+            <div id="sidebar_content">
+              <div class="menu_section" style="min-height: 30vh;">
+                <ul uk-nav="duration: 400" class="uk-list uk-nav uk-nav-default" data-uk-switcher="connect: #selection; animation: 'fade'">
+
+                  <li class="uk-parent" [routerLinkActive]="['current_section']">
+                    <a class="uk-flex uk-flex-middle" title="Overview"
+                       role="button" aria-controls="uk-nav-60-content-0" aria-expanded="false" aria-disabled="false">
+                      <div class="uk-width-auto">
+                        <span class="material-symbols-outlined">group</span>
+                      </div>
+                      <div class="uk-width-expand@l uk-margin-small-left hide-on-close">
+                        <div class="uk-text-truncate">{{ viewSelectionLabel }}</div>
+                        <div class="uk-text-meta uk-text-wrap">
+                          Choose what type of data interest you
+                        </div>
+                      </div>
+<!--                      <span class="uk-width-expand@l uk-text-truncate uk-margin-small-left hide-on-close">-->
+<!--                        {{ viewSelectionLabel }}-->
+<!--                      </span>-->
+
+                    </a>
+                  </li>
+
+<!--                  <div class="sidebar-item-separator"></div>-->
+
+                  <li class="uk-parent" [routerLinkActive]="['current_section']">
+                    <a class="uk-flex uk-flex-middle" title="Technologies"
+                       role="button" aria-controls="uk-nav-60-content-0" aria-expanded="false" aria-disabled="false">
+                      <div class="uk-width-auto">
+                        <span class="material-symbols-outlined">bar_chart</span>
+                      </div>
+                      <div class="uk-width-expand@l uk-margin-small-left hide-on-close">
+                        <div class="uk-text-truncate">{{ categorySelectionLabel }}</div>
+                        <div class="uk-text-meta uk-text-wrap">
+                          Choose the type of diagram you want to make
+                        </div>
+                      </div>
+<!--                      <span class="uk-width-expand@l uk-text-truncate uk-margin-small-left hide-on-close">-->
+<!--                        {{ categorySelectionLabel }}-->
+<!--                      </span>-->
+                    </a>
+                  </li>
+
+                  <li class="uk-parent" [routerLinkActive]="['current_section']">
+                    <a class="uk-flex uk-flex-middle" title="Organisations"
+                       role="button" aria-controls="uk-nav-60-content-0" aria-expanded="false" aria-disabled="false">
+                      <div class="uk-width-auto">
+                        <span class="material-symbols-outlined">database</span>
+                      </div>
+                      <div class="uk-width-expand@l uk-margin-small-left hide-on-close">
+                        <div class="uk-text-truncate">{{ configureDatasieriesLabel }}</div>
+                        <div class="uk-text-meta uk-text-wrap">
+                          Describe the data you want to see
+                        </div>
+                      </div>
+<!--                      <span class="uk-width-expand@l uk-text-truncate uk-margin-small-left hide-on-close">{{ configureDatasieriesLabel }}</span>-->
+                    </a>
+                  </li>
+
+                  <li class="uk-parent" [routerLinkActive]="['current_section']">
+                    <a class="uk-flex uk-flex-middle" title="Patents"
+                       role="button" aria-controls="uk-nav-60-content-0" aria-expanded="false" aria-disabled="false">
+                      <div class="uk-width-auto">
+                        <span class="material-symbols-outlined">tune</span>
+                      </div>
+                      <div class="uk-width-expand@l uk-margin-small-left hide-on-close">
+                        <div class="uk-text-truncate">{{ customiseAppearanceLabel }}</div>
+                        <div class="uk-text-meta uk-text-wrap">
+                          Change the way your diagram looks
+                        </div>
+                      </div>
+<!--                      <span class="uk-width-expand@l uk-text-truncate uk-margin-small-left hide-on-close">{{ customiseAppearanceLabel }}</span>-->
+                    </a>
+                  </li>
+
+                </ul>
+
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <main class="uk-width-1-1">
+          <div>
+            <div id="page_content">
+
+              <ul id="selection" class="uk-switcher uk-margin">
+                <li class="" style="animation-duration: 200ms;">
+                  <app-view-selector (showViewSelection)="updateStepper($event)" [viewForm]="this.testingView"
+                                     [profileControl]="this.profile">
+                  </app-view-selector>
+                </li>
+                <li class="" style="animation-duration: 200ms;">
+                  <app-category-selector (showCategorySelection)="updateStepper($event)" [categoryForm]="this.category"></app-category-selector>
+                </li>
+                <li class="" style="animation-duration: 200ms;">
+<!--                  <app-dataseries-selector [selectedView]="testingView" [selectedCategory]="categoryName"></app-dataseries-selector>-->
+                </li>
+                <li class="" style="animation-duration: 200ms;">
+<!--                  <app-customise-appearance [appearanceForm]="this.appearance"></app-customise-appearance>-->
+                </li>
+              </ul>
+
+            </div>
+          </div>
+        </main>
+      </div>
+
+    </div>
+    <div class="uk-width-2-5">
+      <pre>{{ formGroup.value | json }}</pre>
+    </div>
+  </div>
+</div>
+
+

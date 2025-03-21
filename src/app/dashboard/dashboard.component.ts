@@ -27,14 +27,16 @@ export class DashboardComponent implements OnInit {
 
 	firstTime: boolean = true;
 
-	viewSelectionLabel: string = "Select View";
+	viewSelectionLabel: string = "View";
 	selectedView: string = "";
-	categorySelectionLabel: string = "Select Category";
+	categorySelectionLabel: string = "Chart type";
 	selectedCategory: string = "";
-	configureDatasieriesLabel: string = "Configure Dataseries";
+	configureDatasieriesLabel: string = "Data";
 	selectedDataseries: string = "";
-	customiseAppearanceLabel: string = "Customise Appearance";
+	customiseAppearanceLabel: string = "Appearance";
 	selectedAppearance: string = '';
+
+    open = true;
 
 
 	private _formErrorObject: BehaviorSubject<Array<any>> = null as any;
@@ -402,5 +404,20 @@ export class DashboardComponent implements OnInit {
 			minHeight: '80svh'
 		});
 	}
+
+    toggleSidebar() {
+
+      const el: HTMLElement | null = document.getElementById('sidebar');
+      if (el === null)
+        return;
+
+      if(!el.classList.contains('sidebar_mini')) {
+        el.classList.add('sidebar_mini');
+        el.classList.remove('sidebar_main_active');
+      } else {
+        el.classList.add('sidebar_main_active');
+        el.classList.remove('sidebar_mini');
+      }
+    }
 
 }

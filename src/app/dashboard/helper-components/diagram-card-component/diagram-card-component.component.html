@@ -1,10 +1,14 @@
-<button (click)="categorySelect()">
-	<div class="uk-card uk-card-default uk-card-hover uk-card-small">
-		<div class="uk-card-media-top">
-			<img src="../../../../assets/images/numberPlaceholder.png" width="30px" height="30px" alt="Diagram Placeholder">
+<a (click)="categorySelect()" class="uk-text-decoration-none">
+	<div class="uk-card card-plain uk-card-small">
+		<div class="uk-card-body">
+<!--      <div class="uk-card-media-top">-->
+			<img src="/assets/{{diagram.imageURL}}" width="30px" height="30px" alt="Diagram Placeholder">
 		</div>
-		<div class="uk-card-footer">
-			<p>{{diagram.type | capitalize}}</p>
-		</div>
+<!--		<div class="uk-card-footer">-->
+<!--			<p>{{diagram.type | capitalize}}</p>-->
+<!--		</div>-->
 	</div>
-</button>
+  <div class="uk-margin-small-top">
+    {{diagram.type | capitalize}}
+  </div>
+</a>
