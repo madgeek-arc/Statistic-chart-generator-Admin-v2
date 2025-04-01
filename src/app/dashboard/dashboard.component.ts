@@ -12,6 +12,7 @@ import {
 import { DynamicFormHandlingService } from "../services/dynamic-form-handling-service/dynamic-form-handling.service";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 
+import UIkit from 'uikit';
 
 @Component({
 	selector: 'app-dashboard',
@@ -55,7 +56,7 @@ export class DashboardComponent implements OnInit {
 
 
 	ngOnInit(): void {
-		this.view.valueChanges.subscribe((profile: Profile) => {
+		this.view.valueChanges.subscribe((profile: any) => {
 			if (profile && !this.firstTime) {
 				this.newViewSelected(profile);
 			}
@@ -112,26 +113,39 @@ export class DashboardComponent implements OnInit {
 	updateStepper(event: any): void {
 		this.firstTime = false;
 		if (event) {
-			if (event.step === 'view') {
-				this.selectedView = event.profile;
+			if (event.step === 'profile') {
+				UIkit.switcher('#navTab').show(1);
 			} else if (event.step === 'category') {
 				this.selectedCategory = event.name;
+				UIkit.switcher('#navTab').show(2);
 			}
 		}
+
+		this.checkDisabledTabs();
 
 		this.moveToNextStep()
 	}
 
+	checkDisabledTabs() {
+		if (this.formGroup) {
+			if (this.view.get('profile')?.value && this.category.get('diagram')?.get('type')?.value) {
+				this.hasDataAndDiagramType = true;
+			} else {
+				this.hasDataAndDiagramType = false;
+			}
+		}
+	}
+
 	moveToNextStep(): void {
 		setTimeout(() => {
-			this.stepper.next();
+			// this.stepper.next();
 			this.formGroup.updateValueAndValidity();
 			window.scroll(0, 0);
 		}, 1);
 	}
 
-	newViewSelected(profile: Profile): void {
-		this.category.reset();
+	newViewSelected(profile: any): void {
+		// this.category.reset();
 		// this.dataseries.reset();
 		this.appearance.reset();
 
@@ -139,18 +153,18 @@ export class DashboardComponent implements OnInit {
 		// this.updateDefaultFormGroupValues();
 		this.formGroup.updateValueAndValidity();
 
-		this.selectedCategory = '';
-		this.selectedDataseries = '';
+		// this.selectedCategory = '';
+		// this.selectedDataseries = '';
 		this.selectedAppearance = '';
 	}
 
-	createDefaultFormGroup(profile?: Profile): void {
+	createDefaultFormGroup(profile?: any): void {
 		this.formGroup = this.formBuilder.group({
-			testingView: this.formBuilder.control(null),
+			testingView: this.formBuilder.control(this.formGroup ? this.formGroup.get('testingView')?.value : null),
 			view: this.formBuilder.group({
-				profile: this.formBuilder.control(profile ? profile : null)
+				profile: this.formBuilder.control((profile?.profile !== null && profile?.profile !== undefined) ? profile.profile : null)
 			}),
-			category: this.formBuilder.group({
+			category: this.formBuilder.group(this.formGroup ? this.category.value : {
 				diagram: this.formBuilder.group({
 					type: new FormControl<string | null>(null),
 					supportedLibraries: new FormArray([]),

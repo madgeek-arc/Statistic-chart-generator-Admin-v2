@@ -45,9 +45,9 @@
 						<div id="sidebar_toggle" (click)="toggleSidebar()"></div>
 						<div id="sidebar_content">
 							<div class="menu_section" style="min-height: 30vh;">
-								<ul uk-nav="duration: 400" class="uk-list uk-nav uk-nav-default" data-uk-switcher="connect: #selection; animation: 'fade'">
+								<ul id="navTab" uk-nav="duration: 400" class="uk-list uk-nav uk-nav-default" data-uk-switcher="connect: #selection; animation: 'fade'">
 
-									<li class="uk-parent" [routerLinkActive]="['current_section']">
+									<li class="uk-parent">
 										<a class="uk-flex uk-flex-middle" title="Overview" role="button" aria-controls="uk-nav-60-content-0" aria-expanded="false" aria-disabled="false">
 											<div class="uk-width-auto">
 												<span class="material-symbols-outlined">group</span>
@@ -55,7 +55,12 @@
 											<div class="uk-width-expand@l uk-margin-small-left hide-on-close">
 												<div class="uk-text-truncate">{{ viewSelectionLabel }}</div>
 												<div class="uk-text-meta uk-text-wrap">
-													Choose what type of data interest you
+													<ng-container *ngIf="this.view.get('profile')?.value === null || this.view.get('profile')?.value === undefined">
+														Choose what type of data interest you
+													</ng-container>
+													<ng-container *ngIf="this.view.get('profile')?.value !== null && this.view.get('profile')?.value !== undefined">
+														{{ this.view.get('profile')?.value }}
+													</ng-container>
 												</div>
 											</div>
 											<!--                      <span class="uk-width-expand@l uk-text-truncate uk-margin-small-left hide-on-close">-->
@@ -67,7 +72,7 @@
 
 									<!--                  <div class="sidebar-item-separator"></div>-->
 
-									<li class="uk-parent" [routerLinkActive]="['current_section']">
+									<li class="uk-parent">
 										<a class="uk-flex uk-flex-middle" title="Technologies" role="button" aria-controls="uk-nav-60-content-0" aria-expanded="false" aria-disabled="false">
 											<div class="uk-width-auto">
 												<span class="material-symbols-outlined">bar_chart</span>
@@ -75,7 +80,12 @@
 											<div class="uk-width-expand@l uk-margin-small-left hide-on-close">
 												<div class="uk-text-truncate">{{ categorySelectionLabel }}</div>
 												<div class="uk-text-meta uk-text-wrap">
-													Choose the type of diagram you want to make
+													<ng-container *ngIf="this.category.get('diagram')?.get('type')?.value === null || this.category.get('diagram')?.get('type')?.value === undefined">
+														Choose the type of diagram you want to make
+													</ng-container>
+													<ng-container *ngIf="this.category.get('diagram')?.get('type')?.value !== null && this.category.get('diagram')?.get('type')?.value !== undefined">
+														{{ this.category.get('diagram')?.get('type')?.value }}
+													</ng-container>
 												</div>
 											</div>
 											<!--                      <span class="uk-width-expand@l uk-text-truncate uk-margin-small-left hide-on-close">-->
@@ -84,7 +94,7 @@
 										</a>
 									</li>
 
-									<li class="uk-parent" [routerLinkActive]="['current_section']">
+									<li class="uk-parent">
 										<a [class]="this.hasDataAndDiagramType ? 'uk-flex uk-flex-middle' : 'uk-flex uk-flex-middle sidebarDisabled'" title="Organisations" role="button" aria-controls="uk-nav-60-content-0" aria-expanded="false" aria-disabled="false">
 											<div class="uk-width-auto">
 												<span class="material-symbols-outlined">database</span>
@@ -99,7 +109,7 @@
 										</a>
 									</li>
 
-									<li class="uk-parent" [routerLinkActive]="['current_section']">
+									<li class="uk-parent">
 										<a [class]="this.hasDataAndDiagramType ? 'uk-flex uk-flex-middle' : 'uk-flex uk-flex-middle sidebarDisabled'" title="Patents" role="button" aria-controls="uk-nav-60-content-0" aria-expanded="false" aria-disabled="false">
 											<div class="uk-width-auto">
 												<span class="material-symbols-outlined">tune</span>
@@ -151,7 +161,7 @@
 
 		</div>
 		<div class="uk-width-2-5">
-			<!-- <pre>{{ formGroup.value | json }}</pre> -->
+			<pre>{{ formGroup.value | json }}</pre>
 		</div>
 	</div>
 </div>
