@@ -21,7 +21,7 @@ export enum FieldType { text, int, float, date }
 export class DataseriesSelectorComponent implements OnInit {
 
 	@Input('selectedView') selectedView: FormControl = new FormControl();
-	@Input('selectedCategory') selectedCategoryName: FormControl = new FormControl();;
+	@Input('selectedCategory') selectedCategoryName: FormControl = new FormControl();
 	@ViewChild('editDataseriesName') editDataseriesName: ElementRef;
 	// dataSource = new MatTreeNestedDataSource<EntityNode>();
 	// treeControl = new NestedTreeControl<EntityNode>(node => node.relations);

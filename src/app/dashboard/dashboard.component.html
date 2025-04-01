@@ -35,127 +35,123 @@
 <!-- <pre>{{ formGroup.value | json }}</pre> -->
 
 <div id="dashboard-container">
-  <div class="" style="min-height: 90vh" uk-grid>
-    <div class="uk-width-3-5" style="border-right: 1px solid #EAEAEA">
+	<div class="" style="min-height: 90vh" uk-grid>
+		<div class="uk-width-3-5" style="border-right: 1px solid #EAEAEA">
 
-      <div id="sidebar" class="sidebar_main_swipe uk-flex uk-background-default sidebar_main_active" [class.sidebar_main_active]="open" [class.sidebar_mini]="!open">
+			<div id="sidebar" class="sidebar_main_swipe uk-flex uk-background-default sidebar_main_active" [class.sidebar_main_active]="open" [class.sidebar_mini]="!open">
 
-        <div id="sidebar_main" uk-sticky="end: .sidebar_main_swipe;" offset="90">
-          <div sidebar-content="">
-            <div id="sidebar_toggle" (click)="toggleSidebar()"></div>
-            <div id="sidebar_content">
-              <div class="menu_section" style="min-height: 30vh;">
-                <ul uk-nav="duration: 400" class="uk-list uk-nav uk-nav-default" data-uk-switcher="connect: #selection; animation: 'fade'">
+				<div id="sidebar_main" uk-sticky="end: .sidebar_main_swipe;" offset="90">
+					<div sidebar-content="">
+						<div id="sidebar_toggle" (click)="toggleSidebar()"></div>
+						<div id="sidebar_content">
+							<div class="menu_section" style="min-height: 30vh;">
+								<ul uk-nav="duration: 400" class="uk-list uk-nav uk-nav-default" data-uk-switcher="connect: #selection; animation: 'fade'">
 
-                  <li class="uk-parent" [routerLinkActive]="['current_section']">
-                    <a class="uk-flex uk-flex-middle" title="Overview"
-                       role="button" aria-controls="uk-nav-60-content-0" aria-expanded="false" aria-disabled="false">
-                      <div class="uk-width-auto">
-                        <span class="material-symbols-outlined">group</span>
-                      </div>
-                      <div class="uk-width-expand@l uk-margin-small-left hide-on-close">
-                        <div class="uk-text-truncate">{{ viewSelectionLabel }}</div>
-                        <div class="uk-text-meta uk-text-wrap">
-                          Choose what type of data interest you
-                        </div>
-                      </div>
-<!--                      <span class="uk-width-expand@l uk-text-truncate uk-margin-small-left hide-on-close">-->
-<!--                        {{ viewSelectionLabel }}-->
-<!--                      </span>-->
+									<li class="uk-parent" [routerLinkActive]="['current_section']">
+										<a class="uk-flex uk-flex-middle" title="Overview" role="button" aria-controls="uk-nav-60-content-0" aria-expanded="false" aria-disabled="false">
+											<div class="uk-width-auto">
+												<span class="material-symbols-outlined">group</span>
+											</div>
+											<div class="uk-width-expand@l uk-margin-small-left hide-on-close">
+												<div class="uk-text-truncate">{{ viewSelectionLabel }}</div>
+												<div class="uk-text-meta uk-text-wrap">
+													Choose what type of data interest you
+												</div>
+											</div>
+											<!--                      <span class="uk-width-expand@l uk-text-truncate uk-margin-small-left hide-on-close">-->
+											<!--                        {{ viewSelectionLabel }}-->
+											<!--                      </span>-->
 
-                    </a>
-                  </li>
+										</a>
+									</li>
 
-<!--                  <div class="sidebar-item-separator"></div>-->
+									<!--                  <div class="sidebar-item-separator"></div>-->
 
-                  <li class="uk-parent" [routerLinkActive]="['current_section']">
-                    <a class="uk-flex uk-flex-middle" title="Technologies"
-                       role="button" aria-controls="uk-nav-60-content-0" aria-expanded="false" aria-disabled="false">
-                      <div class="uk-width-auto">
-                        <span class="material-symbols-outlined">bar_chart</span>
-                      </div>
-                      <div class="uk-width-expand@l uk-margin-small-left hide-on-close">
-                        <div class="uk-text-truncate">{{ categorySelectionLabel }}</div>
-                        <div class="uk-text-meta uk-text-wrap">
-                          Choose the type of diagram you want to make
-                        </div>
-                      </div>
-<!--                      <span class="uk-width-expand@l uk-text-truncate uk-margin-small-left hide-on-close">-->
-<!--                        {{ categorySelectionLabel }}-->
-<!--                      </span>-->
-                    </a>
-                  </li>
+									<li class="uk-parent" [routerLinkActive]="['current_section']">
+										<a class="uk-flex uk-flex-middle" title="Technologies" role="button" aria-controls="uk-nav-60-content-0" aria-expanded="false" aria-disabled="false">
+											<div class="uk-width-auto">
+												<span class="material-symbols-outlined">bar_chart</span>
+											</div>
+											<div class="uk-width-expand@l uk-margin-small-left hide-on-close">
+												<div class="uk-text-truncate">{{ categorySelectionLabel }}</div>
+												<div class="uk-text-meta uk-text-wrap">
+													Choose the type of diagram you want to make
+												</div>
+											</div>
+											<!--                      <span class="uk-width-expand@l uk-text-truncate uk-margin-small-left hide-on-close">-->
+											<!--                        {{ categorySelectionLabel }}-->
+											<!--                      </span>-->
+										</a>
+									</li>
 
-                  <li class="uk-parent" [routerLinkActive]="['current_section']">
-                    <a class="uk-flex uk-flex-middle" title="Organisations"
-                       role="button" aria-controls="uk-nav-60-content-0" aria-expanded="false" aria-disabled="false">
-                      <div class="uk-width-auto">
-                        <span class="material-symbols-outlined">database</span>
-                      </div>
-                      <div class="uk-width-expand@l uk-margin-small-left hide-on-close">
-                        <div class="uk-text-truncate">{{ configureDatasieriesLabel }}</div>
-                        <div class="uk-text-meta uk-text-wrap">
-                          Describe the data you want to see
-                        </div>
-                      </div>
-<!--                      <span class="uk-width-expand@l uk-text-truncate uk-margin-small-left hide-on-close">{{ configureDatasieriesLabel }}</span>-->
-                    </a>
-                  </li>
+									<li class="uk-parent" [routerLinkActive]="['current_section']">
+										<a [class]="this.hasDataAndDiagramType ? 'uk-flex uk-flex-middle' : 'uk-flex uk-flex-middle sidebarDisabled'" title="Organisations" role="button" aria-controls="uk-nav-60-content-0" aria-expanded="false" aria-disabled="false">
+											<div class="uk-width-auto">
+												<span class="material-symbols-outlined">database</span>
+											</div>
+											<div class="uk-width-expand@l uk-margin-small-left hide-on-close">
+												<div class="uk-text-truncate">{{ configureDatasieriesLabel }}</div>
+												<div class="uk-text-meta uk-text-wrap">
+													Describe the data you want to see
+												</div>
+											</div>
+											<!--                      <span class="uk-width-expand@l uk-text-truncate uk-margin-small-left hide-on-close">{{ configureDatasieriesLabel }}</span>-->
+										</a>
+									</li>
 
-                  <li class="uk-parent" [routerLinkActive]="['current_section']">
-                    <a class="uk-flex uk-flex-middle" title="Patents"
-                       role="button" aria-controls="uk-nav-60-content-0" aria-expanded="false" aria-disabled="false">
-                      <div class="uk-width-auto">
-                        <span class="material-symbols-outlined">tune</span>
-                      </div>
-                      <div class="uk-width-expand@l uk-margin-small-left hide-on-close">
-                        <div class="uk-text-truncate">{{ customiseAppearanceLabel }}</div>
-                        <div class="uk-text-meta uk-text-wrap">
-                          Change the way your diagram looks
-                        </div>
-                      </div>
-<!--                      <span class="uk-width-expand@l uk-text-truncate uk-margin-small-left hide-on-close">{{ customiseAppearanceLabel }}</span>-->
-                    </a>
-                  </li>
+									<li class="uk-parent" [routerLinkActive]="['current_section']">
+										<a [class]="this.hasDataAndDiagramType ? 'uk-flex uk-flex-middle' : 'uk-flex uk-flex-middle sidebarDisabled'" title="Patents" role="button" aria-controls="uk-nav-60-content-0" aria-expanded="false" aria-disabled="false">
+											<div class="uk-width-auto">
+												<span class="material-symbols-outlined">tune</span>
+											</div>
+											<div class="uk-width-expand@l uk-margin-small-left hide-on-close">
+												<div class="uk-text-truncate">{{ customiseAppearanceLabel }}</div>
+												<div class="uk-text-meta uk-text-wrap">
+													Change the way your diagram looks
+												</div>
+											</div>
+											<!--                      <span class="uk-width-expand@l uk-text-truncate uk-margin-small-left hide-on-close">{{ customiseAppearanceLabel }}</span>-->
+										</a>
+									</li>
 
-                </ul>
+								</ul>
 
-              </div>
-            </div>
-          </div>
-        </div>
+							</div>
+						</div>
+					</div>
+				</div>
 
-        <main class="uk-width-1-1">
-          <div>
-            <div id="page_content">
+				<main class="uk-width-1-1">
+					<div>
+						<div id="page_content">
 
-              <ul id="selection" class="uk-switcher uk-margin">
-                <li class="" style="animation-duration: 200ms;">
-                  <app-view-selector (showViewSelection)="updateStepper($event)" [viewForm]="this.testingView"
-                                     [profileControl]="this.profile">
-                  </app-view-selector>
-                </li>
-                <li class="" style="animation-duration: 200ms;">
-                  <app-category-selector (showCategorySelection)="updateStepper($event)" [categoryForm]="this.category"></app-category-selector>
-                </li>
-                <li class="" style="animation-duration: 200ms;">
-<!--                  <app-dataseries-selector [selectedView]="testingView" [selectedCategory]="categoryName"></app-dataseries-selector>-->
-                </li>
-                <li class="" style="animation-duration: 200ms;">
-<!--                  <app-customise-appearance [appearanceForm]="this.appearance"></app-customise-appearance>-->
-                </li>
-              </ul>
+							<ul id="selection" class="uk-switcher uk-margin">
+								<li class="" style="animation-duration: 200ms;">
+									<app-view-selector (showViewSelection)="updateStepper($event)" [viewForm]="this.testingView" [profileControl]="this.profile"></app-view-selector>
+								</li>
+								<li class="" style="animation-duration: 200ms;">
+									<app-category-selector (showCategorySelection)="updateStepper($event)" [categoryForm]="this.category"></app-category-selector>
+								</li>
+								<li class="" style="animation-duration: 200ms;">
+									<ng-container *ngIf="this.hasDataAndDiagramType">
+										<app-dataseries-selector [selectedView]="testingView" [selectedCategory]="categoryName"></app-dataseries-selector>
+									</ng-container>
+								</li>
+								<li class="" style="animation-duration: 200ms;">
+									<ng-container *ngIf="this.hasDataAndDiagramType">
+										<app-customise-appearance [appearanceForm]="this.appearance"></app-customise-appearance>
+									</ng-container>
+								</li>
+							</ul>
 
-            </div>
-          </div>
-        </main>
-      </div>
+						</div>
+					</div>
+				</main>
+			</div>
 
-    </div>
-    <div class="uk-width-2-5">
-      <pre>{{ formGroup.value | json }}</pre>
-    </div>
-  </div>
+		</div>
+		<div class="uk-width-2-5">
+			<!-- <pre>{{ formGroup.value | json }}</pre> -->
+		</div>
+	</div>
 </div>
-
-

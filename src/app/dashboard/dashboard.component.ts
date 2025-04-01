@@ -36,7 +36,8 @@ export class DashboardComponent implements OnInit {
 	customiseAppearanceLabel: string = "Appearance";
 	selectedAppearance: string = '';
 
-    open = true;
+	open = true;
+	hasDataAndDiagramType: boolean = false;
 
 
 	private _formErrorObject: BehaviorSubject<Array<any>> = null as any;
@@ -405,19 +406,19 @@ export class DashboardComponent implements OnInit {
 		});
 	}
 
-    toggleSidebar() {
+	toggleSidebar() {
 
-      const el: HTMLElement | null = document.getElementById('sidebar');
-      if (el === null)
-        return;
+		const el: HTMLElement | null = document.getElementById('sidebar');
+		if (el === null)
+			return;
 
-      if(!el.classList.contains('sidebar_mini')) {
-        el.classList.add('sidebar_mini');
-        el.classList.remove('sidebar_main_active');
-      } else {
-        el.classList.add('sidebar_main_active');
-        el.classList.remove('sidebar_mini');
-      }
-    }
+		if (!el.classList.contains('sidebar_mini')) {
+			el.classList.add('sidebar_mini');
+			el.classList.remove('sidebar_main_active');
+		} else {
+			el.classList.add('sidebar_main_active');
+			el.classList.remove('sidebar_mini');
+		}
+	}
 
 }
