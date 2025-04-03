@@ -16,10 +16,12 @@ export enum FieldType { text, int, float, date }
 @Component({
 	selector: 'app-dataseries-selector',
 	templateUrl: './dataseries-selector.component.html',
-	styleUrls: ['./dataseries-selector.component.less']
+	styleUrls: ['./dataseries-selector.component.less'],
+	providers: [FormGroupDirective]
 })
 export class DataseriesSelectorComponent implements OnInit {
 
+	@Input('formGroup') formGroup: FormGroup;
 	@Input('selectedView') selectedView: FormControl = new FormControl();
 	@Input('selectedCategory') selectedCategoryName: FormControl = new FormControl();
 	@ViewChild('editDataseriesName') editDataseriesName: ElementRef;
@@ -128,7 +130,8 @@ export class DataseriesSelectorComponent implements OnInit {
 			}
 		});
 
-		this.form = this.rootFormGroup.control.get('dataseries') as FormArray;
+		// this.form = this.rootFormGroup.control.get('dataseries') as FormArray;
+		this.form = this.formGroup.get('dataseries') as FormArray;
 		console.log(this.form);
 	}
 

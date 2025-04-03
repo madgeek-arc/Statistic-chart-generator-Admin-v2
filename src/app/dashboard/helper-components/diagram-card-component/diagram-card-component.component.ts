@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import {
-  ISupportedCategory
+	ISupportedCategory
 } from "../../customise-appearance/visualisation-options/supported-chart-types-service/supported-chart-types.service";
 
 @Component({

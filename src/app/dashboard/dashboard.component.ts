@@ -146,16 +146,16 @@ export class DashboardComponent implements OnInit {
 
 	newViewSelected(profile: any): void {
 		// this.category.reset();
-		// this.dataseries.reset();
-		this.appearance.reset();
+		this.dataseries.reset();
+		// this.appearance.reset();
 
 		this.createDefaultFormGroup(profile);
 		// this.updateDefaultFormGroupValues();
 		this.formGroup.updateValueAndValidity();
 
 		// this.selectedCategory = '';
-		// this.selectedDataseries = '';
-		this.selectedAppearance = '';
+		this.selectedDataseries = '';
+		// this.selectedAppearance = '';
 	}
 
 	createDefaultFormGroup(profile?: any): void {

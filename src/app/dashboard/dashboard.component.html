@@ -144,7 +144,7 @@
 								</li>
 								<li class="" style="animation-duration: 200ms;">
 									<ng-container *ngIf="this.hasDataAndDiagramType">
-										<app-dataseries-selector [selectedView]="testingView" [selectedCategory]="categoryName"></app-dataseries-selector>
+										<app-dataseries-selector [formGroup]="this.formGroup" [selectedView]="this.testingView" [selectedCategory]="this.categoryName"></app-dataseries-selector>
 									</ng-container>
 								</li>
 								<li class="" style="animation-duration: 200ms;">
