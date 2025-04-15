@@ -161,6 +161,11 @@
 
 		</div>
 		<div class="uk-width-2-5">
+			<pre>
+				{{this.view.get('profile')?.value}}
+				<br>
+				{{this.category.get('diagram')?.get('type')?.value}}
+			</pre>
 			<pre>{{ formGroup.value | json }}</pre>
 		</div>
 	</div>

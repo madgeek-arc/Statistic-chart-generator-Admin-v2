@@ -127,6 +127,9 @@ export class DashboardComponent implements OnInit {
 	}
 
 	checkDisabledTabs() {
+		console.log("this.category.get('diagram')?.value", this.category.get('diagram')?.value);
+		console.log("this.category.get('diagram')?.get('type')?.value", this.category.get('diagram')?.get('type')?.value);
+
 		if (this.formGroup) {
 			if (this.view.get('profile')?.value && this.category.get('diagram')?.get('type')?.value) {
 				this.hasDataAndDiagramType = true;
@@ -138,7 +141,6 @@ export class DashboardComponent implements OnInit {
 
 	moveToNextStep(): void {
 		setTimeout(() => {
-			// this.stepper.next();
 			this.formGroup.updateValueAndValidity();
 			window.scroll(0, 0);
 		}, 1);
