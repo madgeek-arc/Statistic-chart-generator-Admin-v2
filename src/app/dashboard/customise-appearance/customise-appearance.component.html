@@ -1,4 +1,4 @@
-<div [formGroup]="this.appearanceForm">
+<div [formGroup]="this.appearanceForm" style="margin-left: 20px;">
 
 	<mat-tab-group>
 		<mat-tab label="Chart Appearance">
@@ -52,8 +52,6 @@
 					<h5 style="opacity: 0.5; margin-top: 0px;">Available options based on the selected Visualisation Library</h5>
 					<mat-divider></mat-divider>
 					<br>
-
-					<button (click)="testing()">TESTING</button>
 
 					<ng-container *ngIf="this.visualisationLibrary.value === 'HighCharts'">
 						<app-high-charts [highChartsForm]="this.highCharts"></app-high-charts>

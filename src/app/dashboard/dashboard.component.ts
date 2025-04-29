@@ -1,4 +1,4 @@
-import { Component, DestroyRef, OnInit, ViewChild, inject } from '@angular/core';
+import { Component, DestroyRef, OnInit, ViewChild, ViewEncapsulation, inject } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatStepper } from '@angular/material/stepper';
 import { Profile } from '../services/profile-provider/profile-provider.service';
@@ -17,7 +17,8 @@ import UIkit from 'uikit';
 @Component({
 	selector: 'app-dashboard',
 	templateUrl: './dashboard.component.html',
-	styleUrls: ['./dashboard.component.less']
+	styleUrls: ['./dashboard.component.less'],
+	encapsulation: ViewEncapsulation.None
 })
 export class DashboardComponent implements OnInit {
 	private destroyRef = inject(DestroyRef);
@@ -36,6 +37,8 @@ export class DashboardComponent implements OnInit {
 	selectedDataseries: string = "";
 	customiseAppearanceLabel: string = "Appearance";
 	selectedAppearance: string = '';
+
+	iframeUrl: string = '';
 
 	open = true;
 	hasDataAndDiagramType: boolean = false;
@@ -357,7 +360,7 @@ export class DashboardComponent implements OnInit {
 		return true;
 	}
 
-	submitTest() {
+	submitData() {
 		console.log("SUBMIT this form:", this.formGroup.value);
 
 		this.dynamicFormHandlingService.submitForm();
@@ -369,8 +372,12 @@ export class DashboardComponent implements OnInit {
 			rawDataObj: this.dynamicFormHandlingService.RawDataObject
 		}
 
-		console.log(data);
+		console.log("THIS IS THE DATA:", data);
 		this.openDialog(data);
+	}
+
+	clearData() {
+		console.log("CLEAR ALL DATA!");
 	}
 
 	makeChangesToForm(form: any): SCGAFormSchema {

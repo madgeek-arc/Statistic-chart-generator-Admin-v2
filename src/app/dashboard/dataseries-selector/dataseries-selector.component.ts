@@ -103,36 +103,47 @@ export class DataseriesSelectorComponent implements OnInit {
 	hasChild = (_: number, node: EntityNode) => !!node.relations && node.relations.length > 0;
 
 	ngOnInit(): void {
+		// With the change in stepper, the data is not created in the begining so it'll have to be initialized and not wait for "value changes"
+		console.log("TESTING");
+
+		if (this.selectedView) {
+			this.getEntities(this.selectedView.value as Profile);
+		}
+
 		this.selectedView.valueChanges.subscribe((profile: Profile) => {
 			if (profile) {
-				this.entityProvider.getAvailableEntities(profile).pipe(first()).subscribe((entityNames: Array<string>) => {
-					console.log("Entity Names:", entityNames);
-					this.entities = entityNames;
-
-					let entityArray = entityNames.map((entity: string) => {
-						return this.getEntityRelations(profile, entity).pipe(first());
-					});
-
-					forkJoin(entityArray).subscribe((cachedEntityNodes: CachedEntityNode[]) => {
-						console.log("Cached Entity Nodes:", cachedEntityNodes);
-
-						for (let i = 0; i < entityNames.length; i++) {
-							this.entityMap.set(entityNames[i], cachedEntityNodes[i]);
-						}
-
-						console.log("Cached Entity Map:", this.entityMap);
-
-						if (this.entityMap.size > 0) {
-							this._entityMap$.next(this.entityMap);
-						}
-					});
-				})
+				this.getEntities(profile);
 			}
 		});
 
 		// this.form = this.rootFormGroup.control.get('dataseries') as FormArray;
 		this.form = this.formGroup.get('dataseries') as FormArray;
-		console.log(this.form);
+		console.log("THIS FORM:", this.form);
+	}
+
+	getEntities(profile: Profile): void {
+		this.entityProvider.getAvailableEntities(profile).pipe(first()).subscribe((entityNames: Array<string>) => {
+			console.log("Entity Names:", entityNames);
+			this.entities = entityNames;
+
+			let entityArray = entityNames.map((entity: string) => {
+				return this.getEntityRelations(profile, entity).pipe(first());
+			});
+
+			forkJoin(entityArray).subscribe((cachedEntityNodes: CachedEntityNode[]) => {
+				console.log("Cached Entity Nodes:", cachedEntityNodes);
+
+				for (let i = 0; i < entityNames.length; i++) {
+					this.entityMap.set(entityNames[i], cachedEntityNodes[i]);
+				}
+
+				console.log("Cached Entity Map:", this.entityMap);
+
+				if (this.entityMap.size > 0) {
+					this._entityMap$.next(this.entityMap);
+				}
+			});
+		})
 	}
 
 	getXAxisData(form: any) {
@@ -386,6 +397,10 @@ export class DataseriesSelectorComponent implements OnInit {
 
 	outputResult(event: any): void {
 		console.log("FINAL PATH:", event);
+	}
+
+	testData() {
+		console.log("TESTING DATA (ENTITIES):", this.entities)
 	}
 
 }
