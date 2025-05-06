@@ -1,4 +1,4 @@
-import { Component, DestroyRef, OnInit, ViewChild, ViewEncapsulation, inject } from '@angular/core';
+import { Component, DestroyRef, OnChanges, OnInit, SimpleChanges, ViewChild, ViewEncapsulation, inject } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatStepper } from '@angular/material/stepper';
 import { Profile } from '../services/profile-provider/profile-provider.service';
@@ -13,6 +13,8 @@ import { DynamicFormHandlingService } from "../services/dynamic-form-handling-se
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 
 import UIkit from 'uikit';
+import { UrlProviderService } from '../services/url-provider-service/url-provider.service';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
 @Component({
 	selector: 'app-dashboard',
@@ -20,7 +22,7 @@ import UIkit from 'uikit';
 	styleUrls: ['./dashboard.component.less'],
 	encapsulation: ViewEncapsulation.None
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent implements OnInit, OnChanges {
 	private destroyRef = inject(DestroyRef);
 
 	@ViewChild('stepper') stepper !: MatStepper;
@@ -42,7 +44,7 @@ export class DashboardComponent implements OnInit {
 
 	open = true;
 	hasDataAndDiagramType: boolean = false;
-
+	frameUrl: SafeResourceUrl;
 
 	private _formErrorObject: BehaviorSubject<Array<any>> = null as any;
 
@@ -50,11 +52,15 @@ export class DashboardComponent implements OnInit {
 	constructor(
 		private formBuilder: FormBuilder,
 		public dynamicFormHandlingService: DynamicFormHandlingService,
-		public dialog: MatDialog
+		public dialog: MatDialog,
+		private urlProvider: UrlProviderService,
+		private sanitizer: DomSanitizer
 	) {
 		this._formErrorObject = new BehaviorSubject([] as any);
 
 		this.createDefaultFormGroup();
+
+		this.frameUrl = this.getSanitizedFrameUrl(urlProvider.serviceURL + '/chart');
 	}
 
 
@@ -79,6 +85,18 @@ export class DashboardComponent implements OnInit {
 				}
 			}
 		});
+	}
+
+	ngOnChanges(changes: SimpleChanges) {
+		const stringObj = JSON.stringify(changes['chart'].currentValue);
+		console.log('[chart-frame.component] On changes: ' + stringObj);
+
+		if (changes['chart'].currentValue) {
+			this.frameUrl = this.getSanitizedFrameUrl(this.urlProvider.createChartURL(changes['chart'].currentValue));
+			console.log(this.frameUrl);
+		} else {
+			this.frameUrl = this.getSanitizedFrameUrl(this.urlProvider.serviceURL + '/chart');
+		}
 	}
 
 	get testingView() {
@@ -444,4 +462,7 @@ export class DashboardComponent implements OnInit {
 		}
 	}
 
+	getSanitizedFrameUrl(url: string) {
+		return this.sanitizer.bypassSecurityTrustResourceUrl(url);
+	}
 }
