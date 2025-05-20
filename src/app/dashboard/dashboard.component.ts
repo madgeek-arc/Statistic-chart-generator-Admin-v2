@@ -46,6 +46,13 @@ export class DashboardComponent implements OnInit, OnChanges {
 	hasDataAndDiagramType: boolean = false;
 	frameUrl: SafeResourceUrl;
 
+	dialogData: ChartTableModalContext = {
+		chartObj: this.dynamicFormHandlingService.ChartObject,
+		tableObj: this.dynamicFormHandlingService.TableObject,
+		rawChartDataObj: this.dynamicFormHandlingService.RawChartDataObject,
+		rawDataObj: this.dynamicFormHandlingService.RawDataObject
+	};
+
 	private _formErrorObject: BehaviorSubject<Array<any>> = null as any;
 
 
@@ -389,6 +396,8 @@ export class DashboardComponent implements OnInit, OnChanges {
 			rawChartDataObj: this.dynamicFormHandlingService.RawChartDataObject,
 			rawDataObj: this.dynamicFormHandlingService.RawDataObject
 		}
+
+		this.dialogData = data;
 
 		console.log("THIS IS THE DATA:", data);
 		this.openDialog(data);
