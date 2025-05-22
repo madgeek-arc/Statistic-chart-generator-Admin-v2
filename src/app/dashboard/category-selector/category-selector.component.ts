@@ -109,7 +109,7 @@ export class CategorySelectorComponent implements OnInit {
 
 	moveToNextStep(event: ISupportedCategory): void {
 		if (event.name) {
-			console.log("event:", event);
+			console.log("moveToNextStep EVENT:", event);
 			console.log("categoryForm:", this.categoryForm.value);
 			(this.categoryForm.get('diagram.supportedLibraries') as FormArray)?.clear();
 

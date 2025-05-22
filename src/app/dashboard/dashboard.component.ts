@@ -149,6 +149,8 @@ export class DashboardComponent implements OnInit, OnChanges {
 			}
 		}
 
+		console.log("EVENT:", event);
+
 		this.checkDisabledTabs();
 
 		this.moveToNextStep()
@@ -175,15 +177,15 @@ export class DashboardComponent implements OnInit, OnChanges {
 	}
 
 	newViewSelected(profile: any): void {
-		// this.category.reset();
+		this.category.reset();
 		this.dataseries.reset();
 		// this.appearance.reset();
 
 		this.createDefaultFormGroup(profile);
-		// this.updateDefaultFormGroupValues();
+		this.updateDefaultFormGroupValues();
 		this.formGroup.updateValueAndValidity();
 
-		// this.selectedCategory = '';
+		this.selectedCategory = '';
 		this.selectedDataseries = '';
 		// this.selectedAppearance = '';
 	}
@@ -400,7 +402,7 @@ export class DashboardComponent implements OnInit, OnChanges {
 		this.dialogData = data;
 
 		console.log("THIS IS THE DATA:", data);
-		this.openDialog(data);
+		// this.openDialog(data);
 	}
 
 	clearData() {

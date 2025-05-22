@@ -7,23 +7,23 @@ import { GeneratedShortUrlFieldComponent } from "./generated-short-url-field/gen
 import { CommonModule } from "@angular/common";
 
 @NgModule({
-  imports: [
-    CommonModule
-  ],
-  declarations: [
-    ChartFrameComponent,
-    TableFrameComponent,
-    RawChartDataFrameComponent,
-    RawDataFrameComponent,
-    GeneratedShortUrlFieldComponent,
-  ],
-  exports: [
-    ChartFrameComponent,
-    TableFrameComponent,
-    RawChartDataFrameComponent,
-    RawDataFrameComponent,
-    GeneratedShortUrlFieldComponent,
-  ]
+	imports: [
+		CommonModule
+	],
+	declarations: [
+		ChartFrameComponent,
+		TableFrameComponent,
+		RawChartDataFrameComponent,
+		RawDataFrameComponent,
+		GeneratedShortUrlFieldComponent,
+	],
+	exports: [
+		ChartFrameComponent,
+		TableFrameComponent,
+		RawChartDataFrameComponent,
+		RawDataFrameComponent,
+		GeneratedShortUrlFieldComponent,
+	]
 })
 
-export class FrameModule {}
+export class FrameModule { }

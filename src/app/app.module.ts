@@ -30,7 +30,7 @@ import { EChartsComponent } from './dashboard/customise-appearance/visualisation
 import { SupportedChartTypesService } from './dashboard/customise-appearance/visualisation-options/supported-chart-types-service/supported-chart-types.service';
 import { ChartExportingService } from './services/chart-exporting-service/chart-exporting.service';
 import { FilterOperatorsPipe } from './dashboard/pipes/filter-operators.pipe';
-import { ChartFrameComponent } from './data-frames/chart-frame/chart-frame.component';
+import { FrameModule } from './data-frames/frame.module';
 
 @NgModule({
 	declarations: [
@@ -47,7 +47,6 @@ import { ChartFrameComponent } from './data-frames/chart-frame/chart-frame.compo
 		EntitySelectionComponentComponent,
 		SelectAttributeComponent,
 		CustomiseAppearanceComponent,
-		ChartFrameComponent,
 
 		// Pipes
 		CapitalizePipe,
@@ -64,7 +63,8 @@ import { ChartFrameComponent } from './data-frames/chart-frame/chart-frame.compo
 		AppRoutingModule,
 		HttpClientModule,
 		MaterialModule,
-		CommonModule
+		CommonModule,
+		FrameModule
 	],
 	providers: [
 		ChartLoadingService,
@@ -72,9 +72,6 @@ import { ChartFrameComponent } from './data-frames/chart-frame/chart-frame.compo
 		DbSchemaService,
 		SupportedChartTypesService,
 		ChartExportingService
-	],
-	exports: [
-		ChartFrameComponent
 	],
 	bootstrap: [AppComponent]
 })
