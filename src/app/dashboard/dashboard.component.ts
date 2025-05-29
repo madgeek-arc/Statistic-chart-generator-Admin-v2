@@ -73,6 +73,11 @@ export class DashboardComponent implements OnInit, OnChanges {
 
 	ngOnInit(): void {
 		this.view.valueChanges.subscribe((profile: any) => {
+
+			console.log("TESTING newViewSelected profile", profile)
+			console.log("TESTING newViewSelected this.firstTime", this.firstTime)
+
+
 			if (profile && !this.firstTime) {
 				this.newViewSelected(profile);
 			}
@@ -139,6 +144,11 @@ export class DashboardComponent implements OnInit, OnChanges {
 	}
 
 	updateStepper(event: any): void {
+		console.log("updateStepper EVENT:", event);
+		console.log("updateStepper category:", this.category.value);
+
+		this.formGroup.updateValueAndValidity();
+
 		this.firstTime = false;
 		if (event) {
 			if (event.step === 'profile') {
@@ -149,7 +159,6 @@ export class DashboardComponent implements OnInit, OnChanges {
 			}
 		}
 
-		console.log("EVENT:", event);
 
 		this.checkDisabledTabs();
 
