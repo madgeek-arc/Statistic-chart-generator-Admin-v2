@@ -15,6 +15,7 @@ import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import UIkit from 'uikit';
 import { UrlProviderService } from '../services/url-provider-service/url-provider.service';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { ChartExportingService } from '../services/chart-exporting-service/chart-exporting.service';
 
 @Component({
 	selector: 'app-dashboard',
@@ -61,7 +62,8 @@ export class DashboardComponent implements OnInit, OnChanges {
 		public dynamicFormHandlingService: DynamicFormHandlingService,
 		public dialog: MatDialog,
 		private urlProvider: UrlProviderService,
-		private sanitizer: DomSanitizer
+		private sanitizer: DomSanitizer,
+		public chartExportingService: ChartExportingService
 	) {
 		this._formErrorObject = new BehaviorSubject([] as any);
 
