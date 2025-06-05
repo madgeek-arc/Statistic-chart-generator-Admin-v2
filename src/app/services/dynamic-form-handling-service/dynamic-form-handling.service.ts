@@ -95,7 +95,13 @@ export class DynamicFormHandlingService {
 
   get loadFormObject(): Object { return this._loadFormObject; }
 
+  set loadFormObject(value: Object) {
+    this._loadFormObject = value;
+    this.updateFormFromFile.next(true);
+  }
+
   get loadFormObjectFile(): File | null { return this._loadFormObjectFile; }
+
 
   // get formSchema(): FormSchema { return this._formSchema; }
 
