@@ -30,47 +30,49 @@ import { EChartsComponent } from './dashboard/customise-appearance/visualisation
 import { SupportedChartTypesService } from './dashboard/customise-appearance/visualisation-options/supported-chart-types-service/supported-chart-types.service';
 import { ChartExportingService } from './services/chart-exporting-service/chart-exporting.service';
 import { FilterOperatorsPipe } from './dashboard/pipes/filter-operators.pipe';
+import { FrameModule } from './data-frames/frame.module';
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    DashboardComponent,
-    HeaderComponent,
-    FooterComponent,
-    ViewSelectorComponent,
-    CategorySelectorComponent,
-    PageNotFoundComponent,
-    CardComponentComponent,
-    DiagramCardComponentComponent,
-    DataseriesSelectorComponent,
-    EntitySelectionComponentComponent,
-    SelectAttributeComponent,
-    CustomiseAppearanceComponent,
+	declarations: [
+		AppComponent,
+		DashboardComponent,
+		HeaderComponent,
+		FooterComponent,
+		ViewSelectorComponent,
+		CategorySelectorComponent,
+		PageNotFoundComponent,
+		CardComponentComponent,
+		DiagramCardComponentComponent,
+		DataseriesSelectorComponent,
+		EntitySelectionComponentComponent,
+		SelectAttributeComponent,
+		CustomiseAppearanceComponent,
 
-    // Pipes
-    CapitalizePipe,
-	FilterOperatorsPipe,
-    HighChartsComponent,
-    GoogleChartsComponent,
-    EChartsComponent,
-  ],
-  imports: [
-    BrowserModule,
-    ReactiveFormsModule,
-    FormsModule,
-    BrowserAnimationsModule,
-    AppRoutingModule,
-    HttpClientModule,
-    MaterialModule,
-    CommonModule
-  ],
-  providers: [
-    ChartLoadingService,
-    DynamicTreeDatabase,
-    DbSchemaService,
-    SupportedChartTypesService,
-    ChartExportingService
-  ],
-  bootstrap: [AppComponent]
+		// Pipes
+		CapitalizePipe,
+		FilterOperatorsPipe,
+		HighChartsComponent,
+		GoogleChartsComponent,
+		EChartsComponent,
+	],
+	imports: [
+		BrowserModule,
+		ReactiveFormsModule,
+		FormsModule,
+		BrowserAnimationsModule,
+		AppRoutingModule,
+		HttpClientModule,
+		MaterialModule,
+		CommonModule,
+		FrameModule
+	],
+	providers: [
+		ChartLoadingService,
+		DynamicTreeDatabase,
+		DbSchemaService,
+		SupportedChartTypesService,
+		ChartExportingService
+	],
+	bootstrap: [AppComponent]
 })
 export class AppModule { }

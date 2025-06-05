@@ -67,135 +67,133 @@
 				<div class="dataSelectionDiv" formGroupName="data">
 					<h1 class="borderBottomClass">Data Selection</h1>
 
-					<div style="margin: 20px;">
+					<div>
+						<button (click)="testData()">Click Me</button>
+					</div>
 
-						<div class="axisDiv">
-							<div formGroupName="yaxisData">
-								<h3 class="borderBottomClass">Y Axis</h3>
+					<div class="dataSelection">
+						<div formGroupName="yaxisData">
+							<h3 class="borderBottomClass">Y Axis</h3>
 
-								<div>
-									<div style="width: 50%; display: inline-block;">
+							<div>
+								<div style="width: 50%; display: inline-block;">
 
-										<div>Entity</div>
-										<mat-form-field>
-											<mat-label>Select Entity</mat-label>
-											<mat-select formControlName="entity" (selectionChange)="selectEntity($event)">
-												<mat-option>None</mat-option>
-												<mat-option [value]="entity" *ngFor="let entity of entities">{{ entity | capitalize }}</mat-option>
-											</mat-select>
-										</mat-form-field>
-									</div>
-
-
-									<div style="width: 50%; display: inline-block;	">
-
-										<div>Y axis Aggregate</div>
-										<mat-form-field>
-											<mat-label>Select Aggregate</mat-label>
-											<mat-select formControlName="yaxisAggregate">
-												<mat-option>None</mat-option>
-												<mat-option [value]="aggregate.code" *ngFor="let aggregate of aggregates">
-													{{ aggregate.name }}
-												</mat-option>
-											</mat-select>
-										</mat-form-field>
-									</div>
+									<div>Entity</div>
+									<mat-form-field>
+										<mat-label>Select Entity</mat-label>
+										<mat-select formControlName="entity" (selectionChange)="selectEntity($event)">
+											<mat-option>None</mat-option>
+											<mat-option [value]="entity" *ngFor="let entity of entities">{{ entity | capitalize }}</mat-option>
+										</mat-select>
+									</mat-form-field>
 								</div>
 
-								<!-- Issue with TypeError regusterOnChange -->
-								<ng-container *ngIf="checkYAxisAggregate(ctrl)">
-									<!-- <ng-container> -->
-									<div>
-										<div>Entity Field</div>
-										<div style=" display: inline-block; width: 90%; vertical-align: middle;">
 
-											<select-attribute class="uk-padding" [chosenEntity]="ctrl.get('data.yaxisData.entity')?.value" [control]="ctrl.get('data.yaxisData.yaxisEntityField')"></select-attribute>
-										</div>
-									</div>
-								</ng-container>
+								<div style="width: 50%; display: inline-block;	">
+
+									<div>Y axis Aggregate</div>
+									<mat-form-field>
+										<mat-label>Select Aggregate</mat-label>
+										<mat-select formControlName="yaxisAggregate">
+											<mat-option>None</mat-option>
+											<mat-option [value]="aggregate.code" *ngFor="let aggregate of aggregates">
+												{{ aggregate.name }}
+											</mat-option>
+										</mat-select>
+									</mat-form-field>
+								</div>
 							</div>
 
-							<div formArrayName="xaxisData">
-								<h3 class="borderBottomClass">X Axis</h3>
+							<!-- Issue with TypeError regusterOnChange -->
+							<ng-container *ngIf="checkYAxisAggregate(ctrl)">
+								<!-- <ng-container> -->
+								<div>
+									<div>Entity Field</div>
+									<div style=" display: inline-block; width: 90%; vertical-align: middle;">
 
-								<div *ngFor="let data of getXAxisData(ctrl); let j = index" [formGroup]="data">
-									<div formGroupName="xaxisEntityField" style="width: 100%;">
-										<div>Entity Field</div>
-										<div style="display: inline-block; width: 90%; vertical-align: middle;">
-
-											<select-attribute class="uk-padding" [chosenEntity]="ctrl.get('data.yaxisData.entity')?.value" [control]="data.get('xaxisEntityField')"></select-attribute>
-										</div>
-										<div style="display: inline-block; width: 10%; vertical-align: middle;">
-
-											<button mat-icon-button (click)="removeEntityField(ctrl, j)">
-												<mat-icon>highlight_off</mat-icon>
-											</button>
-										</div>
+										<select-attribute class="uk-padding" [chosenEntity]="ctrl.get('data.yaxisData.entity')?.value" [control]="ctrl.get('data.yaxisData.yaxisEntityField')"></select-attribute>
 									</div>
-
 								</div>
-								<div *ngIf="!hasTwoEntityFields">
-									<button mat-button class="addEntityButtonClass" (click)="addEntityField(ctrl)"><mat-icon>add</mat-icon>Add Group By</button>
+							</ng-container>
+						</div>
+
+						<div formArrayName="xaxisData">
+							<h3 class="borderBottomClass">X Axis</h3>
+
+							<div *ngFor="let data of getXAxisData(ctrl); let j = index" [formGroup]="data">
+								<div formGroupName="xaxisEntityField" style="width: 100%;">
+									<div>Entity Field</div>
+									<div style="display: inline-block; width: 90%; vertical-align: middle;">
+
+										<select-attribute class="uk-padding" [chosenEntity]="ctrl.get('data.yaxisData.entity')?.value" [control]="data.get('xaxisEntityField')"></select-attribute>
+									</div>
+									<div style="display: inline-block; width: 10%; vertical-align: middle;">
+
+										<button mat-icon-button (click)="removeEntityField(ctrl, j)">
+											<mat-icon>highlight_off</mat-icon>
+										</button>
+									</div>
 								</div>
 
+							</div>
+							<div *ngIf="!hasTwoEntityFields">
+								<button mat-button class="addEntityButtonClass" (click)="addEntityField(ctrl)"><mat-icon>add</mat-icon>Add Group By</button>
 							</div>
 						</div>
 
-						<div class="filtersDiv" formArrayName="filters">
-							<div>
-								<h3 class="borderBottomClass">Filters</h3>
+						<div formArrayName="filters">
+							<h3 class="borderBottomClass">Filters</h3>
 
-								<ng-container *ngFor="let filter of getFilters(ctrl); let j = index" [formGroup]="filter">
-									<div>
-										<mat-radio-group color="primary" labelPosition="after" formControlName="op">
-											<mat-radio-button value="AND" [checked]="true">Match all of the values</mat-radio-button>
-											<mat-radio-button value="OR">Match any of the values</mat-radio-button>
-										</mat-radio-group>
-									</div>
-
-									<div class="groupFiltersClass">
-										<div class="uk-flex uk-flex-right">
-											<button mat-icon-button style="color: red;" (click)="removeFilter(ctrl, j)"><mat-icon>highlight_off</mat-icon></button>
-										</div>
-										<ng-container formArrayName="groupFilters">
-											<div *ngFor="let group of getGroups(filter); let k = index" [formGroup]="group">
-												<ng-container formGroupName="field">
-													<div style="display: inline-block; width: 50%; vertical-align: middle;">
-														<div>Entity Field</div>
-														<select-attribute class="uk-padding" [chosenEntity]="ctrl.get('data.yaxisData.entity')?.value" [control]="group.get('field')"></select-attribute>
-													</div>
-												</ng-container>
-
-												<mat-form-field style="width: 20%;">
-													<mat-label>Filter Operator</mat-label>
-													<mat-select formControlName="type">
-														<ng-container *ngIf="group.get('field.name').value === null">
-															<mat-option disabled="true">Select Operator</mat-option>
-														</ng-container>
-														<ng-container *ngIf="group.get('field.name').value !== null">
-															<mat-option *ngFor="let filterOperator of filterOperators | filterOperators: group.get('field.type').value" [value]="filterOperator.filterOperator">{{ filterOperator.filterName }}</mat-option>
-														</ng-container>
-													</mat-select>
-												</mat-form-field>
-
-												<ng-container formArrayName="values">
-													<mat-form-field style="width: 20%;">
-														<mat-label>Value</mat-label>
-														<input matInput formControlName="0">
-													</mat-form-field>
-												</ng-container>
-
-												<button mat-icon-button style="color: red;" (click)="removeFilterRule(filter, k)"><mat-icon>delete</mat-icon></button>
-											</div>
-											<button mat-button class="addEntityButtonClass" (click)="addFilterRule(filter)"><mat-icon>add</mat-icon>Add Filter Rule</button>
-										</ng-container>
-									</div>
-								</ng-container>
-
+							<ng-container *ngFor="let filter of getFilters(ctrl); let j = index" [formGroup]="filter">
 								<div>
-									<br>
-									<button mat-button class="addEntityButtonClass" (click)="addFilter(ctrl)"><mat-icon>add</mat-icon>Add Filter</button>
+									<mat-radio-group color="primary" labelPosition="after" formControlName="op">
+										<mat-radio-button value="AND" [checked]="true">Match all of the values</mat-radio-button>
+										<mat-radio-button value="OR">Match any of the values</mat-radio-button>
+									</mat-radio-group>
 								</div>
+
+								<div class="groupFiltersClass">
+									<div class="uk-flex uk-flex-right">
+										<button mat-icon-button style="color: red;" (click)="removeFilter(ctrl, j)"><mat-icon>highlight_off</mat-icon></button>
+									</div>
+									<ng-container formArrayName="groupFilters">
+										<div *ngFor="let group of getGroups(filter); let k = index" [formGroup]="group">
+											<ng-container formGroupName="field">
+												<div style="display: inline-block; width: 50%; vertical-align: middle;">
+													<div>Entity Field</div>
+													<select-attribute class="uk-padding" [chosenEntity]="ctrl.get('data.yaxisData.entity')?.value" [control]="group.get('field')"></select-attribute>
+												</div>
+											</ng-container>
+
+											<mat-form-field style="width: 20%;">
+												<mat-label>Filter Operator</mat-label>
+												<mat-select formControlName="type">
+													<ng-container *ngIf="group.get('field.name').value === null">
+														<mat-option disabled="true">Select Operator</mat-option>
+													</ng-container>
+													<ng-container *ngIf="group.get('field.name').value !== null">
+														<mat-option *ngFor="let filterOperator of filterOperators | filterOperators: group.get('field.type').value" [value]="filterOperator.filterOperator">{{ filterOperator.filterName }}</mat-option>
+													</ng-container>
+												</mat-select>
+											</mat-form-field>
+
+											<ng-container formArrayName="values">
+												<mat-form-field style="width: 20%;">
+													<mat-label>Value</mat-label>
+													<input matInput formControlName="0">
+												</mat-form-field>
+											</ng-container>
+
+											<button mat-icon-button style="color: red;" (click)="removeFilterRule(filter, k)"><mat-icon>delete</mat-icon></button>
+										</div>
+										<button mat-button class="addEntityButtonClass" (click)="addFilterRule(filter)"><mat-icon>add</mat-icon>Add Filter Rule</button>
+									</ng-container>
+								</div>
+							</ng-container>
+
+							<div>
+								<br>
+								<button mat-button class="addEntityButtonClass" (click)="addFilter(ctrl)"><mat-icon>add</mat-icon>Add Filter</button>
 							</div>
 						</div>
 					</div>
@@ -205,34 +203,34 @@
 				<div formGroupName="chartProperties">
 					<h2 class="borderBottomClass">Options</h2>
 
-					<div *ngIf="this.selectedCategoryName?.value === 'combo'">
-						<!-- <div *ngIf="true"> -->
-						<mat-form-field>
-							<mat-label>Chart Type</mat-label>
-							<mat-select formControlName="chartType">
-								<mat-option disabled="true">Select Chart Type</mat-option>
-								<mat-option [value]="chartType.value" *ngFor="let chartType of chartTypeList">
-									{{ chartType.name }}
-								</mat-option>
-							</mat-select>
-						</mat-form-field>
-					</div>
+					<div class="dataSelection">
 
-					<div>
-						<mat-form-field>
-							<mat-label>Stacked Data</mat-label>
-							<mat-select formControlName="stacking">
-								<mat-option disabled="true">Select One</mat-option>
-								<mat-option [value]="stackedData.value" *ngFor="let stackedData of stackedDataList">
-									{{ stackedData.name }}
-								</mat-option>
-							</mat-select>
-						</mat-form-field>
-					</div>
+						<div *ngIf="this.selectedCategoryName?.value === 'combo'">
+							<mat-form-field>
+								<mat-label>Chart Type</mat-label>
+								<mat-select formControlName="chartType">
+									<mat-option disabled="true">Select Chart Type</mat-option>
+									<mat-option [value]="chartType.value" *ngFor="let chartType of chartTypeList">
+										{{ chartType.name }}
+									</mat-option>
+								</mat-select>
+							</mat-form-field>
+						</div>
 
+						<div>
+							<mat-form-field>
+								<mat-label>Stacked Data</mat-label>
+								<mat-select formControlName="stacking">
+									<mat-option disabled="true">Select One</mat-option>
+									<mat-option [value]="stackedData.value" *ngFor="let stackedData of stackedDataList">
+										{{ stackedData.name }}
+									</mat-option>
+								</mat-select>
+							</mat-form-field>
+						</div>
 
-					<!-- There is Stack Name in local version of Stats Tools but NOT of online version. -->
-					<!-- <div>
+						<!-- There is Stack Name in local version of Stats Tools but NOT of online version. -->
+						<!-- <div>
 						<mat-form-field>
 							<mat-label>Stack Name</mat-label>
 							<br>
@@ -240,14 +238,14 @@
 						</mat-form-field>
 					</div> -->
 
-					<div>
-						<mat-form-field>
-							<mat-label>Dataseries Color</mat-label>
-							<br>
-							<input matInput type="color" formControlName="dataseriesColor">
-						</mat-form-field>
+						<div>
+							<mat-form-field>
+								<mat-label>Dataseries Color</mat-label>
+								<br>
+								<input matInput type="color" formControlName="dataseriesColor">
+							</mat-form-field>
+						</div>
 					</div>
-
 				</div>
 			</div>
 		</div>

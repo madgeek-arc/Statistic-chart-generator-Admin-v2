@@ -1,4 +1,4 @@
-import { Component, DestroyRef, OnInit, ViewChild, inject } from '@angular/core';
+import { Component, DestroyRef, OnChanges, OnInit, SimpleChanges, ViewChild, ViewEncapsulation, inject } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatStepper } from '@angular/material/stepper';
 import { Profile } from '../services/profile-provider/profile-provider.service';
@@ -12,13 +12,18 @@ import {
 import { DynamicFormHandlingService } from "../services/dynamic-form-handling-service/dynamic-form-handling.service";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 
+import UIkit from 'uikit';
+import { UrlProviderService } from '../services/url-provider-service/url-provider.service';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { ChartExportingService } from '../services/chart-exporting-service/chart-exporting.service';
 
 @Component({
 	selector: 'app-dashboard',
 	templateUrl: './dashboard.component.html',
-	styleUrls: ['./dashboard.component.less']
+	styleUrls: ['./dashboard.component.less'],
+	encapsulation: ViewEncapsulation.None
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent implements OnInit, OnChanges {
 	private destroyRef = inject(DestroyRef);
 
 	@ViewChild('stepper') stepper !: MatStepper;
@@ -27,15 +32,27 @@ export class DashboardComponent implements OnInit {
 
 	firstTime: boolean = true;
 
-	viewSelectionLabel: string = "Select View";
+	viewSelectionLabel: string = "View";
 	selectedView: string = "";
-	categorySelectionLabel: string = "Select Category";
+	categorySelectionLabel: string = "Chart type";
 	selectedCategory: string = "";
-	configureDatasieriesLabel: string = "Configure Dataseries";
+	configureDatasieriesLabel: string = "Data";
 	selectedDataseries: string = "";
-	customiseAppearanceLabel: string = "Customise Appearance";
+	customiseAppearanceLabel: string = "Appearance";
 	selectedAppearance: string = '';
 
+	iframeUrl: string = '';
+
+	open = true;
+	hasDataAndDiagramType: boolean = false;
+	frameUrl: SafeResourceUrl;
+
+	dialogData: ChartTableModalContext = {
+		chartObj: this.dynamicFormHandlingService.ChartObject,
+		tableObj: this.dynamicFormHandlingService.TableObject,
+		rawChartDataObj: this.dynamicFormHandlingService.RawChartDataObject,
+		rawDataObj: this.dynamicFormHandlingService.RawDataObject
+	};
 
 	private _formErrorObject: BehaviorSubject<Array<any>> = null as any;
 
@@ -43,16 +60,26 @@ export class DashboardComponent implements OnInit {
 	constructor(
 		private formBuilder: FormBuilder,
 		public dynamicFormHandlingService: DynamicFormHandlingService,
-		public dialog: MatDialog
+		public dialog: MatDialog,
+		private urlProvider: UrlProviderService,
+		private sanitizer: DomSanitizer,
+		public chartExportingService: ChartExportingService
 	) {
 		this._formErrorObject = new BehaviorSubject([] as any);
 
 		this.createDefaultFormGroup();
+
+		this.frameUrl = this.getSanitizedFrameUrl(urlProvider.serviceURL + '/chart');
 	}
 
 
 	ngOnInit(): void {
-		this.view.valueChanges.subscribe((profile: Profile) => {
+		this.view.valueChanges.subscribe((profile: any) => {
+
+			console.log("TESTING newViewSelected profile", profile)
+			console.log("TESTING newViewSelected this.firstTime", this.firstTime)
+
+
 			if (profile && !this.firstTime) {
 				this.newViewSelected(profile);
 			}
@@ -72,6 +99,18 @@ export class DashboardComponent implements OnInit {
 				}
 			}
 		});
+	}
+
+	ngOnChanges(changes: SimpleChanges) {
+		const stringObj = JSON.stringify(changes['chart'].currentValue);
+		console.log('[chart-frame.component] On changes: ' + stringObj);
+
+		if (changes['chart'].currentValue) {
+			this.frameUrl = this.getSanitizedFrameUrl(this.urlProvider.createChartURL(changes['chart'].currentValue));
+			console.log(this.frameUrl);
+		} else {
+			this.frameUrl = this.getSanitizedFrameUrl(this.urlProvider.serviceURL + '/chart');
+		}
 	}
 
 	get testingView() {
@@ -107,47 +146,68 @@ export class DashboardComponent implements OnInit {
 	}
 
 	updateStepper(event: any): void {
+		console.log("updateStepper EVENT:", event);
+		console.log("updateStepper category:", this.category.value);
+
+		this.formGroup.updateValueAndValidity();
+
 		this.firstTime = false;
 		if (event) {
-			if (event.step === 'view') {
-				this.selectedView = event.profile;
+			if (event.step === 'profile') {
+				UIkit.switcher('#navTab').show(1);
 			} else if (event.step === 'category') {
 				this.selectedCategory = event.name;
+				UIkit.switcher('#navTab').show(2);
 			}
 		}
+
+
+		this.checkDisabledTabs();
 
 		this.moveToNextStep()
 	}
 
+	checkDisabledTabs() {
+		console.log("this.category.get('diagram')?.value", this.category.get('diagram')?.value);
+		console.log("this.category.get('diagram')?.get('type')?.value", this.category.get('diagram')?.get('type')?.value);
+
+		if (this.formGroup) {
+			if (this.view.get('profile')?.value && this.category.get('diagram')?.get('type')?.value) {
+				this.hasDataAndDiagramType = true;
+			} else {
+				this.hasDataAndDiagramType = false;
+			}
+		}
+	}
+
 	moveToNextStep(): void {
 		setTimeout(() => {
-			this.stepper.next();
 			this.formGroup.updateValueAndValidity();
 			window.scroll(0, 0);
 		}, 1);
 	}
 
-	newViewSelected(profile: Profile): void {
+	newViewSelected(profile: any): void {
 		this.category.reset();
-		// this.dataseries.reset();
-		this.appearance.reset();
+		this.dataseries.reset();
+		// this.appearance.reset();
 
 		this.createDefaultFormGroup(profile);
-		// this.updateDefaultFormGroupValues();
+		this.updateDefaultFormGroupValues();
 		this.formGroup.updateValueAndValidity();
 
 		this.selectedCategory = '';
 		this.selectedDataseries = '';
-		this.selectedAppearance = '';
+		// this.selectedAppearance = '';
 	}
 
-	createDefaultFormGroup(profile?: Profile): void {
+	createDefaultFormGroup(profile?: any): void {
 		this.formGroup = this.formBuilder.group({
-			testingView: this.formBuilder.control(null),
+			testingView: this.formBuilder.control(this.formGroup ? this.formGroup.get('testingView')?.value : null),
 			view: this.formBuilder.group({
-				profile: this.formBuilder.control(profile ? profile : null)
+				profile: this.formBuilder.control((profile?.profile !== null && profile?.profile !== undefined) ? profile.profile : null)
 			}),
-			category: this.formBuilder.group({
+			category: this.formBuilder.group(this.formGroup ? this.category.value : {
 				diagram: this.formBuilder.group({
 					type: new FormControl<string | null>(null),
 					supportedLibraries: new FormArray([]),
@@ -338,7 +398,7 @@ export class DashboardComponent implements OnInit {
 		return true;
 	}
 
-	submitTest() {
+	submitData() {
 		console.log("SUBMIT this form:", this.formGroup.value);
 
 		this.dynamicFormHandlingService.submitForm();
@@ -350,8 +410,14 @@ export class DashboardComponent implements OnInit {
 			rawDataObj: this.dynamicFormHandlingService.RawDataObject
 		}
 
-		console.log(data);
-		this.openDialog(data);
+		this.dialogData = data;
+
+		console.log("THIS IS THE DATA:", data);
+		// this.openDialog(data);
+	}
+
+	clearData() {
+		console.log("CLEAR ALL DATA!");
 	}
 
 	makeChangesToForm(form: any): SCGAFormSchema {
@@ -403,4 +469,22 @@ export class DashboardComponent implements OnInit {
 		});
 	}
 
+	toggleSidebar() {
+
+		const el: HTMLElement | null = document.getElementById('sidebar');
+		if (el === null)
+			return;
+
+		if (!el.classList.contains('sidebar_mini')) {
+			el.classList.add('sidebar_mini');
+			el.classList.remove('sidebar_main_active');
+		} else {
+			el.classList.add('sidebar_main_active');
+			el.classList.remove('sidebar_mini');
+		}
+	}
+
+	getSanitizedFrameUrl(url: string) {
+		return this.sanitizer.bypassSecurityTrustResourceUrl(url);
+	}
 }

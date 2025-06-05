@@ -1,67 +1,129 @@
-<div>
-	<div class="uk-list uk-list-disc uk-list-emphasis">
-		<li>
-			<div>
-				Basic Types
-			</div>
-			<div class="uk-text-center" uk-grid>
-				<ng-container *ngFor="let basicDiagram of this.supportedChartTypes">
-					<div>
-						<app-diagram-card-component (outputEvent)="moveToNextStep($event)" [diagram]="basicDiagram"></app-diagram-card-component>
-					</div>
-				</ng-container>
-			</div>
-		</li>
-		<li>
-			<div>
-				Polar Types
-			</div>
-			<div class="uk-text-center" uk-grid>
-				<ng-container *ngFor="let polarDiagram of this.supportedPolarTypes">
-					<div>
-						<app-diagram-card-component (outputEvent)="moveToNextStep($event)" [diagram]="polarDiagram"></app-diagram-card-component>
-					</div>
-				</ng-container>
-			</div>
-		</li>
-		<li>
-			<div>
-				Map Types
-			</div>
-			<div class="uk-text-center" uk-grid>
-				<ng-container *ngFor="let mapDiagram of this.supportedMaps">
-					<div>
-						<app-diagram-card-component (outputEvent)="moveToNextStep($event)" [diagram]="mapDiagram"></app-diagram-card-component>
-					</div>
-				</ng-container>
-			</div>
-		</li>
-		<li>
-			<div>
-				Special Types
-			</div>
-			<div class="uk-text-center" uk-grid>
-				<ng-container *ngFor="let specialDiagram of this.supportedSpecialisedDiagrams">
-					<div>
-						<app-diagram-card-component (outputEvent)="moveToNextStep($event)" [diagram]="specialDiagram"></app-diagram-card-component>
-					</div>
-				</ng-container>
-			</div>
-		</li>
-		<li>
-			<div>
-				Other Types
-			</div>
-			<div class="uk-text-center" uk-grid>
-				<ng-container *ngFor="let miscDiagram of this.supportedMiscTypes">
-					<div>
-						<app-diagram-card-component (outputEvent)="moveToNextStep($event)" [diagram]="miscDiagram"></app-diagram-card-component>
-					</div>
-				</ng-container>
-			</div>
-		</li>
+<!--<div>-->
+<!--	<div class="uk-list uk-list-disc uk-list-emphasis">-->
+<!--		<li>-->
+<!--			<div>-->
+<!--				Basic Types-->
+<!--			</div>-->
+<!--			<div class="uk-text-center" uk-grid>-->
+<!--				<ng-container *ngFor="let basicDiagram of this.supportedChartTypes">-->
+<!--					<div>-->
+<!--						<app-diagram-card-component (outputEvent)="moveToNextStep($event)" [diagram]="basicDiagram"></app-diagram-card-component>-->
+<!--					</div>-->
+<!--				</ng-container>-->
+<!--			</div>-->
+<!--		</li>-->
+<!--		<li>-->
+<!--			<div>-->
+<!--				Polar Types-->
+<!--			</div>-->
+<!--			<div class="uk-text-center" uk-grid>-->
+<!--				<ng-container *ngFor="let polarDiagram of this.supportedPolarTypes">-->
+<!--					<div>-->
+<!--						<app-diagram-card-component (outputEvent)="moveToNextStep($event)" [diagram]="polarDiagram"></app-diagram-card-component>-->
+<!--					</div>-->
+<!--				</ng-container>-->
+<!--			</div>-->
+<!--		</li>-->
+<!--		<li>-->
+<!--			<div>-->
+<!--				Map Types-->
+<!--			</div>-->
+<!--			<div class="uk-text-center" uk-grid>-->
+<!--				<ng-container *ngFor="let mapDiagram of this.supportedMaps">-->
+<!--					<div>-->
+<!--						<app-diagram-card-component (outputEvent)="moveToNextStep($event)" [diagram]="mapDiagram"></app-diagram-card-component>-->
+<!--					</div>-->
+<!--				</ng-container>-->
+<!--			</div>-->
+<!--		</li>-->
+<!--		<li>-->
+<!--			<div>-->
+<!--				Special Types-->
+<!--			</div>-->
+<!--			<div class="uk-text-center" uk-grid>-->
+<!--				<ng-container *ngFor="let specialDiagram of this.supportedSpecialisedDiagrams">-->
+<!--					<div>-->
+<!--						<app-diagram-card-component (outputEvent)="moveToNextStep($event)" [diagram]="specialDiagram"></app-diagram-card-component>-->
+<!--					</div>-->
+<!--				</ng-container>-->
+<!--			</div>-->
+<!--		</li>-->
+<!--		<li>-->
+<!--			<div>-->
+<!--				Other Types-->
+<!--			</div>-->
+<!--			<div class="uk-text-center" uk-grid>-->
+<!--				<ng-container *ngFor="let miscDiagram of this.supportedMiscTypes">-->
+<!--					<div>-->
+<!--						<app-diagram-card-component (outputEvent)="moveToNextStep($event)" [diagram]="miscDiagram"></app-diagram-card-component>-->
+<!--					</div>-->
+<!--				</ng-container>-->
+<!--			</div>-->
+<!--		</li>-->
 
-	</div>
+<!--	</div>-->
 
-	<!-- <pre>{{ categoryForm.value | json }}</pre> -->
+<!--	&lt;!&ndash; <pre>{{ categoryForm.value | json }}</pre> &ndash;&gt;-->
+<!--</div>-->
+
+<div class="uk-section uk-section-xsmall">
+  <div class="uk-container uk-container-expand">
+    <div class="uk-margin-bottom">
+      <h5>Basic Types</h5>
+      <div class="uk-text-center uk-grid-small" uk-grid>
+        <ng-container *ngFor="let basicDiagram of this.supportedChartTypes">
+          <div>
+            <app-diagram-card-component (outputEvent)="moveToNextStep($event)" [diagram]="basicDiagram"></app-diagram-card-component>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+
+    <div class="uk-margin-bottom">
+      <h5>Polar Types</h5>
+      <div class="uk-text-center uk-grid-small" uk-grid>
+        <ng-container *ngFor="let polarDiagram of this.supportedPolarTypes">
+          <div>
+            <app-diagram-card-component (outputEvent)="moveToNextStep($event)" [diagram]="polarDiagram"></app-diagram-card-component>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+
+    <div class="uk-margin-bottom">
+      <h5>Map Types</h5>
+      <div class="uk-text-center uk-grid-small" uk-grid>
+        <ng-container *ngFor="let mapDiagram of this.supportedMaps">
+          <div>
+            <app-diagram-card-component (outputEvent)="moveToNextStep($event)" [diagram]="mapDiagram"></app-diagram-card-component>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+
+    <div class="uk-margin-bottom">
+      <h5>Special Types</h5>
+      <div class="uk-text-center uk-grid-small" uk-grid>
+        <ng-container *ngFor="let specialDiagram of this.supportedSpecialisedDiagrams">
+          <div>
+            <app-diagram-card-component (outputEvent)="moveToNextStep($event)" [diagram]="specialDiagram"></app-diagram-card-component>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+
+    <div class="uk-margin-bottom">
+      <h5>Other Types</h5>
+      <div class="uk-text-center uk-grid-small" uk-grid>
+        <ng-container *ngFor="let miscDiagram of this.supportedMiscTypes">
+          <div>
+            <app-diagram-card-component (outputEvent)="moveToNextStep($event)" [diagram]="miscDiagram"></app-diagram-card-component>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+
+  </div>
 </div>
+
+
