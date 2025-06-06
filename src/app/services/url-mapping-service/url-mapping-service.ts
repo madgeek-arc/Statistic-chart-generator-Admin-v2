@@ -1,11 +1,17 @@
 import { Injectable } from "@angular/core";
 import { DynamicFormHandlingService } from "../dynamic-form-handling-service/dynamic-form-handling.service";
+import {
+  DiagramCategoryService
+} from "../../dashboard/customise-appearance/visualisation-options/diagram-category-service/diagram-category.service";
+import {
+  ISupportedCategory
+} from "../../dashboard/customise-appearance/visualisation-options/supported-chart-types-service/supported-chart-types.service";
 
 @Injectable({ providedIn: 'root' })
 
 export class UrlMappingService {
 
-  constructor(private formHandlingService: DynamicFormHandlingService ) {}
+  constructor(private formHandlingService: DynamicFormHandlingService, private diagramService: DiagramCategoryService) {}
 
   updateFormObjet(urlJson: UrlJson) {
 
@@ -18,16 +24,13 @@ export class UrlMappingService {
       profile: urlJson.chartDescription.queries[0]?.query.profile || "monitor",
     };
 
-    // 2) Build `category.diagram` with defaults, pulling `type` and `polar` from chartDescription:
+    // 2) Build `category.diagram` matching polar and type in availableDiagrams
     const category = {
-      diagram: {
-        type: urlJson.chartDescription.queries[0]?.type || "column",
-        diagramId: 0,
-        imageURL: "images/imagePlaceholder.svg",
-        isPolar: urlJson.chartDescription.chart.polar,
-        supportedLibraries: ["HighCharts", "GoogleCharts", "eCharts"],
-      },
-    };
+      // type should eventually be inferred from chartDescription.chart.type!'
+      diagram: this.diagramService.availableDiagrams.find(d =>
+        d.isPolar === urlJson.chartDescription.chart.polar && d.type === urlJson.chartDescription.queries[0].type
+      )
+    }
 
     // 3) Build `dataseries`
     const dataseries = urlJson.chartDescription.queries.map((q, index) => {
@@ -48,10 +51,7 @@ export class UrlMappingService {
         groupFilters: group.groupFilters.map((f) => ({
           field: {
             name: f.field,
-            type:
-              typeof f.values[0] === "string" && /^\d+$/.test(f.values[0])
-                ? "int"
-                : "text",
+            type: typeof f.values[0] === "string" && /^\d+$/.test(f.values[0]) ? "int" : "text",
           },
           type: f.type,
           values: f.values,
@@ -235,13 +235,7 @@ interface UrlJson {
 interface FileJson {
   view: { profile: string };
   category: {
-    diagram: {
-      type: string;
-      diagramId: number;
-      imageURL: string;
-      isPolar: boolean;
-      supportedLibraries: string[];
-    };
+    diagram?: ISupportedCategory;
   };
   dataseries: Array<{
     data: {
