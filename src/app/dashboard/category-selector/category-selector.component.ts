@@ -116,7 +116,7 @@ export class CategorySelectorComponent implements OnInit {
 			for (let i = 0; i < event.supportedLibraries.length; i++) {
 				(this.categoryForm.get('diagram.supportedLibraries') as FormArray)?.push(new FormControl<string | null>(null));
 			}
-			this.categoryForm.get('diagram')?.setValue(event);
+			this.categoryForm.get('diagram')?.patchValue(event);
 
 			console.log("categoryForm NEW:", this.categoryForm.value);
 

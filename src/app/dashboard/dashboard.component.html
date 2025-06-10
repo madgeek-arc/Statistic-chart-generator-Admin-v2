@@ -170,7 +170,7 @@
 				<br>
 				{{this.category.get('diagram')?.get('type')?.value}}
 			</pre>
-			<!-- <pre>{{ formGroup.value | json }}</pre> -->
+			<pre>{{ formGroup.value | json }}</pre>
 
 
 			<div *ngIf="!this.firstTime" class="iframe-container">
@@ -187,16 +187,6 @@
 				</div>
 
 				<mat-tab-group mat-stretch-tabs="true" mat-align-tabs="start" animationDuration="250ms">
-					<!-- <mat-tab label="Diagram">
-						<div class="container">
-							<chart-frame [chart]="this.dialogData.chartObj"></chart-frame>
-						</div>
-						<div class="actions">
-							<div class="label">
-								<generated-short-url-field [shortUrl]="chartExportingService.chartTinyUrl$"></generated-short-url-field>
-							</div>
-						</div>
-					</mat-tab> -->
 					<mat-tab label="Table">
 						<div class="container">
 							<table-frame [table]="this.dialogData.tableObj"></table-frame>

@@ -124,17 +124,14 @@
 								<div formGroupName="xaxisEntityField" style="width: 100%;">
 									<div>Entity Field</div>
 									<div style="display: inline-block; width: 90%; vertical-align: middle;">
-
 										<select-attribute class="uk-padding" [chosenEntity]="ctrl.get('data.yaxisData.entity')?.value" [control]="data.get('xaxisEntityField')"></select-attribute>
 									</div>
 									<div style="display: inline-block; width: 10%; vertical-align: middle;">
-
 										<button mat-icon-button (click)="removeEntityField(ctrl, j)">
 											<mat-icon>highlight_off</mat-icon>
 										</button>
 									</div>
 								</div>
-
 							</div>
 							<div *ngIf="!hasTwoEntityFields">
 								<button mat-button class="addEntityButtonClass" (click)="addEntityField(ctrl)"><mat-icon>add</mat-icon>Add Group By</button>

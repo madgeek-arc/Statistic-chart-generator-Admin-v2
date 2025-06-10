@@ -81,21 +81,34 @@ export class DashboardComponent implements OnInit, OnChanges {
 
 
 			if (profile && !this.firstTime) {
-				this.newViewSelected(profile);
+				// this.newViewSelected(profile);
 			}
 		});
 
 		this.formGroup.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(value => {
 			this.dynamicFormHandlingService.formSchemaObject = value;
+
+			// if (this.formGroup) {
+			// 	if (this.view.get('profile')?.value && this.category.get('diagram')?.get('type')?.value) {
+			// 		this.hasDataAndDiagramType = true;
+			// 	} else {
+			// 		this.hasDataAndDiagramType = false;
+			// 	}
+			// }
 		});
 
 		this.dynamicFormHandlingService.jsonLoaded.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
 			next: data => {
 				if (data) {
 					this.dynamicFormHandlingService.adjustAndPatchForm(this.formGroup);
-					console.log(this.formGroup.value);
+					console.log("this.dynamicFormHandlingService.jsonLoaded", this.formGroup.value);
+					console.log("this.dynamicFormHandlingService.loadFormObject", this.dynamicFormHandlingService.loadFormObject);
 					this.formGroup.setValue(this.dynamicFormHandlingService.loadFormObject)
 
+					this.updateStepper({
+						name: this.formGroup?.get('category')?.get('diagram')?.get('name')?.value,
+						step: "category"
+					})
 				}
 			}
 		});
@@ -179,6 +192,7 @@ export class DashboardComponent implements OnInit, OnChanges {
 			}
 		}
 	}
+
 
 	moveToNextStep(): void {
 		setTimeout(() => {
