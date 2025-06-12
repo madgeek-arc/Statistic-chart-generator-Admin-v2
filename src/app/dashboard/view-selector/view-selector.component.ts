@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ProfileProviderService } from 'src/app/services/profile-provider/profile-provider.service';
+import { ViewSavingService } from 'src/app/services/view-saving-service/view-saving.service';
 
 @Component({
 	selector: 'app-view-selector',
@@ -16,7 +17,8 @@ export class ViewSelectorComponent {
 	isLinear: boolean = true;
 
 	constructor(
-		protected profileProvide: ProfileProviderService
+		protected profileProvide: ProfileProviderService,
+		private viewSavingService: ViewSavingService
 	) { }
 
 
@@ -26,6 +28,7 @@ export class ViewSelectorComponent {
 	moveToNextStep(event: any): void {
 		if (event.name) {
 			this.viewForm.setValue(event);
+			this.viewSavingService.setTestingView(event);
 			this.profileControl.setValue(event.name);
 			this.showViewSelection.emit({
 				name: event.name,

@@ -31,6 +31,7 @@ import { SupportedChartTypesService } from './dashboard/customise-appearance/vis
 import { ChartExportingService } from './services/chart-exporting-service/chart-exporting.service';
 import { FilterOperatorsPipe } from './dashboard/pipes/filter-operators.pipe';
 import { FrameModule } from './data-frames/frame.module';
+import { ViewSavingService } from './services/view-saving-service/view-saving.service';
 
 @NgModule({
 	declarations: [
@@ -71,7 +72,8 @@ import { FrameModule } from './data-frames/frame.module';
 		DynamicTreeDatabase,
 		DbSchemaService,
 		SupportedChartTypesService,
-		ChartExportingService
+		ChartExportingService,
+		ViewSavingService
 	],
 	bootstrap: [AppComponent]
 })

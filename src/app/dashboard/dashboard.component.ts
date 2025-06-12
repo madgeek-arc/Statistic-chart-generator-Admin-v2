@@ -47,6 +47,8 @@ export class DashboardComponent implements OnInit, OnChanges {
 	hasDataAndDiagramType: boolean = false;
 	frameUrl: SafeResourceUrl;
 
+	jsonLoad: boolean = false;
+
 	dialogData: ChartTableModalContext = {
 		chartObj: this.dynamicFormHandlingService.ChartObject,
 		tableObj: this.dynamicFormHandlingService.TableObject,
@@ -80,35 +82,42 @@ export class DashboardComponent implements OnInit, OnChanges {
 			console.log("TESTING newViewSelected this.firstTime", this.firstTime)
 
 
-			if (profile && !this.firstTime) {
-				// this.newViewSelected(profile);
+			if (profile && !this.firstTime && !this.jsonLoad) {
+				console.log("New View Selected.");
+				this.newViewSelected(profile);
 			}
+
+			this.checkDisabledTabs();
+		});
+
+		this.category.valueChanges.subscribe((diagram: any) => {
+			this.checkDisabledTabs();
 		});
 
 		this.formGroup.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(value => {
 			this.dynamicFormHandlingService.formSchemaObject = value;
-
-			// if (this.formGroup) {
-			// 	if (this.view.get('profile')?.value && this.category.get('diagram')?.get('type')?.value) {
-			// 		this.hasDataAndDiagramType = true;
-			// 	} else {
-			// 		this.hasDataAndDiagramType = false;
-			// 	}
-			// }
 		});
 
 		this.dynamicFormHandlingService.jsonLoaded.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
 			next: data => {
+
+				console.log("HERE WE ARE!!!!!!");
+				console.log(data);
+
 				if (data) {
+					this.jsonLoad = true;
 					this.dynamicFormHandlingService.adjustAndPatchForm(this.formGroup);
 					console.log("this.dynamicFormHandlingService.jsonLoaded", this.formGroup.value);
 					console.log("this.dynamicFormHandlingService.loadFormObject", this.dynamicFormHandlingService.loadFormObject);
 					this.formGroup.setValue(this.dynamicFormHandlingService.loadFormObject)
 
 					this.updateStepper({
-						name: this.formGroup?.get('category')?.get('diagram')?.get('name')?.value,
+						name: this.formGroup?.get('category')?.get('diagram')?.get('type')?.value,
 						step: "category"
 					})
+				} else {
+					// TODO check how to change jsonLoad when the json is NOT loaded. Maybe with 'error'?
+					this.jsonLoad = false;
 				}
 			}
 		});
@@ -174,7 +183,6 @@ export class DashboardComponent implements OnInit, OnChanges {
 			}
 		}
 
-
 		this.checkDisabledTabs();
 
 		this.moveToNextStep()
@@ -198,7 +206,7 @@ export class DashboardComponent implements OnInit, OnChanges {
 		setTimeout(() => {
 			this.formGroup.updateValueAndValidity();
 			window.scroll(0, 0);
-		}, 1);
+		}, 50);
 	}
 
 	newViewSelected(profile: any): void {
@@ -217,6 +225,7 @@ export class DashboardComponent implements OnInit, OnChanges {
 
 	createDefaultFormGroup(profile?: any): void {
 		this.formGroup = this.formBuilder.group({
+			// TODO remove testingView and replace with service for data saving and transfer
 			testingView: this.formBuilder.control(this.formGroup ? this.formGroup.get('testingView')?.value : null),
 			view: this.formBuilder.group({
 				profile: this.formBuilder.control((profile?.profile !== null && profile?.profile !== undefined) ? profile.profile : null)
