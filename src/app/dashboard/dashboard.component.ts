@@ -96,6 +96,8 @@ export class DashboardComponent implements OnInit, OnChanges {
 
 		this.formGroup.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(value => {
 			this.dynamicFormHandlingService.formSchemaObject = value;
+
+			
 		});
 
 		this.dynamicFormHandlingService.jsonLoaded.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
@@ -105,20 +107,28 @@ export class DashboardComponent implements OnInit, OnChanges {
 				console.log(data);
 
 				if (data) {
-					this.jsonLoad = true;
-					this.dynamicFormHandlingService.adjustAndPatchForm(this.formGroup);
-					console.log("this.dynamicFormHandlingService.jsonLoaded", this.formGroup.value);
-					console.log("this.dynamicFormHandlingService.loadFormObject", this.dynamicFormHandlingService.loadFormObject);
-					this.formGroup.setValue(this.dynamicFormHandlingService.loadFormObject)
+					try {
+						this.jsonLoad = true;
+						this.dynamicFormHandlingService.adjustAndPatchForm(this.formGroup);
+						console.log("this.dynamicFormHandlingService.jsonLoaded", this.formGroup.value);
+						console.log("this.dynamicFormHandlingService.loadFormObject", this.dynamicFormHandlingService.loadFormObject);
+						this.formGroup.patchValue(this.dynamicFormHandlingService.loadFormObject)
 
-					this.updateStepper({
-						name: this.formGroup?.get('category')?.get('diagram')?.get('type')?.value,
-						step: "category"
-					})
+						this.updateStepper({
+							name: this.formGroup?.get('category')?.get('diagram')?.get('type')?.value,
+							step: "category"
+						})
+					} catch (error) {
+						console.error('Error processing loaded JSON form data:', error);
+						this.jsonLoad = false;
+					}
 				} else {
-					// TODO check how to change jsonLoad when the json is NOT loaded. Maybe with 'error'?
 					this.jsonLoad = false;
 				}
+			},
+			error: error => {
+				console.error('Error in jsonLoaded subscription:', error);
+				this.jsonLoad = false;
 			}
 		});
 	}
