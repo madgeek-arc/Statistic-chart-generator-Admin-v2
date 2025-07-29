@@ -22,7 +22,7 @@ export enum FieldType { text, int, float, date }
 export class DataseriesSelectorComponent implements OnInit {
 
 	@Input('formGroup') formGroup: FormGroup;
-	@Input('selectedView') selectedView: FormControl = new FormControl();
+	@Input('selectedProfile') selectedProfile: FormControl = new FormControl();
 	@Input('selectedCategory') selectedCategoryName: FormControl = new FormControl();
 	@ViewChild('editDataseriesName') editDataseriesName: ElementRef;
 	// dataSource = new MatTreeNestedDataSource<EntityNode>();
@@ -95,7 +95,7 @@ export class DataseriesSelectorComponent implements OnInit {
 
 	constructor(
 		private http: HttpClient,
-		private entityProvider: DbSchemaService,
+		private dbService: DbSchemaService,
 		private urlProvider: UrlProviderService,
 		private rootFormGroup: FormGroupDirective
 	) { }
@@ -105,14 +105,30 @@ export class DataseriesSelectorComponent implements OnInit {
 	ngOnInit(): void {
 		// With the change in stepper, the data is not created in the begining so it'll have to be initialized and not wait for "value changes"
 		console.log("TESTING");
+		console.log("formGroup", this.formGroup.value);
+		console.log("this.selectedProfile", this.selectedProfile);
 
-		if (this.selectedView) {
-			this.getEntities(this.selectedView.value as Profile);
+
+
+		if (this.selectedProfile && this.selectedProfile.value) {
+			this.getEntities({
+				name: this.selectedProfile.value,
+				description: '',
+				usage: '',
+				shareholders: [],
+				complexity: -1,
+			} as Profile);
 		}
 
-		this.selectedView.valueChanges.subscribe((profile: Profile) => {
+		this.selectedProfile.valueChanges.subscribe((profile: any) => {
 			if (profile) {
-				this.getEntities(profile);
+				this.getEntities({
+					name: profile,
+					description: '',
+					usage: '',
+					shareholders: [],
+					complexity: -1,
+				} as Profile);
 			}
 		});
 
@@ -122,7 +138,7 @@ export class DataseriesSelectorComponent implements OnInit {
 	}
 
 	getEntities(profile: Profile): void {
-		this.entityProvider.getAvailableEntities(profile).pipe(first()).subscribe((entityNames: Array<string>) => {
+		this.dbService.getAvailableEntities(profile).pipe(first()).subscribe((entityNames: Array<string>) => {
 			console.log("Entity Names:", entityNames);
 			this.entities = entityNames;
 

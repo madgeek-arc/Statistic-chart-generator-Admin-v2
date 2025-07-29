@@ -8,7 +8,7 @@ import { Profile } from '../mapping-profiles-service/mapping-profiles.service';
 // import { ErrorHandlerService } from '../error-handler-service/error-handler.service';
 
 @Injectable({
-  providedIn: 'root'
+	providedIn: 'root'
 })
 export class DbSchemaService {
 
@@ -19,6 +19,7 @@ export class DbSchemaService {
 	) { }
 
 	getAvailableEntities(profile: Profile | null | undefined): Observable<Array<string>> {
+		console.log("PROFILE dbschema:", profile);
 
 		if (profile === undefined || profile === null) {
 			// return this.getAvailableEntitiesNoMapping();

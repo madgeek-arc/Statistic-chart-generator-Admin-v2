@@ -97,7 +97,7 @@ export class DashboardComponent implements OnInit, OnChanges {
 		this.formGroup.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(value => {
 			this.dynamicFormHandlingService.formSchemaObject = value;
 
-			
+
 		});
 
 		this.dynamicFormHandlingService.jsonLoaded.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
@@ -109,6 +109,8 @@ export class DashboardComponent implements OnInit, OnChanges {
 				if (data) {
 					try {
 						this.jsonLoad = true;
+						console.log("this.formGroup", this.formGroup.value);
+
 						this.dynamicFormHandlingService.adjustAndPatchForm(this.formGroup);
 						console.log("this.dynamicFormHandlingService.jsonLoaded", this.formGroup.value);
 						console.log("this.dynamicFormHandlingService.loadFormObject", this.dynamicFormHandlingService.loadFormObject);

@@ -12,7 +12,7 @@ import { CachedEntityNode, DynamicEntityNode } from 'src/app/dashboard/helper-co
  * the descendants data from the database.
  */
 @Injectable({
-  providedIn: 'root'
+	providedIn: 'root'
 })
 export class DynamicTreeDatabase {
 
@@ -23,11 +23,11 @@ export class DynamicTreeDatabase {
 	private _entityMap$ = new BehaviorSubject<Map<string, CachedEntityNode> | null>(null);
 
 	constructor(private http: HttpClient, private urlProvider: UrlProviderService,
-              private profileMappingService: MappingProfilesService, private dbService: DbSchemaService) {
+		private profileMappingService: MappingProfilesService, private dbService: DbSchemaService) {
 
-    this.profileMappingService.selectedProfile$.pipe(distinctUntilChanged()).subscribe(
-      (profile: Profile | null) => { this.changeEntityMap(profile); }
-    );
+		this.profileMappingService.selectedProfile$.pipe(distinctUntilChanged()).subscribe(
+			(profile: Profile | null) => { this.changeEntityMap(profile); }
+		);
 	}
 
 	private getEntityRelations(profile: Profile | null, entity: string): Observable<CachedEntityNode> {
@@ -38,9 +38,12 @@ export class DynamicTreeDatabase {
 	}
 
 	changeEntityMap(profile: Profile | null) {
-    if (profile === null) { // If null value is passed the whole thing fails... Don't know why.
-      profile = new Profile();
-    }
+		if (profile === null) { // If null value is passed the whole thing fails... Don't know why.
+			profile = new Profile();
+		}
+
+		console.log("BREAKPOINT");
+		console.log("profile", profile);
 
 		this.dbService.getAvailableEntities(profile).pipe(first())
 			.subscribe((entityNames: string[]) => {
@@ -66,8 +69,8 @@ export class DynamicTreeDatabase {
 		var root = new BehaviorSubject<DynamicEntityNode | null>(null);
 
 		// We only care for the first map that has entries, in order to get the root node.
-    console.log(this._entityMap$.value);
-    this._entityMap$.pipe(filter(map => map?.size! > 0), first()).subscribe(map => {
+		console.log(this._entityMap$.value);
+		this._entityMap$.pipe(filter(map => map?.size! > 0), first()).subscribe(map => {
 
 			if (map == null)
 				return;
