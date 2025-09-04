@@ -1,0 +1,59 @@
+/** Strong */
+@base-strong-font-weight: 700;
+
+/** Mark */
+@base-mark-background: fade(@global-secondary-background, 50%);
+@base-mark-color: @global-color;
+
+/* Heading*/
+@base-heading-font-weight: 600;
+
+/** H1, H2, H3, H4, H5, H6 */
+@base-h1-font-size-m: 66px;
+@base-h1-font-size: 37px;
+@base-h1-line-height: 1.25;
+@base-h2-font-size-m: 52px;
+@base-h2-font-size: 32px;
+@base-h2-line-height: 1.25;
+@base-h3-font-size-m: 41px;
+@base-h3-font-size: 26px;
+@base-h3-line-height: 1.25;
+@base-h4-font-size-m: 32px;
+@base-h4-font-size: 23px;
+@base-h4-line-height: 1.25;
+@base-h5-font-size-m: 26px;
+@base-h5-font-size: 20px;
+@base-h5-line-height: 1.25;
+@base-h6-font-size-m: 20px;
+@base-h6-font-size: 18px;
+@base-h6-line-height: 1.34;
+
+/** Selection */
+@base-selection-background: @base-mark-background;
+@base-selection-color: @base-mark-color;
+
+/* Inverse */
+@inverse-base-link-color: @global-inverse-color;
+@inverse-base-link-hover-color: @global-inverse-color;
+
+.hook-base-misc() {
+
+  @media (min-width: @breakpoint-medium) {
+
+    h3, .uk-h3 {
+      font-size: @base-h3-font-size-m;
+    }
+
+    h4, .uk-h4 {
+      font-size: @base-h4-font-size-m;
+    }
+
+    h5, .uk-h5 {
+      font-size: @base-h5-font-size-m;
+    }
+
+    h6, .uk-h6 {
+      font-size: @base-h6-font-size-m;
+    }
+  }
+}

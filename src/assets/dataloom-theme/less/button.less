@@ -1,0 +1,400 @@
+@button-font-size: @global-small-font-size;
+@button-small-font-size: @global-xsmall-font-size;
+@button-large-font-size: @global-font-size;
+@button-font-weight: 600;
+@button-border-width: @global-border-width;
+@button-text-transform: uppercase;
+@button-border-radius: 500px;
+@button-shadow: @global-medium-box-shadow;
+@button-hover-shadow: @global-small-box-shadow;
+@button-active-shadow: @button-hover-shadow;
+
+/* Default */
+@button-default-background: @global-background;
+@button-default-color: @global-color;
+@button-default-box-shadow: @global-medium-box-shadow;
+@button-default-border: transparent;
+@button-default-hover-background: @global-background;
+@button-default-hover-color: @button-shadow;
+@button-default-hover-box-shadow: @button-hover-shadow;
+@button-default-hover-border: transparent;
+@button-default-active-background: @button-default-hover-background;
+@button-default-active-color: @button-default-hover-color;
+@button-default-active-box-shadow: @button-active-shadow;
+@button-default-active-border: @button-default-hover-border;
+
+/* Primary */
+@button-primary-background: @global-primary-background;
+@button-primary-background-gradient: @global-primary-gradient;
+@button-primary-color: @global-inverse-color;
+@button-primary-box-shadow: @button-shadow;
+@button-primary-border: transparent;
+@button-primary-hover-background: @global-secondary-background;
+@button-primary-hover-background-gradient: none;
+@button-primary-hover-color: @global-inverse-color;
+@button-primary-hover-box-shadow: @button-hover-shadow;
+@button-primary-hover-border: transparent;
+@button-primary-active-background: @button-primary-hover-background;
+@button-primary-active-background-gradient: @button-primary-hover-background-gradient;
+@button-primary-active-color: @button-primary-hover-color;
+@button-primary-active-box-shadow: @button-active-shadow;
+@button-primary-active-border: @button-primary-hover-border;
+
+/* Secondary */
+@button-secondary-background: @global-background;
+@button-secondary-background-gradient: none;
+@button-secondary-color: @global-primary-background;
+@button-secondary-box-shadow: @button-shadow;
+@button-secondary-border: @global-primary-background;
+@button-secondary-hover-background: @global-primary-background;
+@button-secondary-hover-background-gradient: @global-primary-gradient;
+@button-secondary-hover-color: @global-inverse-color;
+@button-secondary-hover-box-shadow: @button-hover-shadow;
+@button-secondary-hover-border: transparent;
+@button-secondary-active-background: @button-secondary-hover-background;
+@button-secondary-active-background-gradient: @button-secondary-hover-background-gradient;
+@button-secondary-active-color: @button-secondary-hover-color;
+@button-secondary-active-box-shadow: @button-active-shadow;
+@button-secondary-active-border: @button-secondary-hover-border;
+
+/* Danger */
+@button-danger-background: @global-danger-background;
+@button-danger-background-gradient: none;
+@button-danger-color: @global-inverse-color;
+@button-danger-box-shadow: @button-shadow;
+@button-danger-border: @global-danger-background;
+@button-danger-hover-background: @global-background;
+@button-danger-hover-background-gradient: none;
+@button-danger-hover-color: @global-danger-background;
+@button-danger-hover-box-shadow: @button-hover-shadow;
+@button-danger-hover-border: @global-danger-background;
+@button-danger-active-background: @button-danger-hover-background;
+@button-danger-active-background-gradient: @button-danger-hover-background-gradient;
+@button-danger-active-color: @button-danger-hover-color;
+@button-danger-active-box-shadow: @button-active-shadow;
+@button-danger-active-border: @button-danger-hover-border;
+
+/* Text */
+@button-text-color: @global-primary-background;
+@button-text-hover-color: @button-text-color;
+
+/* Link */
+@button-link-color: @openaire-primary-color;
+@button-link-hover-color: @openaire-secondary-color;
+
+/* Disabled */
+@button-disabled-box-shadow: none;
+@button-disabled-border: @global-border;
+
+.hook-button() {
+  font-weight: @button-font-weight;
+  text-transform: @button-text-transform;
+  border-radius: @button-border-radius;
+}
+
+/* Default */
+.hook-button-default() {
+  box-shadow: @button-default-box-shadow;
+  border: @button-border-width solid @button-default-border;
+  background-origin: border-box;
+}
+
+.hook-button-default-hover() {
+  box-shadow: @button-default-hover-box-shadow;
+  border: @button-border-width solid @button-default-hover-border;
+}
+
+.hook-button-default-active() {
+  box-shadow: @button-default-active-box-shadow;
+  border: @button-border-width solid @button-default-active-border;
+}
+
+/* Primary */
+.hook-button-primary() {
+  box-shadow: @button-primary-box-shadow;
+  border: @button-border-width solid @button-primary-border;
+  background-image: @button-primary-background-gradient;
+  background-origin: border-box;
+}
+
+.hook-button-primary-hover() {
+  box-shadow: @button-primary-hover-box-shadow;
+  border: @button-border-width solid @button-primary-hover-border;
+  background-image: @button-primary-hover-background-gradient;
+}
+
+.hook-button-primary-active() {
+  box-shadow: @button-primary-active-box-shadow;
+  border: @button-border-width solid @button-primary-active-border;
+  background-image: @button-primary-active-background-gradient;
+}
+
+/* Secondary */
+.hook-button-secondary() {
+  box-shadow: @button-secondary-box-shadow;
+  border: @button-border-width solid @button-secondary-border;
+  background-image: @button-secondary-background-gradient;
+  background-origin: border-box;
+}
+
+.hook-button-secondary-hover() {
+  box-shadow: @button-secondary-hover-box-shadow;
+  border: @button-border-width solid @button-secondary-hover-border;
+  background-image: @button-secondary-hover-background-gradient;
+}
+
+.hook-button-secondary-active() {
+  box-shadow: @button-secondary-active-box-shadow;
+  border: @button-border-width solid @button-secondary-active-border;
+  background-image: @button-secondary-active-background-gradient;
+}
+
+/* Danger */
+.hook-button-danger() {
+  box-shadow: @button-danger-box-shadow;
+  border: @button-border-width solid @button-danger-border;
+  background-image: @button-danger-background-gradient;
+  background-origin: border-box;
+}
+
+.hook-button-danger-hover() {
+  box-shadow: @button-danger-hover-box-shadow;
+  border: @button-border-width solid @button-danger-hover-border;
+  background-image: @button-danger-hover-background-gradient;
+}
+
+.hook-button-danger-active() {
+  box-shadow: @button-danger-active-box-shadow;
+  border: @button-border-width solid @button-danger-active-border;
+  background-image: @button-danger-active-background-gradient;
+}
+
+
+/* Text */
+.hook-button-text() {
+  padding: 0 1.5*1.42em 0 0;
+  border-radius: 0;
+  position: relative;
+
+  &::before {
+    content: '\f1df';
+    font-family: "Material Icons Round";
+    font-size: 1.42em;
+    position: absolute;
+    transform: translateY(-50%);
+    top: 50%;
+    right: 0;
+    transition: right linear 0.2s;
+  }
+
+  &:hover::before {
+    right: -0.25em;
+  }
+}
+
+/* Link */
+.hook-button-link() {
+  border-radius: 0;
+}
+
+/* Disable */
+.hook-button-disabled() {
+  box-shadow: @button-disabled-box-shadow;
+  border: @button-border-width solid @button-disabled-border;
+  background-image: none;
+}
+
+.hook-button-misc() {
+  a:hover {
+    & .uk-button-default:extend(.uk-button-default:hover){};
+    & .uk-button-primary:extend(.uk-button-primary:hover){};
+    & .uk-button-secondary:extend(.uk-button-secondary:hover){};
+  }
+}
+
+/* Inverse */
+@inverse-button-box-shadow: @inverse-global-medium-box-shadow;
+@inverse-button-hover-box-shadow: @inverse-global-small-box-shadow;
+@inverse-button-active-box-shadow: @inverse-button-hover-box-shadow;
+
+/* Default */
+@inverse-button-default-background: @global-background;
+@inverse-button-default-color: @global-color;
+@inverse-button-default-box-shadow: @inverse-button-box-shadow;
+@inverse-button-default-border: transparent;
+@inverse-button-default-hover-background: @global-background;
+@inverse-button-default-hover-color: @global-secondary-background;
+@inverse-button-default-hover-box-shadow: @inverse-button-hover-box-shadow;
+@inverse-button-default-hover-border: transparent;
+@inverse-button-default-active-background: @global-background;
+@inverse-button-default-active-color: @global-secondary-background;
+@inverse-button-default-active-box-shadow: @inverse-button-active-box-shadow;
+@inverse-button-default-active-border: transparent;
+
+/* Primary */
+@inverse-button-primary-background: @button-primary-background;
+@inverse-button-primary-background-gradient: @button-primary-background-gradient;
+@inverse-button-primary-color: @button-primary-color;
+@inverse-button-primary-box-shadow: @inverse-button-box-shadow;
+@inverse-button-primary-border: @button-primary-border;
+@inverse-button-primary-hover-background: @button-primary-hover-background;
+@inverse-button-primary-hover-background-gradient: @button-primary-hover-background-gradient;
+@inverse-button-primary-hover-color: @button-primary-hover-color;
+@inverse-button-primary-hover-box-shadow: @inverse-button-hover-box-shadow;
+@inverse-button-primary-hover-border: @button-primary-hover-border;
+@inverse-button-primary-active-background: @button-primary-active-background;
+@inverse-button-primary-active-background-gradient: @button-primary-active-background-gradient;
+@inverse-button-primary-active-color: @button-primary-active-color;
+@inverse-button-primary-active-box-shadow: @inverse-button-active-box-shadow;
+@inverse-button-primary-active-border: @button-primary-active-border;
+
+/* Secondary */
+@inverse-button-secondary-background: @global-background;
+@inverse-button-secondary-background-gradient: none;
+@inverse-button-secondary-color: @button-secondary-color;
+@inverse-button-secondary-box-shadow: @inverse-button-box-shadow;
+@inverse-button-secondary-border: @button-secondary-border;
+@inverse-button-secondary-hover-background: @button-secondary-hover-background;
+@inverse-button-secondary-hover-background-gradient: @button-secondary-hover-background-gradient;
+@inverse-button-secondary-hover-color: @button-secondary-hover-color;
+@inverse-button-secondary-hover-box-shadow: @inverse-button-hover-box-shadow;
+@inverse-button-secondary-hover-border: @button-secondary-hover-border;
+@inverse-button-secondary-active-background: @button-secondary-active-background;
+@inverse-button-secondary-active-background-gradient: @button-secondary-active-background-gradient;
+@inverse-button-secondary-active-color: @button-secondary-active-color;
+@inverse-button-secondary-active-box-shadow: @inverse-button-active-box-shadow;
+@inverse-button-secondary-active-border: transparent;
+
+/* Danger */
+@inverse-button-danger-box-shadow: @inverse-button-box-shadow;
+@inverse-button-danger-hover-box-shadow: @button-secondary-hover-background;
+@inverse-button-danger-active-box-shadow: @inverse-button-active-box-shadow;
+
+/* Text */
+@inverse-button-text-color: @global-inverse-color;
+@inverse-button-text-hover-color: @inverse-button-text-color;
+
+/* Link */
+@inverse-button-link-color: @global-inverse-color;
+@inverse-button-link-hover-color: @global-inverse-color;
+@inverse-button-link-hover-text-transform: underline;
+
+/* Disabled */
+@inverse-button-disabled-background: @global-inverse-color;
+@inverse-button-disabled-box-shadow: none;
+@inverse-button-disabled-border: @global-inverse-color;
+@inverse-button-disabled-color: @global-muted-color;
+
+
+/* Default */
+.hook-inverse-button-default() {
+  border-color: @inverse-button-default-border;
+  background-origin: border-box;
+}
+
+.hook-inverse-button-default-hover() {
+  border-color: @inverse-button-default-hover-border;
+}
+
+.hook-inverse-button-default-active() {
+  box-shadow: @inverse-button-default-active-box-shadow;
+  border-color: @inverse-button-default-active-border;
+}
+
+/* Primary */
+.hook-inverse-button-primary() {
+  border-color: @inverse-button-primary-border;
+  background-image: @inverse-button-primary-background-gradient;
+  background-origin: border-box;
+}
+
+.hook-inverse-button-primary-hover() {
+  border-color: @inverse-button-primary-hover-border;
+  background-image: @inverse-button-primary-hover-background-gradient;
+}
+
+.hook-inverse-button-primary-active() {
+  border-color: @inverse-button-primary-active-border;
+  background-image: @inverse-button-primary-active-background-gradient;
+}
+
+/* Secondary */
+.hook-inverse-button-secondary() {
+  border-color: @inverse-button-secondary-border;
+  background-image: @inverse-button-secondary-background-gradient;
+  background-origin: border-box;
+}
+
+.hook-inverse-button-secondary-hover() {
+  border-color: @inverse-button-secondary-hover-border;
+  background-image: @inverse-button-secondary-hover-background-gradient;
+}
+
+.hook-inverse-button-secondary-active() {
+  border-color: @inverse-button-secondary-active-border;
+  background-image: @inverse-button-secondary-active-background-gradient;
+}
+
+.hook-inverse-misc() {
+  
+  /* Default */
+  .uk-button-default {
+    box-shadow: @inverse-button-default-box-shadow;
+    
+    &:hover {
+      box-shadow: @inverse-button-default-hover-box-shadow;
+    }
+    
+    &:active {
+      box-shadow: @inverse-button-default-active-box-shadow;
+    }
+  }
+
+  /* Primary */
+  .uk-button-primary {
+    box-shadow: @inverse-button-primary-box-shadow;
+
+    &:hover {
+      box-shadow: @inverse-button-primary-hover-box-shadow;
+    }
+
+    &:active {
+      box-shadow: @inverse-button-primary-active-box-shadow;
+    }
+  }
+
+  /* Secondary */
+  .uk-button-secondary {
+    box-shadow: @inverse-button-secondary-box-shadow;
+
+    &:hover {
+      box-shadow: @inverse-button-secondary-hover-box-shadow;
+    }
+
+    &:active {
+      box-shadow: @inverse-button-secondary-active-box-shadow;
+    }
+  }
+
+  /* Danger */
+  .uk-button-danger {
+    box-shadow: @inverse-button-danger-box-shadow;
+
+    &:hover {
+      box-shadow: @inverse-button-danger-hover-box-shadow;
+    }
+
+    &:active {
+      box-shadow: @inverse-button-danger-active-box-shadow;
+    }
+  }
+
+  /* Disable */
+  .uk-button:disabled {
+    border-color: @inverse-button-disabled-border;
+    background-image: none;
+    background-color: @inverse-button-disabled-background;
+    color: @inverse-button-disabled-color;
+    box-shadow: @inverse-button-disabled-box-shadow;
+  }
+}

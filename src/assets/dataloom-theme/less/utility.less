@@ -1,0 +1,78 @@
+@dropcap-font-size: @global-line-height * 3;
+@border-rounded-border-radius: @global-border-radius;
+@border-rounded-small-border-radius: @global-small-border-radius;
+@border-rounded-xlarge-border-radius: @global-xlarge-border-radius;
+
+
+@border-width: @global-border-width;
+@border-color: @global-border;
+
+
+.hook-utility-misc() {
+  /* Border */
+  .uk-border-box {
+    box-sizing: border-box;
+  }
+
+  .uk-border {
+    border: @border-width solid @border-color;
+  }
+
+  .uk-border-bottom {
+    border-bottom: @border-width solid @border-color;
+  }
+
+  .uk-border-top {
+    border-top: @border-width solid @border-color;
+  }
+
+  .uk-border-left {
+    border-left: @border-width solid @border-color;
+  }
+
+  .uk-border-right {
+    border-right: @border-width solid @border-color;
+  }
+
+  /* Box-shadow */
+  .uk-box-shadow-default, .uk-box-shadow-default-hover:hover {
+    box-shadow: @global-default-shadow;
+  }
+
+  .uk-box-shadow-inner, .uk-box-shadow-inner-hover:hover {
+    box-shadow: @global-inset-shadow;
+  }
+
+  .uk-box-no-shadow, .uk-box-no-shadow-hover:hover {
+    box-shadow: none;
+  }
+
+  /* Border radius*/
+  .uk-border-rounded-small {
+    border-radius: @border-rounded-small-border-radius;
+  }
+  
+  .uk-border-rounded-xlarge {
+    border-radius: @border-rounded-xlarge-border-radius;
+  }
+
+  .uk-border-rounded-remove-right {
+    border-top-left-radius: @border-rounded-border-radius;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: @border-rounded-border-radius;
+  }
+}
+
+/* Inverse */
+.hook-inverse-misc() {
+  .uk-box-shadow-small { box-shadow: @inverse-global-small-box-shadow; }
+  .uk-box-shadow-medium { box-shadow: @inverse-global-medium-box-shadow; }
+  .uk-box-shadow-large { box-shadow: @inverse-global-large-box-shadow; }
+  .uk-box-shadow-xlarge { box-shadow: @inverse-global-xlarge-box-shadow; }
+
+  .uk-box-shadow-hover-small:hover { box-shadow: @inverse-global-small-box-shadow; }
+  .uk-box-shadow-hover-medium:hover { box-shadow: @inverse-global-medium-box-shadow; }
+  .uk-box-shadow-hover-large:hover { box-shadow: @inverse-global-large-box-shadow; }
+  .uk-box-shadow-hover-xlarge:hover { box-shadow: @inverse-global-xlarge-box-shadow; }
+}

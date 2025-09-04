@@ -1,0 +1,13 @@
+@dotnav-margin-horizontal: 20px;
+@dotnav-item-width: 16px;
+@dotnav-item-background: fade(@global-primary-background, 50%);
+@dotnav-item-hover-background: @global-primary-background;
+@dotnav-item-onclick-background: @global-primary-background;
+@dotnav-item-active-background: @global-primary-background;
+@dotnav-item-box-shadow: inset 1px 1px 1px rgba(0, 0, 0, 0.15), 1px 1px 1px #fff;
+
+.hook-dotnav-item() {
+  transition: .2s ease-in-out;
+  transition-property: color,background-color,border-color,box-shadow;
+  box-shadow: @dotnav-item-box-shadow;
+}

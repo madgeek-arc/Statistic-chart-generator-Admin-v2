@@ -1,0 +1,13 @@
+/* Dark Background: Use hook-inverse-misc in order to add styles
+in a dark background and use uk-light in a child */
+@inverse-global-color: @global-background;
+
+.dark {
+  .hook-inverse-misc();
+}
+
+.hook-inverse() {
+  .hook-inverse-misc();
+}
+
+.hook-inverse-misc() {};

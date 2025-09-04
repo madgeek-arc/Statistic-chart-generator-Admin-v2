@@ -1,0 +1,64 @@
+@accordion-border: @global-border;
+@accordion-border-width: @global-border-width;
+@accordion-padding-bottom: 20px;
+
+@accordion-title-font-size: @global-large-font-size;
+@accordion-title-font-size-s: @global-font-size;
+@accordion-title-padding-vertical: 5px;
+@accordion-title-padding-horizontal: 0;
+@accordion-title-background: transparent;
+@accordion-title-color: @global-emphasis-color;
+@accordion-title-hover-color: @accordion-title-color;
+@accordion-title-font-weight: 600;
+
+@accordion-icon-margin-left: 10px;
+@accordion-icon-color: @global-primary-background;
+
+@accordion-content-font-size: @global-font-size;
+@accordion-content-font-size-s: @global-small-font-size;
+
+.uk-accordion > * {
+  padding-bottom: @accordion-padding-bottom;
+  border-bottom: @accordion-border-width solid @accordion-border;
+}
+
+.hook-accordion-title() {
+  padding: @accordion-title-padding-vertical @accordion-title-padding-horizontal;
+  background: @accordion-title-background;
+  overflow: hidden;
+  font-weight: @accordion-title-font-weight;
+
+  &::before {
+    content: "\e5cf";
+    font-family: "Material Icons";
+    font-size: 1.5em;
+    line-height: inherit;
+    margin-left: @accordion-icon-margin-left;
+    margin-top: -0.3em;
+    float: right;
+    color: @accordion-icon-color;
+  }
+
+}
+
+.hook-accordion-content() {
+  font-size: @accordion-content-font-size;
+  margin-right: 1.5*@accordion-title-font-size;
+}
+
+.hook-accordion-misc() {
+  @media(max-width: @breakpoint-small-max) {
+    .uk-accordion-title {
+      font-size: @accordion-title-font-size-s;
+    }
+
+    .uk-accordion-content {
+      font-size: @accordion-content-font-size-s;
+      margin-right: 1.5*@accordion-title-font-size-s;
+    }
+  }
+
+  .uk-open > .uk-accordion-title::before {
+    content: "\e5ce"
+  }
+}

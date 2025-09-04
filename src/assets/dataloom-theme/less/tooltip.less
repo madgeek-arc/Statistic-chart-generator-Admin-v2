@@ -1,0 +1,14 @@
+@tooltip-background: @global-background;
+@tooltip-max-width: 300px;
+@tooltip-border-radius: @global-small-border-radius;
+@tooltip-color: @global-color;
+@tooltip-padding-horizontal: 20px;
+@tooltip-padding-vertical: 5px;
+@tooltip-border-width: @global-border-width;
+@tooltip-border: @global-border;
+@tooltip-shadow: @global-default-shadow;
+
+.hook-tooltip() {
+  border: @tooltip-border-width solid @tooltip-border;
+  box-shadow: @tooltip-shadow;
+}

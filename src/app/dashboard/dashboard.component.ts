@@ -20,7 +20,7 @@ import { ChartExportingService } from '../services/chart-exporting-service/chart
 @Component({
 	selector: 'app-dashboard',
 	templateUrl: './dashboard.component.html',
-	styleUrls: ['./dashboard.component.less'],
+	// styleUrls: ['./dashboard.component.less'],
 	encapsulation: ViewEncapsulation.None
 })
 export class DashboardComponent implements OnInit, OnChanges {
@@ -76,13 +76,21 @@ export class DashboardComponent implements OnInit, OnChanges {
 
 
 	ngOnInit(): void {
-		this.view.valueChanges.subscribe((profile: any) => {
 
-			console.log("TESTING newViewSelected profile", profile)
-			console.log("TESTING newViewSelected this.firstTime", this.firstTime)
+    setInterval( ()=> {
+      console.log('PROFILE:::: ', this.profile.value);
+    }, 5000);
+
+		// this.profile.valueChanges.subscribe((profile: any) => {
+		this.formGroup.get('view.profile')?.valueChanges.subscribe((profile: string) => {
+
+			// console.log("TESTING newViewSelected profile", profile);
+			// console.log("TESTING newViewSelected this.firstTime", this.firstTime);
 
 
-			if (profile && !this.firstTime && !this.jsonLoad) {
+			// if (profile && !this.firstTime && !this.jsonLoad) {
+      console.log((profile && !this.jsonLoad));
+      if (profile && !this.jsonLoad) {
 				console.log("New View Selected.");
 				this.newViewSelected(profile);
 			}
@@ -185,26 +193,41 @@ export class DashboardComponent implements OnInit, OnChanges {
 
 		this.formGroup.updateValueAndValidity();
 
-		this.firstTime = false;
+    this.checkDisabledTabs();
+
+		// this.firstTime = false;
 		if (event) {
 			if (event.step === 'profile') {
-				UIkit.switcher('#navTab').show(1);
+        setTimeout(() => {
+          UIkit.switcher('#navTab').show(1);
+        }, 0);
 			} else if (event.step === 'category') {
 				this.selectedCategory = event.name;
-				UIkit.switcher('#navTab').show(2);
+        setTimeout(() => {
+          UIkit.switcher('#navTab').show(2);
+        }, 0);
 			}
 		}
 
-		this.checkDisabledTabs();
-
-		this.moveToNextStep()
+		this.moveToNextStep();
 	}
 
 	checkDisabledTabs() {
 		console.log("this.category.get('diagram')?.value", this.category.get('diagram')?.value);
-		console.log("this.category.get('diagram')?.get('type')?.value", this.category.get('diagram')?.get('type')?.value);
+    console.log("this.category.get('diagram')?.get('description')?.value", this.category.get('diagram')?.get('description')?.value);
+    console.log("this.category.get('diagram')?.get('description')?.value", this.category.get('diagram')?.value.description);
+    setTimeout(() => {
+      console.log("this.category.get('diagram')?.get('type')?.value", this.category.get('diagram')?.get('type')?.value);
+    }, 50);
+		// console.log("this.category.get('diagram')?.get('type')?.value", this.category.get('diagram')?.get('type')?.value);
 
-		if (this.formGroup) {
+    // console.log("diagram control:", this.category.get('diagram'));
+    // console.log("diagram control type:", this.category.get('diagram') instanceof FormGroup ? 'FormGroup' : 'FormControl');
+
+
+
+
+    if (this.formGroup) {
 			if (this.view.get('profile')?.value && this.category.get('diagram')?.get('type')?.value) {
 				this.hasDataAndDiagramType = true;
 			} else {
@@ -222,8 +245,16 @@ export class DashboardComponent implements OnInit, OnChanges {
 	}
 
 	newViewSelected(profile: any): void {
-		this.category.reset();
-		this.dataseries.reset();
+
+    console.log("diagram control:", this.category.get('diagram'));
+    console.log("diagram control type:", this.category.get('diagram') instanceof FormGroup ? 'FormGroup' : 'FormControl');
+
+    this.category.reset();
+
+    console.log("diagram control:", this.category.get('diagram'));
+    console.log("diagram control type:", this.category.get('diagram') instanceof FormGroup ? 'FormGroup' : 'FormControl');
+
+    this.dataseries.reset();
 		// this.appearance.reset();
 
 		this.createDefaultFormGroup(profile);
@@ -240,7 +271,7 @@ export class DashboardComponent implements OnInit, OnChanges {
 			// TODO remove testingView and replace with service for data saving and transfer
 			testingView: this.formBuilder.control(this.formGroup ? this.formGroup.get('testingView')?.value : null),
 			view: this.formBuilder.group({
-				profile: this.formBuilder.control((profile?.profile !== null && profile?.profile !== undefined) ? profile.profile : null)
+				profile: this.formBuilder.control((profile !== null && profile !== undefined) ? profile : null)
 			}),
 			category: this.formBuilder.group(this.formGroup ? this.category.value : {
 				diagram: this.formBuilder.group({

@@ -11,7 +11,7 @@ import { ViewSavingService } from 'src/app/services/view-saving-service/view-sav
 export class ViewSelectorComponent {
 
 	@Input('viewForm') viewForm: FormControl = new FormControl();
-	@Input('profileControl') profileControl: FormControl = new FormControl();
+	@Input('profileControl') profileControl?: FormControl;
 	@Output() showViewSelection = new EventEmitter<any>;
 
 	isLinear: boolean = true;
@@ -29,7 +29,7 @@ export class ViewSelectorComponent {
 		if (event.name) {
 			this.viewForm.setValue(event);
 			this.viewSavingService.setTestingView(event);
-			this.profileControl.setValue(event.name);
+			this.profileControl?.setValue(event.name);
 			this.showViewSelection.emit({
 				name: event.name,
 				step: "profile"

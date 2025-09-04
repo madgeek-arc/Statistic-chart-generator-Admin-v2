@@ -1,0 +1,78 @@
+@label-background: transparent;
+@label-border: @global-border;
+@label-border-width: @global-border-width;
+@label-border-radius: 500px;
+@label-color: @global-color;
+@label-font-size: @global-xsmall-font-size;
+@label-font-weight: 400;
+@label-line-height: 15px;
+@label-padding-horizontal: 20px;
+@label-padding-vertical: 10px;
+@label-small-padding-horizontal: 10px;
+@label-small-padding-vertical: 5px;
+@label-text-transform: uppercase;
+
+/* Success */
+@label-success-background: transparent;
+@label-success-border: @success-border-color;
+@label-success-color: @success-color;
+
+/* Warning */
+@label-warning-background: transparent;
+@label-warning-border: @warning-border-color;
+@label-warning-color: @warning-color;
+
+/** Danger*/
+@label-danger-background: transparent;
+@label-danger-border: @danger-border-color;
+@label-danger-color: @danger-color;
+
+/** Primary */
+@label-primary-background: transparent;
+@label-primary-color: @global-primary-background;
+@label-primary-border: @label-primary-color;
+
+/** Secondary */
+@label-secondary-background: transparent;
+@label-secondary-color: @global-secondary-background;
+@label-secondary-border: @label-secondary-color;
+
+.hook-label() {
+  border: @label-border-width solid @label-border;
+  border-radius: @label-border-radius;
+  text-transform: @label-text-transform;
+
+  &.uk-label-small {
+    padding: @label-small-padding-vertical @label-small-padding-horizontal;
+  }
+}
+
+.hook-label-success {
+  border-color: @label-success-border;
+}
+
+.hook-label-warning() {
+  border-color: @label-warning-border;
+}
+
+.hook-label-danger() {
+  border-color: @label-danger-border;
+}
+
+.hook-label-misc() {
+  .uk-label-primary {
+    background-color: @label-primary-background;
+    color: @label-primary-color;
+    border-color: @label-primary-border;
+  }
+
+  .uk-label-secondary {
+    background-color: @label-secondary-border;
+    color: @global-inverse-color;
+    border-color: @label-secondary-background;
+
+    .uk-close {
+      color: @global-inverse-color;
+    }
+  }
+}

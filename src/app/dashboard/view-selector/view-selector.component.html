@@ -1,4 +1,4 @@
-<div>
+<div class="uk-section uk-section-small uk-section-default">
 	<div class="uk-grid-match uk-child-width-1-5@s uk-flex-center uk-text-center" uk-grid>
 		<ng-container *ngFor="let item of (this.profileProvide.mappingProfiles$ | async)">
 			<app-card-component [data]="item" (outputEvent)="moveToNextStep($event)" class="uk-width-medium"></app-card-component>
