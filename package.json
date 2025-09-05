@@ -22,13 +22,13 @@
     "@angular/platform-browser": "^16.2.12",
     "@angular/platform-browser-dynamic": "^16.2.12",
     "@angular/router": "^16.2.12",
+    "@types/uikit": "^3.14.5",
+    "uikit": "^3.21.16",
     "highcharts": "^9.1.2",
     "material-symbols": "^0.27.2",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
-    "uikit": "^3.21.16",
-    "zone.js": "~0.13.0",
-	"@types/uikit": "^3.14.5"
+    "zone.js": "~0.13.0"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^16.2.16",

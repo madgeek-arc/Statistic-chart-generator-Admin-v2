@@ -38,8 +38,8 @@ export class DynamicFormHandlingService {
 	private _rawChartDataObject: RawChartDataModel | null = null;
 	private _rawDataObject: RawDataModel | null = null;
 	private _resetFormValue: SCGAFormSchema | null = null;
-	private _formSchemaObject: BehaviorSubject<SCGAFormSchema | null>;
-	private _formErrorObject: BehaviorSubject<any[]>;
+	private _formSchemaObject: BehaviorSubject<SCGAFormSchema | null> = new BehaviorSubject<SCGAFormSchema | null>(null);
+	private _formErrorObject: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
 	private _loadFormObject: Object;
 	private _loadFormObjectFile: File | null = null;
 	private updateFormFromFile = new BehaviorSubject(false);
@@ -52,19 +52,14 @@ export class DynamicFormHandlingService {
 	// fixme when find another solution
 	private _xAxisRequired: boolean = false;
 
-
-	constructor(private diagramcategoryService: DiagramCategoryService,
+	constructor(
+    private diagramcategoryService: DiagramCategoryService,
 		private chartExportingService: ChartExportingService,
 		private chartLoadingService: ChartLoadingService) {
 
 		this._diagramCreator = new DiagramCreator(diagramcategoryService);
-		this._formErrorObject = new BehaviorSubject<any[]>([]);
-		this._formSchemaObject = new BehaviorSubject<SCGAFormSchema | null>(null);
 
-		// this._formSchema = new FormSchema();
 	}
-
-	set resetFormValue(value: SCGAFormSchema) { this._resetFormValue = value; }
 
 	get isFormValid(): boolean {
 		if (this.$formErrorObject.value === null) {
@@ -97,27 +92,7 @@ export class DynamicFormHandlingService {
 
 	get loadFormObjectFile(): File | null { return this._loadFormObjectFile; }
 
-	// get formSchema(): FormSchema { return this._formSchema; }
-
 	get isxAxisRequired(): boolean { return this._xAxisRequired; }
-
-	// resetForm(root: FormProperty) {
-	//   // Reset through the root property of the dynamic form
-	//   root.reset(this._resetFormValue, false);
-	//
-	//   // Reset table and chart objects
-	//   this._chartObject = undefined;
-	//   this.chartExportingService.changeChartUrl(this._chartObject);
-	//
-	//   this._tableObject = undefined;
-	//   this.chartExportingService.changeTableUrl(this._tableObject);
-	//
-	//   this._rawChartDataObject = undefined;
-	//   this.chartExportingService.changeRawChartDataUrl(this._rawChartDataObject);
-	//
-	//   this._rawDataObject = undefined;
-	//   this.chartExportingService.changeRawDataUrl(this._rawDataObject);
-	// }
 
 	loadForm(event: any) {
 		// console.log('Load Event', event);

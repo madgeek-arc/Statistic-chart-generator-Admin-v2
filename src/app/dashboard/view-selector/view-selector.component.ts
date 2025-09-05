@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl } from '@angular/forms';
 import { ProfileProviderService } from 'src/app/services/profile-provider/profile-provider.service';
 import { ViewSavingService } from 'src/app/services/view-saving-service/view-saving.service';
 
@@ -10,27 +10,23 @@ import { ViewSavingService } from 'src/app/services/view-saving-service/view-sav
 })
 export class ViewSelectorComponent {
 
-	@Input('viewForm') viewForm: FormControl = new FormControl();
-	@Input('profileControl') profileControl?: FormControl;
+	@Input() viewForm: FormControl = new FormControl();
+	@Input() profileControl?: FormControl;
 	@Output() showViewSelection = new EventEmitter<any>;
-
-	isLinear: boolean = true;
 
 	constructor(
 		protected profileProvide: ProfileProviderService,
 		private viewSavingService: ViewSavingService
 	) { }
 
-
-	ngOnInit(): void { }
-
-
 	moveToNextStep(event: any): void {
 		if (event.name) {
 			this.viewForm.setValue(event);
 			this.viewSavingService.setTestingView(event);
-			this.profileControl?.setValue(event.name);
-			this.showViewSelection.emit({
+			this.profileControl?.setValue(event.name, {onlySelf: false, emitEvent: true});
+      console.log('profileControl -------------------> ', this.profileControl);
+      console.log(this.profileControl?.value);
+      this.showViewSelection.emit({
 				name: event.name,
 				step: "profile"
 			});

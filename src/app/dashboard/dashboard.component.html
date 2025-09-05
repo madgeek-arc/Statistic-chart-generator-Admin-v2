@@ -135,15 +135,15 @@
 					<div>
 						<div id="page_content">
 							<ul id="selection" class="uk-switcher uk-margin">
-								<li class="" style="animation-duration: 200ms;">
-									<app-view-selector (showViewSelection)="updateStepper($event)" [viewForm]="this.testingView" [profileControl]="this.profile"></app-view-selector>
+								<li *ngIf="profile" class="" style="animation-duration: 200ms;">
+									<app-view-selector (showViewSelection)="updateStepper($event)" [viewForm]="testingView" [profileControl]="profile"></app-view-selector>
 								</li>
 								<li class="" style="animation-duration: 200ms;">
 									<app-category-selector (showCategorySelection)="updateStepper($event)" [categoryForm]="this.category"></app-category-selector>
 								</li>
 								<li class="" style="animation-duration: 200ms;">
-									<ng-container *ngIf="this.hasDataAndDiagramType">
-										<app-dataseries-selector [formGroup]="this.formGroup" [selectedProfile]="this.profile" [selectedCategory]="this.categoryName"></app-dataseries-selector>
+									<ng-container *ngIf="hasDataAndDiagramType">
+										<app-dataseries-selector [formGroup]="diagramSettings" [selectedProfile]="profile" [selectedCategory]="this.categoryName"></app-dataseries-selector>
 									</ng-container>
 								</li>
 								<li class="" style="animation-duration: 200ms;">
@@ -170,10 +170,10 @@
 				<br>
 				{{this.category.get('diagram')?.get('type')?.value}}
 			</pre>
-			<pre>{{ formGroup.value | json }}</pre>
+			<pre>{{ diagramSettings.value | json }}</pre>
 
 
-			<div *ngIf="!this.firstTime" class="iframe-container">
+			<div class="iframe-container">
 				<!-- <chart-frame [chart]="this.dialogData.chartObj"></chart-frame> -->
 				<div>
 					<div class="container">
@@ -219,6 +219,7 @@
 					</mat-tab>
 				</mat-tab-group>
 			</div>
+
 		</div>
 	</div>
 </div>

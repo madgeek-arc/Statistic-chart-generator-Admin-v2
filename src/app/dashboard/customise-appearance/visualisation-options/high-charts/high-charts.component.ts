@@ -8,7 +8,7 @@ import { FormArray, FormControl, FormGroup } from '@angular/forms';
 })
 export class HighChartsComponent implements OnInit {
 
-	@Input('highChartsForm') highChartsForm: FormGroup;
+	@Input() highChartsForm: FormGroup;
 
 	protected horizontalAlignmentList = [
 		{ name: 'Left', value: 'left' },
@@ -33,29 +33,22 @@ export class HighChartsComponent implements OnInit {
 		{ name: 'Bottom', value: 'bottom' }
 	];
 
-	constructor() { }
+  ngOnInit(): void {
+    if (this.highChartsForm && this.highChartsForm.value) {
+      console.log("this.highChartsForm:", this.highChartsForm.value);
+    }
+  }
 
-	getSeriesColors(form: any) {
-		// console.log(form.controls.data.controls.filters.controls);
-		return form.controls.dataSeriesColorPalette.controls;
+  getSeriesColors(form: FormGroup) {
+    return (form.get('dataSeriesColorPalette') as FormArray).controls;
 	}
 
+  addSeriesColor(form: FormGroup): void {
+    (form.get('dataSeriesColorPalette') as FormArray).push(new FormControl<string>('#ffffff'));
+  }
 
-	ngOnInit(): void {
-		if (this.highChartsForm && this.highChartsForm.value) {
-			console.log("this.highChartsForm:", this.highChartsForm.value);
-		}
-	}
+  removeSeriesColor(form: FormGroup, index: number) {
+    (form.get('dataSeriesColorPalette') as FormArray).removeAt(index);
+  }
 
-	addSeriesColor(form: any): void {
-		form.controls.dataSeriesColorPalette.push(new FormControl<string>('#ffffff'));
-	}
-
-	removeSeriesColor(form: any, index: number) {
-		form.controls.dataSeriesColorPalette.removeAt(index);
-	}
-
-	testButton(): void {
-		console.log("this.highChartsForm:", this.highChartsForm.value);
-	}
 }
