@@ -48,7 +48,7 @@
 								<ul id="navTab" uk-nav="duration: 400" class="uk-list uk-nav uk-nav-default" data-uk-switcher="connect: #selection; animation: 'fade'">
 
 									<li class="uk-parent">
-										<a class="uk-flex uk-flex-middle" title="Overview" role="button" aria-controls="uk-nav-60-content-0" aria-expanded="false" aria-disabled="false">
+										<a class="uk-flex uk-flex-middle" title="Overview" role="button">
 											<div class="uk-width-auto">
 												<span class="material-symbols-outlined">group</span>
 											</div>
@@ -63,17 +63,13 @@
 													</ng-container>
 												</div>
 											</div>
-											<!--                      <span class="uk-width-expand@l uk-text-truncate uk-margin-small-left hide-on-close">-->
-											<!--                        {{ viewSelectionLabel }}-->
-											<!--                      </span>-->
-
 										</a>
 									</li>
 
 									<!--                  <div class="sidebar-item-separator"></div>-->
 
 									<li class="uk-parent">
-										<a class="uk-flex uk-flex-middle" title="Technologies" role="button" aria-controls="uk-nav-60-content-0" aria-expanded="false" aria-disabled="false">
+										<a class="uk-flex uk-flex-middle" title="Technologies" role="button">
 											<div class="uk-width-auto">
 												<span class="material-symbols-outlined">bar_chart</span>
 											</div>
@@ -95,7 +91,7 @@
 									</li>
 
 									<li class="uk-parent">
-										<a [class]="this.hasDataAndDiagramType ? 'uk-flex uk-flex-middle' : 'uk-flex uk-flex-middle uk-disabled uk-text-muted'" title="Organisations" role="button" aria-controls="uk-nav-60-content-0" aria-expanded="false" aria-disabled="false">
+										<a [class]="this.hasDataAndDiagramType ? 'uk-flex uk-flex-middle' : 'uk-flex uk-flex-middle uk-disabled uk-text-muted'" title="Organisations" role="button">
 											<div class="uk-width-auto">
 												<span class="material-symbols-outlined">database</span>
 											</div>
@@ -135,27 +131,27 @@
 					<div>
 						<div id="page_content">
 							<ul id="selection" class="uk-switcher uk-margin">
-								<li *ngIf="profile" class="" style="animation-duration: 200ms;">
+								<li class="" style="animation-duration: 200ms;">
 									<app-view-selector (showViewSelection)="updateStepper($event)" [viewForm]="testingView" [profileControl]="profile"></app-view-selector>
 								</li>
 								<li class="" style="animation-duration: 200ms;">
-									<app-category-selector (showCategorySelection)="updateStepper($event)" [categoryForm]="this.category"></app-category-selector>
+									<app-category-selector (showCategorySelection)="updateStepper($event)" [categoryForm]="category"></app-category-selector>
 								</li>
 								<li class="" style="animation-duration: 200ms;">
 									<ng-container *ngIf="hasDataAndDiagramType">
-										<app-dataseries-selector [formGroup]="diagramSettings" [selectedProfile]="profile" [selectedCategory]="this.categoryName"></app-dataseries-selector>
+										<app-dataseries-selector [formGroup]="diagramSettings" [selectedProfile]="profile" [selectedCategory]="categoryName"></app-dataseries-selector>
 									</ng-container>
 								</li>
 								<li class="" style="animation-duration: 200ms;">
 									<ng-container *ngIf="this.hasDataAndDiagramType">
-										<app-customise-appearance [appearanceForm]="this.appearance"></app-customise-appearance>
+										<app-customise-appearance [appearanceForm]="appearance"></app-customise-appearance>
 									</ng-container>
 								</li>
 							</ul>
 							<!-- <div class="actionButtons"> -->
 							<div uk-sticky="position: bottom">
 
-								<button class="submitButton" (click)="submitData()" [disabled]="!(this.view.valid && this.category.valid && this.dataseries.valid)">SUBMIT</button>
+								<button class="submitButton" (click)="submitData()" [disabled]="!(view.valid && category.valid && dataseries.valid)">SUBMIT</button>
 								<button class="clearButton" (click)="clearData()">CLEAR</button>
 							</div>
 						</div>

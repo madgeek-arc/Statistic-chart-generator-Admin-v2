@@ -9,7 +9,7 @@ import { CachedEntityNode, DynamicEntityNode } from 'src/app/dashboard/helper-co
 
 /**
  * Database for dynamic data. When expanding a node in the tree, the data source will need to fetch
- * the descendants data from the database.
+ * the descendant data from the database.
  */
 @Injectable({
 	providedIn: 'root'
@@ -42,23 +42,18 @@ export class DynamicTreeDatabase {
 			profile = new Profile();
 		}
 
-		console.log("BREAKPOINT");
-		console.log("profile", profile);
-
 		this.dbService.getAvailableEntities(profile).pipe(first())
 			.subscribe((entityNames: string[]) => {
-				console.log("Dynamic Tree DB");
-				var entityMap = new Map<string, CachedEntityNode>(new Map<string, CachedEntityNode>());
+        const entityMap = new Map<string, CachedEntityNode>(new Map<string, CachedEntityNode>());
 
-				var array$ = entityNames.map(entity => this.getEntityRelations(profile, entity).pipe(first()));
-				forkJoin(array$).subscribe((cachedEntityNodes: CachedEntityNode[]) => {
+        const array$ = entityNames.map(entity => this.getEntityRelations(profile, entity).pipe(first()));
+        forkJoin(array$).subscribe((cachedEntityNodes: CachedEntityNode[]) => {
 
 					// forkJoin results are in the same sequence as its Observable inputs
 					// As such the cachedEntityNodes are matched in size and index by the entityNames
 					for (let index = 0; index < entityNames.length; index++)
 						entityMap.set(entityNames[index], cachedEntityNodes[index]);
 
-					console.log("Cached Entity Map :", entityMap);
 					if (entityMap.size > 0)
 						this._entityMap$.next(entityMap);
 				});
@@ -66,18 +61,17 @@ export class DynamicTreeDatabase {
 	}
 
 	getRootNode(entity: string): BehaviorSubject<DynamicEntityNode | null> | undefined {
-		var root = new BehaviorSubject<DynamicEntityNode | null>(null);
+    const root = new BehaviorSubject<DynamicEntityNode | null>(null);
 
-		// We only care for the first map that has entries, in order to get the root node.
-		console.log(this._entityMap$.value);
+    // We only care for the first map that has entries to get the root node.
 		this._entityMap$.pipe(filter(map => map?.size! > 0), first()).subscribe(map => {
 
 			if (map == null)
 				return;
 
-			var rootEntityNode = map.get(entity);
+      const rootEntityNode = map.get(entity);
 
-			if (rootEntityNode != null)
+      if (rootEntityNode != null)
 				root.next(new DynamicEntityNode(rootEntityNode.fields, rootEntityNode.name, [], null));
 		});
 
@@ -85,32 +79,31 @@ export class DynamicTreeDatabase {
 	}
 
 	getChildren(entityNode: DynamicEntityNode): BehaviorSubject<DynamicEntityNode[]> | undefined {
-		var children: DynamicEntityNode[] = [];
-		var children$ = new BehaviorSubject<DynamicEntityNode[]>(children);
+    const children: DynamicEntityNode[] = [];
+    const children$ = new BehaviorSubject<DynamicEntityNode[]>(children);
 
-		console.log("Requesting children of DynamicEntityNode:", entityNode);
 
-		if (entityNode == null)
+    if (entityNode == null)
 			return children$;
 
-		// Get the cached version of the given Entity Node, out of the first map that has entries.
+		// Get the cached version of the given Entity Node out of the first map that has entries.
 		this._entityMap$.pipe(filter(map => map?.size! > 0), first()).subscribe(map => {
 
 			if (map == null)
-				return;
+        return;
 
-			var cachedEntityNode = map.get(entityNode.name);
-			if (cachedEntityNode && cachedEntityNode.relations != null) {
+      const cachedEntityNode = map.get(entityNode.name);
+      if (cachedEntityNode && cachedEntityNode.relations != null) {
 				// Get the relations of the cached Entity Node
 				cachedEntityNode.relations.forEach(relationNodeName => {
 
 					// Get a cached Entity Node as a relation of the given Entity Node
-					var cachedRelationEntityNode = map.get(relationNodeName);
+          const cachedRelationEntityNode = map.get(relationNodeName);
 
-					if (cachedRelationEntityNode && map.has(relationNodeName)) {
+          if (cachedRelationEntityNode && map.has(relationNodeName)) {
 						// Clone the path of the parent Entity node
-						var deeperPath = new Array<string>();
-						entityNode.path.map(node => deeperPath.push(node));
+            const deeperPath = new Array<string>();
+            entityNode.path.map(node => deeperPath.push(node));
 
 						// Create a new Entity Node based on the cached Entity node and the parent path
 						children.push(new DynamicEntityNode(cachedRelationEntityNode.fields, cachedRelationEntityNode.name, deeperPath, undefined, entityNode));

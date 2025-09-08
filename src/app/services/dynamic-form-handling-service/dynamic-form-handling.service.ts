@@ -37,7 +37,6 @@ export class DynamicFormHandlingService {
 	private _tableObject: GoogleChartsTable | null = null;
 	private _rawChartDataObject: RawChartDataModel | null = null;
 	private _rawDataObject: RawDataModel | null = null;
-	private _resetFormValue: SCGAFormSchema | null = null;
 	private _formSchemaObject: BehaviorSubject<SCGAFormSchema | null> = new BehaviorSubject<SCGAFormSchema | null>(null);
 	private _formErrorObject: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
 	private _loadFormObject: Object;
@@ -46,8 +45,6 @@ export class DynamicFormHandlingService {
 	jsonLoaded = this.updateFormFromFile.asObservable();
 
 	private _diagramCreator: DiagramCreator;
-
-	// private _formSchema: FormSchema;
 
 	// fixme when find another solution
 	private _xAxisRequired: boolean = false;
@@ -74,9 +71,9 @@ export class DynamicFormHandlingService {
 
 	set formSchemaObject(value: SCGAFormSchema) { this._formSchemaObject.next(value); }
 
-	get formSchemaObject(): SCGAFormSchema | null { return this._formSchemaObject.getValue(); }
+  set updateFromFile(value: boolean) { this.updateFormFromFile.next(value); }
 
-	get diagramCreator(): DiagramCreator { return this.diagramCreator; }
+	get formSchemaObject(): SCGAFormSchema | null { return this._formSchemaObject.getValue(); }
 
 	get $formErrorObject(): BehaviorSubject<Array<any>> { return this._formErrorObject; }
 
@@ -122,8 +119,6 @@ export class DynamicFormHandlingService {
 	adjustAndPatchForm(form: AbstractControl, json: any = this._loadFormObject): void {
 		if (form instanceof FormGroup) {
 			Object.keys(json).forEach(key => {
-				console.log("KEY:", key);
-				console.log("json[key]:", json[key]);
 				if (!form.get(key)) {
 					form.addControl(key, this.createControl(json[key])); // Add missing control
 				}
@@ -138,41 +133,35 @@ export class DynamicFormHandlingService {
 				// TODO add REMOVE CONTROLS that are not being used
 			});
 		} else if (form instanceof FormArray) {
-			console.log("form.length:", form.length);
-			console.log("json.length:", json.length);
 
 			while (form.length < json.length) {
-				console.log("json[0]:", json[0]);
-				form.push(this.createControl(json[0])); // Add controls to match array size
+				form.push(this.createControl(json[0])); // Add controls to match the array size
 			}
 			while (form.length > json.length) {
 				form.removeAt(form.length - 1); // Remove extra controls
 			}
 			json.forEach((item: any, index: number) => {
-				console.log("item:", item);
-				console.log("index:", index);
-
 				this.adjustAndPatchForm(form.at(index), item); // Recurse
 			});
 		} else {
-			console.log("form.setValue:", json);
-
 			form.setValue(json, { emitEvent: false }); // Set value for FormControl
 		}
 	}
 
 	createControl(value: any): AbstractControl {
 		if (value && typeof value === 'object' && !Array.isArray(value)) {
+      // console.log("value:", value);
 			const group = new FormGroup({});
 			Object.keys(value).forEach(key => group.addControl(key, this.createControl(value[key])));
 			return group;
 		} else if (Array.isArray(value)) {
 			const array = new FormArray<any>([]);
-			console.log("value:", value);
+			// console.log("value:", value);
 
 			value.forEach(item => array.push(this.createControl(item)));
 			return array;
 		} else {
+      // console.log("value:", value);
 			return new FormControl(value);
 		}
 	}

@@ -13,7 +13,7 @@ export class FormFactoryService {
       category: this.createCategoryGroup(),
       dataseries: this.createDataseriesGroup(),
       appearance: this.createAppearanceGroup()
-    })
+    });
   }
 
   createViewGroup(profile: string | null) {

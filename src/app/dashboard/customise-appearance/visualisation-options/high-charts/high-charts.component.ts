@@ -35,7 +35,7 @@ export class HighChartsComponent implements OnInit {
 
   ngOnInit(): void {
     if (this.highChartsForm && this.highChartsForm.value) {
-      console.log("this.highChartsForm:", this.highChartsForm.value);
+      // console.log("this.highChartsForm:", this.highChartsForm.value);
     }
   }
 

@@ -1,15 +1,15 @@
 import {
+  AfterViewInit,
   Component,
   DestroyRef,
   inject,
   OnChanges,
-  OnInit,
+  OnInit, QueryList,
   SimpleChanges,
-  ViewChild,
+  ViewChildren,
   ViewEncapsulation
 } from '@angular/core';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
-import { MatStepper } from '@angular/material/stepper';
 import { ChartTableModalContext } from "../modals/chart-table-modal/chart-table-modal.component";
 import { DynamicFormHandlingService } from "../services/dynamic-form-handling-service/dynamic-form-handling.service";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
@@ -18,16 +18,18 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { ChartExportingService } from '../services/chart-exporting-service/chart-exporting.service';
 import { FormFactoryService } from "../services/form-factory-service/form-factory-service";
 import UIkit from 'uikit';
+import { SelectAttributeComponent } from "./helper-components/select-attribute/select-attribute.component";
 
 @Component({
 	selector: 'app-dashboard',
 	templateUrl: './dashboard.component.html',
 	encapsulation: ViewEncapsulation.None
 })
-export class DashboardComponent implements OnInit, OnChanges {
+export class DashboardComponent implements OnInit, OnChanges, AfterViewInit {
 	private destroyRef = inject(DestroyRef);
 
-	@ViewChild('stepper') stepper !: MatStepper;
+  @ViewChildren(SelectAttributeComponent) selectAttributeComponents!: QueryList<SelectAttributeComponent>;
+	// @ViewChild('stepper') stepper !: MatStepper;
 
 	diagramSettings: FormGroup;
 
@@ -38,13 +40,11 @@ export class DashboardComponent implements OnInit, OnChanges {
 	selectedDataseries: string = "";
 	customiseAppearanceLabel: string = "Appearance";
 
-	iframeUrl: string = '';
-
 	open = true;
 	hasDataAndDiagramType: boolean = false;
 	frameUrl: SafeResourceUrl;
 
-	jsonLoad: boolean = false;
+	// jsonLoad: boolean = false;
 
 	dialogData: ChartTableModalContext = {
 		chartObj: this.dynamicFormHandlingService.ChartObject,
@@ -67,58 +67,47 @@ export class DashboardComponent implements OnInit, OnChanges {
 
     this.diagramSettings = this.formFactory.createForm();
 
+    this.dynamicFormHandlingService.jsonLoaded.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+      next: data => {
+        // this.jsonLoad = data;
+        if (data) {
+          this.updateFormFile();
+        }
+      }
+    });
+
+    this.setFormObservers();
+	}
+
+  ngAfterViewInit() {
+    // Subscribe to changes in select-attribute components
+    this.selectAttributeComponents.changes.subscribe(() => {
+      console.log('🔧 Select attribute components changed');
+    });
+  }
+
+
+  setFormObservers() {
+
     this.diagramSettings.get('view.profile')?.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((profile: string) => {
 
       console.log("New View Selected.");
-      console.log((profile && !this.jsonLoad));
-      // if (profile && !this.firstTime && !this.jsonLoad) {
-      if (profile && !this.jsonLoad) {
+      if (profile) {
         console.log("resetting diagramSettings");
-        this.newViewSelected(profile);
+        this.newViewSelected();
       }
 
+      // this.checkDisabledTabs();
+    });
+
+    this.diagramSettings.get('category')?.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((diagram: any) => {
       this.checkDisabledTabs();
     });
 
-		this.category.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((diagram: any) => {
-			this.checkDisabledTabs();
-		});
-
-		this.diagramSettings.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).pipe(takeUntilDestroyed(this.destroyRef)).subscribe(value => {
-			this.dynamicFormHandlingService.formSchemaObject = value;
-		});
-
-		this.dynamicFormHandlingService.jsonLoaded.pipe(takeUntilDestroyed(this.destroyRef)).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-			next: data => {
-
-				if (data) {
-					try {
-						this.jsonLoad = true;
-						console.log("this.formGroup", this.diagramSettings.value);
-
-						this.dynamicFormHandlingService.adjustAndPatchForm(this.diagramSettings);
-						console.log("this.dynamicFormHandlingService.jsonLoaded", this.diagramSettings.value);
-						console.log("this.dynamicFormHandlingService.loadFormObject", this.dynamicFormHandlingService.loadFormObject);
-						this.diagramSettings.patchValue(this.dynamicFormHandlingService.loadFormObject)
-
-						this.updateStepper({
-							name: this.diagramSettings?.get('category')?.get('diagram')?.get('type')?.value,
-							step: "category"
-						})
-					} catch (error) {
-						console.error('Error processing loaded JSON form data:', error);
-						this.jsonLoad = false;
-					}
-				} else {
-					this.jsonLoad = false;
-				}
-			},
-			error: error => {
-				console.error('Error in jsonLoaded subscription:', error);
-				this.jsonLoad = false;
-			}
-		});
-	}
+    this.diagramSettings.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(value => {
+      this.dynamicFormHandlingService.formSchemaObject = value;
+    });
+  }
 
 	ngOnChanges(changes: SimpleChanges) {
 		const stringObj = JSON.stringify(changes['chart'].currentValue);
@@ -160,49 +149,33 @@ export class DashboardComponent implements OnInit, OnChanges {
 		return this.diagramSettings.get('appearance') as FormGroup;
 	}
 
-	onStepChange(event: any): void {
-		console.log("onStepChange:", event.selectedIndex);
-	}
-
 	updateStepper(event: any): void {
-		console.log("updateStepper EVENT:", event);
-		console.log("updateStepper category:", this.category.value);
-
-		this.diagramSettings.updateValueAndValidity();
-
+		// this.diagramSettings.updateValueAndValidity();
     this.checkDisabledTabs();
 
-		// this.firstTime = false;
 		if (event) {
-			if (event.step === 'profile') {
+      if (event.step === 'view') {
+        setTimeout(() => {
+          UIkit.switcher('#navTab').show(0);
+          window.scrollTo({top: 0, left: 0, behavior: "smooth"});
+        }, 0);
+      } else if (event.step === 'profile') {
         setTimeout(() => {
           UIkit.switcher('#navTab').show(1);
+          window.scrollTo({top: 0, left: 0, behavior: "smooth"});
         }, 0);
 			} else if (event.step === 'category') {
 				this.selectedCategory = event.name;
         setTimeout(() => {
           UIkit.switcher('#navTab').show(2);
+          window.scrollTo({top: 0, left: 0, behavior: "smooth"});
         }, 0);
 			}
 		}
 
-		this.moveToNextStep();
 	}
 
 	checkDisabledTabs() {
-		console.log("this.category.get('diagram')?.value", this.category.get('diagram')?.value);
-    console.log("this.category.get('diagram')?.get('description')?.value", this.category.get('diagram')?.get('description')?.value);
-    console.log("this.category.get('diagram')?.get('description')?.value", this.category.get('diagram')?.value.description);
-    setTimeout(() => {
-      console.log("this.category.get('diagram')?.get('type')?.value", this.category.get('diagram')?.get('type')?.value);
-    }, 50);
-		// console.log("this.category.get('diagram')?.get('type')?.value", this.category.get('diagram')?.get('type')?.value);
-
-    // console.log("diagram control:", this.category.get('diagram'));
-    // console.log("diagram control type:", this.category.get('diagram') instanceof FormGroup ? 'FormGroup' : 'FormControl');
-
-
-
 
     if (this.diagramSettings) {
 			if (this.view.get('profile')?.value && this.category.get('diagram')?.get('type')?.value) {
@@ -211,32 +184,13 @@ export class DashboardComponent implements OnInit, OnChanges {
 				this.hasDataAndDiagramType = false;
 			}
 		}
+
 	}
 
-
-	moveToNextStep(): void {
-		setTimeout(() => {
-			this.diagramSettings.updateValueAndValidity();
-			window.scroll(0, 0);
-		}, 50);
-	}
-
-	newViewSelected(profile: any): void {
-
-    console.log("diagram control:", this.category.get('diagram'));
-    console.log("diagram control type:", this.category.get('diagram') instanceof FormGroup ? 'FormGroup' : 'FormControl');
-
-    this.category.reset();
-
-    console.log("diagram control:", this.category.get('diagram'));
-    console.log("diagram control type:", this.category.get('diagram') instanceof FormGroup ? 'FormGroup' : 'FormControl');
-
-    this.dataseries.reset();
-		// this.appearance.reset();
-
+	newViewSelected(): void {
 		this.resetForm();
-		this.updateDefaultFormGroupValues();
-		this.diagramSettings.updateValueAndValidity();
+		// this.updateDefaultFormGroupValues();
+		// this.diagramSettings.updateValueAndValidity();
 
 		this.selectedCategory = '';
 		this.selectedDataseries = '';
@@ -273,6 +227,111 @@ export class DashboardComponent implements OnInit, OnChanges {
 
 	}
 
+  updateFormFile() {
+    try {
+      console.log('📁 UpdateFormFile - START');
+      console.log('📁 Load form object:', this.dynamicFormHandlingService.loadFormObject);
+
+      this.diagramSettings = this.formFactory.createForm();
+      this.setFormObservers();
+
+      console.log('📁 Form created, about to adjust and patch');
+      this.dynamicFormHandlingService.adjustAndPatchForm(this.diagramSettings);
+
+      setTimeout(() => {
+        console.log('📁 About to patchValue with:', this.dynamicFormHandlingService.loadFormObject);
+        this.diagramSettings.patchValue(this.dynamicFormHandlingService.loadFormObject, { emitEvent: false });
+
+        // Force update select-attribute components after patching
+        this.forceUpdateSelectAttributes();
+
+        this.dynamicFormHandlingService.formSchemaObject = this.diagramSettings.value;
+        this.dynamicFormHandlingService.updateFromFile = false;
+      }, 0);
+
+      this.updateStepper({
+        name: this.diagramSettings?.get('category')?.get('diagram')?.get('type')?.value,
+        step: "category"
+      });
+
+    } catch (error) {
+      console.error('❌ Error processing loaded JSON form data:', error);
+    }
+  }
+
+  private forceUpdateSelectAttributes() {
+    console.log('🔧 Forcing select-attribute updates via ViewChildren');
+
+    setTimeout(() => {
+      const dataseries = this.diagramSettings.get('dataseries') as FormArray;
+
+      // Use ViewChildren to directly access select-attribute components
+      this.selectAttributeComponents.forEach((component, index) => {
+        console.log(`🔧 Updating select-attribute component ${index}`);
+
+        // Find the corresponding form control
+        const seriesIndex = Math.floor(index / 3); // Assuming 3 select-attributes per series (Y, X, Filter)
+        const ctrl = dataseries.at(seriesIndex);
+
+        if (ctrl) {
+          const entity = ctrl.get('data.yaxisData.entity')?.value;
+          if (entity && component.control?.value) {
+            // Force the component to re-render with its current value
+            component.writeValue(component.control.value);
+          }
+        }
+      });
+    }, 100);
+  }
+
+
+  // private forceUpdateSelectAttributes() {
+  //   console.log('🔧 Forcing select-attribute updates');
+  //
+  //   setTimeout(() => {
+  //     const dataseries = this.diagramSettings.get('dataseries') as FormArray;
+  //     dataseries.controls.forEach((ctrl, index) => {
+  //       const entity = ctrl.get('data.yaxisData.entity')?.value;
+  //
+  //       // Force update Y-Axis field
+  //       const yAxisField = ctrl.get('data.yaxisData.yaxisEntityField');
+  //       if (entity && yAxisField) {
+  //         console.log(`🔧 Forcing Y-Axis field update for series ${index}:`, yAxisField.value);
+  //         // Trigger writeValue by setting the value again, even if it's the same
+  //         const currentValue = yAxisField.value;
+  //         yAxisField.setValue(null); // Clear first
+  //         setTimeout(() => yAxisField.setValue(currentValue), 10); // Then set the actual value
+  //       }
+  //
+  //       // Force update X-Axis fields
+  //       const xAxisData = ctrl.get('data.xaxisData') as FormArray;
+  //       xAxisData.controls.forEach((xCtrl, xIndex) => {
+  //         const xAxisField = xCtrl.get('xaxisEntityField');
+  //         if (entity && xAxisField) {
+  //           console.log(`🔧 Forcing X-Axis field update for series ${index}.${xIndex}:`, xAxisField.value);
+  //           const currentValue = xAxisField.value;
+  //           xAxisField.setValue(null);
+  //           setTimeout(() => xAxisField.setValue(currentValue), 10);
+  //         }
+  //       });
+  //
+  //       // Force update filter fields
+  //       const filters = ctrl.get('data.filters') as FormArray;
+  //       filters.controls.forEach((filterCtrl) => {
+  //         const groupFilters = filterCtrl.get('groupFilters') as FormArray;
+  //         groupFilters.controls.forEach((groupCtrl) => {
+  //           const fieldCtrl = groupCtrl.get('field');
+  //           if (entity && fieldCtrl) {
+  //             const currentValue = fieldCtrl.value;
+  //             fieldCtrl.setValue(null);
+  //             setTimeout(() => fieldCtrl.setValue(currentValue), 10);
+  //           }
+  //         });
+  //       });
+  //     });
+  //   }, 100);
+  // }
+
 	submitData() {
 		console.log("SUBMIT this form:", this.diagramSettings.value);
 
@@ -291,9 +350,15 @@ export class DashboardComponent implements OnInit, OnChanges {
 	}
 
 	clearData() {
-		console.log("CLEAR ALL DATA!");
-	}
+    console.log("CLEAR ALL DATA!");
+    this.diagramSettings = this.formFactory.createForm();
+    this.setFormObservers();
 
+    this.updateStepper({
+      name: null,
+      step: 'view'
+    });
+	}
 
 	toggleSidebar() {
 

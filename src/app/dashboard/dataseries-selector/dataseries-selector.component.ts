@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { FormArray, FormControl, FormGroup, FormGroupDirective, Validators } from '@angular/forms';
 import { MatSelectChange } from '@angular/material/select';
 import { BehaviorSubject, first, forkJoin, Observable } from 'rxjs';
@@ -19,7 +19,7 @@ export enum FieldType { text, int, float, date }
 	styleUrls: ['./dataseries-selector.component.less'],
 	providers: [FormGroupDirective]
 })
-export class DataseriesSelectorComponent implements OnInit {
+export class DataseriesSelectorComponent implements OnInit, AfterViewInit {
 
 	@Input('formGroup') formGroup: FormGroup;
 	@Input('selectedProfile') selectedProfile: FormControl = new FormControl();
@@ -103,12 +103,7 @@ export class DataseriesSelectorComponent implements OnInit {
 	hasChild = (_: number, node: EntityNode) => !!node.relations && node.relations.length > 0;
 
 	ngOnInit(): void {
-		// With the change in stepper, the data is not created in the begining so it'll have to be initialized and not wait for "value changes"
-		console.log("TESTING");
-		console.log("formGroup", this.formGroup.value);
-		console.log("this.selectedProfile", this.selectedProfile);
-
-
+		// With the change in stepper, the data is not created in the beginning, so it'll have to be initialized and not wait for "value changes"
 
 		if (this.selectedProfile && this.selectedProfile.value) {
 			this.getEntities({
@@ -134,12 +129,23 @@ export class DataseriesSelectorComponent implements OnInit {
 
 		// this.form = this.rootFormGroup.control.get('dataseries') as FormArray;
 		this.form = this.formGroup.get('dataseries') as FormArray;
-		console.log("THIS FORM:", this.form);
 	}
 
-	getEntities(profile: Profile): void {
+  ngAfterViewInit() {
+    // Check if the form is patched after view init
+    setTimeout(() => {
+      console.log('🏁 DataSeries AfterViewInit - Form values:');
+      this.form.controls.forEach((ctrl, index) => {
+        const entity = ctrl.get('data.yaxisData.entity')?.value;
+        const yField = ctrl.get('data.yaxisData.yaxisEntityField')?.value;
+        console.log(`   Series ${index}: Entity=${entity}, YField=${JSON.stringify(yField)}`);
+      });
+    }, 100);
+  }
+
+
+  getEntities(profile: Profile): void {
 		this.dbService.getAvailableEntities(profile).pipe(first()).subscribe((entityNames: Array<string>) => {
-			console.log("Entity Names:", entityNames);
 			this.entities = entityNames;
 
 			let entityArray = entityNames.map((entity: string) => {
@@ -147,13 +153,10 @@ export class DataseriesSelectorComponent implements OnInit {
 			});
 
 			forkJoin(entityArray).subscribe((cachedEntityNodes: CachedEntityNode[]) => {
-				console.log("Cached Entity Nodes:", cachedEntityNodes);
 
 				for (let i = 0; i < entityNames.length; i++) {
 					this.entityMap.set(entityNames[i], cachedEntityNodes[i]);
 				}
-
-				console.log("Cached Entity Map:", this.entityMap);
 
 				if (this.entityMap.size > 0) {
 					this._entityMap$.next(this.entityMap);

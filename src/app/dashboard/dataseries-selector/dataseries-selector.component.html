@@ -111,7 +111,17 @@
 									<div>Entity Field</div>
 									<div style=" display: inline-block; width: 90%; vertical-align: middle;">
 
-										<select-attribute class="uk-padding" [chosenEntity]="ctrl.get('data.yaxisData.entity')?.value" [control]="ctrl.get('data.yaxisData.yaxisEntityField')"></select-attribute>
+                    <!-- Add this temporary debug info -->
+                    <div style="background: yellow; padding: 10px; margin: 5px;">
+                      DEBUG: Entity = {{ ctrl.get('data.yaxisData.entity')?.value }}
+                      <br>
+                      Y-Axis Field = {{ ctrl.get('data.yaxisData.yaxisEntityField')?.value | json }}
+                    </div>
+
+                    <select-attribute class="uk-padding"
+                                      [chosenEntity]="ctrl.get('data.yaxisData.entity')?.value"
+                                      [control]="ctrl.get('data.yaxisData.yaxisEntityField')">
+                    </select-attribute>
 									</div>
 								</div>
 							</ng-container>
