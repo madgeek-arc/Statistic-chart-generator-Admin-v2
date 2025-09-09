@@ -1,7 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ProfileProviderService } from 'src/app/services/profile-provider/profile-provider.service';
-import { ViewSavingService } from 'src/app/services/view-saving-service/view-saving.service';
 
 @Component({
 	selector: 'app-view-selector',
@@ -14,15 +13,12 @@ export class ViewSelectorComponent {
 	@Input() profileControl?: FormControl;
 	@Output() showViewSelection = new EventEmitter<any>;
 
-	constructor(
-		protected profileProvide: ProfileProviderService,
-		private viewSavingService: ViewSavingService
-	) { }
+	constructor(protected profileProvide: ProfileProviderService) { }
 
 	moveToNextStep(event: any): void {
 		if (event.name) {
 			this.viewForm.setValue(event);
-			this.viewSavingService.setTestingView(event);
+			// this.viewSavingService.setTestingView(event);
 			this.profileControl?.setValue(event.name, {onlySelf: false, emitEvent: true});
       console.log('profileControl -------------------> ', this.profileControl);
       console.log(this.profileControl?.value);

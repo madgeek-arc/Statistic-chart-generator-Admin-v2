@@ -7,13 +7,18 @@ export class FormFactoryService {
   constructor(private fb: FormBuilder) {}
 
   createForm() {
-    return this.fb.group({
+    const group = this.fb.group({
       testingView: this.fb.control(null),
       view: this.createViewGroup(null),
       category: this.createCategoryGroup(),
       dataseries: this.createDataseriesGroup(),
       appearance: this.createAppearanceGroup()
     });
+
+    group.get('appearance.chartAppearance.visualisationOptions.googlechartsAppearanceOptions')?.disable();
+    group.get('appearance.chartAppearance.visualisationOptions.echartsAppearanceOptions')?.disable();
+
+    return group;
   }
 
   createViewGroup(profile: string | null) {

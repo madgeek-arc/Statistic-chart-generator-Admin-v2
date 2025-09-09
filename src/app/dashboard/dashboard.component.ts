@@ -65,7 +65,9 @@ export class DashboardComponent implements OnInit, OnChanges, AfterViewInit {
 
 	ngOnInit(): void {
 
-    this.diagramSettings = this.formFactory.createForm();
+    this.clearData();
+    // this.diagramSettings = this.formFactory.createForm();
+    // this.setFormObservers();
 
     this.dynamicFormHandlingService.jsonLoaded.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: data => {
@@ -75,8 +77,6 @@ export class DashboardComponent implements OnInit, OnChanges, AfterViewInit {
         }
       }
     });
-
-    this.setFormObservers();
 	}
 
   ngAfterViewInit() {
@@ -203,28 +203,8 @@ export class DashboardComponent implements OnInit, OnChanges, AfterViewInit {
     this.diagramSettings.setControl('dataseries', this.formFactory.createDataseriesGroup());
     this.diagramSettings.setControl('appearance', this.formFactory.createAppearanceGroup());
 
-		this.diagramSettings.get('appearance')?.get('chartAppearance')?.get('visualisationOptions')?.get('googlechartsAppearanceOptions')?.disable();
-		this.diagramSettings.get('appearance')?.get('chartAppearance')?.get('visualisationOptions')?.get('echartsAppearanceOptions')?.disable();
-	}
-
-	updateDefaultFormGroupValues(): void {
-		this.appearance.get('tableAppearance')?.get('paginationSize')?.setValue(30);
-		this.appearance.get('chartAppearance')?.get('generalOptions')?.get('visualisationLibrary')?.setValue('HighCharts');
-		this.appearance.get('chartAppearance')?.get('generalOptions')?.get('resultsLimit')?.setValue(30);
-		this.appearance.get('chartAppearance')?.get('visualisationOptions')?.get('highCharts')?.get('chartArea')?.get('borderColor')?.setValue('#335cad');
-		this.appearance.get('chartAppearance')?.get('visualisationOptions')?.get('highCharts')?.get('title')?.get('titleColor')?.setValue('#333333');
-		this.appearance.get('chartAppearance')?.get('visualisationOptions')?.get('highCharts')?.get('title')?.get('horizontalAlignment')?.setValue('center');
-		this.appearance.get('chartAppearance')?.get('visualisationOptions')?.get('highCharts')?.get('title')?.get('margin')?.setValue(15);
-		this.appearance.get('chartAppearance')?.get('visualisationOptions')?.get('highCharts')?.get('title')?.get('fontSize')?.setValue(18);
-		this.appearance.get('chartAppearance')?.get('visualisationOptions')?.get('highCharts')?.get('subtitle')?.get('subtitleColor')?.setValue('#666666');
-		this.appearance.get('chartAppearance')?.get('visualisationOptions')?.get('highCharts')?.get('subtitle')?.get('horizontalAlignment')?.setValue('center');
-		this.appearance.get('chartAppearance')?.get('visualisationOptions')?.get('highCharts')?.get('xAxis')?.get('fontSize')?.setValue(11);
-		this.appearance.get('chartAppearance')?.get('visualisationOptions')?.get('highCharts')?.get('xAxis')?.get('xAxisColor')?.setValue('#666666');
-		this.appearance.get('chartAppearance')?.get('visualisationOptions')?.get('highCharts')?.get('yAxis')?.get('fontSize')?.setValue(11);
-		this.appearance.get('chartAppearance')?.get('visualisationOptions')?.get('highCharts')?.get('yAxis')?.get('yAxisColor')?.setValue('#666666');
-		this.appearance.get('chartAppearance')?.get('visualisationOptions')?.get('highCharts')?.get('miscOptions')?.get('enableExporting')?.setValue(true);
-		this.appearance.get('chartAppearance')?.get('visualisationOptions')?.get('highCharts')?.get('miscOptions')?.get('enableExporting')?.setValue('disabled');
-
+		// this.diagramSettings.get('appearance')?.get('chartAppearance')?.get('visualisationOptions')?.get('googlechartsAppearanceOptions')?.disable();
+		// this.diagramSettings.get('appearance')?.get('chartAppearance')?.get('visualisationOptions')?.get('echartsAppearanceOptions')?.disable();
 	}
 
   updateFormFile() {
@@ -232,8 +212,9 @@ export class DashboardComponent implements OnInit, OnChanges, AfterViewInit {
       console.log('📁 UpdateFormFile - START');
       console.log('📁 Load form object:', this.dynamicFormHandlingService.loadFormObject);
 
-      this.diagramSettings = this.formFactory.createForm();
-      this.setFormObservers();
+      // this.diagramSettings = this.formFactory.createForm();
+      // this.setFormObservers();
+      this.clearData();
 
       console.log('📁 Form created, about to adjust and patch');
       this.dynamicFormHandlingService.adjustAndPatchForm(this.diagramSettings);
@@ -241,9 +222,6 @@ export class DashboardComponent implements OnInit, OnChanges, AfterViewInit {
       setTimeout(() => {
         console.log('📁 About to patchValue with:', this.dynamicFormHandlingService.loadFormObject);
         this.diagramSettings.patchValue(this.dynamicFormHandlingService.loadFormObject, { emitEvent: false });
-
-        // Force update select-attribute components after patching
-        this.forceUpdateSelectAttributes();
 
         this.dynamicFormHandlingService.formSchemaObject = this.diagramSettings.value;
         this.dynamicFormHandlingService.updateFromFile = false;
@@ -258,79 +236,6 @@ export class DashboardComponent implements OnInit, OnChanges, AfterViewInit {
       console.error('❌ Error processing loaded JSON form data:', error);
     }
   }
-
-  private forceUpdateSelectAttributes() {
-    console.log('🔧 Forcing select-attribute updates via ViewChildren');
-
-    setTimeout(() => {
-      const dataseries = this.diagramSettings.get('dataseries') as FormArray;
-
-      // Use ViewChildren to directly access select-attribute components
-      this.selectAttributeComponents.forEach((component, index) => {
-        console.log(`🔧 Updating select-attribute component ${index}`);
-
-        // Find the corresponding form control
-        const seriesIndex = Math.floor(index / 3); // Assuming 3 select-attributes per series (Y, X, Filter)
-        const ctrl = dataseries.at(seriesIndex);
-
-        if (ctrl) {
-          const entity = ctrl.get('data.yaxisData.entity')?.value;
-          if (entity && component.control?.value) {
-            // Force the component to re-render with its current value
-            component.writeValue(component.control.value);
-          }
-        }
-      });
-    }, 100);
-  }
-
-
-  // private forceUpdateSelectAttributes() {
-  //   console.log('🔧 Forcing select-attribute updates');
-  //
-  //   setTimeout(() => {
-  //     const dataseries = this.diagramSettings.get('dataseries') as FormArray;
-  //     dataseries.controls.forEach((ctrl, index) => {
-  //       const entity = ctrl.get('data.yaxisData.entity')?.value;
-  //
-  //       // Force update Y-Axis field
-  //       const yAxisField = ctrl.get('data.yaxisData.yaxisEntityField');
-  //       if (entity && yAxisField) {
-  //         console.log(`🔧 Forcing Y-Axis field update for series ${index}:`, yAxisField.value);
-  //         // Trigger writeValue by setting the value again, even if it's the same
-  //         const currentValue = yAxisField.value;
-  //         yAxisField.setValue(null); // Clear first
-  //         setTimeout(() => yAxisField.setValue(currentValue), 10); // Then set the actual value
-  //       }
-  //
-  //       // Force update X-Axis fields
-  //       const xAxisData = ctrl.get('data.xaxisData') as FormArray;
-  //       xAxisData.controls.forEach((xCtrl, xIndex) => {
-  //         const xAxisField = xCtrl.get('xaxisEntityField');
-  //         if (entity && xAxisField) {
-  //           console.log(`🔧 Forcing X-Axis field update for series ${index}.${xIndex}:`, xAxisField.value);
-  //           const currentValue = xAxisField.value;
-  //           xAxisField.setValue(null);
-  //           setTimeout(() => xAxisField.setValue(currentValue), 10);
-  //         }
-  //       });
-  //
-  //       // Force update filter fields
-  //       const filters = ctrl.get('data.filters') as FormArray;
-  //       filters.controls.forEach((filterCtrl) => {
-  //         const groupFilters = filterCtrl.get('groupFilters') as FormArray;
-  //         groupFilters.controls.forEach((groupCtrl) => {
-  //           const fieldCtrl = groupCtrl.get('field');
-  //           if (entity && fieldCtrl) {
-  //             const currentValue = fieldCtrl.value;
-  //             fieldCtrl.setValue(null);
-  //             setTimeout(() => fieldCtrl.setValue(currentValue), 10);
-  //           }
-  //         });
-  //       });
-  //     });
-  //   }, 100);
-  // }
 
 	submitData() {
 		console.log("SUBMIT this form:", this.diagramSettings.value);
@@ -350,7 +255,6 @@ export class DashboardComponent implements OnInit, OnChanges, AfterViewInit {
 	}
 
 	clearData() {
-    console.log("CLEAR ALL DATA!");
     this.diagramSettings = this.formFactory.createForm();
     this.setFormObservers();
 
