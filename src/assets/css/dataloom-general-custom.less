@@ -38,3 +38,42 @@
 .uk-text-wrap {
   white-space: wrap;
 }
+
+.actionButtons {
+  position: fixed;
+  bottom: 0vh;
+  background-color: @global-background;
+  //z-index: @global-z-index - 20;
+}
+
+.mat-mdc-button.mat-mdc-button-base, .mat-mdc-raised-button.mat-mdc-button-base, .mat-mdc-unelevated-button.mat-mdc-button-base, .mat-mdc-outlined-button.mat-mdc-button-base {
+  height: 45px !important;
+  border: 1px solid #DDDDDD;
+  padding-left: 15px;
+}
+
+.mdc-button {
+  font-family: @global-font-family !important;
+  font-size: @global-small-font-size !important;
+}
+
+.mat-mdc-radio-button .mdc-form-field {
+  font-family: @global-font-family !important;
+}
+
+.scrollable-tabs {
+  flex-wrap: nowrap;
+  overflow-x: auto;
+}
+
+.width-9-10 {
+  width: 90%;
+}
+
+.width-1-10 {
+  width: 10%;
+}
+
+.borderBottomClass {
+  border-bottom: 1px solid #EAEAEA;
+}

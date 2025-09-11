@@ -44,6 +44,8 @@ export class DashboardComponent implements OnInit, OnChanges, AfterViewInit {
 	hasDataAndDiagramType: boolean = false;
 	frameUrl: SafeResourceUrl;
 
+  frameHeight: number;
+  hasChanges: boolean = false;
 	// jsonLoad: boolean = false;
 
 	dialogData: ChartTableModalContext = {
@@ -65,6 +67,7 @@ export class DashboardComponent implements OnInit, OnChanges, AfterViewInit {
 
 	ngOnInit(): void {
 
+    this.frameHeight = (3 * window.outerHeight) / 5;
     this.clearData();
     // this.diagramSettings = this.formFactory.createForm();
     // this.setFormObservers();
@@ -106,6 +109,7 @@ export class DashboardComponent implements OnInit, OnChanges, AfterViewInit {
 
     this.diagramSettings.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(value => {
       this.dynamicFormHandlingService.formSchemaObject = value;
+      this.hasChanges = true;
     });
   }
 
@@ -239,6 +243,8 @@ export class DashboardComponent implements OnInit, OnChanges, AfterViewInit {
 
 	submitData() {
 		console.log("SUBMIT this form:", this.diagramSettings.value);
+
+    this.hasChanges = false;
 
 		this.dynamicFormHandlingService.submitForm();
 

@@ -36,6 +36,8 @@
 @inverse-base-link-color: @global-inverse-color;
 @inverse-base-link-hover-color: @global-inverse-color;
 
+@base-link-hover-text-decoration: none;
+
 .hook-base-misc() {
 
   @media (min-width: @breakpoint-medium) {
@@ -57,3 +59,18 @@
     }
   }
 }
+
+//.hook-base-link() {
+//  a,
+//  .uk-link {
+//    text-decoration: none;
+//  }
+//}
+//
+//.hook-base-link-hover() {
+//  a:hover,
+//  .uk-link:hover,
+//  .uk-link-toggle:hover .uk-link {
+//    text-decoration: none !important;
+//  }
+//}

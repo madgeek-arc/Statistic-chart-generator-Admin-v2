@@ -31,6 +31,7 @@ import { SupportedChartTypesService } from './dashboard/customise-appearance/vis
 import { ChartExportingService } from './services/chart-exporting-service/chart-exporting.service';
 import { FilterOperatorsPipe } from './dashboard/pipes/filter-operators.pipe';
 import { FrameModule } from './data-frames/frame.module';
+import {InputComponent} from "./shared/input.component";
 
 @NgModule({
 	declarations: [
@@ -55,17 +56,18 @@ import { FrameModule } from './data-frames/frame.module';
 		GoogleChartsComponent,
 		EChartsComponent,
 	],
-	imports: [
-		BrowserModule,
-		ReactiveFormsModule,
-		FormsModule,
-		BrowserAnimationsModule,
-		AppRoutingModule,
-		HttpClientModule,
-		MaterialModule,
-		CommonModule,
-		FrameModule
-	],
+  imports: [
+    BrowserModule,
+    ReactiveFormsModule,
+    FormsModule,
+    BrowserAnimationsModule,
+    AppRoutingModule,
+    HttpClientModule,
+    MaterialModule,
+    CommonModule,
+    FrameModule,
+    InputComponent
+  ],
 	providers: [
 		ChartLoadingService,
 		DynamicTreeDatabase,

@@ -3,106 +3,91 @@
 	<div>
 		<ul data-uk-accordion="multiple: true">
 			<li class="uk-open">
-				<a class="uk-accordion-title" style="font-weight: bold;" href>Title</a>
-				<mat-divider></mat-divider>
+				<a class="uk-accordion-title" href>Title</a>
 
 				<div class="uk-accordion-content" formGroupName="title">
 
-					<div>
-						<div style="display: inline-block; margin-right: 40px;">
-							<mat-label>Title Text</mat-label>
-							<br>
-							<mat-form-field>
-								<input matInput placeholder="Title" formControlName="titleText">
-							</mat-form-field>
-						</div>
-						<div style="display: inline-block;">
-							<mat-label>Title Color</mat-label>
-							<br>
-							<mat-form-field>
-								<input matInput type="color" formControlName="color">
-							</mat-form-field>
-						</div>
-					</div>
-					<div>
-						<div style="display: inline-block; margin-right: 40px;">
-							<mat-label>Horizontal Alignment</mat-label>
-							<br>
-							<mat-form-field>
-								<mat-select formControlName="align">
-									<mat-option disabled="true">Select One</mat-option>
-									<mat-option [value]="horizontalAlignment.value" *ngFor="let horizontalAlignment of horizontalAlignmentList">
-										{{horizontalAlignment.name}}
-									</mat-option>
-								</mat-select>
-							</mat-form-field>
-						</div>
-						<div style="display: inline-block; margin-right: 40px;">
-							<mat-label>Margin</mat-label>
-							<br>
-							<mat-form-field>
-								<input matInput type="number" formControlName="margin">
-							</mat-form-field>
-						</div>
-						<div style="display: inline-block;">
-							<mat-label>Font Size</mat-label>
-							<br>
-							<mat-form-field>
-								<input matInput type="number" formControlName="fontSize">
-							</mat-form-field>
-						</div>
-					</div>
+          <div class="uk-child-width-1-2" uk-grid>
+            <div class="">
+              <mat-form-field appearance="outline" class="uk-width-1-1 no-hint">
+                <mat-label>Title Text</mat-label>
+                <input matInput formControlName="titleText">
+              </mat-form-field>
+            </div>
+            <div class="">
+              <mat-form-field appearance="outline" class="uk-width-1-1 no-hint">
+                <mat-label>Title Color</mat-label>
+                <input matInput type="color" formControlName="color">
+              </mat-form-field>
+            </div>
+            <div class="">
+              <mat-form-field appearance="outline" class="uk-width-1-1 no-hint">
+                <mat-label>Horizontal Alignment</mat-label>
+                <mat-select formControlName="align">
+                  <mat-option disabled="true">Select One</mat-option>
+                  <mat-option [value]="horizontalAlignment.value" *ngFor="let horizontalAlignment of horizontalAlignmentList">
+                    {{horizontalAlignment.name}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div>
+              <mat-form-field appearance="outline" class="uk-width-1-1 no-hint">
+                <mat-label>Margin</mat-label>
+                <input matInput type="number" formControlName="margin">
+              </mat-form-field>
+            </div>
+            <div>
+              <mat-form-field appearance="outline" class="uk-width-1-1 no-hint">
+                <mat-label>Font Size</mat-label>
+                <input matInput type="number" formControlName="fontSize">
+              </mat-form-field>
+            </div>
+          </div>
 				</div>
 			</li>
 
 			<li>
-				<a class="uk-accordion-title" style="font-weight: bold;" href>Subtitle</a>
-				<mat-divider></mat-divider>
+				<a class="uk-accordion-title" href>Subtitle</a>
 
 				<div class="uk-accordion-content" formGroupName="subtitle">
-					<div>
-						<div style="display: inline-block; margin-right: 40px;">
-							<mat-label>Subtitle Text</mat-label>
-							<br>
-							<mat-form-field>
-								<input matInput placeholder="Subtitle" formControlName="text">
-							</mat-form-field>
-						</div>
-						<div style="display: inline-block;">
-							<mat-label>Subtitle Color</mat-label>
-							<br>
-							<mat-form-field>
-								<input matInput type="color" formControlName="color">
-							</mat-form-field>
-						</div>
-					</div>
-					<div>
-						<div style="display: inline-block; margin-right: 40px;">
-							<mat-label>Horizontal Alignment</mat-label>
-							<br>
-							<mat-form-field>
-								<mat-select formControlName="horizontalAlignment">
-									<mat-option disabled="true">Select One</mat-option>
-									<mat-option [value]="horizontalAlignment.value" *ngFor="let horizontalAlignment of horizontalAlignmentList">
-										{{horizontalAlignment.name}}
-									</mat-option>
-								</mat-select>
-							</mat-form-field>
-						</div>
-						<div style="display: inline-block;">
-							<mat-label>Font Size</mat-label>
-							<br>
-							<mat-form-field>
-								<input matInput type="number" formControlName="fontSize">
-							</mat-form-field>
-						</div>
 
-					</div>
+          <div class="uk-child-width-1-2" uk-grid>
+            <div class="">
+              <mat-form-field appearance="outline" class="uk-width-1-1 no-hint">
+                <mat-label>Subtitle Text</mat-label>
+                <input matInput placeholder="Subtitle" formControlName="text">
+              </mat-form-field>
+            </div>
+            <div class="">
+              <mat-form-field appearance="outline" class="uk-width-1-1 no-hint">
+                <mat-label>Subtitle Color</mat-label>
+                <input matInput type="color" formControlName="color">
+              </mat-form-field>
+            </div>
+            <div class="">
+              <mat-form-field appearance="outline" class="uk-width-1-1 no-hint">
+                <mat-label>Horizontal Alignment</mat-label>
+                <mat-select formControlName="horizontalAlignment">
+                  <mat-option disabled="true">Select One</mat-option>
+                  <mat-option [value]="horizontalAlignment.value" *ngFor="let horizontalAlignment of horizontalAlignmentList">
+                    {{horizontalAlignment.name}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div class="">
+              <mat-form-field appearance="outline" class="uk-width-1-1 no-hint">
+                <mat-label>Font Size</mat-label>
+                <input matInput type="number" formControlName="fontSize">
+              </mat-form-field>
+            </div>
+          </div>
+
 				</div>
 			</li>
 			<li>
-				<a class="uk-accordion-title" style="font-weight: bold;" href>X Axis</a>
-				<mat-divider></mat-divider>
+				<a class="uk-accordion-title"href>X Axis</a>
 
 				<div class="uk-accordion-content" formGroupName="xAxis">
 					<div>
@@ -134,8 +119,7 @@
 			</li>
 
 			<li>
-				<a class="uk-accordion-title" style="font-weight: bold;" href>Y Axis</a>
-				<mat-divider></mat-divider>
+				<a class="uk-accordion-title" href>Y Axis</a>
 
 				<div class="uk-accordion-content" formGroupName="yAxis">
 					<div>
@@ -167,8 +151,7 @@
 			</li>
 
 			<li>
-				<a class="uk-accordion-title" style="font-weight: bold;" href>Misc Options</a>
-				<mat-divider></mat-divider>
+				<a class="uk-accordion-title" href>Misc Options</a>
 
 				<div class="uk-accordion-content" formGroupName="miscOptions">
 					<div>
@@ -199,8 +182,7 @@
 			</li>
 
 			<li>
-				<a class="uk-accordion-title" style="font-weight: bold;" href>Chart Area</a>
-				<mat-divider></mat-divider>
+				<a class="uk-accordion-title" href>Chart Area</a>
 
 				<div class="uk-accordion-content" formGroupName="chartArea">
 					<h5>Chart Area</h5>
@@ -245,8 +227,7 @@
 
 
 			<li>
-				<a class="uk-accordion-title" style="font-weight: bold;" href>Plot Area</a>
-				<mat-divider></mat-divider>
+				<a class="uk-accordion-title" href>Plot Area</a>
 
 				<div class="uk-accordion-content" formGroupName="plotArea">
 
@@ -290,8 +271,7 @@
 
 
 			<li>
-				<a class="uk-accordion-title" style="font-weight: bold;" href>Data Labels</a>
-				<mat-divider></mat-divider>
+				<a class="uk-accordion-title" href>Data Labels</a>
 
 				<div class="uk-accordion-content" formGroupName="dataLabels">
 					<div>
@@ -304,8 +284,7 @@
 
 
 			<li>
-				<a class="uk-accordion-title" style="font-weight: bold;" href>Credits</a>
-				<mat-divider></mat-divider>
+				<a class="uk-accordion-title" href>Credits</a>
 
 				<div class="uk-accordion-content" formGroupName="credits">
 					<div>
@@ -318,8 +297,7 @@
 
 
 			<li>
-				<a class="uk-accordion-title" style="font-weight: bold;" href>Legend</a>
-				<mat-divider></mat-divider>
+				<a class="uk-accordion-title" href>Legend</a>
 
 				<div class="uk-accordion-content" formGroupName="legend">
 					<div>
@@ -371,8 +349,7 @@
 
 
 			<li>
-				<a class="uk-accordion-title" style="font-weight: bold;" href>Zoom Options</a>
-				<mat-divider></mat-divider>
+				<a class="uk-accordion-title" href>Zoom Options</a>
 
 				<div class="uk-accordion-content" formGroupName="zoomOptions">
 					<div>
@@ -391,8 +368,7 @@
 
 
 			<li>
-				<a class="uk-accordion-title" style="font-weight: bold;" href>Data Series Color Palette</a>
-				<mat-divider></mat-divider>
+				<a class="uk-accordion-title" href>Data Series Color Palette</a>
 
 				<div class="uk-accordion-content" formArrayName="dataSeriesColorPalette">
 

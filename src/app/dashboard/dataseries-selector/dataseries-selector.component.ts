@@ -10,6 +10,7 @@ import {
 	EntityNode
 } from '../helper-components/select-attribute/dynamic-entity-tree/entity-tree-nodes.types';
 import { DbSchemaService } from "../../services/db-schema-service/db-schema.service";
+import UIkit from "uikit";
 
 export enum FieldType { text, int, float, date }
 
@@ -49,14 +50,22 @@ export class DataseriesSelectorComponent implements OnInit, AfterViewInit {
 	protected selectedEntityMap: Array<CachedEntityNode> = [];
 
 	// check "getSupportedAggregateFunctionFilterY" in Admin v1 and see if we should change how we get these.
-	protected aggregates = [
-		{ name: 'Total', code: 'total' },
-		{ name: 'Count', code: 'count' },
-		{ name: 'Sum', code: 'sum' },
-		{ name: 'Minimum', code: 'min' },
-		{ name: 'Maximum', code: 'max' },
-		{ name: 'Average', code: 'avg' }
-	];
+	// protected aggregates = [
+	// 	{ name: 'Total', code: 'total' },
+	// 	{ name: 'Count', code: 'count' },
+	// 	{ name: 'Sum', code: 'sum' },
+	// 	{ name: 'Minimum', code: 'min' },
+	// 	{ name: 'Maximum', code: 'max' },
+	// 	{ name: 'Average', code: 'avg' }
+	// ];
+  protected aggregates = [
+    { label: 'Total', value: 'total' },
+    { label: 'Count', value: 'count' },
+    { label: 'Sum', value: 'sum' },
+    { label: 'Minimum', value: 'min' },
+    { label: 'Maximum', value: 'max' },
+    { label: 'Average', value: 'avg' }
+  ];
 
 	protected stackedDataList = [
 		{ name: 'Disabled', value: 'null' },
@@ -143,6 +152,10 @@ export class DataseriesSelectorComponent implements OnInit, AfterViewInit {
     }, 100);
   }
 
+  hide(element: any) {
+    UIkit.dropdown(element).hide();
+  }
+
 
   getEntities(profile: Profile): void {
 		this.dbService.getAvailableEntities(profile).pipe(first()).subscribe((entityNames: Array<string>) => {
@@ -220,22 +233,12 @@ export class DataseriesSelectorComponent implements OnInit, AfterViewInit {
 	addFilter(form: any) {
 		form.controls.data.controls.filters.push(
 			new FormGroup({
-				groupFilters: new FormArray([
-					new FormGroup({
-						field: new FormGroup({
-							name: new FormControl<string | null>(null),
-							type: new FormControl<string | null>(null)
-						}),
-						type: new FormControl<string | null>(null),
-						values: new FormArray([
-							new FormControl(null)
-						]) // TODO: Add shortcut through addFilterRule
-					})
-				]),
+				groupFilters: new FormArray([]),
 				op: new FormControl<string | null>(null)
 			})
 		);
-	}
+    this.addFilterRule(form.controls.data.controls.filters.controls[form.controls.data.controls.filters.controls.length - 1]);
+  }
 
 	removeFilter(form: any, index: number) {
 		form.controls.data.controls.filters.removeAt(index);
@@ -248,12 +251,23 @@ export class DataseriesSelectorComponent implements OnInit, AfterViewInit {
 					name: new FormControl<string | null>(null),
 					type: new FormControl<string | null>(null)
 				}),
-				type: new FormControl<string | null>(null),
+				type: new FormControl<string | null>({value: null, disabled: true}),
 				values: new FormArray([
 					new FormControl(null)
 				]) // TODO: At model the control is set as array!!! Check for compatibility issues
 			})
-		)
+		);
+
+    let index = form.controls.groupFilters.controls.length - 1;
+    form.controls.groupFilters.controls[index].get('field.type').valueChanges.subscribe({
+      next: value => {
+        if (value !== null && value !== undefined) {
+          form.controls.groupFilters.controls[index].get('type').enable();
+
+          // Todo: maybe create here options list
+        }
+      }
+    });
 	}
 
 	removeFilterRule(form: any, index: number) {

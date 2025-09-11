@@ -4,7 +4,8 @@
 @button-font-weight: 600;
 @button-border-width: @global-border-width;
 @button-text-transform: uppercase;
-@button-border-radius: 500px;
+//@button-border-radius: 500px;
+@button-border-radius: 6px;
 @button-shadow: @global-medium-box-shadow;
 @button-hover-shadow: @global-small-box-shadow;
 @button-active-shadow: @button-hover-shadow;
@@ -336,15 +337,15 @@
 }
 
 .hook-inverse-misc() {
-  
+
   /* Default */
   .uk-button-default {
     box-shadow: @inverse-button-default-box-shadow;
-    
+
     &:hover {
       box-shadow: @inverse-button-default-hover-box-shadow;
     }
-    
+
     &:active {
       box-shadow: @inverse-button-default-active-box-shadow;
     }

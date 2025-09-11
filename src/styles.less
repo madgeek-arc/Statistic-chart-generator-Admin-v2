@@ -16,3 +16,33 @@
 //@import "../assets/css/eosc-observatory";
 //@import "assets/theme/dataloom-custom";
 
+::ng-deep .mat-form-field-wrapper {
+  padding-bottom: 0 !important;
+  height: 40px !important;
+}
+
+::ng-deep .mat-form-field-flex {
+  height: 40px !important;
+  align-items: center;
+}
+
+.mat-mdc-form-field-infix {
+  min-height: 40px !important;
+}
+
+.mat-mdc-text-field-wrapper.mdc-text-field--outlined .mat-mdc-form-field-infix {
+  padding-top: 6px !important;
+  padding-bottom: 6px !important;
+}
+
+.mat-mdc-text-field-wrapper .mat-mdc-form-field-flex .mat-mdc-floating-label {
+  top: 18px !important;
+}
+
+.no-hint .mat-mdc-form-field-subscript-wrapper {
+  display: none;      /* removes hint/error container */
+  height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
