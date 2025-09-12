@@ -3,7 +3,7 @@
   <div class="uk-container uk-container-expand uk-padding-remove uk-margin-medium-left">
 
     <div class="uk-padding-small uk-padding-remove-vertical uk-padding-remove-right">
-      <ul class="scrollable-tabs" data-uk-tab="{connect: #dataseriesList}" uk-tab>
+      <ul id="dataseriesList" class="scrollable-tabs" data-uk-tab="{connect: #switcher-content}">
         <li *ngFor="let ctrl of form.controls; let i = index" [formGroup]="ctrl" style="display: contents;">
           <a class="uk-link-reset">
             <div class="uk-flex" formGroupName="chartProperties">
@@ -112,8 +112,8 @@
           </a>
         </li>
       </ul>
-      <div id="dataseriesList" class="uk-switcher">
-        <div *ngFor="let ctrl of form.controls; let i = index" [formGroup]="ctrl">
+      <ul id="switcher-content" class="uk-switcher">
+        <li *ngFor="let ctrl of form.controls; let i = index" [formGroup]="ctrl">
           <!-- <h2>{{ctrl.get('chartProperties')?.get('dataseriesName')?.value}}</h2> -->
           <!--        <ng-container *ngIf="form.length > 1">-->
           <!--          <button (click)="removeDataseries(i)">Remove Dataseries</button>-->
@@ -199,12 +199,6 @@
 
                       <ng-container *ngFor="let filter of getFilters(ctrl); let j = index" [formGroup]="filter">
                         <div class="uk-margin-bottom uk-flex uk-flex-middle">
-<!--                          <div>-->
-<!--                            <mat-radio-group color="primary" labelPosition="after" formControlName="op">-->
-<!--                              <mat-radio-button value="AND" [checked]="true">Match all of the values</mat-radio-button>-->
-<!--                              <mat-radio-button value="OR">Match any of the values</mat-radio-button>-->
-<!--                            </mat-radio-group>-->
-<!--                          </div>-->
 
                           <div class="groupFiltersClass">
 
@@ -229,30 +223,16 @@
                                   </div>
                                   <div class="uk-child-width-1-2" uk-grid>
 
-<!--                                    <ng-container *ngIf="group.get('field.name').value === null; else hasFieldEntityValue">-->
-<!--                                      <div input placeholder="Filter Operator" type="select"-->
-<!--                                           [formInput]="ctrl.get('data.yaxisData.yaxisAggregate')" [options]="aggregates">-->
-<!--                                      </div>-->
-<!--                                    </ng-container>-->
-<!--                                    <ng-template #hasFieldEntityValue>-->
-                                      <div input placeholder="Filter Operator" type="select"
-                                           [formInput]="group.get('type')" [options]="aggregates">
-                                      </div>
-<!--                                    </ng-template>-->
+                                    <div input placeholder="Filter Operator" type="select"
+                                         [formInput]="group.get('type')" [options]="filterOperators | filterOperators: group.get('field.type').value">
+                                    </div>
 
-                                    <mat-form-field appearance="outline" class="no-hint">
-                                      <mat-label>Filter Operator</mat-label>
-                                      <mat-select formControlName="type">
-                                        <mat-option *ngFor="let filterOperator of filterOperators | filterOperators: group.get('field.type').value" [value]="filterOperator.filterOperator">{{ filterOperator.filterName }}</mat-option>
-                                      </mat-select>
-                                    </mat-form-field>
-
-                                    <ng-container formArrayName="values">
-                                      <mat-form-field appearance="outline" class="no-hint">
-                                        <mat-label>Value</mat-label>
-                                        <input matInput formControlName="0">
-                                      </mat-form-field>
-                                    </ng-container>
+                                    <div *ngIf="(group.get('type').value === '=') || (group.get('type').value === '!='); else plainStringInput">
+                                      <autocomplete-input-field [inputFormGroup]="group.get('values.0')" [filterfield]="group.get('field.name').value"></autocomplete-input-field>
+                                    </div>
+                                    <ng-template #plainStringInput>
+                                      <div input placeholder="Value" type="text"  [formInput]="group.get('values.0')"></div>
+                                    </ng-template>
                                   </div>
                                 </div>
                                 <div class="width-1-10">
@@ -287,7 +267,6 @@
 
             </div>
           </div>
-
 
           <div formGroupName="chartProperties">
             <h6 class="borderBottomClass uk-margin-medium-top uk-text-secondary">Data series Options</h6>
@@ -336,8 +315,8 @@
               </div>
             </div>
           </div>
-        </div>
-      </div>
+        </li>
+      </ul>
     </div>
 
 

@@ -1,14 +1,4 @@
-import {
-  AfterViewInit,
-  Component,
-  DestroyRef,
-  inject,
-  OnChanges,
-  OnInit, QueryList,
-  SimpleChanges,
-  ViewChildren,
-  ViewEncapsulation
-} from '@angular/core';
+import { Component, DestroyRef, inject, OnChanges, OnInit, SimpleChanges, ViewEncapsulation } from '@angular/core';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { ChartTableModalContext } from "../modals/chart-table-modal/chart-table-modal.component";
 import { DynamicFormHandlingService } from "../services/dynamic-form-handling-service/dynamic-form-handling.service";
@@ -18,17 +8,16 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { ChartExportingService } from '../services/chart-exporting-service/chart-exporting.service';
 import { FormFactoryService } from "../services/form-factory-service/form-factory-service";
 import UIkit from 'uikit';
-import { SelectAttributeComponent } from "./helper-components/select-attribute/select-attribute.component";
 
 @Component({
 	selector: 'app-dashboard',
 	templateUrl: './dashboard.component.html',
-	encapsulation: ViewEncapsulation.None
+	// encapsulation: ViewEncapsulation.None
 })
-export class DashboardComponent implements OnInit, OnChanges, AfterViewInit {
+
+export class DashboardComponent implements OnInit, OnChanges {
 	private destroyRef = inject(DestroyRef);
 
-  @ViewChildren(SelectAttributeComponent) selectAttributeComponents!: QueryList<SelectAttributeComponent>;
 	// @ViewChild('stepper') stepper !: MatStepper;
 
 	diagramSettings: FormGroup;
@@ -81,14 +70,6 @@ export class DashboardComponent implements OnInit, OnChanges, AfterViewInit {
       }
     });
 	}
-
-  ngAfterViewInit() {
-    // Subscribe to changes in select-attribute components
-    this.selectAttributeComponents.changes.subscribe(() => {
-      console.log('🔧 Select attribute components changed');
-    });
-  }
-
 
   setFormObservers() {
 

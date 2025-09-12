@@ -32,6 +32,9 @@ import { ChartExportingService } from './services/chart-exporting-service/chart-
 import { FilterOperatorsPipe } from './dashboard/pipes/filter-operators.pipe';
 import { FrameModule } from './data-frames/frame.module';
 import {InputComponent} from "./shared/input.component";
+import {
+  AutocompleteInputFieldComponent
+} from "./dashboard/helper-components/autocomplete-input-field/autocomplete-input-field.component";
 
 @NgModule({
 	declarations: [
@@ -66,7 +69,8 @@ import {InputComponent} from "./shared/input.component";
     MaterialModule,
     CommonModule,
     FrameModule,
-    InputComponent
+    InputComponent,
+    AutocompleteInputFieldComponent
   ],
 	providers: [
 		ChartLoadingService,

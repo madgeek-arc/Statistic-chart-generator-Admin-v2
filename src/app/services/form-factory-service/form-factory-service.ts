@@ -7,18 +7,13 @@ export class FormFactoryService {
   constructor(private fb: FormBuilder) {}
 
   createForm() {
-    const group = this.fb.group({
+    return this.fb.group({
       testingView: this.fb.control(null),
       view: this.createViewGroup(null),
       category: this.createCategoryGroup(),
       dataseries: this.createDataseriesGroup(),
       appearance: this.createAppearanceGroup()
     });
-
-    group.get('appearance.chartAppearance.visualisationOptions.googlechartsAppearanceOptions')?.disable();
-    group.get('appearance.chartAppearance.visualisationOptions.echartsAppearanceOptions')?.disable();
-
-    return group;
   }
 
   createViewGroup(profile: string | null) {
@@ -68,14 +63,14 @@ export class FormFactoryService {
           chartType: this.fb.control<string | null>(null),
           dataseriesColor: this.fb.control<string | null>(null),
           dataseriesName: this.fb.control<string | null>({ value: 'Data', disabled: true }),
-          stacking: this.fb.control<null | 'normal' | 'percent' | 'stream' | 'overlap'>(null, Validators.required),
+          stacking: this.fb.control<'null' | 'normal' | 'percent' | 'stream' | 'overlap'>('null', Validators.required),
         }),
       })
     ]);
   }
 
   createAppearanceGroup() {
-    return this.fb.group({
+    const group = this.fb.group({
       chartAppearance: this.fb.group({
         generalOptions: this.fb.group({
           visualisationLibrary: this.fb.control('HighCharts', Validators.required),
@@ -191,6 +186,11 @@ export class FormFactoryService {
         paginationSize: this.fb.control(30, [Validators.required, Validators.min(1)])
       }),
     });
+
+    group.get('chartAppearance.visualisationOptions.googlechartsAppearanceOptions')?.disable();
+    group.get('chartAppearance.visualisationOptions.echartsAppearanceOptions')?.disable();
+
+    return group;
   }
 
 }

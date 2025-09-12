@@ -3,7 +3,7 @@ import { BehaviorSubject, of } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { catchError, distinctUntilChanged, first } from 'rxjs/operators';
 import { UrlProviderService } from '../url-provider-service/url-provider.service';
-import { ErrorHandlerService } from 'src/app/dashboard/customise-appearance/visualisation-options/error-handler-service/error-handler.service';
+import { ErrorHandlerService } from "../error-handler-service/error-handler.service";
 import {
   HighChartsChart
 } from "../../dashboard/customise-appearance/visualisation-options/supported-libraries-service/chart-description-HighCharts.model";

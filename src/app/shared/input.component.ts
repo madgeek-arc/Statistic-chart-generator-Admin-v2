@@ -102,9 +102,9 @@ declare var UIkit;
                      [class.uk-text-truncate]="!focused">
             </ng-template>
             <ng-template [ngIf]="type === 'textarea'">
-                        <textarea #textArea class="input"
-                                  [attr.placeholder]="placeholderInfo?.static?placeholderInfo.label:hint"
-                                  [rows]="rows" [formControl]="formAsControl"></textarea>
+              <textarea #textArea class="input"
+                        [attr.placeholder]="placeholderInfo?.static?placeholderInfo.label:hint"
+                        [rows]="rows" [formControl]="formAsControl"></textarea>
             </ng-template>
             <ng-template [ngIf]="type === 'select'">
               <ng-container *ngIf="placeholderInfo?.static">

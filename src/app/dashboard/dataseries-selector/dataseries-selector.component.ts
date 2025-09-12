@@ -6,13 +6,19 @@ import { BehaviorSubject, first, forkJoin, Observable } from 'rxjs';
 import { Profile } from 'src/app/services/profile-provider/profile-provider.service';
 import { UrlProviderService } from 'src/app/services/url-provider/url-provider.service';
 import {
-	CachedEntityNode,
-	EntityNode
+  CachedEntityNode,
+  EntityNode
 } from '../helper-components/select-attribute/dynamic-entity-tree/entity-tree-nodes.types';
 import { DbSchemaService } from "../../services/db-schema-service/db-schema.service";
 import UIkit from "uikit";
 
-export enum FieldType { text, int, float, date }
+export enum FieldType { text, int, float, date};
+
+export class FilterType {
+  filterOperator: string;
+  filterName: string;
+  filterType: FieldType[];
+}
 
 @Component({
 	selector: 'app-dataseries-selector',
@@ -26,20 +32,11 @@ export class DataseriesSelectorComponent implements OnInit, AfterViewInit {
 	@Input('selectedProfile') selectedProfile: FormControl = new FormControl();
 	@Input('selectedCategory') selectedCategoryName: FormControl = new FormControl();
 	@ViewChild('editDataseriesName') editDataseriesName: ElementRef;
-	// dataSource = new MatTreeNestedDataSource<EntityNode>();
-	// treeControl = new NestedTreeControl<EntityNode>(node => node.relations);
 
-	// filterOperators: Observable<Array<FilterType>> | null = null;
-
-	testingSelect: string = '';
 	entities: Array<string> = [];
 	selectedEntity: string = '';
-	entitySelection: string = 'Select Entity';
 	form: FormArray<FormGroup>;
 	editableDataseriesTitleList: Array<boolean> = [false];
-	openedPanels: Array<number> = [];
-
-	// testing
 	panelOpenState: boolean = false;
 
 	hasTwoEntityFields: boolean = false;
@@ -90,7 +87,7 @@ export class DataseriesSelectorComponent implements OnInit, AfterViewInit {
 		"number"
 	]
 
-	protected filterOperators = [
+	protected filterOperators: FilterType[] = [
 		{ filterOperator: '=', filterName: 'Equals', filterType: [FieldType.text, FieldType.int, FieldType.float, FieldType.date] },
 		{ filterOperator: '!=', filterName: 'Not equals', filterType: [FieldType.text, FieldType.int, FieldType.float, FieldType.date] },
 		{ filterOperator: '>', filterName: 'Greater than', filterType: [FieldType.int, FieldType.float, FieldType.date] },
@@ -106,7 +103,6 @@ export class DataseriesSelectorComponent implements OnInit, AfterViewInit {
 		private http: HttpClient,
 		private dbService: DbSchemaService,
 		private urlProvider: UrlProviderService,
-		private rootFormGroup: FormGroupDirective
 	) { }
 
 	hasChild = (_: number, node: EntityNode) => !!node.relations && node.relations.length > 0;
@@ -328,7 +324,11 @@ export class DataseriesSelectorComponent implements OnInit, AfterViewInit {
 				dataseriesName: new FormControl<string | null>({ value: 'Data(' + this.dataseriesIncremment + ')', disabled: true }),
 				stacking: new FormControl<'null' | 'normal' | 'percent' | 'stream' | 'overlap'>('null', Validators.required),
 			}),
-		}),);
+		}));
+
+    setTimeout(() => {
+      UIkit.tab('#dataseriesList').show(this.form.controls.length-1);
+    });
 
 	}
 
