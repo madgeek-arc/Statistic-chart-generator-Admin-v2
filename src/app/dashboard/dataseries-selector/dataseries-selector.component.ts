@@ -11,6 +11,7 @@ import {
 } from '../helper-components/select-attribute/dynamic-entity-tree/entity-tree-nodes.types';
 import { DbSchemaService } from "../../services/db-schema-service/db-schema.service";
 import UIkit from "uikit";
+import { FormFactoryService } from "../../services/form-factory-service/form-factory-service";
 
 export enum FieldType { text, int, float, date};
 
@@ -31,12 +32,13 @@ export class DataseriesSelectorComponent implements OnInit, AfterViewInit {
 	@Input('formGroup') formGroup: FormGroup;
 	@Input('selectedProfile') selectedProfile: FormControl = new FormControl();
 	@Input('selectedCategory') selectedCategoryName: FormControl = new FormControl();
-	@ViewChild('editDataseriesName') editDataseriesName: ElementRef;
+	@ViewChild('editDataseriesName') editDataseriesName;
 
 	entities: Array<string> = [];
 	selectedEntity: string = '';
 	form: FormArray<FormGroup>;
-	editableDataseriesTitleList: Array<boolean> = [false];
+	// editableDataseriesTitleList: Array<boolean> = [false];
+  selectedTitleIndex = -1;
 	panelOpenState: boolean = false;
 
 	hasTwoEntityFields: boolean = false;
@@ -103,6 +105,7 @@ export class DataseriesSelectorComponent implements OnInit, AfterViewInit {
 		private http: HttpClient,
 		private dbService: DbSchemaService,
 		private urlProvider: UrlProviderService,
+    private formFactory: FormFactoryService,
 	) { }
 
 	hasChild = (_: number, node: EntityNode) => !!node.relations && node.relations.length > 0;
@@ -230,7 +233,7 @@ export class DataseriesSelectorComponent implements OnInit, AfterViewInit {
 		form.controls.data.controls.filters.push(
 			new FormGroup({
 				groupFilters: new FormArray([]),
-				op: new FormControl<string | null>(null)
+				op: new FormControl<'AND' | 'OR'>('AND')
 			})
 		);
     this.addFilterRule(form.controls.data.controls.filters.controls[form.controls.data.controls.filters.controls.length - 1]);
@@ -250,7 +253,7 @@ export class DataseriesSelectorComponent implements OnInit, AfterViewInit {
 				type: new FormControl<string | null>({value: null, disabled: true}),
 				values: new FormArray([
 					new FormControl(null)
-				]) // TODO: At model the control is set as array!!! Check for compatibility issues
+				])
 			})
 		);
 
@@ -259,8 +262,6 @@ export class DataseriesSelectorComponent implements OnInit, AfterViewInit {
       next: value => {
         if (value !== null && value !== undefined) {
           form.controls.groupFilters.controls[index].get('type').enable();
-
-          // Todo: maybe create here options list
         }
       }
     });
@@ -296,35 +297,9 @@ export class DataseriesSelectorComponent implements OnInit, AfterViewInit {
 
 	addDataseries() {
 		this.dataseriesIncremment++;
-		this.editableDataseriesTitleList.push(false);
-
-		this.form.push(new FormGroup({
-			data: new FormGroup({
-				yaxisData: new FormGroup({
-					entity: new FormControl<string | null>(null, Validators.required),
-					yaxisAggregate: new FormControl<string | null>(null, Validators.required),
-					yaxisEntityField: new FormGroup({
-						name: new FormControl<string | null>(null),
-						type: new FormControl<string | null>(null)
-					}),
-				}),
-				xaxisData: new FormArray([
-					new FormGroup({
-						xaxisEntityField: new FormGroup({
-							name: new FormControl<string | null>(null),
-							type: new FormControl<string | null>(null)
-						})
-					})
-				]),
-				filters: new FormArray([])
-			}),
-			chartProperties: new FormGroup({
-				chartType: new FormControl<string | null>(null),
-				dataseriesColor: new FormControl<string | null>(null),
-				dataseriesName: new FormControl<string | null>({ value: 'Data(' + this.dataseriesIncremment + ')', disabled: true }),
-				stacking: new FormControl<'null' | 'normal' | 'percent' | 'stream' | 'overlap'>('null', Validators.required),
-			}),
-		}));
+    this.form.push(
+      this.formFactory.createDataseriesGroup(this.dataseriesIncremment)
+    );
 
     setTimeout(() => {
       UIkit.tab('#dataseriesList').show(this.form.controls.length-1);
@@ -334,49 +309,14 @@ export class DataseriesSelectorComponent implements OnInit, AfterViewInit {
 
 	removeDataseries(index: number) {
 		this.form.removeAt(index);
-		this.editableDataseriesTitleList.splice(index, 1);
 	}
 
-	getDataSeriesName(form: FormGroup) {
-		let chartProperties = form.controls['chartProperties'] as FormGroup;
-		let dataseriesName = chartProperties.controls['dataseriesName'] as FormControl;
+	editDataseriesTitle(index: number) {
+    this.selectedTitleIndex = index;
 
-		return dataseriesName.value;
-	}
-
-	isEditableDataseriesTitle(form: FormGroup) {
-		let chartProperties = form.controls['chartProperties'] as FormGroup;
-		let dataseriesName = chartProperties.controls['dataseriesName'] as FormControl;
-
-		return dataseriesName.enabled;
-	}
-
-	editDataseriesTitle(form: FormGroup) {
-		let chartProperties = form.controls['chartProperties'] as FormGroup;
-		let dataseriesName = chartProperties.controls['dataseriesName'] as FormControl;
-		dataseriesName.enable();
-
-
-		if (this.editDataseriesName) {
-			console.log("this.editDataseriesName:", this.editDataseriesName);
-			this.editDataseriesName.nativeElement.focus();
-		}
-	}
-
-	saveDataseriesTitle(form: FormGroup) {
-		let chartProperties = form.controls['chartProperties'] as FormGroup;
-		let dataseriesName = chartProperties.controls['dataseriesName'] as FormControl;
-		dataseriesName.disable();
-	}
-
-	testBlur(form: FormGroup) {
-		console.log("BLUR");
-	}
-
-	checkEnabled(form: FormGroup): boolean {
-		let chartProperties = form.controls['chartProperties'] as FormGroup;
-		let dataseriesName = chartProperties.controls['dataseriesName'] as FormControl;
-		return dataseriesName.enabled;
+    setTimeout( () => {
+      this.editDataseriesName.focus(true);
+    }, 0);
 	}
 
 	changePosition(direction: string, index: number) {
@@ -403,90 +343,4 @@ export class DataseriesSelectorComponent implements OnInit, AfterViewInit {
 		return false;
 	}
 
-	getClass(length: number, position: number): string {
-		switch (true) {
-			case (length === 1):
-				return '2';
-			case (length === 2):
-				return '4'
-			case (length >= 3):
-				switch (position) {
-					case 0:
-						return '4';
-					case (length - 1):
-						return '4'
-					default:
-						return '5';
-				}
-			default:
-				return '2';
-		}
-	}
-
-	printDataseries() {
-		console.log("this.form:", this.form);
-		console.log("this.form.value:", this.form.value);
-	}
-
-	outputResult(event: any): void {
-		console.log("FINAL PATH:", event);
-	}
-
-	testData() {
-		console.log("TESTING DATA (ENTITIES):", this.entities)
-	}
-
 }
-
-export class DataSelectionFilter {
-	entityField: string;
-	filterOperator: string;
-	filterValue: string;
-}
-
-
-// export class EntityTreeNode {
-// 	fields: FieldNode[];
-// 	relations: EntityTreeNode[];
-// 	name: string;
-// 	parent: EntityTreeNode;
-
-// 	constructor(fields: FieldNode[], relations: EntityTreeNode[], name: string, parent: EntityTreeNode) {
-// 		this.fields = fields;
-// 		this.relations = relations;
-// 		this.name = name;
-// 		this.parent = parent;
-// 	}
-// }
-
-// export class EntityNode {
-// 	fields: FieldNode[];
-// 	relations: EntityNode[];
-// 	name: string;
-
-// 	constructor() {
-// 		this.fields = [];
-// 		this.relations = [];
-// 		this.name = '';
-// 	}
-// }
-// export class CachedEntityNode {
-// 	fields: FieldNode[];
-// 	relations: string[];
-// 	name: string;
-
-// 	constructor() {
-// 		this.fields = [];
-// 		this.relations = [];
-// 		this.name = '';
-// 	}
-// }
-// export class FieldNode {
-// 	name: string;
-// 	type: string;
-
-// 	constructor() {
-// 		this.name = '';
-// 		this.type = '';
-// 	}
-// }

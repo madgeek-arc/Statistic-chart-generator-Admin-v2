@@ -1,9 +1,9 @@
 <div class="uk-section uk-section-primary uk-section-xsmall uk-preserve-color">
   <div class="uk-container uk-container-expand uk-padding-remove uk-margin-medium-left">
-    <div [formGroup]="this.appearanceForm">
+    <div [formGroup]="appearanceForm">
 
       <div>
-        <ul class="uk-child-width-expand" data-uk-tab="{connect: #chartOrTableAppearance}" uk-tab>
+        <ul class="uk-child-width-expand" data-uk-tab="{connect: #chartOrTableAppearance}">
           <li class="uk-active"><a href="#">Chart Appearance</a></li>
           <li><a href="#">Table Appearance</a></li>
         </ul>
@@ -52,24 +52,21 @@
                 </div>
               </div>
 
-              <div formGroupName="visualisationOptions">
+              <h6 class="borderBottomClass uk-margin-medium-top uk-text-secondary">
+                <div>Visualisation Options</div>
+                <div class="uk-text-meta uk-text-small">Available options based on the selected Visualisation Library</div>
+              </h6>
 
-                <h6 class="borderBottomClass uk-margin-medium-top uk-text-secondary">
-                  <div>Visualisation Options</div>
-                  <div class="uk-text-meta uk-text-small">Available options based on the selected Visualisation Library</div>
-                </h6>
+              <ng-container *ngIf="visualisationLibrary.value === 'HighCharts'">
+                <app-high-charts [highChartsForm]="highCharts"></app-high-charts>
+              </ng-container>
+              <ng-container *ngIf="visualisationLibrary.value === 'GoogleCharts'">
+                <app-google-charts [googleChartsForm]="googleCharts"></app-google-charts>
+              </ng-container>
+              <ng-container *ngIf="visualisationLibrary.value === 'eCharts'">
+                <app-e-charts [eChartsForm]="eCharts"></app-e-charts>
+              </ng-container>
 
-                <ng-container *ngIf="this.visualisationLibrary.value === 'HighCharts'">
-                  <app-high-charts [highChartsForm]="this.highCharts"></app-high-charts>
-                </ng-container>
-                <ng-container *ngIf="this.visualisationLibrary.value === 'GoogleCharts'">
-                  <app-google-charts [googleChartsForm]="this.googleCharts"></app-google-charts>
-                </ng-container>
-                <ng-container *ngIf="this.visualisationLibrary.value === 'eCharts'">
-                  <app-e-charts [eChartsForm]="this.eCharts"></app-e-charts>
-                </ng-container>
-
-              </div>
             </div>
           </li>
           <li>

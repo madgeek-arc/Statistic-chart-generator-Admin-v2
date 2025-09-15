@@ -185,11 +185,9 @@ export class DashboardComponent implements OnInit, OnChanges {
 	resetForm(): void {
 
     this.diagramSettings.setControl('category', this.formFactory.createCategoryGroup());
-    this.diagramSettings.setControl('dataseries', this.formFactory.createDataseriesGroup());
+    this.diagramSettings.setControl('dataseries', this.formFactory.createDataseriesGroupArray());
     this.diagramSettings.setControl('appearance', this.formFactory.createAppearanceGroup());
 
-		// this.diagramSettings.get('appearance')?.get('chartAppearance')?.get('visualisationOptions')?.get('googlechartsAppearanceOptions')?.disable();
-		// this.diagramSettings.get('appearance')?.get('chartAppearance')?.get('visualisationOptions')?.get('echartsAppearanceOptions')?.disable();
 	}
 
   updateFormFile() {

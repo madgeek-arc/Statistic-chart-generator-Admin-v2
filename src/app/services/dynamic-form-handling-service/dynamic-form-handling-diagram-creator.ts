@@ -156,8 +156,7 @@ export class DiagramCreator {
 		return of(rawDataModel);
 	}
 
-	createDynamicGoogleChartsChart(view: ViewFormSchema, category: CategoryFormSchema,
-		dataseries: DataseriesFormSchema[], appearanceOptions: AppearanceFormSchema): GoogleChartsChart {
+	createDynamicGoogleChartsChart(view: ViewFormSchema, category: CategoryFormSchema, dataseries: DataseriesFormSchema[], appearanceOptions: AppearanceFormSchema): GoogleChartsChart {
 
 		const chartObj = new GoogleChartsChart();
 		const chartDescription = chartObj.chartDescription;
@@ -198,10 +197,10 @@ export class DiagramCreator {
 		return chartObj;
 	}
 
-	createDynamicHighChartsChart(view: ViewFormSchema, category: CategoryFormSchema,
-		dataseries: DataseriesFormSchema[], appearanceOptions: AppearanceFormSchema): HighChartsChart {
+	createDynamicHighChartsChart(view: ViewFormSchema, category: CategoryFormSchema, dataseries: DataseriesFormSchema[], appearanceOptions: AppearanceFormSchema): HighChartsChart {
+    console.log('Find this log!!!!!!!!!',appearanceOptions);
 
-		const chartObj = new HighChartsChart();
+    const chartObj = new HighChartsChart();
 
 		if (appearanceOptions.chartAppearance.generalOptions != null)
 			chartObj.orderBy = appearanceOptions.chartAppearance.generalOptions.orderByAxis as string;
@@ -242,6 +241,7 @@ export class DiagramCreator {
 			chartObj.chartDescription.credits.enabled = appearanceOptions.chartAppearance.highchartsAppearanceOptions.hcCredits?.hcEnableCredits as boolean;
 			chartObj.chartDescription.credits.text = appearanceOptions.chartAppearance.highchartsAppearanceOptions.hcCredits?.hcCreditsText as string;
 			// Title Options
+      console.log('Title Options', appearanceOptions.chartAppearance.highchartsAppearanceOptions.title)
 			if (appearanceOptions.chartAppearance.highchartsAppearanceOptions.title) {
 				chartObj.chartDescription.title.text = appearanceOptions.chartAppearance.highchartsAppearanceOptions.title.titleText;
 				chartObj.chartDescription.title.margin = appearanceOptions.chartAppearance.highchartsAppearanceOptions.title.margin;

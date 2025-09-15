@@ -1,19 +1,21 @@
 <div class="uk-section uk-section-xsmall uk-section-primary uk-preserve-color">
 
   <div class="uk-container uk-container-expand uk-padding-remove uk-margin-medium-left">
-
     <div class="uk-padding-small uk-padding-remove-vertical uk-padding-remove-right">
       <ul id="dataseriesList" class="scrollable-tabs" data-uk-tab="{connect: #switcher-content}">
         <li *ngFor="let ctrl of form.controls; let i = index" [formGroup]="ctrl" style="display: contents;">
           <a class="uk-link-reset">
             <div class="uk-flex" formGroupName="chartProperties">
-              <div *ngIf="this.isEditableDataseriesTitle(ctrl) ; else notEditable" tabindex="0" #editDataseriesName class="uk-width-1-1" style="text-align: center !important">
-                <input type="text" class="dataseriesTitleButton" (keydown.enter)="saveDataseriesTitle(ctrl)" (blur)="testBlur(ctrl); saveDataseriesTitle(ctrl)" formControlName="dataseriesName">
+              <div *ngIf="selectedTitleIndex === i ; else notEditable" tabindex="0">
+                <div input type="text" [formInput]="form.controls[i].get('chartProperties.dataseriesName')" #editDataseriesName
+                     placeholder="Dataseries name"
+                     (focusout)="selectedTitleIndex = -1">
+                </div>
               </div>
               <ng-template #notEditable>
                 <!--              <div (dblclick)="editDataseriesTitle(ctrl)" style="word-break: break-all; font-weight: bold; text-align: center !important" class="h3 text-center font-weight-bold mb-3 px-0">-->
-                <div (dblclick)="editDataseriesTitle(ctrl)" class="">
-                  {{getDataSeriesName(ctrl)}}
+                <div (dblclick)="editDataseriesTitle(i)" class="">
+                  {{ ctrl.get('chartProperties.dataseriesName').value }}
                 </div>
               </ng-template>
 
@@ -24,7 +26,7 @@
               <div #element uk-dropdown="mode: click; pos: bottom-left; offset: 5; delay-hide: 0; container: body">
                 <ul class="uk-nav uk-dropdown-nav">
                   <li>
-                    <a (click)="editDataseriesTitle(ctrl); hide(element)">
+                    <a (click)="editDataseriesTitle(i); hide(element)">
                       <div class="uk-flex uk-flex-middle">
                         <mat-icon style="margin: 0;">edit</mat-icon>
                         <span class="uk-margin-small-left uk-width-expand">Edit</span>
@@ -69,39 +71,6 @@
                   </li>
                 </ul>
               </div>
-
-
-
-
-
-              <!--            <div class="uk-button-group">-->
-              <!--              <div class="uk-width-1-1 ">-->
-              <!--                <ng-container *ngIf="!checkEnabled(ctrl)">-->
-              <!--                  <button mat-stroked-button class="uk-button uk-button-primary uk-width-1-{{this.getClass(form.controls.length, i)}}" (click)="editDataseriesTitle(ctrl)"><mat-icon style="margin: 0;">edit</mat-icon></button>-->
-              <!--                </ng-container>-->
-              <!--                <ng-container *ngIf="checkEnabled(ctrl)">-->
-              <!--                  <button mat-stroked-button class="uk-button uk-button-primary uk-width-1-{{this.getClass(form.controls.length, i)}}" (click)="saveDataseriesTitle(ctrl)" style="border-color: green; color: green">-->
-              <!--                    <mat-icon style="margin: 0;">check</mat-icon>-->
-              <!--                  </button>-->
-              <!--                </ng-container>-->
-              <!--                <button mat-stroked-button class="uk-button uk-button-default uk-width-1-{{this.getClass(form.controls.length, i)}}"><mat-icon style="margin: 0;">content_copy</mat-icon></button>-->
-              <!--                <ng-container *ngIf="form.controls.length > 1">-->
-              <!--                  <ng-container *ngIf="form.controls.indexOf(ctrl) !== 0">-->
-              <!--                    <button mat-stroked-button class="uk-button uk-button-default uk-width-1-{{this.getClass(form.controls.length, i)}}" (click)="changePosition('up', i)">-->
-              <!--                      <mat-icon style="margin: 0;">arrow_upward</mat-icon>-->
-              <!--                    </button>-->
-              <!--                  </ng-container>-->
-              <!--                  <ng-container *ngIf="form.controls.indexOf(ctrl) !== form.controls.length - 1">-->
-              <!--                    <button mat-stroked-button class="uk-button uk-button-default uk-width-1-{{this.getClass(form.controls.length, i)}}" (click)="changePosition('down', i)">-->
-              <!--                      <mat-icon style="margin: 0;">arrow_downward</mat-icon>-->
-              <!--                    </button>-->
-              <!--                  </ng-container>-->
-              <!--                  <button mat-stroked-button class="uk-button uk-button-danger uk-width-1-{{this.getClass(form.controls.length, i)}}" (click)="removeDataseries(i)" style="border-color: red; color: red">-->
-              <!--                    <mat-icon style="margin: 0;">delete_forever</mat-icon>-->
-              <!--                  </button>-->
-              <!--                </ng-container>-->
-              <!--              </div>-->
-              <!--            </div>-->
             </div>
           </a>
         </li>
@@ -204,7 +173,7 @@
 
                             <div class="uk-margin-bottom">
                               <mat-radio-group color="primary" labelPosition="after" formControlName="op">
-                                <mat-radio-button value="AND" [checked]="true" class="uk-margin-right">Match all of the values</mat-radio-button>
+                                <mat-radio-button value="AND" class="uk-margin-right">Match all of the values</mat-radio-button>
                                 <mat-radio-button value="OR">Match any of the values</mat-radio-button>
                               </mat-radio-group>
                             </div>

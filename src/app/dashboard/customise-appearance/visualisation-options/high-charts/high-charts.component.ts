@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
 
 @Component({
@@ -6,7 +6,7 @@ import { FormArray, FormControl, FormGroup } from '@angular/forms';
 	templateUrl: './high-charts.component.html',
 	styleUrls: ['./high-charts.component.less']
 })
-export class HighChartsComponent implements OnInit {
+export class HighChartsComponent {
 
 	@Input() highChartsForm: FormGroup;
 
@@ -33,22 +33,16 @@ export class HighChartsComponent implements OnInit {
 		{ name: 'Bottom', value: 'bottom' }
 	];
 
-  ngOnInit(): void {
-    if (this.highChartsForm && this.highChartsForm.value) {
-      // console.log("this.highChartsForm:", this.highChartsForm.value);
-    }
-  }
-
   getSeriesColors(form: FormGroup) {
-    return (form.get('dataSeriesColorPalette') as FormArray).controls;
+    return (form.get('dataSeriesColorArray') as FormArray).controls;
 	}
 
   addSeriesColor(form: FormGroup): void {
-    (form.get('dataSeriesColorPalette') as FormArray).push(new FormControl<string>('#ffffff'));
+    (form.get('dataSeriesColorArray') as FormArray).push(new FormControl<string>('#ffffff'));
   }
 
   removeSeriesColor(form: FormGroup, index: number) {
-    (form.get('dataSeriesColorPalette') as FormArray).removeAt(index);
+    (form.get('dataSeriesColorArray') as FormArray).removeAt(index);
   }
 
 }

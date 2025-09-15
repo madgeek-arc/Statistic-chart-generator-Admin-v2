@@ -1,4 +1,4 @@
-import { FormBuilder, Validators } from "@angular/forms";
+import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { Injectable } from "@angular/core";
 
 @Injectable({ providedIn: 'root' })
@@ -11,7 +11,7 @@ export class FormFactoryService {
       testingView: this.fb.control(null),
       view: this.createViewGroup(null),
       category: this.createCategoryGroup(),
-      dataseries: this.createDataseriesGroup(),
+      dataseries: this.createDataseriesGroupArray(),
       appearance: this.createAppearanceGroup()
     });
   }
@@ -37,36 +37,40 @@ export class FormFactoryService {
     });
   }
 
-  createDataseriesGroup() {
+  createDataseriesGroupArray() {
     return this.fb.array([
-      this.fb.group({
-        data: this.fb.group({
-          yaxisData: this.fb.group({
-            entity: this.fb.control<string | null>(null, Validators.required),
-            yaxisAggregate: this.fb.control<string | null>(null, Validators.required),
-            yaxisEntityField: this.fb.group({
+      this.createDataseriesGroup(0)
+    ]);
+  }
+
+  createDataseriesGroup(index: number): FormGroup {
+    return this.fb.group({
+      data: this.fb.group({
+        yaxisData: this.fb.group({
+          entity: this.fb.control<string | null>(null, Validators.required),
+          yaxisAggregate: this.fb.control<string | null>(null, Validators.required),
+          yaxisEntityField: this.fb.group({
+            name: this.fb.control<string | null>(null),
+            type: this.fb.control<string | null>(null)
+          }),
+        }),
+        xaxisData: this.fb.array([
+          this.fb.group({
+            xaxisEntityField: this.fb.group({
               name: this.fb.control<string | null>(null),
               type: this.fb.control<string | null>(null)
-            }),
-          }),
-          xaxisData: this.fb.array([
-            this.fb.group({
-              xaxisEntityField: this.fb.group({
-                name: this.fb.control<string | null>(null),
-                type: this.fb.control<string | null>(null)
-              })
             })
-          ]),
-          filters: this.fb.array([])
-        }),
-        chartProperties: this.fb.group({
-          chartType: this.fb.control<string | null>(null),
-          dataseriesColor: this.fb.control<string | null>(null),
-          dataseriesName: this.fb.control<string | null>({ value: 'Data', disabled: true }),
-          stacking: this.fb.control<'null' | 'normal' | 'percent' | 'stream' | 'overlap'>('null', Validators.required),
-        }),
-      })
-    ]);
+          })
+        ]),
+        filters: this.fb.array([])
+      }),
+      chartProperties: this.fb.group({
+        chartType: this.fb.control<string | null>(null),
+        dataseriesColor: this.fb.control<string | null>(null),
+        dataseriesName: this.fb.control<string>('Data' + (index > 0 ? '(' + index + ')' : '')),
+        stacking: this.fb.control<'null' | 'normal' | 'percent' | 'stream' | 'overlap'>('null', Validators.required),
+      }),
+    })
   }
 
   createAppearanceGroup() {
@@ -77,118 +81,125 @@ export class FormFactoryService {
           resultsLimit: this.fb.control(30, [Validators.required, Validators.min(1)]),
           orderByAxis: this.fb.control(null),
         }),
-        visualisationOptions: this.fb.group({
-          highchartsAppearanceOptions: this.fb.group({
-            title: this.fb.group({
-              titleText: this.fb.control<string>(''),
-              color: this.fb.control<string>('#333333'),
-              align: this.fb.control<'right' | 'center' | 'left'>('center'),
-              margin: this.fb.control<number>(15),
-              fontSize: this.fb.control<number>(18)
-            }),
-            subtitle: this.fb.group({
-              text: this.fb.control(null),
-              color: this.fb.control('#666666'),
-              horizontalAlignment: this.fb.control('center'),
-              fontSize: this.fb.control(12)
-            }),
-            xAxis: this.fb.group({
-              name: this.fb.control(null),
-              fontSize: this.fb.control(11),
-              color: this.fb.control('#666666')
-            }),
-            yAxis: this.fb.group({
-              name: this.fb.control(null),
-              fontSize: this.fb.control(11),
-              color: this.fb.control('#666666')
-            }),
-            miscOptions: this.fb.group({
-              enableExporting: this.fb.control(true),
-              enableDrilldown: this.fb.control(false),
-              stackedGraph: this.fb.control('disabled'),
-            }),
-            chartArea: this.fb.group({
-              backgroundColor: this.fb.control(null),
-              borderColor: this.fb.control('#335cad'),
-              borderCornerRadius: this.fb.control(0),
-              borderWidth: this.fb.control(0)
-            }),
-            plotArea: this.fb.group({
-              backgroundColor: this.fb.control('#ffffff'),
-              borderColor: this.fb.control('#cccccc'),
-              backgroundImageUrl: this.fb.control(''),
-              borderWidth: this.fb.control(0)
-            }),
-            dataLabels: this.fb.group({
-              enableData: this.fb.control(false)
-            }),
-            credits: this.fb.group({
-              enableCredits: this.fb.control(false)
-            }),
-            legend: this.fb.group({
-              enableLegend: this.fb.control(true),
-              itemlayout: this.fb.control('horizontal'),
-              horizontalAlignment: this.fb.control('center'),
-              verticalAlignment: this.fb.control('bottom')
-            }),
-            zoomOptions: this.fb.group({
-              enableXAxisZoom: this.fb.control(false),
-              enableYAxisZoom: this.fb.control(false)
-            }),
-            dataSeriesColorPalette: this.fb.array([])
+        // visualisationOptions: this.fb.group({
+        highchartsAppearanceOptions: this.fb.group({
+          title: this.fb.group({
+            titleText: this.fb.control<string>(''),
+            color: this.fb.control<string>('#333333'),
+            align: this.fb.control<'left' | 'center' | 'right'>('center'),
+            margin: this.fb.control<number>(15),
+            fontSize: this.fb.control<number>(18)
           }),
-          googlechartsAppearanceOptions: this.fb.group({
-            titles: this.fb.group({
-              title: this.fb.control<string>(''),
-              subtitle: this.fb.control<string>('')
-            }),
-            axisNames: this.fb.group({
-              yaxisName: this.fb.control<string>(''),
-              xaxisName: this.fb.control<string>('')
-            }),
+          subtitle: this.fb.group({
+            subtitleText: this.fb.control<string | null>(null),
+            color: this.fb.control<string>('#666666'),
+            align: this.fb.control<'left' | 'center' | 'right'>('center'),
+            fontSize: this.fb.control<number>(12)
+          }),
+          xAxis: this.fb.group({
+            xAxisText: this.fb.control<string | null>(null),
+            fontSize: this.fb.control<number>(11),
+            color: this.fb.control<string>('#666666')
+          }),
+          yAxis: this.fb.group({
+            yAxisText: this.fb.control<string | null>(null),
+            fontSize: this.fb.control<number>(11),
+            color: this.fb.control<string>('#666666')
+          }),
+          hcMiscOptions: this.fb.group({
             exporting: this.fb.control<boolean>(true),
-            stackedChart: this.fb.control<string>('disabled'),
-            gcCABackGroundColor: this.fb.control<string>('#ffffff'),
-            gcPABackgroundColor: this.fb.control<string>('#ffffff')
+            drilldown: this.fb.control<boolean>(false),
+            stackedChart: this.fb.control('disabled')
           }),
-          echartsAppearanceOptions: this.fb.group({
-            titles: this.fb.group({
-              title: this.fb.control<string>(''),
-              subtitle: this.fb.control<string>('')
-            }),
-            axisNames: this.fb.group({
-              yaxisName: this.fb.control<string>(''),
-              xaxisName: this.fb.control<string>('')
-            }),
-            dataSeriesColorArray: this.fb.array<string>([]),
-            ecChartArea: this.fb.group({
-              ecCABackGroundColor: this.fb.control<string>('#ffffff')
-            }),
-            ecLegend: this.fb.group({
-              ecEnableLegend: this.fb.control<boolean>(true),
-              ecLegendLayout: this.fb.control<'horizontal' | 'vertical'>('horizontal'),
-              ecLegendHorizontalAlignment: this.fb.control<'left' | 'center' | 'right'>('center'),
-              ecLegendVerticalAlignment: this.fb.control<'top' | 'middle' | 'bottom'>('bottom')
-            }),
-            ecMiscOptions: this.fb.group({
-              exporting: this.fb.control<boolean>(true),
-              ecEnableDataLabels: this.fb.control<boolean>(false),
-              stackedChart: this.fb.control<boolean>(false)
-            }),
-            ecZoomOptions: this.fb.group({
-              enableXaxisZoom: this.fb.control<boolean>(false),
-              enableYaxisZoom: this.fb.control<boolean>(false)
+          hcChartArea: this.fb.group({
+            hcCABackGroundColor: this.fb.control<string | null>(null),
+            hcCABorderColor: this.fb.control<string>('#335cad'),
+            hcCABorderCornerRadius: this.fb.control<number>(0),
+            hcCABorderWidth: this.fb.control<number>(0)
+          }),
+          hcPlotArea: this.fb.group({
+            hcPABackgroundColor: this.fb.control<string>('#ffffff'),
+            hcPABorderColor: this.fb.control<string>('#cccccc'),
+            hcPABackgroundImageURL: this.fb.control<string | null>(null),
+            hcPABorderWidth: this.fb.control<number>(0)
+          }),
+          hcDataLabels: this.fb.group({
+            enabled: this.fb.control<boolean>(false),
+            format: this.fb.control<string | undefined>(undefined),
+            style: this.fb.group({
+              color: this.fb.control<string>('#333333'),
+              textOutline: this.fb.control<string>('2px contrast'),
+              'stroke-width': this.fb.control<number>(0)
             })
-          })
+          }),
+          hcCredits: this.fb.group({
+            hcEnableCredits: this.fb.control<boolean>(false),
+            hcCreditsText: this.fb.control<string>('Created by OpenAIRE via HighCharts')
+          }),
+          hcLegend: this.fb.group({
+            hcEnableLegend: this.fb.control<boolean>(true),
+            hcLegendLayout: this.fb.control<'horizontal' | 'vertical'>('horizontal'),
+            hcLegendHorizontalAlignment: this.fb.control<'left' | 'center' | 'right'>('center'),
+            hcLegendVerticalAlignment: this.fb.control<'bottom' | 'top' | 'middle'>('bottom')
+          }),
+          hcZoomOptions: this.fb.group({
+            enableXaxisZoom: this.fb.control<boolean>(false),
+            enableYaxisZoom: this.fb.control<boolean>(false)
+          }),
+          dataSeriesColorArray: this.fb.array<string>([])
         }),
+        googlechartsAppearanceOptions: this.fb.group({
+          titles: this.fb.group({
+            title: this.fb.control<string>(''),
+            subtitle: this.fb.control<string>('')
+          }),
+          axisNames: this.fb.group({
+            yaxisName: this.fb.control<string>(''),
+            xaxisName: this.fb.control<string>('')
+          }),
+          exporting: this.fb.control<boolean>(true),
+          stackedChart: this.fb.control<string>('disabled'),
+          gcCABackGroundColor: this.fb.control<string>('#ffffff'),
+          gcPABackgroundColor: this.fb.control<string>('#ffffff')
+        }),
+        echartsAppearanceOptions: this.fb.group({
+          titles: this.fb.group({
+            title: this.fb.control<string>(''),
+            subtitle: this.fb.control<string>('')
+          }),
+          axisNames: this.fb.group({
+            yaxisName: this.fb.control<string>(''),
+            xaxisName: this.fb.control<string>('')
+          }),
+          dataSeriesColorArray: this.fb.array<string>([]),
+          ecChartArea: this.fb.group({
+            ecCABackGroundColor: this.fb.control<string>('#ffffff')
+          }),
+          ecLegend: this.fb.group({
+            ecEnableLegend: this.fb.control<boolean>(true),
+            ecLegendLayout: this.fb.control<'horizontal' | 'vertical'>('horizontal'),
+            ecLegendHorizontalAlignment: this.fb.control<'left' | 'center' | 'right'>('center'),
+            ecLegendVerticalAlignment: this.fb.control<'top' | 'middle' | 'bottom'>('bottom')
+          }),
+          ecMiscOptions: this.fb.group({
+            exporting: this.fb.control<boolean>(true),
+            ecEnableDataLabels: this.fb.control<boolean>(false),
+            stackedChart: this.fb.control<boolean>(false)
+          }),
+          ecZoomOptions: this.fb.group({
+            enableXaxisZoom: this.fb.control<boolean>(false),
+            enableYaxisZoom: this.fb.control<boolean>(false)
+          })
+        })
+        // }),
       }),
       tableAppearance: this.fb.group({
-        paginationSize: this.fb.control(30, [Validators.required, Validators.min(1)])
+        paginationSize: this.fb.control<number>(30, [Validators.required, Validators.min(1)])
       }),
     });
 
-    group.get('chartAppearance.visualisationOptions.googlechartsAppearanceOptions')?.disable();
-    group.get('chartAppearance.visualisationOptions.echartsAppearanceOptions')?.disable();
+    group.get('chartAppearance.googlechartsAppearanceOptions')?.disable();
+    group.get('chartAppearance.echartsAppearanceOptions')?.disable();
 
     return group;
   }
