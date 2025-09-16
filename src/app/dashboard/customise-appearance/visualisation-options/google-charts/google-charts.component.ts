@@ -11,9 +11,9 @@ export class GoogleChartsComponent {
 	@Input('googleChartsForm') googleChartsForm: FormGroup;
 
 	protected stackedGraphList = [
-		{ name: 'Disabled', value: 'disabled' },
-		{ name: 'Stacked by Value', value: 'stackedByValue' },
-		{ name: 'Stacked by Percentage', value: 'stackedByPercentage' }
+		{ label: 'Disabled', value: 'disabled' },
+		{ label: 'Stacked by Value', value: 'stackedByValue' },
+		{ label: 'Stacked by Percentage', value: 'stackedByPercentage' }
 	];
 
 	constructor() { }

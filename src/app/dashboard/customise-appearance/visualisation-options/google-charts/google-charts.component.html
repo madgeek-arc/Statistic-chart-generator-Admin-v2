@@ -1,101 +1,97 @@
 <div style="width: 100%;" [formGroup]="this.googleChartsForm">
 
-	<div>
-		<button (click)="testButton()">Click</button>
-	</div>
+<!--	<div>-->
+<!--		<button (click)="testButton()">Click</button>-->
+<!--	</div>-->
 
-	<div style="width: 50%; display: inline-block;">
-		<div formGroupName="titles">
-			<h5 style="font-weight: bold;">Diagram Title</h5>
-			<mat-divider></mat-divider>
+  <div>
+    <ul data-uk-accordion="multiple: true">
+      <li class="uk-open">
+        <a class="uk-accordion-title" href>Titles</a>
 
-			<div>
-				<mat-label>Title</mat-label>
-				<br>
-				<mat-form-field>
-					<input matInput placeholder="Title" formControlName="title">
-				</mat-form-field>
-			</div>
-		</div>
-		<div formGroupName="axisNames">
-			<h5 style="font-weight: bold;">Axis Names</h5>
-			<mat-divider></mat-divider>
+        <div class="uk-accordion-content" formGroupName="title">
 
-			<div style="width: 50%; display: inline-block;">
-				<mat-label>Yaxis</mat-label>
-				<br>
-				<mat-form-field>
-					<input matInput placeholder="Yaxis" formControlName="yaxisName">
-				</mat-form-field>
-			</div>
-			<div style="width: 50%; display: inline-block;">
-				<mat-label>Xaxis</mat-label>
-				<br>
-				<mat-form-field>
-					<input matInput placeholder="Xaxis" formControlName="xaxisName">
-				</mat-form-field>
-			</div>
+          <div class="uk-child-width-1-2" uk-grid>
+            <div class="">
+              <div input placeholder="Title Text" [formInput]="googleChartsForm.get('titles.title')"></div>
+            </div>
+            <div class="">
+              <div input placeholder="Subtitle Text" [formInput]="googleChartsForm.get('titles.subtitle')"></div>
+            </div>
+          </div>
 
-		</div>
-	</div>
-	<div style="width: 50%; display: inline-block;">
-		<div style="width: 100%;">
+        </div>
+      </li>
+      <li class="">
+        <a class="uk-accordion-title" href>Axis Names</a>
 
-			<div style="width: 45%; display: inline-block; margin-right: 40px;">
+        <div class="uk-accordion-content" formGroupName="axisNames">
 
-				<div style="display: inline-block;">
-					<h5>Plot Options</h5>
-					<mat-divider></mat-divider>
+          <div class="uk-child-width-1-2" uk-grid>
+            <div class="">
+              <div input placeholder="Y Axis" [formInput]="googleChartsForm.get('axisNames.yaxisName')"></div>
+            </div>
+            <div class="">
+              <div input placeholder="X Axis" [formInput]="googleChartsForm.get('axisNames.xaxisName')"></div>
+            </div>
+          </div>
 
-					<mat-label>Stacked Graph</mat-label>
-					<br>
-					<mat-form-field>
-						<mat-select formControlName="stackedChart">
-							<mat-option disabled="true">Select One</mat-option>
-							<mat-option [value]="stackedGraph.value" *ngFor="let stackedGraph of stackedGraphList">
-								{{stackedGraph.name}}
-							</mat-option>
-						</mat-select>
-					</mat-form-field>
-				</div>
+        </div>
+      </li>
+      <li class="">
+        <a class="uk-accordion-title" href>Plot Options</a>
 
-				<div style="display: inline-block;">
-					<h5>Chart Area</h5>
-					<mat-divider></mat-divider>
+        <div class="uk-accordion-content">
 
-					<mat-label>Background Color</mat-label>
-					<br>
-					<mat-form-field>
-						<input matInput type="color" formControlName="gcCABackGroundColor">
-					</mat-form-field>
-				</div>
-			</div>
+          <div class="" uk-grid>
+            <div class="uk-width-1-1">
+              <div input placeholder="Stacked Graph" type="select" [formInput]="googleChartsForm.get('stackedChart')"
+                   [options]="stackedGraphList"></div>
+            </div>
+          </div>
 
-			<div style="width: 45%; display: inline-block;">
-				<div style="display: inline-block;">
-					<h5>Exporting</h5>
-					<mat-divider></mat-divider>
+        </div>
+      </li>
+      <li class="">
+        <a class="uk-accordion-title" href>Exporting</a>
 
-					<mat-label>Enable Exporting</mat-label>
-					<br>
-					<div>
-						<div>
-							<mat-slide-toggle formControlName="exporting"><mat-icon>info</mat-icon></mat-slide-toggle>
-						</div>
-					</div>
-				</div>
+        <div class="uk-accordion-content">
 
-				<div style="display: inline-block;">
-					<h5>Plot Area</h5>
-					<mat-divider></mat-divider>
+          <div class="" uk-grid>
+            <div class="uk-width-1-1">
+              <mat-slide-toggle formControlName="exporting">Enable Exporting<mat-icon>info</mat-icon></mat-slide-toggle>
+            </div>
+          </div>
 
-					<mat-label>Background Color</mat-label>
-					<br>
-					<mat-form-field>
-						<input matInput type="color" formControlName="gcPABackgroundColor">
-					</mat-form-field>
-				</div>
-			</div>
-		</div>
-	</div>
+        </div>
+      </li>
+      <li class="">
+        <a class="uk-accordion-title" href>Chart Area</a>
+
+        <div class="uk-accordion-content">
+
+          <div class="" uk-grid>
+            <div class="uk-width-1-1">
+              <div input placeholder="Background Color" type="color" [formInput]="googleChartsForm.get('gcCABackGroundColor')"></div>
+            </div>
+          </div>
+
+        </div>
+      </li>
+      <li class="">
+        <a class="uk-accordion-title" href>Plot Area</a>
+
+        <div class="uk-accordion-content">
+
+          <div class="" uk-grid>
+            <div class="uk-width-1-1">
+              <div input placeholder="Background Color" type="color" [formInput]="googleChartsForm.get('gcPABackgroundColor')"></div>
+            </div>
+          </div>
+
+        </div>
+      </li>
+    </ul>
+  </div>
+  
 </div>
