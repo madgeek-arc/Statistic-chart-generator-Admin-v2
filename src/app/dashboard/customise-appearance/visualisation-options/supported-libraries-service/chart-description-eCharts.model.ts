@@ -14,7 +14,7 @@ export class EChartsChart {
 }
 
 class EChartsDescription {
-    
+
     title?: EChartTitleOption;
     xAxis?: EChartOption.XAxis;
     yAxis?: EChartOption.YAxis;
@@ -27,12 +27,13 @@ class EChartsDescription {
     // not Echarts fields
     toolbox: ECToolbox;
     legend: ECLegend;
-    
+
 
     queries: Array<ChartInfo> = [];
 
     constructor() {
 
+        this.title = {} as EChartTitleOption;
         this.yAxis = {} as EChartOption.YAxis;
         this.xAxis = {} as EChartOption.XAxis
         this.toolbox = new ECToolbox();
