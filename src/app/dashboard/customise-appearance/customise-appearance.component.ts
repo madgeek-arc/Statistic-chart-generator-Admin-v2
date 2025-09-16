@@ -26,7 +26,7 @@ export class CustomiseAppearanceComponent {
 	];
 
 	libraryChange(event: any) {
-		const newLibrary: string = event.value;
+		const newLibrary: string = event;
 
     this.appearanceForm.get('chartAppearance.highchartsAppearanceOptions').disable();
     this.appearanceForm.get('chartAppearance.googlechartsAppearanceOptions').disable();
