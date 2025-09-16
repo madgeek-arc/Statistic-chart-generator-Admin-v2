@@ -1,0 +1,60 @@
+@use '@angular/material' as mat;
+@include mat.core();
+
+$primary-color: (
+  0: #3ADDBF,
+  100: #3ADDBF,
+  200: #3ADDBF,
+  300: #3ADDBF,
+  400: #3ADDBF,
+  500: #3ADDBF,
+  600: #3ADDBF,
+  700: #3ADDBF,
+  800: #3ADDBF,
+  900: #3ADDBF,
+  contrast: (50: #ffffff)
+);
+$secondary-color: (
+  0: #3A67AE,
+  100: #3A67AE,
+  200: #3A67AE,
+  300: #3A67AE,
+  400: #3A67AE,
+  500: #3A67AE,
+  600: #3A67AE,
+  700: #3A67AE,
+  800: #3A67AE,
+  900: #3A67AE,
+  contrast: (50: #ffffff)
+);
+$warn-color: (
+  0: #BD640D,
+  100: #BD640D,
+  200: #BD640D,
+  300: #BD640D,
+  400: #BD640D,
+  500: #BD640D,
+  600: #BD640D,
+  700: #BD640D,
+  800: #BD640D,
+  900: #BD640D,
+  contrast: (50: #ffffff)
+);
+$my-app-primary: mat.define-palette($primary-color);
+$my-app-accent: mat.define-palette($secondary-color);
+$my-app-warn: mat.define-palette($warn-color);
+$my-app-theme: mat.define-light-theme((
+  color: (
+    primary: $my-app-primary,
+    accent: $my-app-accent,
+    warn: $my-app-warn
+  ),
+  typography: mat.define-typography-config(),
+  density: 0,
+));
+
+@include mat.all-component-themes($my-app-theme);
+
+.cdk-global-overlay-wrapper, .cdk-overlay-container {
+  z-index: 9999 !important;
+}

@@ -49,6 +49,10 @@
   opacity: 0;
 }
 
+input[type="color"] {
+  block-size: @global-line-height !important;
+}
+
 .input-wrapper {
   border: var(--input-border-width) solid var(--input-border);
   border-radius: var(--input-border-radius);
@@ -167,7 +171,7 @@
         display: var(--input-action-icon-display);
         background-color: var(--input-action-icon-background-color);
       }
-      
+
       &.disabled {
         color: var(--input-action-icon-color-disabled);
         cursor: default;

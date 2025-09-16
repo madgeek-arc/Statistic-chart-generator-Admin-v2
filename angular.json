@@ -31,7 +31,7 @@
             ],
             "styles": [
               "src/styles.less",
-              "src/assets/theme/material-theme.scss"
+              "src/assets/theme/material.scss"
             ],
             "scripts": [
               "node_modules/uikit/dist/js/uikit.min.js",

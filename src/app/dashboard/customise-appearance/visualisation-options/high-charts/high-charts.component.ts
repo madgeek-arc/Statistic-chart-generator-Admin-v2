@@ -11,26 +11,26 @@ export class HighChartsComponent {
 	@Input() highChartsForm: FormGroup;
 
 	protected horizontalAlignmentList = [
-		{ name: 'Left', value: 'left' },
-		{ name: 'Center', value: 'center' },
-		{ name: 'Right', value: 'right' }
+		{ label: 'Left', value: 'left' },
+		{ label: 'Center', value: 'center' },
+		{ label: 'Right', value: 'right' }
 	];
 
 	protected stackedGraphList = [
-		{ name: 'Disabled', value: 'disabled' },
-		{ name: 'Stacked by Value', value: 'stackedByValue' },
-		{ name: 'Stacked by Percentage', value: 'stackedByPercentage' }
+		{ label: 'Disabled', value: 'disabled' },
+		{ label: 'Stacked by Value', value: 'stackedByValue' },
+		{ label: 'Stacked by Percentage', value: 'stackedByPercentage' }
 	];
 
 	protected itemLayoutList = [
-		{ name: 'Horizontal', value: 'horizontal' },
-		{ name: 'Vertical', value: 'vertical' }
+		{ label: 'Horizontal', value: 'horizontal' },
+		{ label: 'Vertical', value: 'vertical' }
 	]
 
 	protected verticalAlignmentList = [
-		{ name: 'Top', value: 'top' },
-		{ name: 'Middle', value: 'middle' },
-		{ name: 'Bottom', value: 'bottom' }
+		{ label: 'Top', value: 'top' },
+		{ label: 'Middle', value: 'middle' },
+		{ label: 'Bottom', value: 'bottom' }
 	];
 
   getSeriesColors(form: FormGroup) {

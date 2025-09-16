@@ -9,39 +9,20 @@
 
           <div class="uk-child-width-1-2" uk-grid>
             <div class="">
-              <mat-form-field appearance="outline" class="uk-width-1-1 no-hint">
-                <mat-label>Title Text</mat-label>
-                <input matInput formControlName="titleText">
-              </mat-form-field>
+              <div input placeholder="Title Text" [formInput]="highChartsForm.get('title.titleText')"></div>
             </div>
             <div class="">
-              <mat-form-field appearance="outline" class="uk-width-1-1 no-hint">
-                <mat-label>Title Color</mat-label>
-                <input matInput type="color" formControlName="color">
-              </mat-form-field>
+              <div input placeholder="Title Color" type="color" [formInput]="highChartsForm.get('title.color')"></div>
             </div>
             <div class="">
-              <mat-form-field appearance="outline" class="uk-width-1-1 no-hint">
-                <mat-label>Horizontal Alignment</mat-label>
-                <mat-select formControlName="align">
-                  <mat-option disabled="true">Select One</mat-option>
-                  <mat-option [value]="horizontalAlignment.value" *ngFor="let horizontalAlignment of horizontalAlignmentList">
-                    {{horizontalAlignment.name}}
-                  </mat-option>
-                </mat-select>
-              </mat-form-field>
+              <div input placeholder="Horizontal Alignment" type="select" [formInput]="highChartsForm.get('title.align')"
+                   [options]="horizontalAlignmentList"></div>
             </div>
             <div>
-              <mat-form-field appearance="outline" class="uk-width-1-1 no-hint">
-                <mat-label>Margin</mat-label>
-                <input matInput type="number" formControlName="margin">
-              </mat-form-field>
+              <div input placeholder="Margin" type="number" [formInput]="highChartsForm.get('title.margin')"></div>
             </div>
             <div>
-              <mat-form-field appearance="outline" class="uk-width-1-1 no-hint">
-                <mat-label>Font Size</mat-label>
-                <input matInput type="number" formControlName="fontSize">
-              </mat-form-field>
+              <div input placeholder="Font Size" type="number" [formInput]="highChartsForm.get('title.fontSize')"></div>
             </div>
           </div>
 				</div>
@@ -54,33 +35,17 @@
 
           <div class="uk-child-width-1-2" uk-grid>
             <div class="">
-              <mat-form-field appearance="outline" class="uk-width-1-1 no-hint">
-                <mat-label>Subtitle Text</mat-label>
-                <input matInput placeholder="Subtitle" formControlName="subtitleText">
-              </mat-form-field>
+              <div input placeholder="Subtitle Text" [formInput]="highChartsForm.get('subtitle.subtitleText')"></div>
             </div>
             <div class="">
-              <mat-form-field appearance="outline" class="uk-width-1-1 no-hint">
-                <mat-label>Subtitle Color</mat-label>
-                <input matInput type="color" formControlName="color">
-              </mat-form-field>
+              <div input placeholder="Subtitle Color" type="color" [formInput]="highChartsForm.get('subtitle.color')"></div>
             </div>
             <div class="">
-              <mat-form-field appearance="outline" class="uk-width-1-1 no-hint">
-                <mat-label>Horizontal Alignment</mat-label>
-                <mat-select formControlName="align">
-                  <mat-option disabled="true">Select One</mat-option>
-                  <mat-option [value]="horizontalAlignment.value" *ngFor="let horizontalAlignment of horizontalAlignmentList">
-                    {{horizontalAlignment.name}}
-                  </mat-option>
-                </mat-select>
-              </mat-form-field>
+              <div input placeholder="Horizontal Alignment" type="select" [formInput]="highChartsForm.get('subtitle.align')"
+                   [options]="horizontalAlignmentList"></div>
             </div>
             <div class="">
-              <mat-form-field appearance="outline" class="uk-width-1-1 no-hint">
-                <mat-label>Font Size</mat-label>
-                <input matInput type="number" formControlName="fontSize">
-              </mat-form-field>
+              <div input placeholder="Font Size" type="number" [formInput]="highChartsForm.get('subtitle.fontSize')"></div>
             </div>
           </div>
 
@@ -90,31 +55,18 @@
 				<a class="uk-accordion-title" href>X Axis</a>
 
 				<div class="uk-accordion-content" formGroupName="xAxis">
-					<div>
-						<div style="width: 100%;">
-							<mat-label>Name</mat-label>
-							<br>
-							<mat-form-field>
-								<input matInput placeholder="X Axis Name" formControlName="xAxisText">
-							</mat-form-field>
-						</div>
-					</div>
-					<div>
-						<div style="display: inline-block; margin-right: 40px;">
-							<mat-label>Font Size</mat-label>
-							<br>
-							<mat-form-field>
-								<input matInput type="number" formControlName="fontSize">
-							</mat-form-field>
-						</div>
-						<div style="display: inline-block;">
-							<mat-label>X Axis Color</mat-label>
-							<br>
-							<mat-form-field>
-								<input matInput type="color" formControlName="color">
-							</mat-form-field>
-						</div>
-					</div>
+
+          <div class="uk-child-width-1-2" uk-grid>
+            <div class="">
+              <div input placeholder="X Axis Name" [formInput]="highChartsForm.get('xAxis.xAxisText')"></div>
+            </div>
+            <div class="">
+              <div input placeholder="X Axis Color" type="color" [formInput]="highChartsForm.get('xAxis.color')"></div>
+            </div>
+            <div class="">
+              <div input placeholder="Font Size" type="number" [formInput]="highChartsForm.get('xAxis.fontSize')"></div>
+            </div>
+          </div>
 				</div>
 			</li>
 
@@ -122,31 +74,18 @@
 				<a class="uk-accordion-title" href>Y Axis</a>
 
 				<div class="uk-accordion-content" formGroupName="yAxis">
-					<div>
-						<div style="width: 100%;">
-							<mat-label>Name</mat-label>
-							<br>
-							<mat-form-field>
-								<input matInput placeholder="Y Axis Name" formControlName="yAxisText">
-							</mat-form-field>
-						</div>
-					</div>
-					<div>
-						<div style="display: inline-block; margin-right: 40px;">
-							<mat-label>Font Size</mat-label>
-							<br>
-							<mat-form-field>
-								<input matInput type="number" formControlName="fontSize">
-							</mat-form-field>
-						</div>
-						<div style="display: inline-block;">
-							<mat-label>Y Axis Color</mat-label>
-							<br>
-							<mat-form-field>
-								<input matInput type="color" formControlName="color">
-							</mat-form-field>
-						</div>
-					</div>
+
+          <div class="uk-child-width-1-2" uk-grid>
+            <div class="">
+              <div input placeholder="Y Axis Name" [formInput]="highChartsForm.get('yAxis.yAxisText')"></div>
+            </div>
+            <div class="">
+              <div input placeholder="Y Axis Color" type="color" [formInput]="highChartsForm.get('yAxis.color')"></div>
+            </div>
+            <div class="">
+              <div input placeholder="Font Size" type="number" [formInput]="highChartsForm.get('yAxis.fontSize')"></div>
+            </div>
+          </div>
 				</div>
 			</li>
 
@@ -154,30 +93,20 @@
 				<a class="uk-accordion-title" href>Misc Options</a>
 
 				<div class="uk-accordion-content" formGroupName="hcMiscOptions">
-					<div>
-						<div>
-							<mat-slide-toggle formControlName="exporting">Enable Exporting</mat-slide-toggle>
-						</div>
-					</div>
 
-					<div>
-						<div>
-							<mat-slide-toggle formControlName="drilldown">Enable Drilldown</mat-slide-toggle>
-						</div>
-					</div>
+          <div class="uk-child-width-1-2" uk-grid>
+            <div class="">
+              <mat-slide-toggle formControlName="exporting">Enable Exporting</mat-slide-toggle>
+            </div>
+            <div class="">
+              <mat-slide-toggle formControlName="drilldown">Enable Drilldown</mat-slide-toggle>
+            </div>
+            <div class="">
+              <div input placeholder="Stacked Graph" type="select" [formInput]="highChartsForm.get('hcMiscOptions.stackedChart')"
+                   [options]="stackedGraphList"></div>
+            </div>
+          </div>
 
-					<div style="margin-top: 20px;">
-						<mat-label>Stacked Graph</mat-label>
-						<br>
-						<mat-form-field>
-							<mat-select formControlName="stackedChart">
-								<mat-option disabled="true">Select One</mat-option>
-								<mat-option [value]="stackedGraph.value" *ngFor="let stackedGraph of stackedGraphList">
-									{{stackedGraph.name}}
-								</mat-option>
-							</mat-select>
-						</mat-form-field>
-					</div>
 				</div>
 			</li>
 
@@ -185,43 +114,21 @@
 				<a class="uk-accordion-title" href>Chart Area</a>
 
 				<div class="uk-accordion-content" formGroupName="hcChartArea">
-					<h5>Chart Area</h5>
 
-					<div>
-						<div style="display: inline-block; margin-right: 40px;">
-							<mat-label>Background Color</mat-label>
-							<br>
-							<mat-form-field>
-								<input matInput type="color" formControlName="hcCABackGroundColor">
-							</mat-form-field>
-						</div>
-
-						<div style="display: inline-block;">
-							<mat-label>Border Color</mat-label>
-							<br>
-							<mat-form-field>
-								<input matInput type="color" formControlName="hcCABorderColor">
-							</mat-form-field>
-						</div>
-					</div>
-
-					<div>
-						<div style="display: inline-block; margin-right: 40px;">
-							<mat-label>Border Corner Radius</mat-label>
-							<br>
-							<mat-form-field>
-								<input matInput type="number" formControlName="hcCABorderCornerRadius">
-							</mat-form-field>
-						</div>
-
-						<div style="display: inline-block;">
-							<mat-label>Border Width</mat-label>
-							<br>
-							<mat-form-field>
-								<input matInput type="number" formControlName="hcCABorderWidth">
-							</mat-form-field>
-						</div>
-					</div>
+          <div class="uk-child-width-1-2" uk-grid>
+            <div class="">
+              <div input placeholder="Background Color" hint=" " type="color" [formInput]="highChartsForm.get('hcChartArea.hcCABackGroundColor')"></div>
+            </div>
+            <div class="">
+              <div input placeholder="Border Color" type="color" [formInput]="highChartsForm.get('hcChartArea.hcCABorderColor')"></div>
+            </div>
+            <div class="">
+              <div input placeholder="Border Radius" type="number" [formInput]="highChartsForm.get('hcChartArea.hcCABorderCornerRadius')"></div>
+            </div>
+            <div class="">
+              <div input placeholder="Border Width" type="number" [formInput]="highChartsForm.get('hcChartArea.hcCABorderWidth')"></div>
+            </div>
+          </div>
 				</div>
 			</li>
 
@@ -231,41 +138,21 @@
 
 				<div class="uk-accordion-content" formGroupName="hcPlotArea">
 
-					<div>
-						<div style="display: inline-block; margin-right: 40px;">
-							<mat-label>Background Color</mat-label>
-							<br>
-							<mat-form-field>
-								<input matInput type="color" formControlName="hcPABackgroundColor">
-							</mat-form-field>
-						</div>
-
-						<div style="display: inline-block;">
-							<mat-label>Border Color</mat-label>
-							<br>
-							<mat-form-field>
-								<input matInput type="color" formControlName="hcPABorderColor">
-							</mat-form-field>
-						</div>
-					</div>
-
-					<div>
-						<div style="display: inline-block; margin-right: 40px;">
-							<mat-label>Background Image URL</mat-label>
-							<br>
-							<mat-form-field>
-								<input matInput placeholder="https://domain.com/picture.png" formControlName="hcPABackgroundImageURL">
-							</mat-form-field>
-						</div>
-
-						<div style="display: inline-block;">
-							<mat-label>Border Width</mat-label>
-							<br>
-							<mat-form-field>
-								<input matInput type="number" formControlName="hcPABorderWidth">
-							</mat-form-field>
-						</div>
-					</div>
+          <div class="uk-child-width-1-2" uk-grid>
+            <div class="">
+              <div input placeholder="Background Color" type="color" [formInput]="highChartsForm.get('hcPlotArea.hcPABackgroundColor')"></div>
+            </div>
+            <div class="">
+              <div input placeholder="Border Color" type="color" [formInput]="highChartsForm.get('hcPlotArea.hcPABorderColor')"></div>
+            </div>
+            <div class="">
+              <div input placeholder="Background Image URL" type="URL" hint="https://domain.com/picture.png"
+                   [formInput]="highChartsForm.get('hcPlotArea.hcPABackgroundImageURL')"></div>
+            </div>
+            <div class="">
+              <div input placeholder="Border Width" type="number" [formInput]="highChartsForm.get('hcPlotArea.hcPABorderWidth')"></div>
+            </div>
+          </div>
 				</div>
 			</li>
 
@@ -274,15 +161,15 @@
 				<a class="uk-accordion-title" href>Data Labels</a>
 
 				<div class="uk-accordion-content" formGroupName="hcDataLabels">
-          <div>
-            <mat-slide-toggle formControlName="enabled">Enable data labels for all series</mat-slide-toggle>
+
+          <div class="" uk-grid>
+            <div class="">
+              <mat-slide-toggle formControlName="enabled">Enable data labels for all series</mat-slide-toggle>
+            </div>
+            <div class="uk-width-expand" *ngIf="highChartsForm.get('hcDataLabels.enabled').value">
+              <div input placeholder="Data Label Color" type="color" [formInput]="highChartsForm.get('hcDataLabels.style.color')"></div>
+            </div>
           </div>
-          <div *ngIf="highChartsForm.get('hcDataLabels.enabled').value" formGroupName="style">
-            <mat-label>Data Label Color</mat-label><br>
-            <mat-form-field>
-              <input matInput type="color" formControlName="color">
-            </mat-form-field>
-					</div>
 				</div>
 			</li>
 
@@ -291,12 +178,16 @@
 				<a class="uk-accordion-title" href>Credits</a>
 
 				<div class="uk-accordion-content" formGroupName="hcCredits">
-					<div>
-            <mat-slide-toggle formControlName="hcEnableCredits">Enable Credits</mat-slide-toggle>
+
+          <div class="" uk-grid>
+            <div class="">
+              <mat-slide-toggle formControlName="hcEnableCredits">Enable Credits</mat-slide-toggle>
+            </div>
+            <div class="uk-width-expand" *ngIf="highChartsForm.get('hcCredits.hcEnableCredits').value">
+              <div input placeholder="Credits Text" [formInput]="highChartsForm.get('hcCredits.hcCreditsText')"></div>
+            </div>
           </div>
-          <div *ngIf="highChartsForm.get('hcCredits.hcEnableCredits').value" class="uk-margin-top">
-            <div input placeholder="Credits Text" [formInput]="highChartsForm.get('hcCredits.hcCreditsText')"></div>
-          </div>
+
 				</div>
 			</li>
 
@@ -305,50 +196,26 @@
 				<a class="uk-accordion-title" href>Legend</a>
 
 				<div class="uk-accordion-content" formGroupName="hcLegend">
-					<div>
-						<div>
-							<mat-slide-toggle formControlName="hcEnableLegend">Enable Legend</mat-slide-toggle>
-						</div>
-					</div>
 
-					<div *ngIf="highChartsForm.get('hcLegend.hcEnableLegend').value">
-						<div style="display: inline-block; margin-right: 40px;">
-							<mat-label>Item Layout</mat-label>
-							<br>
-							<mat-form-field>
-								<mat-select formControlName="hcLegendLayout">
-									<mat-option disabled="true">Select One</mat-option>
-									<mat-option [value]="itemLayout.value" *ngFor="let itemLayout of itemLayoutList">
-										{{itemLayout.name}}
-									</mat-option>
-								</mat-select>
-							</mat-form-field>
-						</div>
-						<div style="display: inline-block; margin-right: 40px;">
-							<mat-label>Horizontal Alignment</mat-label>
-							<br>
-							<mat-form-field>
-								<mat-select formControlName="hcLegendHorizontalAlignment">
-									<mat-option disabled="true">Select One</mat-option>
-									<mat-option [value]="horizontalAlignment.value" *ngFor="let horizontalAlignment of horizontalAlignmentList">
-										{{horizontalAlignment.name}}
-									</mat-option>
-								</mat-select>
-							</mat-form-field>
-						</div>
-						<div style="display: inline-block;">
-							<mat-label>Vertical Alignment</mat-label>
-							<br>
-							<mat-form-field>
-								<mat-select formControlName="hcLegendVerticalAlignment">
-									<mat-option disabled="true">Select One</mat-option>
-									<mat-option [value]="verticalAlignment.value" *ngFor="let verticalAlignment of verticalAlignmentList">
-										{{verticalAlignment.name}}
-									</mat-option>
-								</mat-select>
-							</mat-form-field>
-						</div>
-					</div>
+          <div>
+            <mat-slide-toggle formControlName="hcEnableLegend">Enable Legend</mat-slide-toggle>
+          </div>
+
+          <div *ngIf="highChartsForm.get('hcLegend.hcEnableLegend').value" class="uk-child-width-1-3 uk-margin-medium-top" uk-grid>
+            <div class="">
+              <div input placeholder="Item Layout" type="select" [formInput]="highChartsForm.get('hcLegend.hcLegendLayout')"
+                   [options]="itemLayoutList"></div>
+            </div>
+            <div class="">
+              <div input placeholder="Horizontal Alignment" type="select" [formInput]="highChartsForm.get('hcLegend.hcLegendHorizontalAlignment')"
+                   [options]="horizontalAlignmentList"></div>
+            </div>
+            <div class="">
+              <div input placeholder="Vertical Alignment" type="select" [formInput]="highChartsForm.get('hcLegend.hcLegendVerticalAlignment')"
+                   [options]="verticalAlignmentList"></div>
+            </div>
+          </div>
+
 				</div>
 			</li>
 
@@ -357,17 +224,16 @@
 				<a class="uk-accordion-title" href>Zoom Options</a>
 
 				<div class="uk-accordion-content" formGroupName="hcZoomOptions">
-					<div>
-						<div>
-							<mat-slide-toggle formControlName="enableXaxisZoom">Enable X axis Zoom</mat-slide-toggle>
-						</div>
-					</div>
 
-					<div>
-						<div>
-							<mat-slide-toggle formControlName="enableYaxisZoom">Enable Y axis Zoom</mat-slide-toggle>
-						</div>
-					</div>
+          <div class="uk-child-width-1-2" uk-grid>
+            <div class="">
+              <mat-slide-toggle formControlName="enableXaxisZoom">Enable X axis Zoom</mat-slide-toggle>
+            </div>
+            <div class="">
+              <mat-slide-toggle formControlName="enableYaxisZoom">Enable Y axis Zoom</mat-slide-toggle>
+            </div>
+          </div>
+
 				</div>
 			</li>
 
@@ -378,14 +244,17 @@
 				<div class="uk-accordion-content" formArrayName="dataSeriesColorArray">
 
 					<ng-container *ngFor="let dataSeriesColor of getSeriesColors(highChartsForm); let i = index">
-						<div>
-							<input type="color" [formControlName]="i">
-							<button (click)="removeSeriesColor(highChartsForm, i)">X</button>
+						<div class="uk-flex uk-flex-middle uk-grid-small" uk-grid>
+              <div class="uk-width-expand" input type="color" [formInput]="highChartsForm.get('dataSeriesColorArray').get(i.toString())"></div>
+							<a (click)="removeSeriesColor(highChartsForm, i)" class="uk-link-reset"><span class="material-symbols-outlined uk-margin-small-left">close</span></a>
 						</div>
 					</ng-container>
 
-					<div>
-						<button (click)="addSeriesColor(highChartsForm)">+ Add Series Color</button>
+					<div class="uk-margin-top">
+            <a class="uk-link uk-flex uk-flex-middle" (click)="addSeriesColor(highChartsForm)">
+              <span class="material-symbols-outlined">add</span>
+              <span>Add Series Color</span>
+            </a>
 					</div>
 
 				</div>

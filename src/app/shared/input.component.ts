@@ -33,6 +33,8 @@ import { MatInputModule } from '@angular/material/input';
 
 export type InputType =
     'text'
+    | 'number'
+    | 'color'
     | 'URL'
     | 'logoURL'
     | 'autocomplete'
@@ -84,7 +86,7 @@ declare var UIkit;
     <div *ngIf="formControl" [id]="id">
       <div class="input-wrapper" [class.disabled]="formControl.disabled" [class.opened]="opened"
            [class.focused]="focused" [ngClass]="inputClass" [class.hint]="hint"
-           [class.active]="!focused && (formAsControl?.value || selectable || type === 'date' || formAsArray?.length > 0 || getLabel(formAsControl?.value) || yearRangeActive)"
+           [class.active]="!focused && (formAsControl?.value || formAsControl?.value === 0 || selectable || type === 'date' || formAsArray?.length > 0 || getLabel(formAsControl?.value) || yearRangeActive)"
            [class.danger]="(formControl.invalid && (formControl.touched || !!searchControl?.touched)) || (!!searchControl?.invalid && !!searchControl?.touched)">
         <div #inputBox class="input-box" [class.select]="selectable || type ==='date'"
              [class.static]="placeholderInfo?.static">
@@ -105,6 +107,18 @@ declare var UIkit;
               <textarea #textArea class="input"
                         [attr.placeholder]="placeholderInfo?.static?placeholderInfo.label:hint"
                         [rows]="rows" [formControl]="formAsControl"></textarea>
+            </ng-template>
+            <ng-template [ngIf]="type === 'number'">
+              <input #input class="input" type="number"
+                     [attr.placeholder]="placeholderInfo?.static?placeholderInfo.label:hint"
+                     [formControl]="formAsControl"
+                     [class.uk-text-truncate]="!focused">
+            </ng-template>
+            <ng-template [ngIf]="type === 'color'">
+              <input #input class="input" type="color"
+                     [attr.placeholder]="placeholderInfo?.static?placeholderInfo.label:hint"
+                     [formControl]="formAsControl"
+                     [class.uk-text-truncate]="!focused">
             </ng-template>
             <ng-template [ngIf]="type === 'select'">
               <ng-container *ngIf="placeholderInfo?.static">

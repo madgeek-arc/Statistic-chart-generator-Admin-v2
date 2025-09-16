@@ -15,14 +15,14 @@ export class CustomiseAppearanceComponent {
 	// TODO
 	// comes from backend!
 	protected visualisationLibraryList = [
-		{ name: 'HighCharts', value: 'HighCharts' },
-		{ name: 'GoogleCharts', value: 'GoogleCharts' },
-		{ name: 'eCharts', value: 'eCharts' }
+		{ label: 'HighCharts', value: 'HighCharts' },
+		{ label: 'GoogleCharts', value: 'GoogleCharts' },
+		{ label: 'eCharts', value: 'eCharts' }
 	];
 
 	protected orderByList = [
-		{ name: 'X Axis', value: 'xaxis' },
-		{ name: 'Y Axis', value: 'yaxis' }
+		{ label: 'X Axis', value: 'xaxis' },
+		{ label: 'Y Axis', value: 'yaxis' }
 	];
 
 	libraryChange(event: any) {
