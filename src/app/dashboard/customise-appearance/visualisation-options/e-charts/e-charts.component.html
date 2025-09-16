@@ -1,176 +1,145 @@
 <div style="width: 100%;" [formGroup]="this.eChartsForm">
 
-	<div>
-		<button (click)="testButton()">Click</button>
-	</div>
+  <div>
+    <ul data-uk-accordion="multiple: true">
+      <li class="uk-open">
+        <a class="uk-accordion-title" href>Titles</a>
 
-	<div style="width: 50%; display: inline-block;">
-		<div formGroupName="titles">
-			<h5 style="font-weight: bold;">Diagram Title</h5>
-			<mat-divider></mat-divider>
+        <div class="uk-accordion-content" formGroupName="titles">
 
-			<div>
-				<div style="display: inline-block; margin-right: 40px;">
-					<mat-label>Title</mat-label>
-					<br>
-					<mat-form-field>
-						<input matInput placeholder="Title" formControlName="title">
-					</mat-form-field>
-				</div>
-				<div style="display: inline-block;">
-					<mat-label>Title Color</mat-label>
-					<br>
-					<mat-form-field>
-						<input matInput placeholder="Subtitle" formControlName="subtitle">
-					</mat-form-field>
-				</div>
-			</div>
-		</div>
-		<div formGroupName="axisNames">
-			<h5 style="font-weight: bold;">Axis Names</h5>
-			<mat-divider></mat-divider>
+          <div class="uk-child-width-1-2" uk-grid>
+            <div class="">
+              <div input placeholder="Title Text" [formInput]="eChartsForm.get('titles.title')"></div>
+            </div>
+            <div class="">
+              <div input placeholder="Subtitle Text" [formInput]="eChartsForm.get('titles.subtitle')"></div>
+            </div>
+          </div>
 
-			<div>
-				<div style="display: inline-block; margin-right: 40px;">
-					<mat-label>Yaxis</mat-label>
-					<br>
-					<mat-form-field>
-						<input matInput placeholder="Yaxis" formControlName="yaxisName">
-					</mat-form-field>
-				</div>
-				<div style="display: inline-block;">
-					<mat-label>Xaxis</mat-label>
-					<br>
-					<mat-form-field>
-						<input matInput placeholder="Xaxis" formControlName="xaxisName">
-					</mat-form-field>
-				</div>
-			</div>
-		</div>
-		<div formGroupName="ecMiscOptions">
-			<h5 style="font-weight: bold;">Misc Options</h5>
-			<mat-divider style="margin-bottom: 30px;"></mat-divider>
+        </div>
+      </li>
+      <li class="">
+        <a class="uk-accordion-title" href>Axis Names</a>
 
-			<div>
-				<div>
-					<mat-slide-toggle formControlName="exporting">Enable Exporting </mat-slide-toggle><mat-icon>info</mat-icon>
-				</div>
-			</div>
+        <div class="uk-accordion-content" formGroupName="axisNames">
 
-			<div>
-				<div>
-					<mat-slide-toggle formControlName="ecEnableDataLabels">Enable data labels for all series </mat-slide-toggle><mat-icon>info</mat-icon>
-				</div>
-			</div>
+          <div class="uk-child-width-1-2" uk-grid>
+            <div class="">
+              <div input placeholder="Y Axis" [formInput]="eChartsForm.get('axisNames.yaxisName')"></div>
+            </div>
+            <div class="">
+              <div input placeholder="X Axis" [formInput]="eChartsForm.get('axisNames.xaxisName')"></div>
+            </div>
+          </div>
 
-			<div>
-				<div>
-					<mat-slide-toggle formControlName="stackedChart">Stacked graph </mat-slide-toggle><mat-icon>info</mat-icon>
-				</div>
-			</div>
+        </div>
+      </li>
+      <li class="">
+        <a class="uk-accordion-title" href>Misc Options</a>
 
-		</div>
-	</div>
-	<div style="width: 50%; display: inline-block;">
-		<div formGroupName="ecLegend">
-			<h5>Legend</h5>
-			<mat-divider></mat-divider>
+        <div class="uk-accordion-content" formGroupName="ecMiscOptions">
 
-			<div>
-				<div>
-					<mat-slide-toggle formControlName="ecEnableLegend">Enable Legend </mat-slide-toggle><mat-icon>info</mat-icon>
-				</div>
-			</div>
+          <div class="uk-child-width-1-2" uk-grid>
+            <div class="uk-flex uk-flex-middle">
+              <mat-slide-toggle formControlName="exporting">Enable Exporting</mat-slide-toggle>
+              <span class="material-symbols-outlined uk-margin-small-left">info</span>
+            </div>
+            <div class="uk-flex uk-flex-middle">
+              <mat-slide-toggle formControlName="ecEnableDataLabels">Enable data labels for all series</mat-slide-toggle>
+              <span class="material-symbols-outlined uk-margin-small-left">info</span>
+            </div>
+            <div class="uk-flex uk-flex-middle">
+              <mat-slide-toggle formControlName="stackedChart">Stacked graph</mat-slide-toggle>
+              <span class="material-symbols-outlined uk-margin-small-left">info</span>
+            </div>
+          </div>
 
-			<div>
-				<div style="width: 30%; display: inline-block; margin-right: 40px;">
-					<mat-label>Item Layouts</mat-label>
-					<br>
-					<mat-form-field>
-						<mat-select formControlName="ecLegendLayout">
-							<mat-option disabled="true">Select One</mat-option>
-							<mat-option [value]="itemLayout.value" *ngFor="let itemLayout of itemLayoutList">
-								{{itemLayout.name}}
-							</mat-option>
-						</mat-select>
-					</mat-form-field>
-				</div>
+        </div>
+      </li>
 
-				<div style="width: 30%; display: inline-block; margin-right: 40px;">
-					<mat-label>Horizontal Alignment</mat-label>
-					<br>
-					<mat-form-field>
-						<mat-select formControlName="ecLegendHorizontalAlignment">
-							<mat-option disabled="true">Select One</mat-option>
-							<mat-option [value]="horizontalAlignment.value" *ngFor="let horizontalAlignment of horizontalAlignmentList">
-								{{horizontalAlignment.name}}
-							</mat-option>
-						</mat-select>
-					</mat-form-field>
-				</div>
+      <li>
+        <a class="uk-accordion-title" href>Legend</a>
 
-				<div style="width: 30%; display: inline-block;">
-					<mat-label>Vertical Alignment</mat-label>
-					<br>
-					<mat-form-field>
-						<mat-select formControlName="ecLegendVerticalAlignment">
-							<mat-option disabled="true">Select One</mat-option>
-							<mat-option [value]="verticalAlignment.value" *ngFor="let verticalAlignment of verticalAlignmentList">
-								{{verticalAlignment.name}}
-							</mat-option>
-						</mat-select>
-					</mat-form-field>
-				</div>
-			</div>
-		</div>
+        <div class="uk-accordion-content" formGroupName="ecLegend">
 
-		<div formGroupName="ecZoomOptions">
-			<h5>Zoom Options</h5>
-			<mat-divider></mat-divider>
+          <div>
+            <mat-slide-toggle formControlName="ecEnableLegend">Enable Legend</mat-slide-toggle>
+          </div>
 
-			<div>
-				<div>
-					<mat-slide-toggle formControlName="enableXaxisZoom">Enable X axis Zoom</mat-slide-toggle><mat-icon>info</mat-icon>
-				</div>
-			</div>
+          <div *ngIf="eChartsForm.get('ecLegend.ecEnableLegend').value" class="uk-child-width-1-3 uk-margin-medium-top" uk-grid>
+            <div class="">
+              <div input placeholder="Item Layout" type="select" [formInput]="eChartsForm.get('ecLegend.ecLegendLayout')"
+                   [options]="itemLayoutList"></div>
+            </div>
+            <div class="">
+              <div input placeholder="Horizontal Alignment" type="select" [formInput]="eChartsForm.get('ecLegend.ecLegendHorizontalAlignment')"
+                   [options]="horizontalAlignmentList"></div>
+            </div>
+            <div class="">
+              <div input placeholder="Vertical Alignment" type="select" [formInput]="eChartsForm.get('ecLegend.ecLegendVerticalAlignment')"
+                   [options]="verticalAlignmentList"></div>
+            </div>
+          </div>
 
-			<div>
-				<div>
-					<mat-slide-toggle formControlName="enableYaxisZoom">Enable Y axis Zoom </mat-slide-toggle><mat-icon>info</mat-icon>
-				</div>
-			</div>
-		</div>
+        </div>
+      </li>
 
-		<div formGroupName="ecChartArea">
-			<h5>Chart Area</h5>
-			<mat-divider></mat-divider>
+      <li>
+        <a class="uk-accordion-title" href>Zoom Options</a>
 
-			<div>
-				<div>
-					<mat-label>Background Color</mat-label>
-					<br>
-					<mat-form-field>
-						<input matInput type="color" formControlName="ecCABackGroundColor">
-					</mat-form-field>
-				</div>
-			</div>
-		</div>
+        <div class="uk-accordion-content" formGroupName="ecZoomOptions">
 
-		<div formArrayName="dataSeriesColorArray">
-			<h5>Data Series Color</h5>
-			<mat-divider></mat-divider>
+          <div class="uk-child-width-1-2" uk-grid>
+            <div class="uk-flex uk-flex-middle">
+              <mat-slide-toggle formControlName="enableXaxisZoom">Enable X axis Zoom</mat-slide-toggle>
+              <span class="material-symbols-outlined uk-margin-small-left">info</span>
+            </div>
+            <div class="uk-flex uk-flex-middle">
+              <mat-slide-toggle formControlName="enableYaxisZoom">Enable Y axis Zoom</mat-slide-toggle>
+              <span class="material-symbols-outlined uk-margin-small-left">info</span>
+            </div>
+          </div>
 
-			<ng-container *ngFor="let dataSeriesColor of getSeriesColors(this.eChartsForm) ; let i = index">
-				<div>
-					<input type="color" [formControlName]="i">
-					<button (click)="removeSeriesColor(this.eChartsForm, i)">X</button>
-				</div>
-			</ng-container>
+        </div>
+      </li>
 
-			<div>
-				<button (click)="addSeriesColor(this.eChartsForm)">+ Add Series Color</button>
-			</div>
+      <li class="">
+        <a class="uk-accordion-title" href>Chart Area</a>
 
-		</div>
-	</div>
+        <div class="uk-accordion-content">
+
+          <div class="" uk-grid>
+            <div class="uk-width-1-1">
+              <div input placeholder="Background Color" type="color" [formInput]="eChartsForm.get('ecChartArea.ecCABackGroundColor')"></div>
+            </div>
+          </div>
+
+        </div>
+      </li>
+
+      <li>
+        <a class="uk-accordion-title" href>Data Series Color Palette</a>
+
+        <div class="uk-accordion-content" formArrayName="dataSeriesColorArray">
+
+          <ng-container *ngFor="let dataSeriesColor of getSeriesColors(eChartsForm); let i = index">
+            <div class="uk-flex uk-flex-middle uk-grid-small" uk-grid>
+              <div class="uk-width-expand" input type="color" [formInput]="eChartsForm.get('dataSeriesColorArray').get(i.toString())"></div>
+              <a (click)="removeSeriesColor(eChartsForm, i)" class="uk-link-reset"><span class="material-symbols-outlined uk-margin-small-left">close</span></a>
+            </div>
+          </ng-container>
+
+          <div class="uk-margin-top">
+            <a class="uk-link uk-flex uk-flex-middle" (click)="addSeriesColor(eChartsForm)">
+              <span class="material-symbols-outlined">add</span>
+              <span>Add Series Color</span>
+            </a>
+          </div>
+
+        </div>
+      </li>
+
+    </ul>
+  </div>
+  
 </div>

@@ -24,9 +24,4 @@ export class GoogleChartsComponent {
 		}
 	}
 
-
-	testButton(): void {
-		console.log("this.googleChartsForm:", this.googleChartsForm.value);
-	}
-
 }

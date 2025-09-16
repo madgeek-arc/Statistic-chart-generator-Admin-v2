@@ -11,9 +11,9 @@ export class EChartsComponent {
 	@Input('eChartsForm') eChartsForm: FormGroup;
 
 	protected horizontalAlignmentList = [
-		{ name: 'Left', value: 'left' },
-		{ name: 'Center', value: 'center' },
-		{ name: 'Right', value: 'right' }
+		{ label: 'Left', value: 'left' },
+		{ label: 'Center', value: 'center' },
+		{ label: 'Right', value: 'right' }
 	];
 
 	protected stackedGraphList = [
@@ -23,14 +23,14 @@ export class EChartsComponent {
 	];
 
 	protected itemLayoutList = [
-		{ name: 'Horizontal', value: 'horizontal' },
-		{ name: 'Vertical', value: 'vertical' }
+		{ label: 'Horizontal', value: 'horizontal' },
+		{ label: 'Vertical', value: 'vertical' }
 	]
 
 	protected verticalAlignmentList = [
-		{ name: 'Top', value: 'top' },
-		{ name: 'Middle', value: 'middle' },
-		{ name: 'Bottom', value: 'bottom' }
+		{ label: 'Top', value: 'top' },
+		{ label: 'Middle', value: 'middle' },
+		{ label: 'Bottom', value: 'bottom' }
 	];
 
 	constructor() { }
@@ -52,11 +52,6 @@ export class EChartsComponent {
 
 	removeSeriesColor(form: any, index: number) {
 		form.controls.dataSeriesColorArray.removeAt(index);
-	}
-
-
-	testButton(): void {
-		console.log("this.eChartsForm:", this.eChartsForm.value);
 	}
 
 }
