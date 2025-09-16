@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
-import { AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
-import { FormArray, FormControl, FormGroup, FormGroupDirective, Validators } from '@angular/forms';
+import { AfterViewInit, Component, Input, OnInit, ViewChild } from '@angular/core';
+import { FormArray, FormControl, FormGroup, FormGroupDirective } from '@angular/forms';
 import { MatSelectChange } from '@angular/material/select';
 import { BehaviorSubject, first, forkJoin, Observable } from 'rxjs';
 import { Profile } from 'src/app/services/profile-provider/profile-provider.service';
@@ -37,7 +37,6 @@ export class DataseriesSelectorComponent implements OnInit, AfterViewInit {
 	entities: Array<string> = [];
 	selectedEntity: string = '';
 	form: FormArray<FormGroup>;
-	// editableDataseriesTitleList: Array<boolean> = [false];
   selectedTitleIndex = -1;
 	panelOpenState: boolean = false;
 
@@ -48,15 +47,6 @@ export class DataseriesSelectorComponent implements OnInit, AfterViewInit {
 	protected entityMap = new Map<string, CachedEntityNode>(new Map<string, CachedEntityNode>());
 	protected selectedEntityMap: Array<CachedEntityNode> = [];
 
-	// check "getSupportedAggregateFunctionFilterY" in Admin v1 and see if we should change how we get these.
-	// protected aggregates = [
-	// 	{ name: 'Total', code: 'total' },
-	// 	{ name: 'Count', code: 'count' },
-	// 	{ name: 'Sum', code: 'sum' },
-	// 	{ name: 'Minimum', code: 'min' },
-	// 	{ name: 'Maximum', code: 'max' },
-	// 	{ name: 'Average', code: 'avg' }
-	// ];
   protected aggregates = [
     { label: 'Total', value: 'total' },
     { label: 'Count', value: 'count' },
@@ -83,11 +73,6 @@ export class DataseriesSelectorComponent implements OnInit, AfterViewInit {
 		{ name: 'Dependencywheel', value: 'dependencywheel' },
 		{ name: 'Sankey', value: 'sankey' }
 	];
-
-	protected filterFields = [
-		"name",
-		"number"
-	]
 
 	protected filterOperators: FilterType[] = [
 		{ filterOperator: '=', filterName: 'Equals', filterType: [FieldType.text, FieldType.int, FieldType.float, FieldType.date] },
@@ -135,7 +120,6 @@ export class DataseriesSelectorComponent implements OnInit, AfterViewInit {
 			}
 		});
 
-		// this.form = this.rootFormGroup.control.get('dataseries') as FormArray;
 		this.form = this.formGroup.get('dataseries') as FormArray;
 	}
 
@@ -174,7 +158,7 @@ export class DataseriesSelectorComponent implements OnInit, AfterViewInit {
 					this._entityMap$.next(this.entityMap);
 				}
 			});
-		})
+		});
 	}
 
 	getXAxisData(form: any) {
@@ -201,13 +185,7 @@ export class DataseriesSelectorComponent implements OnInit, AfterViewInit {
 
 
 	selectEntity(event: MatSelectChange): void {
-		console.log("selectEntity event:", event);
-		// this.entity.setValue(event.value);
-
 		this.selectedEntity = event.value;
-
-		// check which panels will be opened by default after the creation of the "tree" to see how big it will be depending on the entity selected
-		// testing
 
 		this.panelOpenState = true;
 
@@ -217,8 +195,6 @@ export class DataseriesSelectorComponent implements OnInit, AfterViewInit {
 			}
 		});
 
-
-		console.log("selectedEntityMap:", this.selectedEntityMap);
 	}
 
 	isExpandionPanelOpen(event: any): boolean {
@@ -230,12 +206,7 @@ export class DataseriesSelectorComponent implements OnInit, AfterViewInit {
 	}
 
 	addFilter(form: any) {
-		form.controls.data.controls.filters.push(
-			new FormGroup({
-				groupFilters: new FormArray([]),
-				op: new FormControl<'AND' | 'OR'>('AND')
-			})
-		);
+		form.controls.data.controls.filters.push(this.formFactory.createFilterGroup());
     this.addFilterRule(form.controls.data.controls.filters.controls[form.controls.data.controls.filters.controls.length - 1]);
   }
 
@@ -244,18 +215,7 @@ export class DataseriesSelectorComponent implements OnInit, AfterViewInit {
 	}
 
 	addFilterRule(form: any) {
-		form.controls.groupFilters.push(
-			new FormGroup({
-				field: new FormGroup({
-					name: new FormControl<string | null>(null),
-					type: new FormControl<string | null>(null)
-				}),
-				type: new FormControl<string | null>({value: null, disabled: true}),
-				values: new FormArray([
-					new FormControl(null)
-				])
-			})
-		);
+		form.controls.groupFilters.push(this.formFactory.createFilterRuleGroup());
 
     let index = form.controls.groupFilters.controls.length - 1;
     form.controls.groupFilters.controls[index].get('field.type').valueChanges.subscribe({
@@ -272,14 +232,7 @@ export class DataseriesSelectorComponent implements OnInit, AfterViewInit {
 	}
 
 	addEntityField(form: any) {
-		form.controls.data.controls.xaxisData.push(
-			new FormGroup({
-				xaxisEntityField: new FormGroup({
-					name: new FormControl<string | null>(null),
-					type: new FormControl<string | null>(null)
-				})
-			})
-		);
+		form.controls.data.controls.xaxisData.push(this.formFactory.createXaxisEntityField());
 
 		if (form.controls.data.controls.xaxisData.length === 2) {
 			this.hasTwoEntityFields = true;
@@ -297,15 +250,22 @@ export class DataseriesSelectorComponent implements OnInit, AfterViewInit {
 
 	addDataseries() {
 		this.dataseriesIncremment++;
-    this.form.push(
-      this.formFactory.createDataseriesGroup(this.dataseriesIncremment)
-    );
+    this.form.push(this.formFactory.createDataseriesGroup(this.dataseriesIncremment));
 
     setTimeout(() => {
       UIkit.tab('#dataseriesList').show(this.form.controls.length-1);
     });
 
 	}
+
+  duplicateDataseries(index: number) {
+    const original = this.form.at(index) as FormGroup;
+    console.log('duplicate: original.getRawValue() =', JSON.stringify(original.getRawValue()));
+    // optional: also show serialized (value+disabled)
+    console.log('duplicate: original.serializeControl =', JSON.stringify(this.formFactory.serializeControl(original)));
+    const copy = this.formFactory.createDataseriesGroup(index+1, original.getRawValue());
+    this.form.push(copy);
+  }
 
 	removeDataseries(index: number) {
 		this.form.removeAt(index);

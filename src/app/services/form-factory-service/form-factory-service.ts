@@ -1,10 +1,57 @@
-import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
 import { Injectable } from "@angular/core";
 
 @Injectable({ providedIn: 'root' })
 
 export class FormFactoryService {
   constructor(private fb: FormBuilder) {}
+
+  //////////////////////
+  // Helpers
+  //////////////////////
+  private unwrapValue(node: any) {
+    // If the node is of shape { value: ..., disabled: ... } return .value
+    // Otherwise return the node itself (primitive or object)
+    if (node !== null && node !== undefined && typeof node === 'object' && 'value' in node) {
+      return node.value;
+    }
+    return node;
+  }
+
+  private isDisabled(node: any): boolean {
+    // If a node is of shape { disabled: true }, we honor it, otherwise false
+    return !!(node && typeof node === 'object' && node.disabled === true);
+  }
+
+  private controlFromRaw<T = any>(rawNode: any, fallback: T = null, validators?: any) {
+    const value = this.unwrapValue(rawNode);
+    const disabled = this.isDisabled(rawNode);
+    return this.fb.control({ value: value ?? fallback, disabled }, validators);
+  }
+
+  /**
+   * Optional: serialize a control tree to { value, disabled } shape
+   * Use this if you want to duplicate while preserving the disabled state.
+   */
+  serializeControl(control: AbstractControl): any {
+    if (control instanceof FormControl) {
+      return { value: control.value, disabled: control.disabled };
+    }
+
+    if (control instanceof FormGroup) {
+      const obj: any = {};
+      Object.keys(control.controls).forEach(k => {
+        obj[k] = this.serializeControl(control.controls[k]);
+      });
+      return obj;
+    }
+
+    if (control instanceof FormArray) {
+      return control.controls.map(c => this.serializeControl(c));
+    }
+
+    return null;
+  }
 
   createForm() {
     return this.fb.group({
@@ -43,34 +90,93 @@ export class FormFactoryService {
     ]);
   }
 
-  createDataseriesGroup(index: number): FormGroup {
+  createDataseriesGroup(index: number, rawValue?: any): FormGroup {
+    const rv = rawValue ?? {};
+
+    console.log('createDataseriesGroup called with index=', index);
+    console.log('rv.data.xaxisData =', rv?.data?.xaxisData);
+    // for each element show its shape:
+    (rv?.data?.xaxisData ?? []).forEach((x: any, i: number) =>
+      console.log(`xaxis[${i}] =`, JSON.stringify(x), 'type:', typeof x, x)
+    );
+
+
+    // xaxisData: keep default one entry if none provided (same behavior as the original skeleton)
+    const xaxisRaw = rv?.data?.xaxisData ?? [];
+    const xaxisControls = (xaxisRaw.length > 0 ? xaxisRaw : [ {} ]).map((x: any) =>
+      this.fb.group({
+        xaxisEntityField: this.fb.group({
+          name: this.controlFromRaw<string | null>(x?.xaxisEntityField?.name, null),
+          type: this.controlFromRaw<string | null>(x?.xaxisEntityField?.type, null)
+        })
+      })
+    );
+
+    // filters: map existing or default to an empty array
+    const filtersRaw = rv?.data?.filters ?? [];
+    const filtersControls = filtersRaw.map((f: any) => this.createFilterGroup(f));
+
     return this.fb.group({
       data: this.fb.group({
         yaxisData: this.fb.group({
-          entity: this.fb.control<string | null>(null, Validators.required),
-          yaxisAggregate: this.fb.control<string | null>(null, Validators.required),
+          entity: this.controlFromRaw<string | null>(rv?.data?.yaxisData?.entity, null, Validators.required),
+          yaxisAggregate: this.controlFromRaw<string | null>(rv?.data?.yaxisData?.yaxisAggregate, null, Validators.required),
           yaxisEntityField: this.fb.group({
-            name: this.fb.control<string | null>(null),
-            type: this.fb.control<string | null>(null)
+            name: this.controlFromRaw<string | null>(rv?.data?.yaxisData?.yaxisEntityField?.name, null),
+            type: this.controlFromRaw<string | null>(rv?.data?.yaxisData?.yaxisEntityField?.type, null)
           }),
         }),
-        xaxisData: this.fb.array([
-          this.fb.group({
-            xaxisEntityField: this.fb.group({
-              name: this.fb.control<string | null>(null),
-              type: this.fb.control<string | null>(null)
-            })
-          })
-        ]),
-        filters: this.fb.array([])
+        xaxisData: this.fb.array(xaxisControls),
+        filters: this.fb.array(filtersControls)
       }),
       chartProperties: this.fb.group({
-        chartType: this.fb.control<string | null>(null),
-        dataseriesColor: this.fb.control<string | null>(null),
-        dataseriesName: this.fb.control<string>('Data' + (index > 0 ? '(' + index + ')' : '')),
-        stacking: this.fb.control<'null' | 'normal' | 'percent' | 'stream' | 'overlap'>('null', Validators.required),
+        chartType: this.controlFromRaw<string | null>(rv?.chartProperties?.chartType, null),
+        dataseriesColor: this.controlFromRaw<string | null>(rv?.chartProperties?.dataseriesColor, null),
+        dataseriesName: this.controlFromRaw<string>(rv?.chartProperties?.dataseriesName, 'Data' + (index > 0 ? `(${index})` : '')),
+        stacking: this.controlFromRaw<'null' | 'normal' | 'percent' | 'stream' | 'overlap'>(rv?.chartProperties?.stacking ?? 'null', 'null', Validators.required)
+      })
+    });
+  }
+
+  createXaxisEntityField(rawValue?: any): FormGroup {
+    const rv = rawValue ?? {};
+    const node = rv?.xaxisEntityField ?? rv;
+
+    return this.fb.group({
+      xaxisEntityField: this.fb.group({
+        name: this.controlFromRaw<string | null>(node?.name, null),
+        type: this.controlFromRaw<string | null>(node?.type, null),
+      })
+    });
+  }
+
+  createFilterGroup(rawValue?: any): FormGroup {
+    const rv = rawValue ?? {};
+    const groupFiltersRaw = rv?.groupFilters ?? [];
+    const groupFiltersControls = groupFiltersRaw.map((gf: any) => this.createFilterRuleGroup(gf));
+
+    return this.fb.group({
+      groupFilters: this.fb.array(groupFiltersControls),
+      op: this.controlFromRaw<'AND' | 'OR'>(rv?.op ?? 'AND')
+    });
+  }
+
+  createFilterRuleGroup(rawValue?: any): FormGroup {
+    const rv = rawValue ?? {};
+
+    // values: if none provided create one control with null (keeps previous skeleton behavior)
+    const valuesRaw = (rv?.values && rv.values.length > 0) ? rv.values : [ null ];
+    const valuesControls = valuesRaw.map((v: any) => this.controlFromRaw(v, null));
+
+    return this.fb.group({
+      field: this.fb.group({
+        name: this.controlFromRaw<string | null>(rv?.field?.name, null),
+        type: this.controlFromRaw<string | null>(rv?.field?.type, null)
       }),
-    })
+      // keep previous behavior: by default, 'type' was disabled in your original factory
+      type: this.controlFromRaw<string | null>(rv?.type ?? { value: null, disabled: true }),
+      values: this.fb.array(valuesControls)
+    });
   }
 
   createAppearanceGroup() {
