@@ -283,28 +283,6 @@
       }
     }
 
-    //#sidebar_content {
-    //  width: @dashboard-sidebar-width;
-    //  position: absolute;
-    //  top: 0;
-    //  bottom: 0;
-    //  left: 0;
-    //  z-index: @dashboard-z-index;
-    //  background: @dashboard-sidebar-background;
-    //  border: @dashboard-sidebar-border-width solid @dashboard-sidebar-border;
-    //  border-left: none;
-    //  transition: width @dashboard-transition-delay linear;
-    //  -webkit-transition: width @dashboard-transition-delay linear;
-    //  -moz-transition: width @dashboard-transition-delay linear;
-    //  -o-transition: width @dashboard-transition-delay linear;
-    //  overflow-y: auto;
-    //
-    //  & #sidebar_logo:extend(.uk-flex):extend(.uk-flex-center) {
-    //    & > img {
-    //      width: @dashboard-logo-width;
-    //    }
-    //  }
-    //}
     #sidebar_content {
       width: @dashboard-sidebar-width;
       position: absolute;
@@ -313,55 +291,78 @@
       left: 0;
       z-index: @dashboard-z-index;
       background: @dashboard-sidebar-background;
-      //border: @dashboard-sidebar-border-width solid @dashboard-sidebar-border;
-      //border: @dashboard-sidebar-border-width solid #acb7bd;
+      border: @dashboard-sidebar-border-width solid @dashboard-sidebar-border;
       border-left: none;
-      border-top: none;
       transition: width @dashboard-transition-delay linear;
       -webkit-transition: width @dashboard-transition-delay linear;
       -moz-transition: width @dashboard-transition-delay linear;
       -o-transition: width @dashboard-transition-delay linear;
       overflow-y: auto;
-      padding-top: 5px;
-      border-right: 1px solid #EAEAEA;
 
-      ul > li {
-        border-right: 4px solid;
-        border-color: transparent;
-      }
-
-      ul > li > a {
-        min-height: 40px;
-        display: flex;
-        align-items: center;
-        //margin: 5px 0px 5px 5px;
-        margin: 35px 10px;
-        padding: 2px 5px;
-        border: none;
-        border-radius: 5px;
-        color: var(--dealroom-primary-font-color);
-        font-weight: 600;
-        outline: none;
-        white-space: nowrap;
-      }
-
-      ul > li.current_section {
-        background: #ffffff;
-        border-color: @dashboard-menu-section-item-color-active;
-      }
-
-      ul > li.current_section a {
-        color: @dashboard-menu-section-item-color-active;
-      }
-
-      .sidebar-item-separator {
-        height: 1px;
-        width: 80%;
-        width: calc(100% - 48px);
-        margin: 8px auto;
-        background-color: #acb7bd;
+      & #sidebar_logo:extend(.uk-flex):extend(.uk-flex-center) {
+        & > img {
+          width: @dashboard-logo-width;
+        }
       }
     }
+
+    //#sidebar_content {
+    //  width: @dashboard-sidebar-width;
+    //  position: absolute;
+    //  top: 0;
+    //  bottom: 0;
+    //  left: 0;
+    //  z-index: @dashboard-z-index;
+    //  background: @dashboard-sidebar-background;
+    //  //border: @dashboard-sidebar-border-width solid @dashboard-sidebar-border;
+    //  //border: @dashboard-sidebar-border-width solid #acb7bd;
+    //  border-left: none;
+    //  border-top: none;
+    //  transition: width @dashboard-transition-delay linear;
+    //  -webkit-transition: width @dashboard-transition-delay linear;
+    //  -moz-transition: width @dashboard-transition-delay linear;
+    //  -o-transition: width @dashboard-transition-delay linear;
+    //  overflow-y: auto;
+    //  padding-top: 5px;
+    //  border-right: 1px solid #EAEAEA;
+    //
+    //  ul > li {
+    //    border-right: 4px solid;
+    //    border-color: transparent;
+    //  }
+    //
+    //  ul > li > a {
+    //    min-height: 40px;
+    //    display: flex;
+    //    align-items: center;
+    //    //margin: 5px 0px 5px 5px;
+    //    margin: 35px 10px;
+    //    padding: 2px 5px;
+    //    border: none;
+    //    border-radius: 5px;
+    //    color: var(--dealroom-primary-font-color);
+    //    font-weight: 600;
+    //    outline: none;
+    //    white-space: nowrap;
+    //  }
+    //
+    //  //ul > li.current_section {
+    //  //  background: #ffffff;
+    //  //  border-color: @dashboard-menu-section-item-color-active;
+    //  //}
+    //  //
+    //  //ul > li.current_section a {
+    //  //  color: @dashboard-menu-section-item-color-active;
+    //  //}
+    //
+    //  //.sidebar-item-separator {
+    //  //  height: 1px;
+    //  //  width: 80%;
+    //  //  width: calc(100% - 48px);
+    //  //  margin: 8px auto;
+    //  //  background-color: #acb7bd;
+    //  //}
+    //}
   }
 
   @{dashboard-pages}, @{dashboard-elements} {
