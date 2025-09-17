@@ -260,11 +260,55 @@ export class DataseriesSelectorComponent implements OnInit, AfterViewInit {
 
   duplicateDataseries(index: number) {
     const original = this.form.at(index) as FormGroup;
-    console.log('duplicate: original.getRawValue() =', JSON.stringify(original.getRawValue()));
-    // optional: also show serialized (value+disabled)
-    console.log('duplicate: original.serializeControl =', JSON.stringify(this.formFactory.serializeControl(original)));
-    const copy = this.formFactory.createDataseriesGroup(index+1, original.getRawValue());
+
+    // Ensure serializeControl is available in this class
+    const richRaw = this.formFactory.serializeControl(original); // {value, disabled} tree
+    console.log('serializeControl ->', JSON.stringify(richRaw));
+
+    const copy = this.formFactory.createDataseriesGroup(index + 1, richRaw);
     this.form.push(copy);
+
+    // Add this: Force entity propagation for the new dataseries
+    // setTimeout(() => {
+    //   // Get the entity value from the duplicated form
+    //   const entityControl = copy.get('data.yaxisData.entity');
+    //   if (entityControl && entityControl.value) {
+    //     // Trigger entity change detection for the new select-attribute components
+    //     entityControl.updateValueAndValidity({ emitEvent: true });
+    //
+    //     // Also trigger change detection for xaxis fields
+    //     const xaxisArray = copy.get('data.xaxisData') as FormArray;
+    //     if (xaxisArray) {
+    //       xaxisArray.controls.forEach(xaxisControl => {
+    //         const fieldControl = xaxisControl.get('xaxisEntityField');
+    //         if (fieldControl) {
+    //           fieldControl.updateValueAndValidity({ emitEvent: true });
+    //         }
+    //       });
+    //     }
+    //
+    //     // Trigger for filter fields
+    //     const filtersArray = copy.get('data.filters') as FormArray;
+    //     if (filtersArray) {
+    //       console.log(original.get('data.filters').value);
+    //       console.log('copping filter arrays: ');
+    //       console.log(filtersArray.value);
+    //       filtersArray.controls.forEach(filterControl => {
+    //         const groupFiltersArray = filterControl.get('groupFilters') as FormArray;
+    //         if (groupFiltersArray) {
+    //           groupFiltersArray.controls.forEach(ruleControl => {
+    //             const fieldControl = ruleControl.get('field');
+    //             if (fieldControl) {
+    //               fieldControl.updateValueAndValidity({ emitEvent: true });
+    //             }
+    //           });
+    //         }
+    //       });
+    //     }
+    //   }
+    // }, 2000); // Give time for the new form controls to be rendered
+
+
   }
 
 	removeDataseries(index: number) {

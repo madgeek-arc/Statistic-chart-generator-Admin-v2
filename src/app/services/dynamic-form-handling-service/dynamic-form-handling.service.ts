@@ -27,6 +27,7 @@ import {
 	RawDataModel
 } from "../../dashboard/customise-appearance/visualisation-options/supported-libraries-service/description-rawData.model";
 import { AbstractControl, FormArray, FormControl, FormGroup } from "@angular/forms";
+import { FormFactoryService } from "../form-factory-service/form-factory-service";
 
 @Injectable({
 	providedIn: 'root'
@@ -52,21 +53,22 @@ export class DynamicFormHandlingService {
 	constructor(
     private diagramcategoryService: DiagramCategoryService,
 		private chartExportingService: ChartExportingService,
-		private chartLoadingService: ChartLoadingService) {
+		private chartLoadingService: ChartLoadingService,
+    private formFactoryService: FormFactoryService) {
 
 		this._diagramCreator = new DiagramCreator(diagramcategoryService);
 
 	}
 
 	get isFormValid(): boolean {
-		if (this.$formErrorObject.value === null) {
-			return true;
-		} else if (!this._xAxisRequired && this.isOnlyxAxisRequirementError()) {
-			return true;
-		} else {
-			return false;
-		}
-		// return this.$formErrorObject.value === null;
+		// if (this.$formErrorObject.value === null) {
+		// 	return true;
+		// } else if (!this._xAxisRequired && this.isOnlyxAxisRequirementError()) {
+		// 	return true;
+		// } else {
+		// 	return false;
+		// }
+		return this.formFactoryService.getFormRoot().valid;
 	}
 
 	set formSchemaObject(value: SCGAFormSchema) { this._formSchemaObject.next(value); }

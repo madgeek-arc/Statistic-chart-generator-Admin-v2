@@ -102,7 +102,8 @@
                       <div class="uk-child-width-1-2" uk-grid>
                         <div>
                           <div input placeholder="Entity" type="select"
-                               [formInput]="ctrl.get('data.yaxisData.entity')" [options]="entities" (valueChange)="selectEntity($event)">
+                               [formInput]="ctrl.get('data.yaxisData.entity')" [options]="entities"
+                               (valueChange)="selectEntity($event)">
                           </div>
                         </div>
                         <div>
@@ -117,14 +118,7 @@
                         <div>
                           <div class="uk-margin-bottom">Entity Field</div>
                           <div>
-<!--                            &lt;!&ndash; Add this temporary debug info &ndash;&gt;-->
-<!--                            <div style="background: yellow; padding: 10px; margin: 5px;">-->
-<!--                              DEBUG: Entity = {{ ctrl.get('data.yaxisData.entity')?.value }}-->
-<!--                              <br>-->
-<!--                              Y-Axis Field = {{ ctrl.get('data.yaxisData.yaxisEntityField')?.value | json }}-->
-<!--                            </div>-->
-                            <select-attribute
-                                              [chosenEntity]="ctrl.get('data.yaxisData.entity')?.value"
+                            <select-attribute [chosenEntity]="ctrl.get('data.yaxisData.entity')?.value"
                                               [control]="ctrl.get('data.yaxisData.yaxisEntityField')">
                             </select-attribute>
                           </div>
@@ -142,7 +136,9 @@
                         <div formGroupName="xaxisEntityField" style="width: 100%;">
 <!--                          <div>Entity Field</div>-->
                           <div style="display: inline-block; width: 90%; vertical-align: middle;">
-                            <select-attribute class="" [chosenEntity]="ctrl.get('data.yaxisData.entity')?.value" [control]="data.get('xaxisEntityField')"></select-attribute>
+                            <select-attribute [chosenEntity]="ctrl.get('data.yaxisData.entity')?.value"
+                                              [control]="data.get('xaxisEntityField')">
+                            </select-attribute>
                           </div>
                           <div style="display: inline-block; width: 10%; vertical-align: middle;">
                             <button mat-icon-button (click)="removeEntityField(ctrl, j)">
@@ -186,7 +182,10 @@
                                   <div class="uk-width-1-1 uk-margin-small-bottom">
                                     <ng-container formGroupName="field">
                                       <div>
-                                        <select-attribute class="" [chosenEntity]="ctrl.get('data.yaxisData.entity')?.value" [control]="group.get('field')"></select-attribute>
+                                        <select-attribute
+                                          [chosenEntity]="ctrl.get('data.yaxisData.entity')?.value"
+                                          [control]="group.get('field')">
+                                        </select-attribute>
                                       </div>
                                     </ng-container>
                                   </div>
@@ -288,285 +287,5 @@
       </ul>
     </div>
 
-
   </div>
-
-
-<!--  <div uk-grid>-->
-<!--    <div class="uk-width-1-5">-->
-<!--      &lt;!&ndash; <div class="uk-width-auto"> &ndash;&gt;-->
-<!--      <ul class="uk-tab-left" uk-tab="connect: #dataseriesList">-->
-<!--        <li *ngFor="let ctrl of form.controls; let i = index" [formGroup]="ctrl" style="display: contents;">-->
-<!--          <a>-->
-<!--            <div class="d-flex flex-column dataseriesTitle" formGroupName="chartProperties">-->
-<!--              <div *ngIf="this.isEditableDataseriesTitle(ctrl) ; else notEditable" tabindex="0" #editDataseriesName class="uk-width-1-1" style="text-align: center !important">-->
-<!--                <input type="text" class="dataseriesTitleButton" (keydown.enter)="saveDataseriesTitle(ctrl)" (blur)="testBlur(ctrl); saveDataseriesTitle(ctrl)" formControlName="dataseriesName">-->
-<!--              </div>-->
-<!--              <ng-template #notEditable>-->
-<!--                <p (dblclick)="editDataseriesTitle(ctrl)" style="word-break: break-all; font-weight: bold; text-align: center !important" class="h3 text-center font-weight-bold mb-3 px-0">-->
-<!--                  {{getDataSeriesName(ctrl)}}-->
-<!--                </p>-->
-<!--              </ng-template>-->
-
-
-
-<!--              <div class="uk-button-group">-->
-<!--                <div class="uk-width-1-1 ">-->
-<!--                  <ng-container *ngIf="!checkEnabled(ctrl)">-->
-<!--                    <button mat-stroked-button class="uk-button uk-button-primary uk-width-1-{{this.getClass(form.controls.length, i)}}" (click)="editDataseriesTitle(ctrl)"><mat-icon style="margin: 0;">edit</mat-icon></button>-->
-<!--                  </ng-container>-->
-<!--                  <ng-container *ngIf="checkEnabled(ctrl)">-->
-<!--                    <button mat-stroked-button class="uk-button uk-button-primary uk-width-1-{{this.getClass(form.controls.length, i)}}" (click)="saveDataseriesTitle(ctrl)" style="border-color: green; color: green">-->
-<!--                      <mat-icon style="margin: 0;">check</mat-icon>-->
-<!--                    </button>-->
-<!--                  </ng-container>-->
-<!--                  <button mat-stroked-button class="uk-button uk-button-default uk-width-1-{{this.getClass(form.controls.length, i)}}"><mat-icon style="margin: 0;">content_copy</mat-icon></button>-->
-<!--                  <ng-container *ngIf="form.controls.length > 1">-->
-<!--                    <ng-container *ngIf="form.controls.indexOf(ctrl) !== 0">-->
-<!--                      <button mat-stroked-button class="uk-button uk-button-default uk-width-1-{{this.getClass(form.controls.length, i)}}" (click)="changePosition('up', i)">-->
-<!--                        <mat-icon style="margin: 0;">arrow_upward</mat-icon>-->
-<!--                      </button>-->
-<!--                    </ng-container>-->
-<!--                    <ng-container *ngIf="form.controls.indexOf(ctrl) !== form.controls.length - 1">-->
-<!--                      <button mat-stroked-button class="uk-button uk-button-default uk-width-1-{{this.getClass(form.controls.length, i)}}" (click)="changePosition('down', i)">-->
-<!--                        <mat-icon style="margin: 0;">arrow_downward</mat-icon>-->
-<!--                      </button>-->
-<!--                    </ng-container>-->
-<!--                    <button mat-stroked-button class="uk-button uk-button-danger uk-width-1-{{this.getClass(form.controls.length, i)}}" (click)="removeDataseries(i)" style="border-color: red; color: red">-->
-<!--                      <mat-icon style="margin: 0;">delete_forever</mat-icon>-->
-<!--                    </button>-->
-<!--                  </ng-container>-->
-<!--                </div>-->
-<!--              </div>-->
-<!--            </div>-->
-<!--          </a>-->
-<!--        </li>-->
-<!--      </ul>-->
-
-<!--      <button mat-raised-button class="addDataseriesButton" (click)="addDataseries()">-->
-<!--        Add Data-->
-<!--      </button>-->
-<!--    </div>-->
-
-
-<!--    <div class="uk-width-4-5">-->
-<!--      &lt;!&ndash; <div class="uk-width-expand"> &ndash;&gt;-->
-<!--      <div id="dataseriesList" class="uk-switcher">-->
-<!--        <div *ngFor="let ctrl of form.controls; let i = index" [formGroup]="ctrl">-->
-<!--          &lt;!&ndash; <h2>{{ctrl.get('chartProperties')?.get('dataseriesName')?.value}}</h2> &ndash;&gt;-->
-<!--          <ng-container *ngIf="form.length > 1">-->
-<!--            <button (click)="removeDataseries(i)">Remove Dataseries</button>-->
-<!--          </ng-container>-->
-
-<!--          <div class="dataSelectionDiv" formGroupName="data">-->
-<!--            <h1 class="borderBottomClass">Data Selection</h1>-->
-
-<!--            &lt;!&ndash;					<div>&ndash;&gt;-->
-<!--            &lt;!&ndash;						<button (click)="testData()">Click Me</button>&ndash;&gt;-->
-<!--            &lt;!&ndash;					</div>&ndash;&gt;-->
-
-<!--            <div class="dataSelection">-->
-<!--              <div formGroupName="yaxisData">-->
-<!--                <h3 class="borderBottomClass">Y Axis</h3>-->
-
-<!--                <div>-->
-<!--                  <div style="width: 50%; display: inline-block;">-->
-
-<!--&lt;!&ndash;                    <div>Entity</div>&ndash;&gt;-->
-<!--                    <mat-form-field appearance="outline">-->
-<!--&lt;!&ndash;                      <mat-label>Select Entity</mat-label>&ndash;&gt;-->
-<!--                      <mat-label>Entity</mat-label>-->
-<!--                      <mat-select formControlName="entity" (selectionChange)="selectEntity($event)">-->
-<!--                        <mat-option>None</mat-option>-->
-<!--                        <mat-option [value]="entity" *ngFor="let entity of entities">{{ entity | capitalize }}</mat-option>-->
-<!--                      </mat-select>-->
-<!--                    </mat-form-field>-->
-<!--                  </div>-->
-
-
-<!--                  <div style="width: 50%; display: inline-block;	">-->
-
-<!--&lt;!&ndash;                    <div>Y axis Aggregate</div>&ndash;&gt;-->
-<!--                    <mat-form-field appearance="outline">-->
-<!--&lt;!&ndash;                      <mat-label>Select Aggregate</mat-label>&ndash;&gt;-->
-<!--                      <mat-label>Y axis Aggregate</mat-label>-->
-<!--                      <mat-select formControlName="yaxisAggregate">-->
-<!--                        <mat-option>None</mat-option>-->
-<!--                        <mat-option [value]="aggregate.code" *ngFor="let aggregate of aggregates">-->
-<!--                          {{ aggregate.name }}-->
-<!--                        </mat-option>-->
-<!--                      </mat-select>-->
-<!--                    </mat-form-field>-->
-<!--                  </div>-->
-<!--                </div>-->
-
-<!--                &lt;!&ndash; Issue with TypeError regusterOnChange &ndash;&gt;-->
-<!--                <ng-container *ngIf="checkYAxisAggregate(ctrl)">-->
-<!--                  &lt;!&ndash; <ng-container> &ndash;&gt;-->
-<!--                  <div>-->
-<!--                    <div>Entity Field</div>-->
-<!--                    <div style=" display: inline-block; width: 90%; vertical-align: middle;">-->
-
-<!--                      &lt;!&ndash; Add this temporary debug info &ndash;&gt;-->
-<!--                      <div style="background: yellow; padding: 10px; margin: 5px;">-->
-<!--                        DEBUG: Entity = {{ ctrl.get('data.yaxisData.entity')?.value }}-->
-<!--                        <br>-->
-<!--                        Y-Axis Field = {{ ctrl.get('data.yaxisData.yaxisEntityField')?.value | json }}-->
-<!--                      </div>-->
-
-<!--                      <select-attribute class="uk-padding"-->
-<!--                                        [chosenEntity]="ctrl.get('data.yaxisData.entity')?.value"-->
-<!--                                        [control]="ctrl.get('data.yaxisData.yaxisEntityField')">-->
-<!--                      </select-attribute>-->
-<!--                    </div>-->
-<!--                  </div>-->
-<!--                </ng-container>-->
-<!--              </div>-->
-
-<!--              <div formArrayName="xaxisData">-->
-<!--                <h3 class="borderBottomClass">X Axis</h3>-->
-
-<!--                <div *ngFor="let data of getXAxisData(ctrl); let j = index" [formGroup]="data">-->
-<!--                  <div formGroupName="xaxisEntityField" style="width: 100%;">-->
-<!--                    <div>Entity Field</div>-->
-<!--                    <div style="display: inline-block; width: 90%; vertical-align: middle;">-->
-<!--                      <select-attribute class="uk-padding" [chosenEntity]="ctrl.get('data.yaxisData.entity')?.value" [control]="data.get('xaxisEntityField')"></select-attribute>-->
-<!--                    </div>-->
-<!--                    <div style="display: inline-block; width: 10%; vertical-align: middle;">-->
-<!--                      <button mat-icon-button (click)="removeEntityField(ctrl, j)">-->
-<!--                        <mat-icon>highlight_off</mat-icon>-->
-<!--                      </button>-->
-<!--                    </div>-->
-<!--                  </div>-->
-<!--                </div>-->
-<!--                <div *ngIf="!hasTwoEntityFields">-->
-<!--&lt;!&ndash;                  <button mat-button class="addEntityButtonClass" (click)="addEntityField(ctrl)"><mat-icon>add</mat-icon>Add Group By</button>&ndash;&gt;-->
-<!--                  <a class="uk-link uk-flex uk-flex-middle" (click)="addEntityField(ctrl)">-->
-<!--                    <span class="material-symbols-outlined">add</span>-->
-<!--                    <span>Add Group By</span>-->
-<!--                  </a>-->
-<!--                </div>-->
-<!--              </div>-->
-
-<!--              <div formArrayName="filters">-->
-<!--                <h3 class="borderBottomClass">Filters</h3>-->
-
-<!--                <ng-container *ngFor="let filter of getFilters(ctrl); let j = index" [formGroup]="filter">-->
-<!--                  <div class="uk-margin-bottom">-->
-<!--                    <div>-->
-<!--                      <mat-radio-group color="primary" labelPosition="after" formControlName="op">-->
-<!--                        <mat-radio-button value="AND" [checked]="true">Match all of the values</mat-radio-button>-->
-<!--                        <mat-radio-button value="OR">Match any of the values</mat-radio-button>-->
-<!--                      </mat-radio-group>-->
-<!--                    </div>-->
-
-<!--                    <div class="groupFiltersClass">-->
-<!--                      <div class="uk-flex uk-flex-right">-->
-<!--                        <button mat-icon-button style="color: red;" (click)="removeFilter(ctrl, j)"><mat-icon>highlight_off</mat-icon></button>-->
-<!--                      </div>-->
-<!--                      <ng-container formArrayName="groupFilters">-->
-<!--                        <div *ngFor="let group of getGroups(filter); let k = index" [formGroup]="group">-->
-<!--                          <ng-container formGroupName="field">-->
-<!--                            <div style="display: inline-block; width: 50%; vertical-align: middle;">-->
-<!--                              <div>Entity Field</div>-->
-<!--                              <select-attribute class="uk-padding" [chosenEntity]="ctrl.get('data.yaxisData.entity')?.value" [control]="group.get('field')"></select-attribute>-->
-<!--                            </div>-->
-<!--                          </ng-container>-->
-
-<!--                          <mat-form-field style="width: 20%;">-->
-<!--                            <mat-label>Filter Operator</mat-label>-->
-<!--                            <mat-select formControlName="type">-->
-<!--                              <ng-container *ngIf="group.get('field.name').value === null">-->
-<!--                                <mat-option disabled="true">Select Operator</mat-option>-->
-<!--                              </ng-container>-->
-<!--                              <ng-container *ngIf="group.get('field.name').value !== null">-->
-<!--                                <mat-option *ngFor="let filterOperator of filterOperators | filterOperators: group.get('field.type').value" [value]="filterOperator.filterOperator">{{ filterOperator.filterName }}</mat-option>-->
-<!--                              </ng-container>-->
-<!--                            </mat-select>-->
-<!--                          </mat-form-field>-->
-
-<!--                          <ng-container formArrayName="values">-->
-<!--                            <mat-form-field style="width: 20%;">-->
-<!--                              <mat-label>Value</mat-label>-->
-<!--                              <input matInput formControlName="0">-->
-<!--                            </mat-form-field>-->
-<!--                          </ng-container>-->
-
-<!--                          <button mat-icon-button style="color: red;" (click)="removeFilterRule(filter, k)"><mat-icon>delete</mat-icon></button>-->
-<!--                        </div>-->
-<!--                        &lt;!&ndash;                      <button mat-button class="addEntityButtonClass" (click)="addFilterRule(filter)"><mat-icon>add</mat-icon>Add Filter Rule</button>&ndash;&gt;-->
-<!--                        <a class="uk-link uk-flex uk-flex-middle" (click)="addFilterRule(filter)">-->
-<!--                          <span class="material-symbols-outlined">add</span>-->
-<!--                          <span>Add Filter Rule</span>-->
-<!--                        </a>-->
-<!--                      </ng-container>-->
-<!--                    </div>-->
-<!--                  </div>-->
-<!--                </ng-container>-->
-
-<!--                <div>-->
-<!--&lt;!&ndash;                  <button mat-button class="addEntityButtonClass" (click)="addFilter(ctrl)"><mat-icon>add</mat-icon>Add Filter</button>&ndash;&gt;-->
-<!--                  <a class="uk-link uk-flex uk-flex-middle" (click)="addFilter(ctrl)">-->
-<!--                    <span class="material-symbols-outlined">add</span>-->
-<!--                    <span>Add Filter</span>-->
-<!--                  </a>-->
-<!--                </div>-->
-<!--              </div>-->
-<!--            </div>-->
-<!--          </div>-->
-
-
-<!--          <div formGroupName="chartProperties">-->
-<!--            <h2 class="borderBottomClass">Options</h2>-->
-
-<!--            <div class="dataSelection">-->
-
-<!--              <div *ngIf="this.selectedCategoryName?.value === 'combo'">-->
-<!--                <mat-form-field>-->
-<!--                  <mat-label>Chart Type</mat-label>-->
-<!--                  <mat-select formControlName="chartType">-->
-<!--                    <mat-option disabled="true">Select Chart Type</mat-option>-->
-<!--                    <mat-option [value]="chartType.value" *ngFor="let chartType of chartTypeList">-->
-<!--                      {{ chartType.name }}-->
-<!--                    </mat-option>-->
-<!--                  </mat-select>-->
-<!--                </mat-form-field>-->
-<!--              </div>-->
-
-<!--              <div>-->
-<!--                <mat-form-field>-->
-<!--                  <mat-label>Stacked Data</mat-label>-->
-<!--                  <mat-select formControlName="stacking">-->
-<!--                    <mat-option disabled="true">Select One</mat-option>-->
-<!--                    <mat-option [value]="stackedData.value" *ngFor="let stackedData of stackedDataList">-->
-<!--                      {{ stackedData.name }}-->
-<!--                    </mat-option>-->
-<!--                  </mat-select>-->
-<!--                </mat-form-field>-->
-<!--              </div>-->
-
-<!--              &lt;!&ndash; There is Stack Name in local version of Stats Tools but NOT of online version. &ndash;&gt;-->
-<!--              &lt;!&ndash; <div>-->
-<!--              <mat-form-field>-->
-<!--                <mat-label>Stack Name</mat-label>-->
-<!--                <br>-->
-<!--                <input matInput type="text" formControlName="stackName">-->
-<!--              </mat-form-field>-->
-<!--            </div> &ndash;&gt;-->
-
-<!--              <div>-->
-<!--                <mat-form-field>-->
-<!--                  <mat-label>Dataseries Color</mat-label>-->
-<!--                  <br>-->
-<!--                  <input matInput type="color" formControlName="dataseriesColor">-->
-<!--                </mat-form-field>-->
-<!--              </div>-->
-<!--            </div>-->
-<!--          </div>-->
-<!--        </div>-->
-<!--      </div>-->
-<!--    </div>-->
-<!--  </div>-->
 </div>
-
-

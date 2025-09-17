@@ -80,7 +80,7 @@ export class SelectAttributeComponent implements ControlValueAccessor, OnChanges
     console.log('🏷️  Entity changed to:', change.currentValue);
     console.log('🏷️  Previous entity:', change.previousValue);
 
-    if (this.control !== null) {
+    if (this.control !== null && change.previousValue !== undefined) {
       this.control.reset();
     }
 
@@ -231,7 +231,7 @@ export class SelectAttributeComponent implements ControlValueAccessor, OnChanges
     if (this.control !== null) {
       this.control.setValue(selectedFieldNode);
     }
-    console.log(this.control);
+
     this.selectedNode = selectedFieldNode;
 
     // Emit the event that the field value has changed

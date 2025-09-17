@@ -16,7 +16,6 @@ export class GeneratedShortUrlFieldComponent implements OnChanges {
   @Input('dataName') field_name: string | undefined;
   @Input('shortUrl') url$: Observable<string>;
   @Input('isUrlLoading') isUrlLoading$: Observable<boolean>;
-  @Input('isViewOpen') isViewOpen: boolean;
 
   public clipboardCopyMessage = "Copied to clipboard !";
   public copiedUrl = false;

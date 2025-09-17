@@ -20,8 +20,6 @@ export class ViewSelectorComponent {
 			this.viewForm.setValue(event);
 			// this.viewSavingService.setTestingView(event);
 			this.profileControl?.setValue(event.name, {onlySelf: false, emitEvent: true});
-      console.log('profileControl -------------------> ', this.profileControl);
-      console.log(this.profileControl?.value);
       this.showViewSelection.emit({
 				name: event.name,
 				step: "profile"

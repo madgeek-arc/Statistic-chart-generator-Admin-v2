@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { DynamicFormHandlingService } from "../services/dynamic-form-handling-service/dynamic-form-handling.service";
 import { ChartLoadingService } from "../services/chart-loading-service/chart-loading.service";
+import { ChartExportingService } from "../services/chart-exporting-service/chart-exporting.service";
 
 @Component({
   selector: 'app-header',
@@ -10,7 +11,8 @@ import { ChartLoadingService } from "../services/chart-loading-service/chart-loa
 export class HeaderComponent {
 
   constructor(public dynamicFormHandlingService: DynamicFormHandlingService,
-              public chartLoadingService: ChartLoadingService) {}
+              public chartLoadingService: ChartLoadingService,
+              public chartExportingService: ChartExportingService) {}
 
   saveChart(): void {
     this.dynamicFormHandlingService.exportForm();
@@ -32,5 +34,8 @@ export class HeaderComponent {
     this.dynamicFormHandlingService.resetLoadForm();
   }
 
-  protected readonly console = console;
+  share() {
+    this.dynamicFormHandlingService.publishURLS();
+  }
+
 }

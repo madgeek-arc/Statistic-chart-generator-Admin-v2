@@ -4,6 +4,9 @@ import { Injectable } from "@angular/core";
 @Injectable({ providedIn: 'root' })
 
 export class FormFactoryService {
+
+  private formRoot: FormGroup;
+
   constructor(private fb: FormBuilder) {}
 
   //////////////////////
@@ -53,14 +56,20 @@ export class FormFactoryService {
     return null;
   }
 
+  getFormRoot(): FormGroup {
+    return this.formRoot;
+  }
+
   createForm() {
-    return this.fb.group({
+    this.formRoot = this.fb.group({
       testingView: this.fb.control(null),
       view: this.createViewGroup(null),
       category: this.createCategoryGroup(),
       dataseries: this.createDataseriesGroupArray(),
       appearance: this.createAppearanceGroup()
     });
+
+    return this.formRoot;
   }
 
   createViewGroup(profile: string | null) {
@@ -101,15 +110,9 @@ export class FormFactoryService {
     );
 
 
-    // xaxisData: keep default one entry if none provided (same behavior as the original skeleton)
+    // xaxisData: keep default one entry if none provided
     const xaxisRaw = rv?.data?.xaxisData ?? [];
-    const xaxisControls = (xaxisRaw.length > 0 ? xaxisRaw : [ {} ]).map((x: any) =>
-      this.fb.group({
-        xaxisEntityField: this.fb.group({
-          name: this.controlFromRaw<string | null>(x?.xaxisEntityField?.name, null),
-          type: this.controlFromRaw<string | null>(x?.xaxisEntityField?.type, null)
-        })
-      })
+    const xaxisControls = (xaxisRaw.length > 0 ? xaxisRaw : [ {} ]).map((x: any) => this.createXaxisEntityField(x)
     );
 
     // filters: map existing or default to an empty array

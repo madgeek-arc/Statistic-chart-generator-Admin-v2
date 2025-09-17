@@ -15,11 +15,35 @@
           <div class="uk-navbar-right">
             <ul class="uk-navbar-nav">
               <li class="uk-animation-fade">
-                <a class="uk-button">Share</a>
+                <a class="uk-button" [ngClass]="{'uk-disabled': !dynamicFormHandlingService.isFormValid}" (click)="share()">
+                  Share
+                </a>
+                <div data-uk-dropdown="mode: click">
+                  <ng-container *ngIf="true">
+                    <generated-short-url-field dataName="Chart" [shortUrl]="chartExportingService.chartTinyUrl$"
+                                               [isUrlLoading]="chartExportingService.loadingChartTinyUrl$" >
+                    </generated-short-url-field>
+                    <hr/>
+
+                    <generated-short-url-field dataName="Table" [shortUrl]="chartExportingService.tableTinyUrl$"
+                                               [isUrlLoading]="chartExportingService.loadingTableTinyUrl$">
+                    </generated-short-url-field>
+                    <hr/>
+
+                    <generated-short-url-field dataName="Raw Chart Data" [shortUrl]="chartExportingService.rawChartDataTinyUrl$"
+                                               [isUrlLoading]="chartExportingService.loadingRawChartDataTinyUrl$">
+                    </generated-short-url-field>
+                    <hr/>
+                  </ng-container>
+
+                  <generated-short-url-field dataName="Raw Data" [shortUrl]="chartExportingService.rawDataTinyUrl$"
+                                             [isUrlLoading]="chartExportingService.loadingRawDataTinyUrl$">
+                  </generated-short-url-field>
+                </div>
               </li>
               <li class="uk-animation-fade">
                 <a class="uk-button">Load</a>
-                <div uk-dropdown="mode: click" (hidden)="clearSelection()">
+                <div data-uk-dropdown="mode: click" (hidden)="clearSelection()">
                   <input id="fileElem" type="file" style="display:none" accept=".json" (change)="loadChart($event)">
                   <button class="btn btn-block btn-outline-secondary " type="button" (click)="initiateFilePicker()">
                     <!-- TODO chart loading status maybe async -->
