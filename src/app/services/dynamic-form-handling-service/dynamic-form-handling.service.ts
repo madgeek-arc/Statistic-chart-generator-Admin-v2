@@ -68,7 +68,7 @@ export class DynamicFormHandlingService {
 		// } else {
 		// 	return false;
 		// }
-		return this.formFactoryService.getFormRoot().valid;
+		return this.formFactoryService.getFormRoot()?.valid || false;
 	}
 
 	set formSchemaObject(value: SCGAFormSchema) { this._formSchemaObject.next(value); }
@@ -102,7 +102,6 @@ export class DynamicFormHandlingService {
 
 			fr.onload = () => {
 				this._loadFormObject = JSON.parse(<string>fr.result);
-				console.log("JSON FILE", this._loadFormObject);
 				this.updateFormFromFile.next(true);
 			}
 			fr.onloadstart = () => this.chartLoadingService.chartLoadingStatus = true;
@@ -118,21 +117,130 @@ export class DynamicFormHandlingService {
 		this.chartLoadingService.isChartLoaded = false;
 	}
 
-	adjustAndPatchForm(form: AbstractControl, json: any = this._loadFormObject): void {
+  adjustAndPatchFormWithValidators(form: AbstractControl, json: any = this._loadFormObject): void {
+    if (form instanceof FormGroup) {
+      Object.keys(json).forEach(key => {
+        if (!form.get(key)) {
+          // Use form factory to create controls with proper validators
+          const newControl = this.createControlWithValidators(key, json[key], form);
+          if (newControl) {
+            form.addControl(key, newControl);
+          } else {
+            // Fallback to basic control creation
+            form.addControl(key, this.createControl(json[key]));
+          }
+        }
+
+        const control = form.get(key);
+        if (control) {
+          this.adjustAndPatchFormWithValidators(control, json[key]);
+        }
+      });
+    } else if (form instanceof FormArray) {
+      while (form.length < json.length) {
+        // For arrays, try to create controls with validators based on context
+        const newControl = this.createArrayControlWithValidators(form, json[0]);
+        form.push(newControl || this.createControl(json[0]));
+      }
+      while (form.length > json.length) {
+        form.removeAt(form.length - 1);
+      }
+      json.forEach((item: any, index: number) => {
+        this.adjustAndPatchFormWithValidators(form.at(index), item);
+      });
+    } else {
+      form.setValue(json, { emitEvent: false });
+    }
+  }
+
+  private createControlWithValidators(key: string, value: any, parentForm: AbstractControl): AbstractControl | null {
+    // Determine the path to understand what validators to apply
+    const formPath = this.getFormPath(parentForm);
+    const fullPath = formPath ? `${formPath}.${key}` : key;
+
+    console.log(`🔧 Creating control with validators for path: ${fullPath}`);
+
+    // Handle specific form sections using form factory methods
+    if (fullPath === 'category') {
+      return this.formFactoryService.createCategoryGroup();
+    } else if (fullPath === 'view') {
+      return this.formFactoryService.createViewGroup(value?.profile || null);
+    } else if (fullPath === 'dataseries') {
+      return this.formFactoryService.createDataseriesGroupArray();
+    } else if (fullPath === 'appearance') {
+      return this.formFactoryService.createAppearanceGroup();
+    } else if (fullPath.includes('dataseries') && key === 'data') {
+      // For dataseries data groups, we need to create them with proper structure
+      const dataseriesIndex = this.extractDataseriesIndex(fullPath);
+      if (dataseriesIndex !== -1) {
+        const dataseriesGroup = this.formFactoryService.createDataseriesGroup(dataseriesIndex, { data: value });
+        return dataseriesGroup.get('data');
+      }
+    }
+
+    return null;
+  }
+
+  private createArrayControlWithValidators(formArray: FormArray, value: any): AbstractControl | null {
+    const formPath = this.getFormPath(formArray);
+
+    console.log(`🔧 Creating array control with validators for path: ${formPath}`);
+
+    if (formPath === 'dataseries') {
+      const index = formArray.length;
+      return this.formFactoryService.createDataseriesGroup(index, value);
+    } else if (formPath?.includes('xaxisData')) {
+      return this.formFactoryService.createXaxisEntityField(value);
+    } else if (formPath?.includes('filters')) {
+      return this.formFactoryService.createFilterGroup(value);
+    } else if (formPath?.includes('groupFilters')) {
+      return this.formFactoryService.createFilterRuleGroup(value);
+    }
+
+    return null;
+  }
+
+  private getFormPath(control: AbstractControl): string {
+    // This is simplified path detection - you might need to enhance this
+    // based on your form structure requirements
+    let current = control;
+    const path: string[] = [];
+
+    // Walk up the form tree to build path - this is a basic implementation
+    // You might need to enhance this based on your specific form structure
+    while (current && (current as any).parent) {
+      const parent = (current as any).parent;
+      if (parent instanceof FormGroup) {
+        const key = Object.keys(parent.controls).find(k => parent.controls[k] === current);
+        if (key) {
+          path.unshift(key);
+        }
+      } else if (parent instanceof FormArray) {
+        const index = parent.controls.indexOf(current);
+        if (index !== -1) {
+          path.unshift(index.toString());
+        }
+      }
+      current = parent;
+    }
+
+    return path.join('.');
+  }
+
+  private extractDataseriesIndex(path: string): number {
+    const match = path.match(/dataseries\.(\d+)/);
+    return match ? parseInt(match[1], 10) : -1;
+  }
+
+  adjustAndPatchForm(form: AbstractControl, json: any = this._loadFormObject): void {
 		if (form instanceof FormGroup) {
 			Object.keys(json).forEach(key => {
 				if (!form.get(key)) {
 					form.addControl(key, this.createControl(json[key])); // Add missing control
 				}
 
-				// TODO this is better
-				// const control = form.get(key);
-				// if (control) {
-				// 	this.adjustAndPatchForm(control, json[key]);
-				// }
 				this.adjustAndPatchForm(form.get(key)!, json[key]); // Recurse
 
-				// TODO add REMOVE CONTROLS that are not being used
 			});
 		} else if (form instanceof FormArray) {
 
@@ -140,7 +248,7 @@ export class DynamicFormHandlingService {
 				form.push(this.createControl(json[0])); // Add controls to match the array size
 			}
 			while (form.length > json.length) {
-				form.removeAt(form.length - 1); // Remove extra controls
+				form.removeAt(form.length - 1); // Remove extra controls (Unnecessary now that we reset the form before file upload)
 			}
 			json.forEach((item: any, index: number) => {
 				this.adjustAndPatchForm(form.at(index), item); // Recurse
@@ -252,9 +360,11 @@ export class DynamicFormHandlingService {
 		return true;
 	}
 
-	private changeDataObjects(chartObject: HighChartsChart | GoogleChartsChart | HighMapsMap | EChartsChart | null,
-		tableObject: GoogleChartsTable | null, rawChartDataObject: RawChartDataModel | null,
-		rawDataObject: RawDataModel | null) {
+  private changeDataObjects(chartObject: HighChartsChart | GoogleChartsChart | HighMapsMap | EChartsChart | null,
+                            tableObject: GoogleChartsTable | null,
+                            rawChartDataObject: RawChartDataModel | null,
+                            rawDataObject: RawDataModel | null) {
+
 		this._chartObject = chartObject;
 		this.chartExportingService.changeChartUrl(chartObject);
 

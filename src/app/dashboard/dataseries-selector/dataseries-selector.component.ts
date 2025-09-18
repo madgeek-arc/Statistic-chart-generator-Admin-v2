@@ -216,15 +216,6 @@ export class DataseriesSelectorComponent implements OnInit, AfterViewInit {
 
 	addFilterRule(form: any) {
 		form.controls.groupFilters.push(this.formFactory.createFilterRuleGroup());
-
-    let index = form.controls.groupFilters.controls.length - 1;
-    form.controls.groupFilters.controls[index].get('field.type').valueChanges.subscribe({
-      next: value => {
-        if (value !== null && value !== undefined) {
-          form.controls.groupFilters.controls[index].get('type').enable();
-        }
-      }
-    });
 	}
 
 	removeFilterRule(form: any, index: number) {
@@ -267,48 +258,6 @@ export class DataseriesSelectorComponent implements OnInit, AfterViewInit {
 
     const copy = this.formFactory.createDataseriesGroup(index + 1, richRaw);
     this.form.push(copy);
-
-    // Add this: Force entity propagation for the new dataseries
-    // setTimeout(() => {
-    //   // Get the entity value from the duplicated form
-    //   const entityControl = copy.get('data.yaxisData.entity');
-    //   if (entityControl && entityControl.value) {
-    //     // Trigger entity change detection for the new select-attribute components
-    //     entityControl.updateValueAndValidity({ emitEvent: true });
-    //
-    //     // Also trigger change detection for xaxis fields
-    //     const xaxisArray = copy.get('data.xaxisData') as FormArray;
-    //     if (xaxisArray) {
-    //       xaxisArray.controls.forEach(xaxisControl => {
-    //         const fieldControl = xaxisControl.get('xaxisEntityField');
-    //         if (fieldControl) {
-    //           fieldControl.updateValueAndValidity({ emitEvent: true });
-    //         }
-    //       });
-    //     }
-    //
-    //     // Trigger for filter fields
-    //     const filtersArray = copy.get('data.filters') as FormArray;
-    //     if (filtersArray) {
-    //       console.log(original.get('data.filters').value);
-    //       console.log('copping filter arrays: ');
-    //       console.log(filtersArray.value);
-    //       filtersArray.controls.forEach(filterControl => {
-    //         const groupFiltersArray = filterControl.get('groupFilters') as FormArray;
-    //         if (groupFiltersArray) {
-    //           groupFiltersArray.controls.forEach(ruleControl => {
-    //             const fieldControl = ruleControl.get('field');
-    //             if (fieldControl) {
-    //               fieldControl.updateValueAndValidity({ emitEvent: true });
-    //             }
-    //           });
-    //         }
-    //       });
-    //     }
-    //   }
-    // }, 2000); // Give time for the new form controls to be rendered
-
-
   }
 
 	removeDataseries(index: number) {
@@ -338,11 +287,7 @@ export class DataseriesSelectorComponent implements OnInit, AfterViewInit {
 		let yaxisAggregate = yAxisData.controls['yaxisAggregate'] as FormControl;
 
 		if (yaxisAggregate && yaxisAggregate.value !== null) {
-			if (yaxisAggregate.value === 'total') {
-				return false;
-			} else {
-				return true;
-			}
+			return yaxisAggregate.value !== 'total';
 		}
 		return false;
 	}

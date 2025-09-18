@@ -1,10 +1,8 @@
-import { Component, DestroyRef, inject, OnChanges, OnInit, SimpleChanges, ViewEncapsulation } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { ChartTableModalContext } from "../modals/chart-table-modal/chart-table-modal.component";
 import { DynamicFormHandlingService } from "../services/dynamic-form-handling-service/dynamic-form-handling.service";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
-import { UrlProviderService } from '../services/url-provider-service/url-provider.service';
-import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { ChartExportingService } from '../services/chart-exporting-service/chart-exporting.service';
 import { FormFactoryService } from "../services/form-factory-service/form-factory-service";
 import UIkit from 'uikit';
@@ -12,13 +10,10 @@ import UIkit from 'uikit';
 @Component({
 	selector: 'app-dashboard',
 	templateUrl: './dashboard.component.html',
-	// encapsulation: ViewEncapsulation.None
 })
 
-export class DashboardComponent implements OnInit, OnChanges {
+export class DashboardComponent implements OnInit {
 	private destroyRef = inject(DestroyRef);
-
-	// @ViewChild('stepper') stepper !: MatStepper;
 
 	diagramSettings: FormGroup;
 
@@ -31,11 +26,9 @@ export class DashboardComponent implements OnInit, OnChanges {
 
 	open = true;
 	hasDataAndDiagramType: boolean = false;
-	frameUrl: SafeResourceUrl;
 
   frameHeight: number;
   hasChanges: boolean = false;
-	// jsonLoad: boolean = false;
 
 	dialogData: ChartTableModalContext = {
 		chartObj: this.dynamicFormHandlingService.ChartObject,
@@ -45,21 +38,15 @@ export class DashboardComponent implements OnInit, OnChanges {
 	};
 
   constructor(
-    public dynamicFormHandlingService: DynamicFormHandlingService,
-    private formFactory: FormFactoryService,
-    private urlProvider: UrlProviderService,
-    private sanitizer: DomSanitizer,
-    public chartExportingService: ChartExportingService
-  ) {
-    this.frameUrl = this.getSanitizedFrameUrl(urlProvider.serviceURL + '/chart');
-  }
+    public chartExportingService: ChartExportingService,
+    private dynamicFormHandlingService: DynamicFormHandlingService,
+    private formFactory: FormFactoryService
+  ) {}
 
 	ngOnInit(): void {
 
     this.frameHeight = (3 * window.outerHeight) / 5;
     this.clearData();
-    // this.diagramSettings = this.formFactory.createForm();
-    // this.setFormObservers();
 
     this.dynamicFormHandlingService.jsonLoaded.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: data => {
@@ -93,18 +80,6 @@ export class DashboardComponent implements OnInit, OnChanges {
       this.hasChanges = true;
     });
   }
-
-	ngOnChanges(changes: SimpleChanges) {
-		const stringObj = JSON.stringify(changes['chart'].currentValue);
-		console.log('[chart-frame.component] On changes: ' + stringObj);
-
-		if (changes['chart'].currentValue) {
-			this.frameUrl = this.getSanitizedFrameUrl(this.urlProvider.createChartURL(changes['chart'].currentValue));
-			console.log(this.frameUrl);
-		} else {
-			this.frameUrl = this.getSanitizedFrameUrl(this.urlProvider.serviceURL + '/chart');
-		}
-	}
 
 	get testingView() {
 		return this.diagramSettings.get('testingView') as FormControl;
@@ -195,14 +170,12 @@ export class DashboardComponent implements OnInit, OnChanges {
       console.log('📁 UpdateFormFile - START');
       console.log('📁 Load form object:', this.dynamicFormHandlingService.loadFormObject);
 
-      // this.diagramSettings = this.formFactory.createForm();
-      // this.setFormObservers();
       this.clearData();
 
-      console.log('📁 Form created, about to adjust and patch');
-      this.dynamicFormHandlingService.adjustAndPatchForm(this.diagramSettings);
-
       setTimeout(() => {
+        console.log('📁 Form created, about to adjust and patch');
+        this.dynamicFormHandlingService.adjustAndPatchFormWithValidators(this.diagramSettings);
+
         console.log('📁 About to patchValue with:', this.dynamicFormHandlingService.loadFormObject);
         this.diagramSettings.patchValue(this.dynamicFormHandlingService.loadFormObject, { emitEvent: false });
 
@@ -240,6 +213,7 @@ export class DashboardComponent implements OnInit, OnChanges {
 	}
 
 	clearData() {
+    console.log('resetting form');
     this.diagramSettings = this.formFactory.createForm();
     this.setFormObservers();
 
@@ -262,9 +236,5 @@ export class DashboardComponent implements OnInit, OnChanges {
 			el.classList.add('sidebar_main_active');
 			el.classList.remove('sidebar_mini');
 		}
-	}
-
-	getSanitizedFrameUrl(url: string) {
-		return this.sanitizer.bypassSecurityTrustResourceUrl(url);
 	}
 }

@@ -16,6 +16,7 @@ export class CustomiseAppearanceComponent {
 	// comes from backend!
 	protected visualisationLibraryList = [
 		{ label: 'HighCharts', value: 'HighCharts' },
+		{ label: 'HighMaps', value: 'HighMaps' },
 		{ label: 'GoogleCharts', value: 'GoogleCharts' },
 		{ label: 'eCharts', value: 'eCharts' }
 	];

@@ -1,9 +1,11 @@
 import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
-import { Injectable } from "@angular/core";
+import { DestroyRef, inject, Injectable } from "@angular/core";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 
 @Injectable({ providedIn: 'root' })
 
 export class FormFactoryService {
+  private destroyRef = inject(DestroyRef);
 
   private formRoot: FormGroup;
 
@@ -26,10 +28,13 @@ export class FormFactoryService {
     return !!(node && typeof node === 'object' && node.disabled === true);
   }
 
-  private controlFromRaw<T = any>(rawNode: any, fallback: T = null, validators?: any) {
+  private controlFromRaw<T = any>(rawNode: any, fallback: T = null, validators: Validators | null = null): FormControl<T> {
     const value = this.unwrapValue(rawNode);
     const disabled = this.isDisabled(rawNode);
-    return this.fb.control({ value: value ?? fallback, disabled }, validators);
+    const ctrl = this.fb.control<T>( value ?? fallback, validators);
+    if (disabled)
+      ctrl.disable();
+    return ctrl;
   }
 
   /**
@@ -102,12 +107,12 @@ export class FormFactoryService {
   createDataseriesGroup(index: number, rawValue?: any): FormGroup {
     const rv = rawValue ?? {};
 
-    console.log('createDataseriesGroup called with index=', index);
-    console.log('rv.data.xaxisData =', rv?.data?.xaxisData);
-    // for each element show its shape:
-    (rv?.data?.xaxisData ?? []).forEach((x: any, i: number) =>
-      console.log(`xaxis[${i}] =`, JSON.stringify(x), 'type:', typeof x, x)
-    );
+    // console.log('createDataseriesGroup called with index=', index);
+    // console.log('rv.data.xaxisData =', rv?.data?.xaxisData);
+    // // for each element show its shape:
+    // (rv?.data?.xaxisData ?? []).forEach((x: any, i: number) =>
+    //   console.log(`xaxis[${i}] =`, JSON.stringify(x), 'type:', typeof x, x)
+    // );
 
 
     // xaxisData: keep default one entry if none provided
@@ -145,12 +150,14 @@ export class FormFactoryService {
     const rv = rawValue ?? {};
     const node = rv?.xaxisEntityField ?? rv;
 
-    return this.fb.group({
+    const group = this.fb.group({
       xaxisEntityField: this.fb.group({
-        name: this.controlFromRaw<string | null>(node?.name, null),
+        name: this.controlFromRaw<string | null>(node?.name, null, Validators.required),
         type: this.controlFromRaw<string | null>(node?.type, null),
       })
     });
+
+    return group;
   }
 
   createFilterGroup(rawValue?: any): FormGroup {
@@ -171,7 +178,7 @@ export class FormFactoryService {
     const valuesRaw = (rv?.values && rv.values.length > 0) ? rv.values : [ null ];
     const valuesControls = valuesRaw.map((v: any) => this.controlFromRaw(v, null));
 
-    return this.fb.group({
+    const group = this.fb.group({
       field: this.fb.group({
         name: this.controlFromRaw<string | null>(rv?.field?.name, null),
         type: this.controlFromRaw<string | null>(rv?.field?.type, null)
@@ -180,6 +187,16 @@ export class FormFactoryService {
       type: this.controlFromRaw<string | null>(rv?.type ?? { value: null, disabled: true }),
       values: this.fb.array(valuesControls)
     });
+
+    group.get('field.type').valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+      next: value => {
+        if (value !== null && value !== undefined) {
+          group.get('type').enable();
+        }
+      }
+    });
+
+    return group;
   }
 
   createAppearanceGroup() {
