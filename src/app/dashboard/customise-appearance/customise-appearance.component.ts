@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
+import { FormFactoryService } from "../../services/form-factory-service/form-factory-service";
 
 @Component({
 	selector: 'app-customise-appearance',
@@ -7,31 +8,48 @@ import { FormControl, FormGroup } from '@angular/forms';
 	styleUrls: ['./customise-appearance.component.less']
 })
 
-export class CustomiseAppearanceComponent {
+export class CustomiseAppearanceComponent implements OnInit {
 
-	@Input('appearanceForm') appearanceForm: FormGroup;
+	appearanceForm: FormGroup | null = null;
 
-
-	// TODO
-	// comes from backend!
-	protected visualisationLibraryList = [
-		{ label: 'HighCharts', value: 'HighCharts' },
-		{ label: 'HighMaps', value: 'HighMaps' },
-		{ label: 'GoogleCharts', value: 'GoogleCharts' },
-		{ label: 'eCharts', value: 'eCharts' }
-	];
-
-	protected orderByList = [
+  visualisationLibraryList: string[] = [];
+  orderByList = [
 		{ label: 'X Axis', value: 'xaxis' },
 		{ label: 'Y Axis', value: 'yaxis' }
 	];
 
-	libraryChange(event: any) {
-		const newLibrary: string = event;
+  constructor(private formFactoryService: FormFactoryService) { }
 
+  ngOnInit() {
+    this.appearanceForm = this.formFactoryService.getFormRoot().get('appearance') as FormGroup;
+
+    this.visualisationLibraryList = this.formFactoryService.getFormRoot().get('category.diagram.supportedLibraries').value;
+    this.setInitialLibrary();
+
+    this.formFactoryService.getFormRoot().get('category.diagram.supportedLibraries').valueChanges.subscribe({
+      next: (value: string[]) => {
+        this.visualisationLibraryList = value;
+        this.setInitialLibrary();
+      }
+    });
+  }
+
+  setInitialLibrary() {
+    if (this.visualisationLibraryList.includes('HighCharts')) {
+      this.visualisationLibrary.setValue('HighCharts');
+    } else
+      this.visualisationLibrary.setValue(this.visualisationLibraryList[0]);
+
+    this.libraryChange(this.visualisationLibrary.value);
+  }
+
+	libraryChange(event: string) {
+		const newLibrary = event;
+    console.log(newLibrary);
     this.appearanceForm.get('chartAppearance.highchartsAppearanceOptions').disable();
     this.appearanceForm.get('chartAppearance.googlechartsAppearanceOptions').disable();
     this.appearanceForm.get('chartAppearance.echartsAppearanceOptions').disable();
+    this.appearanceForm.get('chartAppearance.highmapsAppearanceOptions').disable();
 
     switch (newLibrary) {
       case 'HighCharts':
@@ -43,7 +61,12 @@ export class CustomiseAppearanceComponent {
       case 'eCharts':
         this.appearanceForm.get('chartAppearance.echartsAppearanceOptions').enable();
         break;
+      case 'HighMaps':
+        this.appearanceForm.get('chartAppearance.highmapsAppearanceOptions').enable();
+        break;
     }
+
+    console.log(this.appearanceForm.value);
 	}
 
 	get visualisationLibrary(): FormControl {

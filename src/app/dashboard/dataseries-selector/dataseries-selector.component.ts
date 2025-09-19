@@ -1,7 +1,6 @@
 import { HttpClient } from '@angular/common/http';
-import { AfterViewInit, Component, Input, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, DestroyRef, inject, Input, OnInit, ViewChild } from '@angular/core';
 import { FormArray, FormControl, FormGroup, FormGroupDirective } from '@angular/forms';
-import { MatSelectChange } from '@angular/material/select';
 import { BehaviorSubject, first, forkJoin, Observable } from 'rxjs';
 import { Profile } from 'src/app/services/profile-provider/profile-provider.service';
 import { UrlProviderService } from 'src/app/services/url-provider/url-provider.service';
@@ -12,6 +11,7 @@ import {
 import { DbSchemaService } from "../../services/db-schema-service/db-schema.service";
 import UIkit from "uikit";
 import { FormFactoryService } from "../../services/form-factory-service/form-factory-service";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 
 export enum FieldType { text, int, float, date};
 
@@ -27,25 +27,24 @@ export class FilterType {
 	styleUrls: ['./dataseries-selector.component.less'],
 	providers: [FormGroupDirective]
 })
-export class DataseriesSelectorComponent implements OnInit, AfterViewInit {
 
-	@Input('formGroup') formGroup: FormGroup;
+export class DataseriesSelectorComponent implements OnInit, AfterViewInit {
+  private destroyRef = inject(DestroyRef);
+
 	@Input('selectedProfile') selectedProfile: FormControl = new FormControl();
-	@Input('selectedCategory') selectedCategoryName: FormControl = new FormControl();
 	@ViewChild('editDataseriesName') editDataseriesName;
 
-	entities: Array<string> = [];
-	selectedEntity: string = '';
-	form: FormArray<FormGroup>;
+  form: FormArray<FormGroup> | null = null;
+
+  entities: Array<string> = [];
   selectedTitleIndex = -1;
-	panelOpenState: boolean = false;
+  selectedCategoryId: number | null = null;
 
 	hasTwoEntityFields: boolean = false;
 	dataseriesIncremment: number = 0;
 
 	private _entityMap$: BehaviorSubject<Map<string, CachedEntityNode>> = new BehaviorSubject(new Map<string, CachedEntityNode>());
 	protected entityMap = new Map<string, CachedEntityNode>(new Map<string, CachedEntityNode>());
-	protected selectedEntityMap: Array<CachedEntityNode> = [];
 
   protected aggregates = [
     { label: 'Total', value: 'total' },
@@ -57,21 +56,21 @@ export class DataseriesSelectorComponent implements OnInit, AfterViewInit {
   ];
 
 	protected stackedDataList = [
-		{ name: 'Disabled', value: 'null' },
-		{ name: 'Stacked by Value', value: 'normal' },
-		{ name: 'Stacked by Percentage', value: 'percent' }
+		{ label: 'Disabled', value: 'null' },
+		{ label: 'Stacked by Value', value: 'normal' },
+		{ label: 'Stacked by Percentage', value: 'percent' }
 	];
 
 	protected chartTypeList = [
-		{ name: 'Disabled', value: 'null' },
-		{ name: 'Area', value: 'area' },
-		{ name: 'Bar', value: 'bar' },
-		{ name: 'Column', value: 'column' },
-		{ name: 'Line', value: 'line' },
-		{ name: 'Pie', value: 'pie' },
-		{ name: 'Treemap', value: 'treemap' },
-		{ name: 'Dependencywheel', value: 'dependencywheel' },
-		{ name: 'Sankey', value: 'sankey' }
+		// { label: 'Disabled', value: 'null' },
+    { label: 'Area', value: 'area' },
+    { label: 'Bar', value: 'bar' },
+    { label: 'Column', value: 'column' },
+    { label: 'Line', value: 'line' },
+		{ label: 'Pie', value: 'pie' },
+		{ label: 'Treemap', value: 'treemap' },
+		{ label: 'Dependency wheel', value: 'dependencywheel' },
+		{ label: 'Sankey', value: 'sankey' }
 	];
 
 	protected filterOperators: FilterType[] = [
@@ -92,8 +91,6 @@ export class DataseriesSelectorComponent implements OnInit, AfterViewInit {
 		private urlProvider: UrlProviderService,
     private formFactory: FormFactoryService,
 	) { }
-
-	hasChild = (_: number, node: EntityNode) => !!node.relations && node.relations.length > 0;
 
 	ngOnInit(): void {
 		// With the change in stepper, the data is not created in the beginning, so it'll have to be initialized and not wait for "value changes"
@@ -120,10 +117,18 @@ export class DataseriesSelectorComponent implements OnInit, AfterViewInit {
 			}
 		});
 
-		this.form = this.formGroup.get('dataseries') as FormArray;
+    this.form = this.formFactory.getFormRoot().get('dataseries') as FormArray;
+    this.selectedCategoryId = this.formFactory.getFormRoot().get('category.diagram.diagramId').value;
+    this.formFactory.getFormRoot().get('category.diagram.diagramId').valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+      next: (diagramId: number) => {
+        this.selectedCategoryId = diagramId;
+      }
+    });
+
 	}
 
   ngAfterViewInit() {
+
     // Check if the form is patched after view init
     setTimeout(() => {
       console.log('🏁 DataSeries AfterViewInit - Form values:');
@@ -181,28 +186,6 @@ export class DataseriesSelectorComponent implements OnInit, AfterViewInit {
 		const entityRelationsUrl = this.urlProvider.serviceURL + '/schema/' + profile.name + '/entities/' + entity;
 
 		return this.http.get<CachedEntityNode>(entityRelationsUrl);
-	}
-
-
-	selectEntity(event: MatSelectChange): void {
-		this.selectedEntity = event.value;
-
-		this.panelOpenState = true;
-
-		this.selectedEntityMap = Array.from(this.entityMap.values()).filter((item: any) => {
-			if (item.name === this.selectedEntity) {
-				return item;
-			}
-		});
-
-	}
-
-	isExpandionPanelOpen(event: any): boolean {
-		let isPanelOpenFlag: boolean = false;
-
-		// check the selected value if it is part of an expansion panel and keep it open. Close others.
-
-		return isPanelOpenFlag;
 	}
 
 	addFilter(form: any) {
@@ -272,13 +255,9 @@ export class DataseriesSelectorComponent implements OnInit, AfterViewInit {
     }, 0);
 	}
 
-	changePosition(direction: string, index: number) {
+	move(step: number, index: number) {
 		let items = this.form as FormArray;
-		if (direction === 'up') {
-			[items.controls[index - 1], items.controls[index]] = [items.controls[index], items.controls[index - 1]]
-		} else if (direction === 'down') {
-			[items.controls[index], items.controls[index + 1]] = [items.controls[index + 1], items.controls[index]]
-		}
+    [items.controls[index], items.controls[index + step]] = [items.controls[index + step], items.controls[index]]
 	}
 
 	checkYAxisAggregate(form: FormGroup): boolean {

@@ -1,4 +1,4 @@
-import { ISupportedPolar } from './../supported-chart-types-service/supported-chart-types.service';
+import { ISupportedPolar } from '../supported-chart-types-service/supported-chart-types.service';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import {
@@ -70,15 +70,15 @@ export class DiagramCategoryService {
               .map((elem: ISupportedMiscType) => this.availableDiagrams.push(elem) );
         }
     );
-    
+
     this.selectedDiagramCategory$ = new BehaviorSubject(null as any);
   }
 
   public changeDiagramCategory(diagramCategory: ISupportedCategory) {
-      
+
     const found = this.availableDiagrams.find(
         (availableDiagram: ISupportedCategory) => availableDiagram.type === diagramCategory.type);
-      
+
       this.selectedDiagramCategory$.next((found === null || found === undefined) ? null as any : found);
 
       if (found) {

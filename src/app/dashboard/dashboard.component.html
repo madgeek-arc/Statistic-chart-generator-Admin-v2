@@ -95,12 +95,12 @@
               </li>
               <li class="" style="animation-duration: 200ms;">
                 <ng-container *ngIf="hasDataAndDiagramType">
-                  <app-dataseries-selector [formGroup]="diagramSettings" [selectedProfile]="profile" [selectedCategory]="categoryName"></app-dataseries-selector>
+                  <app-dataseries-selector [selectedProfile]="profile"></app-dataseries-selector>
                 </ng-container>
               </li>
               <li class="" style="animation-duration: 200ms;">
                 <ng-container *ngIf="this.hasDataAndDiagramType">
-                  <app-customise-appearance [appearanceForm]="appearance"></app-customise-appearance>
+                  <app-customise-appearance></app-customise-appearance>
                 </ng-container>
               </li>
             </ul>
@@ -120,7 +120,7 @@
             <div class="uk-section uk-section-small uk-section-primary uk-preserve-color">
               <div class="uk-container uk-container-expand uk-padding-remove uk-margin-medium-right">
 
-<!--                <pre>{{ diagramSettings.getRawValue() | json }}</pre>-->
+<!--                <pre>{{ diagramSettings.value | json }}</pre>-->
 
                 <div class="iframe-container">
 

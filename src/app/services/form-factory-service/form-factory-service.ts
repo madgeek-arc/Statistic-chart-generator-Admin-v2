@@ -87,7 +87,7 @@ export class FormFactoryService {
     return this.fb.group({
       diagram: this.fb.group({
         type: this.fb.control<string | null>(null),
-        supportedLibraries: this.fb.array([]),
+        supportedLibraries: this.fb.array<string>([]),
         name: this.fb.control<string | null>(null),
         diagramId: this.fb.control<number | null>(null),
         description: this.fb.control<string | null>(null),
@@ -107,24 +107,15 @@ export class FormFactoryService {
   createDataseriesGroup(index: number, rawValue?: any): FormGroup {
     const rv = rawValue ?? {};
 
-    // console.log('createDataseriesGroup called with index=', index);
-    // console.log('rv.data.xaxisData =', rv?.data?.xaxisData);
-    // // for each element show its shape:
-    // (rv?.data?.xaxisData ?? []).forEach((x: any, i: number) =>
-    //   console.log(`xaxis[${i}] =`, JSON.stringify(x), 'type:', typeof x, x)
-    // );
-
-
     // xaxisData: keep default one entry if none provided
     const xaxisRaw = rv?.data?.xaxisData ?? [];
-    const xaxisControls = (xaxisRaw.length > 0 ? xaxisRaw : [ {} ]).map((x: any) => this.createXaxisEntityField(x)
-    );
+    const xaxisControls = (xaxisRaw.length > 0 ? xaxisRaw : [ {} ]).map((x: any) => this.createXaxisEntityField(x));
 
     // filters: map existing or default to an empty array
     const filtersRaw = rv?.data?.filters ?? [];
     const filtersControls = filtersRaw.map((f: any) => this.createFilterGroup(f));
 
-    return this.fb.group({
+    const group = this.fb.group({
       data: this.fb.group({
         yaxisData: this.fb.group({
           entity: this.controlFromRaw<string | null>(rv?.data?.yaxisData?.entity, null, Validators.required),
@@ -144,20 +135,36 @@ export class FormFactoryService {
         stacking: this.controlFromRaw<'null' | 'normal' | 'percent' | 'stream' | 'overlap'>(rv?.chartProperties?.stacking ?? 'null', 'null', Validators.required)
       })
     });
+
+    // If diagram is numbers type disable x-axis
+    if (this.formRoot?.get('category.diagram.diagramId')?.value === 14) {
+      group.get('data.xaxisData').disable();
+    }
+
+    // Disable/enable x-axis when switching to and from numbers type diagram.
+    this.formRoot?.get('category.diagram.diagramId')?.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+      next: diagramId => {
+        if (diagramId === 14) {
+          group.get('data.xaxisData').disable();
+        } else {
+          group.get('data.xaxisData').enable();
+        }
+      }
+    });
+
+    return group;
   }
 
   createXaxisEntityField(rawValue?: any): FormGroup {
     const rv = rawValue ?? {};
     const node = rv?.xaxisEntityField ?? rv;
 
-    const group = this.fb.group({
+    return this.fb.group({
       xaxisEntityField: this.fb.group({
         name: this.controlFromRaw<string | null>(node?.name, null, Validators.required),
         type: this.controlFromRaw<string | null>(node?.type, null),
       })
     });
-
-    return group;
   }
 
   createFilterGroup(rawValue?: any): FormGroup {
@@ -207,7 +214,6 @@ export class FormFactoryService {
           resultsLimit: this.fb.control(30, [Validators.required, Validators.min(1)]),
           orderByAxis: this.fb.control(null),
         }),
-        // visualisationOptions: this.fb.group({
         highchartsAppearanceOptions: this.fb.group({
           title: this.fb.group({
             titleText: this.fb.control<string>(''),
@@ -316,16 +322,56 @@ export class FormFactoryService {
             enableXaxisZoom: this.fb.control<boolean>(false),
             enableYaxisZoom: this.fb.control<boolean>(false)
           })
+        }),
+        highmapsAppearanceOptions: this.fb.group({
+          title: this.fb.group({
+            titleText: this.fb.control<string>(''),
+            color: this.fb.control<string>('#333333'),
+            align: this.fb.control<'left' | 'center' | 'right'>('center'),
+            margin: this.fb.control<number>(15),
+            fontSize: this.fb.control<number>(18)
+          }),
+          subtitle: this.fb.group({
+            subtitleText: this.fb.control<string | null>(null),
+            color: this.fb.control<string>('#666666'),
+            align: this.fb.control<'left' | 'center' | 'right'>('center'),
+            fontSize: this.fb.control<number>(12)
+          }),
+          hmCredits: this.fb.group({
+            hmEnableLegend: this.fb.control<boolean>(true),
+            hmLegendTitle: this.fb.control<string | null>(null),
+          }),
+          hmLegend: this.fb.group({
+            exporting: this.fb.control<boolean>(false),
+            hmCreditsText: this.fb.control<string | null>('Created by OpenAIRE via HighCharts'),
+          }),
+          hmMiscOptions: this.fb.group({
+            exporting: this.fb.control<boolean>(true),
+            hmEnableDataLabels: this.fb.control<boolean>(false),
+            hmEnableMapNavigation: this.fb.control<boolean>(false),
+          }),
+          hmColorAxis: this.fb.group({
+            hmColorAxisMin: this.fb.control<number | null>(null),
+            hmColorAxisMax: this.fb.control<number | null>(null),
+            hmColorAxisType: this.fb.control<string | null>(null),
+            hmColorAxisMinColor: this.fb.control<string | null>(null),
+            hmColorAxisMaxColor: this.fb.control<string | null>(null),
+          }),
+          hmZoomTo: this.fb.group({
+            destination: this.fb.control<string | null>(null),
+            zoomValue: this.fb.control<number | null>(null)
+          }),
         })
-        // }),
       }),
       tableAppearance: this.fb.group({
         paginationSize: this.fb.control<number>(30, [Validators.required, Validators.min(1)])
       }),
     });
 
+    group.get('chartAppearance.highchartsAppearanceOptions')?.disable();
     group.get('chartAppearance.googlechartsAppearanceOptions')?.disable();
     group.get('chartAppearance.echartsAppearanceOptions')?.disable();
+    group.get('chartAppearance.highmapsAppearanceOptions')?.disable();
 
     return group;
   }
