@@ -1,5 +1,5 @@
 import { Filter, FilterGroup } from './query-filter.model';
-import { DataseriesFormSchema, DataFormSchema } from './chart-form-schema.classes';
+import { DataseriesFormSchema, DataFormSchema } from "../chart-form-schema.classes";
 
 export class Query {
 

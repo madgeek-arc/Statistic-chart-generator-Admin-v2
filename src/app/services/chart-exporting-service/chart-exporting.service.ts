@@ -4,24 +4,15 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { catchError, distinctUntilChanged, first } from 'rxjs/operators';
 import { UrlProviderService } from '../url-provider-service/url-provider.service';
 import { ErrorHandlerService } from "../error-handler-service/error-handler.service";
+import { HighChartsChart } from "../supported-libraries-service/models/chart-description-HighCharts.model";
 import {
-  HighChartsChart
-} from "../../dashboard/customise-appearance/visualisation-options/supported-libraries-service/chart-description-HighCharts.model";
-import {
-  GoogleChartsChart, GoogleChartsTable
-} from "../../dashboard/customise-appearance/visualisation-options/supported-libraries-service/chart-description-GoogleCharts.model";
-import {
-  HighMapsMap
-} from "../../dashboard/customise-appearance/visualisation-options/supported-libraries-service/chart-description-HighMaps.model";
-import {
-  EChartsChart
-} from "../../dashboard/customise-appearance/visualisation-options/supported-libraries-service/chart-description-eCharts.model";
-import {
-  RawChartDataModel
-} from "../../dashboard/customise-appearance/visualisation-options/supported-libraries-service/chart-description-rawChartData.model";
-import {
-  RawDataModel
-} from "../../dashboard/customise-appearance/visualisation-options/supported-libraries-service/description-rawData.model";
+  GoogleChartsChart,
+  GoogleChartsTable
+} from "../supported-libraries-service/models/chart-description-GoogleCharts.model";
+import { HighMapsMap } from "../supported-libraries-service/models/chart-description-HighMaps.model";
+import { EChartsChart } from "../supported-libraries-service/models/chart-description-eCharts.model";
+import { RawChartDataModel } from "../supported-libraries-service/models/chart-description-rawChartData.model";
+import { RawDataModel } from "../supported-libraries-service/models/description-rawData.model";
 
 type PostTinyUrlCallback = (shortUrl: string) => void;
 

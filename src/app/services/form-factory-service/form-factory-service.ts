@@ -338,12 +338,12 @@ export class FormFactoryService {
             fontSize: this.fb.control<number>(12)
           }),
           hmCredits: this.fb.group({
-            hmEnableLegend: this.fb.control<boolean>(true),
-            hmLegendTitle: this.fb.control<string | null>(null),
+            hmEnableCredits: this.fb.control<boolean>(false),
+            hmCreditsText: this.fb.control<string | null>('Created by OpenAIRE via HighCharts'),
           }),
           hmLegend: this.fb.group({
-            exporting: this.fb.control<boolean>(false),
-            hmCreditsText: this.fb.control<string | null>('Created by OpenAIRE via HighCharts'),
+            hmEnableLegend: this.fb.control<boolean>(true),
+            hmLegendTitle: this.fb.control<string | null>(null),
           }),
           hmMiscOptions: this.fb.group({
             exporting: this.fb.control<boolean>(true),
@@ -353,13 +353,13 @@ export class FormFactoryService {
           hmColorAxis: this.fb.group({
             hmColorAxisMin: this.fb.control<number | null>(null),
             hmColorAxisMax: this.fb.control<number | null>(null),
-            hmColorAxisType: this.fb.control<string | null>(null),
-            hmColorAxisMinColor: this.fb.control<string | null>(null),
-            hmColorAxisMaxColor: this.fb.control<string | null>(null),
+            hmColorAxisType: this.fb.control<'linear' | 'logarithmic'>('linear'),
+            hmColorAxisMinColor: this.fb.control<string | null>('#e6ebf5ff'),
+            hmColorAxisMaxColor: this.fb.control<string | null>('#003399ff'),
           }),
           hmZoomTo: this.fb.group({
             destination: this.fb.control<string | null>(null),
-            zoomValue: this.fb.control<number | null>(null)
+            zoomValue: this.fb.control<number | null>(1)
           }),
         })
       }),

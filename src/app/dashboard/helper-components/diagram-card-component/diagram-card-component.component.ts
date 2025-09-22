@@ -1,7 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import {
-	ISupportedCategory
-} from "../../customise-appearance/visualisation-options/supported-chart-types-service/supported-chart-types.service";
+import { ISupportedCategory } from "../../../services/supported-chart-types-service/supported-chart-types.service";
 
 @Component({
 	selector: 'app-diagram-card-component',

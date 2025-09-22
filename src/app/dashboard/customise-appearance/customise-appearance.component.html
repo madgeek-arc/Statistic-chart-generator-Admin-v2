@@ -52,6 +52,9 @@
               <ng-container *ngIf="visualisationLibrary.value === 'eCharts'">
                 <app-e-charts [eChartsForm]="eCharts"></app-e-charts>
               </ng-container>
+              <ng-container *ngIf="visualisationLibrary.value === 'HighMaps'">
+                <app-high-maps [highMapsForm]="highMaps"></app-high-maps>
+              </ng-container>
 
             </div>
           </li>

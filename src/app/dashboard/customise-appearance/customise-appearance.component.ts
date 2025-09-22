@@ -5,7 +5,6 @@ import { FormFactoryService } from "../../services/form-factory-service/form-fac
 @Component({
 	selector: 'app-customise-appearance',
 	templateUrl: './customise-appearance.component.html',
-	styleUrls: ['./customise-appearance.component.less']
 })
 
 export class CustomiseAppearanceComponent implements OnInit {
@@ -83,6 +82,10 @@ export class CustomiseAppearanceComponent implements OnInit {
 
 	get eCharts(): FormGroup {
 		return this.appearanceForm.get('chartAppearance.echartsAppearanceOptions') as FormGroup;
+	}
+
+	get highMaps(): FormGroup {
+		return this.appearanceForm.get('chartAppearance.highmapsAppearanceOptions') as FormGroup;
 	}
 
 

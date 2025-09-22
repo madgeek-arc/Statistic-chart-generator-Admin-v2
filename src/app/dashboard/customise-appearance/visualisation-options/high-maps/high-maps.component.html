@@ -1,0 +1,126 @@
+<div [formGroup]="highMapsForm">
+  <ul data-uk-accordion="multiple: true">
+
+    <li class="uk-open">
+      <a class="uk-accordion-title" href>Title</a>
+
+      <div class="uk-accordion-content" formGroupName="title">
+        <div class="uk-child-width-1-2" data-uk-grid>
+          <div input placeholder="Title Text" [formInput]="highMapsForm.get('title.titleText')"></div>
+          <div input placeholder="Title Color" type="color" [formInput]="highMapsForm.get('title.color')"></div>
+          <div input placeholder="Horizontal Alignment" type="select"
+               [formInput]="highMapsForm.get('title.align')" [options]="horizontalAlignmentList">
+          </div>
+          <div input placeholder="Margin" type="number" [formInput]="highMapsForm.get('title.margin')"></div>
+          <div input placeholder="Font Size" type="number" [formInput]="highMapsForm.get('title.fontSize')"></div>
+        </div>
+      </div>
+
+    </li>
+
+    <li>
+      <a class="uk-accordion-title" href>Subtitle</a>
+
+      <div class="uk-accordion-content" formGroupName="subtitle">
+
+        <div class="uk-child-width-1-2" data-uk-grid>
+          <div input placeholder="Subtitle Text" [formInput]="highMapsForm.get('subtitle.subtitleText')"></div>
+          <div input placeholder="Subtitle Color" type="color" [formInput]="highMapsForm.get('subtitle.color')"></div>
+          <div input placeholder="Horizontal Alignment" type="select"
+               [formInput]="highMapsForm.get('subtitle.align')" [options]="horizontalAlignmentList">
+          </div>
+          <div input placeholder="Font Size" type="number" [formInput]="highMapsForm.get('subtitle.fontSize')"></div>
+        </div>
+
+      </div>
+    </li>
+
+    <li>
+      <a class="uk-accordion-title" href>Credits</a>
+
+      <div class="uk-accordion-content" formGroupName="hmCredits">
+
+        <div class="" data-uk-grid>
+          <div class="width-1-1">
+            <mat-slide-toggle formControlName="hmEnableCredits">Enable Credits</mat-slide-toggle>
+          </div>
+          <div class="uk-width-1-1" *ngIf="highMapsForm.get('hmCredits.hmEnableCredits').value">
+            <div input placeholder="Credits Text" [formInput]="highMapsForm.get('hmCredits.hmCreditsText')"></div>
+          </div>
+        </div>
+
+      </div>
+    </li>
+
+    <li>
+      <a class="uk-accordion-title" href>Legend</a>
+
+      <div class="uk-accordion-content" formGroupName="hmLegend" data-uk-grid>
+
+        <div>
+          <mat-slide-toggle formControlName="hmEnableLegend">Enable Legend</mat-slide-toggle>
+        </div>
+
+        <div *ngIf="highMapsForm.get('hmLegend.hmEnableLegend').value" class="uk-width-1-1">
+          <div input placeholder="Legend Tilte" type="text"
+               [formInput]="highMapsForm.get('hmLegend.hmLegendTitle')">
+          </div>
+        </div>
+
+      </div>
+    </li>
+
+    <li>
+      <a class="uk-accordion-title uk-margin-bottom" href>Color Axis</a>
+
+      <div class="uk-accordion-content" formGroupName="hmColorAxis" data-uk-grid>
+
+        <div class="uk-width-1-1" input placeholder="Color Axis Interpolation" type="select"
+             [formInput]="highMapsForm.get('hmColorAxis.hmColorAxisType')" [options]="axisInterpolationList">
+        </div>
+        <div class="uk-width-1-2" input placeholder="Color Axis Min" type="number"
+             [formInput]="highMapsForm.get('hmColorAxis.hmColorAxisMin')">
+        </div>
+        <div class="uk-width-1-2" input placeholder="Color Axis Max" type="number"
+             [formInput]="highMapsForm.get('hmColorAxis.hmColorAxisMax')">
+        </div>
+        <div class="uk-width-1-2" input placeholder="Minimum Color" type="color" [selectable]="true" [selectArrow]="null"
+             [formInput]="highMapsForm.get('hmColorAxis.hmColorAxisMinColor')">
+        </div>
+        <div class="uk-width-1-2" input placeholder="Maximum Color" type="color" [selectable]="true" [selectArrow]="null"
+             [formInput]="highMapsForm.get('hmColorAxis.hmColorAxisMaxColor')">
+        </div>
+
+      </div>
+    </li>
+
+    <li>
+      <a class="uk-accordion-title" href>Misc Options</a>
+
+      <div class="uk-accordion-content" formGroupName="hmMiscOptions">
+
+        <div class="uk-child-width-1-1" data-uk-grid>
+          <mat-slide-toggle formControlName="exporting">Enable Exporting</mat-slide-toggle>
+          <mat-slide-toggle formControlName="hmEnableDataLabels">Enable data labels for all series</mat-slide-toggle>
+          <mat-slide-toggle formControlName="hmEnableMapNavigation">Enable map navigation</mat-slide-toggle>
+        </div>
+
+      </div>
+    </li>
+
+    <li>
+      <a class="uk-accordion-title" href>Zoom Options</a>
+
+      <div class="uk-accordion-content uk-child-width-1-2" formGroupName="hmZoomTo" data-uk-grid>
+        <div input placeholder="Country" type="select"
+             [formInput]="highMapsForm.get('hmZoomTo.destination')" [options]="countriesList">
+        </div>
+        <div input placeholder="Zoom Value" type="number"
+             [formInput]="highMapsForm.get('hmZoomTo.zoomValue')">
+        </div>
+      </div>
+    </li>
+
+  </ul>
+
+</div>

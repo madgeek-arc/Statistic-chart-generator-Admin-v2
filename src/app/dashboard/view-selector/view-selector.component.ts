@@ -4,9 +4,9 @@ import { ProfileProviderService } from 'src/app/services/profile-provider/profil
 
 @Component({
 	selector: 'app-view-selector',
-	templateUrl: './view-selector.component.html',
-	styleUrls: ['./view-selector.component.less']
+	templateUrl: './view-selector.component.html'
 })
+
 export class ViewSelectorComponent {
 
 	@Input() viewForm: FormControl = new FormControl();

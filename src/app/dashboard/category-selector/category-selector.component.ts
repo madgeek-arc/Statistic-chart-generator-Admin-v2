@@ -2,14 +2,18 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { first } from 'rxjs';
 import {
-	ISupportedMap, ISupportedMiscType,
-	ISupportedPolar, ISupportedSpecialChartType, SupportedChartTypesService
-} from "../customise-appearance/visualisation-options/supported-chart-types-service/supported-chart-types.service";
+  ISupportedCategory,
+  ISupportedChart,
+  ISupportedMap,
+  ISupportedMiscType,
+  ISupportedPolar,
+  ISupportedSpecialChartType,
+  SupportedChartTypesService
+} from "../../services/supported-chart-types-service/supported-chart-types.service";
 
 @Component({
 	selector: 'app-category-selector',
 	templateUrl: './category-selector.component.html',
-	styleUrls: ['./category-selector.component.less']
 })
 export class CategorySelectorComponent implements OnInit {
 
@@ -134,16 +138,4 @@ export class CategorySelectorComponent implements OnInit {
 	}
 
 }
-
-export interface ISupportedCategory {
-	type: string;
-	supportedLibraries: Array<string>;
-	name?: string;
-	diagramId?: number;
-	description?: string;
-	imageURL?: string;
-	isPolar?: boolean;
-	isHidden?: boolean;
-}
-export interface ISupportedChart extends ISupportedCategory { }
 

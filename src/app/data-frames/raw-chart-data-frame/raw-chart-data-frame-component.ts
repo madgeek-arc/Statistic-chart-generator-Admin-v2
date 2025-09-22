@@ -1,9 +1,7 @@
 import { Component, ElementRef, Input, OnChanges, OnInit, SimpleChanges, ViewChild } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { UrlProviderService } from '../../services/url-provider-service/url-provider.service';
-import {
-  RawChartDataModel
-} from "../../dashboard/customise-appearance/visualisation-options/supported-libraries-service/chart-description-rawChartData.model";
+import { RawChartDataModel } from "../../services/supported-libraries-service/models/chart-description-rawChartData.model";
 
 @Component({
   selector: 'raw-chart-data-frame',

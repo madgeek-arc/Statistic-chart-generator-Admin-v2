@@ -3,7 +3,7 @@ import { AfterViewInit, Component, DestroyRef, inject, Input, OnInit, ViewChild 
 import { FormArray, FormControl, FormGroup, FormGroupDirective } from '@angular/forms';
 import { BehaviorSubject, first, forkJoin, Observable } from 'rxjs';
 import { Profile } from 'src/app/services/profile-provider/profile-provider.service';
-import { UrlProviderService } from 'src/app/services/url-provider/url-provider.service';
+import { UrlProviderService } from "../../services/url-provider-service/url-provider.service";
 import {
   CachedEntityNode,
   EntityNode

@@ -1,42 +1,25 @@
 import { Observable, of } from 'rxjs';
 import { Color, ColorType } from 'highcharts';
-import {
-  HighChartsChart
-} from "../../dashboard/customise-appearance/visualisation-options/supported-libraries-service/chart-description-HighCharts.model";
-import {
-  DiagramCategoryService
-} from "../../dashboard/customise-appearance/visualisation-options/diagram-category-service/diagram-category.service";
+import { HighChartsChart } from "../supported-libraries-service/models/chart-description-HighCharts.model";
+import { DiagramCategoryService } from "../diagram-category-service/diagram-category.service";
 import {
   AppearanceFormSchema,
   CategoryFormSchema,
   DataseriesFormSchema,
   SCGAFormSchema,
   ViewFormSchema
-} from "../../dashboard/customise-appearance/visualisation-options/chart-form-schema.classes";
+} from "../supported-libraries-service/chart-form-schema.classes";
 import {
   GoogleChartsChart,
   GoogleChartsTable
-} from "../../dashboard/customise-appearance/visualisation-options/supported-libraries-service/chart-description-GoogleCharts.model";
-import {
-  HighMapsMap,
-  HMSeriesInfo
-} from "../../dashboard/customise-appearance/visualisation-options/supported-libraries-service/chart-description-HighMaps.model";
-import {
-  EChartsChart,
-  ECToolboxFeature
-} from "../../dashboard/customise-appearance/visualisation-options/supported-libraries-service/chart-description-eCharts.model";
-import { ChartInfo } from "../../dashboard/customise-appearance/visualisation-options/chart-query.model";
-import {
-  RawChartDataModel
-} from "../../dashboard/customise-appearance/visualisation-options/supported-libraries-service/chart-description-rawChartData.model";
-import {
-  QueryInfo,
-  RawDataModel
-} from "../../dashboard/customise-appearance/visualisation-options/supported-libraries-service/description-rawData.model";
+} from "../supported-libraries-service/models/chart-description-GoogleCharts.model";
+import { HighMapsMap, HMSeriesInfo } from "../supported-libraries-service/models/chart-description-HighMaps.model";
+import { EChartsChart, ECToolboxFeature } from "../supported-libraries-service/models/chart-description-eCharts.model";
+import { ChartInfo } from "../supported-libraries-service/models/chart-query.model";
+import { RawChartDataModel } from "../supported-libraries-service/models/chart-description-rawChartData.model";
+import { QueryInfo, RawDataModel } from "../supported-libraries-service/models/description-rawData.model";
 import { EChartOption } from "echarts";
-import {
-  ISupportedMap
-} from "../../dashboard/customise-appearance/visualisation-options/supported-chart-types-service/supported-chart-types.service";
+import { ISupportedMap } from "../supported-chart-types-service/supported-chart-types.service";
 
 
 export class DiagramCreator {

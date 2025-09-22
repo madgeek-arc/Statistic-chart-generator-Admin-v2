@@ -1,14 +1,14 @@
-import { ISupportedPolar } from '../supported-chart-types-service/supported-chart-types.service';
+import {
+  ISupportedCategory,
+  ISupportedChart,
+  ISupportedMap,
+  ISupportedMiscType,
+  ISupportedPolar,
+  ISupportedSpecialChartType,
+  SupportedChartTypesService
+} from "../supported-chart-types-service/supported-chart-types.service";
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import {
-    SupportedChartTypesService,
-    ISupportedMap,
-    ISupportedSpecialChartType,
-    ISupportedChart,
-    ISupportedCategory,
-    ISupportedMiscType
-} from '../supported-chart-types-service/supported-chart-types.service';
 import { first } from 'rxjs/operators';
 
 @Injectable({

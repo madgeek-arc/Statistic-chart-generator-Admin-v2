@@ -1,5 +1,5 @@
-import { ChartInfo } from '../chart-query.model';
-import { HCtitle, HCsubtitle, HCExporting, HCCredits, HCDataLabels, HCLegend } from './chart-description-HighCharts.model';
+import { ChartInfo } from "./chart-query.model";
+import { HCCredits, HCDataLabels, HCExporting, HCLegend } from './chart-description-HighCharts.model';
 
 export class HighMapsMap {
     library: string;

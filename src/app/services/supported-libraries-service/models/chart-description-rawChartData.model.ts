@@ -1,4 +1,4 @@
-import { ChartInfo } from "../chart-query.model";
+import { ChartInfo } from "./chart-query.model";
 
 export class RawChartDataModel {
     library: string;

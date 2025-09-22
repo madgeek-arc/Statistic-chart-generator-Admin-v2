@@ -1,10 +1,10 @@
 // Classes derived from the chart-form-schema.model
 
-import { ISupportedCategory } from "../../category-selector/category-selector.component";
+import { ISupportedCategory } from "../supported-chart-types-service/supported-chart-types.service";
 import {
   HCDataLabels,
   HCZoomOptionsFormSchema
-} from "./supported-libraries-service/chart-description-HighCharts.model";
+} from "./models/chart-description-HighCharts.model";
 
 export interface SCGAFormSchema {
   view: ViewFormSchema;

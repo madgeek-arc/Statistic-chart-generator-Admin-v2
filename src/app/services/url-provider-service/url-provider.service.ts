@@ -16,15 +16,15 @@ export class UrlProviderService {
 
   public createChartURL(chartObject: Object): string
   {
-    var stringObj = JSON.stringify(chartObject);
+    let stringObj = JSON.stringify(chartObject);
     stringObj = stringObj.replaceAll('%', '%25');
-    
+
     return this.serviceURL + '/chart?json=' + encodeURIComponent(stringObj);
   }
 
   public createTableURL(tableObject: Object): string
   {
-    var stringObj = JSON.stringify(tableObject);
+    let stringObj = JSON.stringify(tableObject);
     stringObj = stringObj.replaceAll('%', '%25');
 
     return this.serviceURL + '/table?json=' + encodeURIComponent(stringObj);
@@ -32,7 +32,7 @@ export class UrlProviderService {
 
   public createRawChartDataUrl(rawChartDataObject: Object) : string
   {
-    var stringObj = JSON.stringify(rawChartDataObject);
+    let stringObj = JSON.stringify(rawChartDataObject);
     stringObj = stringObj.replaceAll('%', '%25');
 
     return this.serviceURL + '/chart/json?json=' + encodeURIComponent(stringObj);
@@ -40,7 +40,7 @@ export class UrlProviderService {
 
   public createRawDataUrl(rawDataObject: Object): string
   {
-    var stringObj = JSON.stringify(rawDataObject);
+    let stringObj = JSON.stringify(rawDataObject);
     stringObj = stringObj.replaceAll('%', '%25');
 
     return this.serviceURL + '/raw?json=' + encodeURIComponent(stringObj);

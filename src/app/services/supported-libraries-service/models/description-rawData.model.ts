@@ -1,5 +1,5 @@
 import { DataFormSchema } from "../chart-form-schema.classes";
-import { Query } from "../chart-query.model";
+import { Query } from "./chart-query.model";
 
 export class RawDataModel {
     orderBy: string | null = null;

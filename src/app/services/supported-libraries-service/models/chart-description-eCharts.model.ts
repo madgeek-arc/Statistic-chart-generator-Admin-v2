@@ -1,5 +1,5 @@
-import type { EChartOption, ECharts, EChartTitleOption } from 'echarts';
-import { ChartInfo } from '../chart-query.model';
+import type { EChartOption, EChartTitleOption } from 'echarts';
+import { ChartInfo } from './chart-query.model';
 
 export class EChartsChart {
     library: string;

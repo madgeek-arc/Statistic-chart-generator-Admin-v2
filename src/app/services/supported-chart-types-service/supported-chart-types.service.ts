@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { catchError, retry } from 'rxjs/operators';
 import { UrlProviderService } from 'src/app/services/url-provider-service/url-provider.service';
-import { ErrorHandlerService } from "../../../../services/error-handler-service/error-handler.service";
+import { ErrorHandlerService } from "../error-handler-service/error-handler.service";
 
 @Injectable()
 export class SupportedChartTypesService {

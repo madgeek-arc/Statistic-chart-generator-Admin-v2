@@ -4,7 +4,6 @@ import { FormArray, FormControl, FormGroup } from '@angular/forms';
 @Component({
 	selector: 'app-high-charts',
 	templateUrl: './high-charts.component.html',
-	styleUrls: ['./high-charts.component.less']
 })
 export class HighChartsComponent {
 

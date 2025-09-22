@@ -1,24 +1,17 @@
-import { Component, OnInit, Input, OnChanges, SimpleChanges, ViewChild, ElementRef } from '@angular/core';
+import { Component, ElementRef, Input, OnChanges, OnInit, SimpleChanges, ViewChild } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { UrlProviderService } from '../../services/url-provider-service/url-provider.service';
-import {
-	HighChartsChart
-} from "../../dashboard/customise-appearance/visualisation-options/supported-libraries-service/chart-description-HighCharts.model";
-import {
-	GoogleChartsChart
-} from "../../dashboard/customise-appearance/visualisation-options/supported-libraries-service/chart-description-GoogleCharts.model";
-import {
-	HighMapsMap
-} from "../../dashboard/customise-appearance/visualisation-options/supported-libraries-service/chart-description-HighMaps.model";
-import {
-	EChartsChart
-} from "../../dashboard/customise-appearance/visualisation-options/supported-libraries-service/chart-description-eCharts.model";
+import { HighChartsChart } from "../../services/supported-libraries-service/models/chart-description-HighCharts.model";
+import { GoogleChartsChart } from "../../services/supported-libraries-service/models/chart-description-GoogleCharts.model";
+import { HighMapsMap } from "../../services/supported-libraries-service/models/chart-description-HighMaps.model";
+import { EChartsChart } from "../../services/supported-libraries-service/models/chart-description-eCharts.model";
 
 @Component({
 	selector: 'chart-frame',
 	templateUrl: './chart-frame.component.html',
 	styleUrls: ['./chart-frame.component.scss']
 })
+
 export class ChartFrameComponent implements OnInit, OnChanges {
 
 	@ViewChild('chartFrame', { static: false })

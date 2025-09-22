@@ -1,11 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 
-import { Observable, of, throwError } from 'rxjs';
+import { Observable } from 'rxjs';
 import { catchError, retry } from 'rxjs/operators';
-import { UrlProviderService } from '../url-provider-service/url-provider.service';
-import { ErrorHandlerService } from '../error-handler-service/error-handler.service';
+import { UrlProviderService } from "../url-provider-service/url-provider.service";
+import { ErrorHandlerService } from "../error-handler-service/error-handler.service";
 
 @Injectable({
   providedIn: 'root'

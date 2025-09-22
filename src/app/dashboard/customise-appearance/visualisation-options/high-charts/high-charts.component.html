@@ -7,7 +7,7 @@
 
 				<div class="uk-accordion-content" formGroupName="title">
 
-          <div class="uk-child-width-1-2" uk-grid>
+          <div class="uk-child-width-1-2" data-uk-grid>
             <div class="">
               <div input placeholder="Title Text" [formInput]="highChartsForm.get('title.titleText')"></div>
             </div>
@@ -246,7 +246,9 @@
 					<ng-container *ngFor="let dataSeriesColor of getSeriesColors(highChartsForm); let i = index">
 						<div class="uk-flex uk-flex-middle uk-grid-small" uk-grid>
               <div class="uk-width-expand" input type="color" [formInput]="highChartsForm.get('dataSeriesColorArray').get(i.toString())"></div>
-							<a (click)="removeSeriesColor(highChartsForm, i)" class="uk-link-reset"><span class="material-symbols-outlined uk-margin-small-left">close</span></a>
+							<a (click)="removeSeriesColor(highChartsForm, i)" class="uk-link-reset">
+                <span class="material-symbols-outlined uk-margin-small-left">close</span>
+              </a>
 						</div>
 					</ng-container>
 

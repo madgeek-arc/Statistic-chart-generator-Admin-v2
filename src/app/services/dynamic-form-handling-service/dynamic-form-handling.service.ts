@@ -4,28 +4,17 @@ import { DiagramCreator } from './dynamic-form-handling-diagram-creator';
 import { ChartExportingService } from '../chart-exporting-service/chart-exporting.service';
 import { ChartLoadingService } from '../chart-loading-service/chart-loading.service';
 import { first } from 'rxjs/operators';
+import { DiagramCategoryService } from "../diagram-category-service/diagram-category.service";
+import { SCGAFormSchema } from "../supported-libraries-service/chart-form-schema.classes";
+import { HighChartsChart } from "../supported-libraries-service/models/chart-description-HighCharts.model";
 import {
-	DiagramCategoryService
-} from "../../dashboard/customise-appearance/visualisation-options/diagram-category-service/diagram-category.service";
-import { SCGAFormSchema } from "../../dashboard/customise-appearance/visualisation-options/chart-form-schema.classes";
-import {
-	HighChartsChart
-} from "../../dashboard/customise-appearance/visualisation-options/supported-libraries-service/chart-description-HighCharts.model";
-import {
-	GoogleChartsChart, GoogleChartsTable
-} from "../../dashboard/customise-appearance/visualisation-options/supported-libraries-service/chart-description-GoogleCharts.model";
-import {
-	HighMapsMap
-} from "../../dashboard/customise-appearance/visualisation-options/supported-libraries-service/chart-description-HighMaps.model";
-import {
-	EChartsChart
-} from "../../dashboard/customise-appearance/visualisation-options/supported-libraries-service/chart-description-eCharts.model";
-import {
-	RawChartDataModel
-} from "../../dashboard/customise-appearance/visualisation-options/supported-libraries-service/chart-description-rawChartData.model";
-import {
-	RawDataModel
-} from "../../dashboard/customise-appearance/visualisation-options/supported-libraries-service/description-rawData.model";
+  GoogleChartsChart,
+  GoogleChartsTable
+} from "../supported-libraries-service/models/chart-description-GoogleCharts.model";
+import { HighMapsMap } from "../supported-libraries-service/models/chart-description-HighMaps.model";
+import { EChartsChart } from "../supported-libraries-service/models/chart-description-eCharts.model";
+import { RawChartDataModel } from "../supported-libraries-service/models/chart-description-rawChartData.model";
+import { RawDataModel } from "../supported-libraries-service/models/description-rawData.model";
 import { AbstractControl, FormArray, FormControl, FormGroup } from "@angular/forms";
 import { FormFactoryService } from "../form-factory-service/form-factory-service";
 
