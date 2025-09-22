@@ -4,14 +4,11 @@ import { FormArray, FormControl, FormGroup, FormGroupDirective } from '@angular/
 import { BehaviorSubject, first, forkJoin, Observable } from 'rxjs';
 import { Profile } from 'src/app/services/profile-provider/profile-provider.service';
 import { UrlProviderService } from "../../services/url-provider-service/url-provider.service";
-import {
-  CachedEntityNode,
-  EntityNode
-} from '../helper-components/select-attribute/dynamic-entity-tree/entity-tree-nodes.types';
+import { CachedEntityNode } from '../helper-components/select-attribute/dynamic-entity-tree/entity-tree-nodes.types';
 import { DbSchemaService } from "../../services/db-schema-service/db-schema.service";
-import UIkit from "uikit";
 import { FormFactoryService } from "../../services/form-factory-service/form-factory-service";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
+import UIkit from "uikit";
 
 export enum FieldType { text, int, float, date};
 

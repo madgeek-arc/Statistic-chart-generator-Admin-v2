@@ -371,4 +371,10 @@ export class SelectAttributeComponent implements ControlValueAccessor, OnChanges
       this.cdr.detectChanges();
     }
   }
+
+  formatView() {
+    const arr = this.selectedNode?.name.split('.');
+    return arr?.join(' > ') || null;
+  }
+
 }
