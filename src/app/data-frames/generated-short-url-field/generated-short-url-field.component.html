@@ -1,21 +1,21 @@
-<div class="d-flex flex-column mb-2">
-  <h5 class="text-center mb-2" *ngIf="field_name">{{ field_name }} TinyUrl</h5>
+<div class="uk-flex uk-flex-column uk-margin-bottom">
+  <h6 class="uk-text-center uk-margin-bottom" *ngIf="field_name">{{ field_name }} TinyUrl</h6>
 
-  <div class="d-flex mb-2">
-    <div class="flex-fill" *ngIf="( isUrlLoading$ | async); else notLoading">
-      <div class="border flex-grow-1 px-1 py-2 text-center">
+  <div class="uk-flex uk-margin-bottom">
+    <div class="uk-flex" *ngIf="( isUrlLoading$ | async); else notLoading">
+      <div class="uk-text-center">
         <div class="spinner-border" style="width:1.5rem; height: 1.5rem; vertical-align:middle" role="status">
-          <span class="sr-only">Loading...</span>
+          <span class="">Loading...</span>
         </div>
       </div>
     </div>
 
     <ng-template #notLoading>
-      <div class="d-inline-flex justify-content-center border flex-grow-1 px-1 py-2" style="min-width: 0;">
-        <a target="_blank" rel="noopener noreferrer" href="{{url$ | async}}" class="url-holder text-center">{{ url$ | async }}</a>
+      <div class="" style="min-width: 0;">
+        <a target="_blank" rel="noopener noreferrer" href="{{url$ | async}}" class="url-holder uk-text-center">{{ url$ | async }}</a>
       </div>
-      <button type="button" class="btn btn-outline-secondary btn-sm" *ngIf="(url$ | async) != null" (click)="copyURLToClipboard()">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard" viewBox="0 0 16 16">
+      <button type="button" class="uk-button uk-button-secondary uk-button-small" *ngIf="(url$ | async) != null" (click)="copyURLToClipboard()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="" viewBox="0 0 16 16">
           <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/>
           <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"/>
         </svg>

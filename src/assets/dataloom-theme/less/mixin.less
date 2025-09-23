@@ -1,0 +1,20 @@
+.set-blur-background(@color: @base-body-background, @opacity: 80%, @blur: saturate(180%) blur(20px)) {
+  &.uk-blur-background, .uk-blur-background {
+    background: fade(@color, 99%);
+  }
+
+  @supports ((-webkit-backdrop-filter: none) or (backdrop-filter: none)) {
+    &.uk-blur-background, .uk-blur-background {
+      -webkit-backdrop-filter: @blur;
+      backdrop-filter: @blur;
+      background: fade(@color, @opacity) !important;
+    }
+  }
+
+  /* for firefox */
+  @-moz-document url-prefix() {
+    &.uk-blur-background, .uk-blur-background {
+      background: fade(@color, 99%);
+    }
+  }
+}

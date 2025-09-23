@@ -1,9 +1,7 @@
 import { Component, ElementRef, Input, OnChanges, OnInit, SimpleChanges, ViewChild } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { UrlProviderService } from '../../services/url-provider-service/url-provider.service';
-import {
-  RawDataModel
-} from "../../dashboard/customise-appearance/visualisation-options/supported-libraries-service/description-rawData.model";
+import { RawDataModel } from "../../services/supported-libraries-service/models/description-rawData.model";
 
 @Component({
   selector: 'raw-data-frame',

@@ -1,87 +1,91 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
+import { FormFactoryService } from "../../services/form-factory-service/form-factory-service";
 
 @Component({
 	selector: 'app-customise-appearance',
 	templateUrl: './customise-appearance.component.html',
-	styleUrls: ['./customise-appearance.component.less']
 })
 
 export class CustomiseAppearanceComponent implements OnInit {
 
-	@Input('appearanceForm') appearanceForm: FormGroup;
+	appearanceForm: FormGroup | null = null;
 
-
-	// TODO
-	// comes from backend!
-	protected visualisationLibraryList = [
-		{ name: 'HighCharts', value: 'HighCharts' },
-		{ name: 'GoogleCharts', value: 'GoogleCharts' },
-		{ name: 'eCharts', value: 'eCharts' }
+  visualisationLibraryList: string[] = [];
+  orderByList = [
+		{ label: 'X Axis', value: 'xaxis' },
+		{ label: 'Y Axis', value: 'yaxis' }
 	];
 
-	protected orderByList = [
-		{ name: 'X Axis', value: 'xaxis' },
-		{ name: 'Y Axis', value: 'yaxis' }
-	];
+  constructor(private formFactoryService: FormFactoryService) { }
 
-	constructor() { }
+  ngOnInit() {
+    this.appearanceForm = this.formFactoryService.getFormRoot().get('appearance') as FormGroup;
 
-	ngOnInit() { }
+    this.visualisationLibraryList = this.formFactoryService.getFormRoot().get('category.diagram.supportedLibraries').value;
+    this.setInitialLibrary();
 
-	libraryChange(event: any) {
-		console.log("Event:", event);
-		const newLibrary: string = event.value;
+    this.formFactoryService.getFormRoot().get('category.diagram.supportedLibraries').valueChanges.subscribe({
+      next: (value: string[]) => {
+        this.visualisationLibraryList = value;
+        this.setInitialLibrary();
+      }
+    });
+  }
 
-		if (newLibrary === 'HighCharts') {
-			this.appearanceForm.get('chartAppearance')?.get('visualisationOptions')?.get('highchartsAppearanceOptions')?.enable();
-			this.appearanceForm.get('chartAppearance')?.get('visualisationOptions')?.get('googlechartsAppearanceOptions')?.disable();
-			this.appearanceForm.get('chartAppearance')?.get('visualisationOptions')?.get('echartsAppearanceOptions')?.disable();
-		} else if (newLibrary === 'GoogleCharts') {
-			this.appearanceForm.get('chartAppearance')?.get('visualisationOptions')?.get('highchartsAppearanceOptions')?.disable();
-			this.appearanceForm.get('chartAppearance')?.get('visualisationOptions')?.get('googlechartsAppearanceOptions')?.enable();
-			this.appearanceForm.get('chartAppearance')?.get('visualisationOptions')?.get('echartsAppearanceOptions')?.disable();
-		} else if (newLibrary === 'eCharts') {
-			this.appearanceForm.get('chartAppearance')?.get('visualisationOptions')?.get('highchartsAppearanceOptions')?.disable();
-			this.appearanceForm.get('chartAppearance')?.get('visualisationOptions')?.get('googlechartsAppearanceOptions')?.disable();
-			this.appearanceForm.get('chartAppearance')?.get('visualisationOptions')?.get('echartsAppearanceOptions')?.enable();
-		}
-	}
+  setInitialLibrary() {
+    if (this.visualisationLibraryList.includes('HighCharts')) {
+      this.visualisationLibrary.setValue('HighCharts');
+    } else
+      this.visualisationLibrary.setValue(this.visualisationLibraryList[0]);
 
-	testing() {
-		console.log("Appearance Form:", this.appearanceForm);
-		console.log("Appearance Form Value:", this.appearanceForm.value);
-	}
+    this.libraryChange(this.visualisationLibrary.value);
+  }
 
-	get chartAppearance(): FormGroup {
-		return this.appearanceForm.get('chartAppearance') as FormGroup;
-	}
+	libraryChange(event: string) {
+		const newLibrary = event;
+    console.log(newLibrary);
+    this.appearanceForm.get('chartAppearance.highchartsAppearanceOptions').disable();
+    this.appearanceForm.get('chartAppearance.googlechartsAppearanceOptions').disable();
+    this.appearanceForm.get('chartAppearance.echartsAppearanceOptions').disable();
+    this.appearanceForm.get('chartAppearance.highmapsAppearanceOptions').disable();
 
-	get generalOptions(): FormGroup {
-		return this.chartAppearance.get('generalOptions') as FormGroup;
+    switch (newLibrary) {
+      case 'HighCharts':
+        this.appearanceForm.get('chartAppearance.highchartsAppearanceOptions').enable();
+        break;
+      case 'GoogleCharts':
+        this.appearanceForm.get('chartAppearance.googlechartsAppearanceOptions').enable();
+        break;
+      case 'eCharts':
+        this.appearanceForm.get('chartAppearance.echartsAppearanceOptions').enable();
+        break;
+      case 'HighMaps':
+        this.appearanceForm.get('chartAppearance.highmapsAppearanceOptions').enable();
+        break;
+    }
+
+    console.log(this.appearanceForm.value);
 	}
 
 	get visualisationLibrary(): FormControl {
-		return this.generalOptions.get('visualisationLibrary') as FormControl;
-	}
-
-	get visualisationOptions(): FormGroup {
-		return this.chartAppearance.get('visualisationOptions') as FormGroup;
+		return this.appearanceForm.get('chartAppearance.generalOptions.visualisationLibrary') as FormControl;
 	}
 
 	get highCharts(): FormGroup {
-		return this.appearanceForm.get('chartAppearance')?.get('visualisationOptions')?.get('highchartsAppearanceOptions') as FormGroup;
-		// return this.visualisationOptions.get('highchartsAppearanceOptions') as FormGroup
+		return this.appearanceForm.get('chartAppearance.highchartsAppearanceOptions') as FormGroup;
 	}
 
 	get googleCharts(): FormGroup {
-		return this.appearanceForm.get('chartAppearance')?.get('visualisationOptions')?.get('googlechartsAppearanceOptions') as FormGroup;
-		// return this.visualisationOptions.get('googlechartsAppearanceOptions') as FormGroup
+		return this.appearanceForm.get('chartAppearance.googlechartsAppearanceOptions') as FormGroup;
 	}
 
 	get eCharts(): FormGroup {
-		return this.appearanceForm.get('chartAppearance')?.get('visualisationOptions')?.get('echartsAppearanceOptions') as FormGroup;
-		// return this.visualisationOptions.get('echartsAppearanceOptions') as FormGroup
+		return this.appearanceForm.get('chartAppearance.echartsAppearanceOptions') as FormGroup;
+	}
+
+	get highMaps(): FormGroup {
+		return this.appearanceForm.get('chartAppearance.highmapsAppearanceOptions') as FormGroup;
 	}
 
 

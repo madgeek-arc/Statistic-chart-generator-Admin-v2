@@ -1,7 +1,9 @@
-<div>
-	<div class="uk-grid-match uk-child-width-1-5@s uk-flex-center uk-text-center" uk-grid>
-		<ng-container *ngFor="let item of (this.profileProvide.mappingProfiles$ | async)">
-			<app-card-component [data]="item" (outputEvent)="moveToNextStep($event)" class="uk-width-medium"></app-card-component>
-		</ng-container>
-	</div>
+<div class="uk-section uk-section-small uk-section-primary uk-preserve-color">
+  <div class="uk-container uk-container-expand uk-padding-remove uk-margin-medium-left">
+    <div class="uk-grid-match uk-child-width-1-1@s uk-child-width-1-2@m uk-child-width-1-2@l uk-flex-center uk-text-center" uk-grid>
+      <ng-container *ngFor="let item of (this.profileProvide.mappingProfiles$ | async)">
+        <app-card-component [data]="item" (outputEvent)="moveToNextStep($event)" class=""></app-card-component>
+      </ng-container>
+    </div>
+  </div>
 </div>

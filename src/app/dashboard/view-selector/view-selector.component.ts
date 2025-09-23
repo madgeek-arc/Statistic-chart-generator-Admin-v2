@@ -1,33 +1,26 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl } from '@angular/forms';
 import { ProfileProviderService } from 'src/app/services/profile-provider/profile-provider.service';
 
 @Component({
 	selector: 'app-view-selector',
-	templateUrl: './view-selector.component.html',
-	styleUrls: ['./view-selector.component.less']
+	templateUrl: './view-selector.component.html'
 })
+
 export class ViewSelectorComponent {
 
-	@Input('viewForm') viewForm: FormControl = new FormControl();
-	@Input('profileControl') profileControl: FormControl = new FormControl();
+	@Input() viewForm: FormControl = new FormControl();
+	@Input() profileControl?: FormControl;
 	@Output() showViewSelection = new EventEmitter<any>;
 
-	isLinear: boolean = true;
-
-	constructor(
-		protected profileProvide: ProfileProviderService
-	) { }
-
-
-	ngOnInit(): void { }
-
+	constructor(protected profileProvide: ProfileProviderService) { }
 
 	moveToNextStep(event: any): void {
 		if (event.name) {
 			this.viewForm.setValue(event);
-			this.profileControl.setValue(event.name);
-			this.showViewSelection.emit({
+			// this.viewSavingService.setTestingView(event);
+			this.profileControl?.setValue(event.name, {onlySelf: false, emitEvent: true});
+      this.showViewSelection.emit({
 				name: event.name,
 				step: "profile"
 			});

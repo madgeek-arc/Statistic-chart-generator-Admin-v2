@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, of, retry } from 'rxjs';
-import { UrlProviderService } from '../url-provider/url-provider.service';
+import { UrlProviderService } from "../url-provider-service/url-provider.service";
 
 export class Profile {
 	name: string = '';

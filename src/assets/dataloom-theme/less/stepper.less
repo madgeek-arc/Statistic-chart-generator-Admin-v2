@@ -1,0 +1,89 @@
+@stepper-line-size: 16px;
+@stepper-line-box-shadow: @global-inset-shadow;
+@stepper-line-border-radius: @global-border-radius;
+
+@stepper-default-text-color: @global-primary-background;
+@stepper-default-button-background: @global-inverse-color;
+@stepper-default-button-color: @global-primary-background;
+
+@stepper-default-button-hover-background: @global-primary-background;
+@stepper-default-button-hover-color: @global-inverse-color;
+
+@stepper-active-text-color: @global-secondary-background;
+@stepper-active-button-background: @global-secondary-background;
+@stepper-active-button-color: @global-inverse-color;
+
+@stepper-done-text-color: @global-primary-background;
+@stepper-done-button-background: @global-primary-background;
+@stepper-done-button-color: @global-inverse-color;
+
+@stepper-disabled-button-background: @global-muted-background;
+@stepper-disabled-button-color: @global-muted-color;
+
+.stepper {
+  & .stepper-line-container{
+    position: absolute; bottom: -4px; left: -90px; right: 0; width: 200px;
+  }
+
+  & .stepper-line {
+    margin: 0 -@stepper-line-size;
+    min-width: 2*@stepper-line-size;
+    height: @stepper-line-size;
+    box-shadow: @stepper-line-box-shadow;
+    border-radius: @stepper-line-border-radius;
+    width: 100%;
+
+    &.active {
+      background-color: @stepper-active-button-background;
+    }
+
+    &.done {
+      background-color: @stepper-done-button-background;
+    }
+
+    &.disabled {
+      background-color: @stepper-disabled-button-background;
+    }
+  }
+
+  & .stepper-text {
+    &.default {
+      color: @stepper-default-text-color;
+    }
+
+    &.active {
+      color: @stepper-active-text-color;
+    }
+
+    &.done {
+      color: @stepper-done-text-color;
+    }
+  }
+
+  & button {
+    &.default {
+      background-color: @stepper-default-button-background;
+      color: @stepper-default-button-color;
+
+      &:hover {
+        background-color: @stepper-default-button-hover-background;
+        color: @stepper-default-button-hover-color;
+      }
+    }
+
+    &.active {
+      background-color: @stepper-active-button-background;
+      color: @stepper-active-button-color;
+    }
+
+    &.done {
+      background-color: @stepper-done-button-background;
+      color: @stepper-done-button-color;
+    }
+
+    &.disabled {
+      background-color: @stepper-disabled-button-background;
+      color: @stepper-disabled-button-color;
+    }
+  }
+} 

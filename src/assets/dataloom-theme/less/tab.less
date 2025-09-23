@@ -1,0 +1,90 @@
+@tab-border-width: @global-border-width;
+@tab-border: @global-border;
+@tab-box-shadow: none;
+@tab-item-color: @global-color;
+@tab-item-border-width: @global-border-width + 2;
+@tab-item-font-weight: 400;
+@tab-item-padding-horizontal: 10px;
+@tab-item-padding-vertical: 10px;
+
+/*Left & Right*/
+//@tab-left-item-padding-horizontal: 5px;
+//@tab-left-item-padding-vertical: 5px;
+//@tab-right-item-padding-horizontal: 5px;
+//@tab-right-item-padding-vertical: 5px;
+@tab-left-item-padding-horizontal: 12px;
+@tab-left-item-padding-vertical: 9px;
+@tab-right-item-padding-horizontal: 12px;
+@tab-right-item-padding-vertical: 9px;
+
+/** Hover */
+//@tab-item-hover-color: @global-secondary-background;
+@tab-item-hover-color: @global-primary-background;
+
+/** Active */
+//@tab-item-active-border: @global-secondary-background;
+@tab-item-active-border: @global-primary-background;
+@tab-item-active-color: @global-primary-background;
+
+.hook-tab() {
+  position: relative;
+
+  &:not(.uk-slider-items):not(.uk-tab-left):not(.uk-tab-right)::before {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: @tab-margin-horizontal;
+    right: @tab-margin-horizontal;
+    border-bottom: @tab-border-width solid @tab-border;
+    //border-bottom: @tab-border-width solid transparent;
+  }
+}
+
+.hook-tab-item() {
+  border-bottom: @tab-item-border-width solid transparent;
+}
+
+.hook-tab-item-active() {
+  border-color: @tab-item-active-border;
+  font-weight: 600;
+}
+
+.hook-tab-left() {
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: auto;
+    right: 0;
+    //border-left: @tab-border-width solid @tab-border;
+    border-left: @tab-border-width solid transparent;
+    border-bottom: none;
+  }
+}
+
+.hook-tab-left-item() {
+  border-right: @tab-item-border-width solid transparent;
+  border-bottom: none;
+  padding: @tab-left-item-padding-vertical @tab-left-item-padding-horizontal;
+}
+
+.hook-tab-right() {
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: auto;
+    //border-left: @tab-border-width solid @tab-border;
+    border-left: @tab-border-width solid transparent;
+    border-bottom: none;
+  }
+}
+
+.hook-tab-right-item() {
+  border-left: @tab-item-border-width solid transparent;
+  border-bottom: none;
+  padding: @tab-right-item-padding-vertical @tab-right-item-padding-horizontal;
+}

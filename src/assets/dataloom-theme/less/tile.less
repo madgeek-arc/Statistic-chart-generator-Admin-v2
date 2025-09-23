@@ -1,0 +1,6 @@
+@tile-default-background-color: @global-inverse-color;
+@tile-default-background: @tile-default-background-color !important;
+
+.hook-tile-default() {
+  .set-blur-background(@tile-default-background-color, 50%) !important;
+}

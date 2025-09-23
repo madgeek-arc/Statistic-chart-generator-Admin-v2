@@ -1,88 +1,80 @@
-<div [formGroup]="this.appearanceForm">
+<div class="uk-section uk-section-primary uk-section-xsmall uk-preserve-color">
+  <div class="uk-container uk-container-expand uk-padding-remove uk-margin-medium-left">
+    <div [formGroup]="appearanceForm">
 
-	<mat-tab-group>
-		<mat-tab label="Chart Appearance">
-			<div formGroupName="chartAppearance">
-				<div formGroupName="generalOptions">
-					<h2 style="margin-top: 30px;">
-						General Options
-					</h2>
-					<h5 style="opacity: 0.5; margin-top: 0px;">Select a chart Visualisation Library, the upper limit of your results and how they are grouped</h5>
-					<mat-divider></mat-divider>
-					<br>
+      <div>
+        <ul class="uk-child-width-expand" data-uk-tab="{connect: #chartOrTableAppearance}">
+          <li class="uk-active"><a href="#">Chart Appearance</a></li>
+          <li><a href="#">Table Appearance</a></li>
+        </ul>
 
-					<div class="flex-container">
-						<div style="flex-grow: 1;">
-							<mat-form-field>
-								<mat-label>Visualisation Library</mat-label>
-								<mat-select (selectionChange)="libraryChange($event)" formControlName="visualisationLibrary">
-									<mat-option disabled="true">Select Library</mat-option>
-									<mat-option *ngFor="let visualisationLibrary of visualisationLibraryList" [value]="visualisationLibrary.value">
-										{{visualisationLibrary.name}}
-									</mat-option>
-								</mat-select>
-							</mat-form-field>
-						</div>
+        <ul id="chartOrTableAppearance" class="uk-switcher">
+          <li>
+            <div formGroupName="chartAppearance">
+              <div formGroupName="generalOptions">
 
-						<div style="flex-grow: 1;">
-							<mat-form-field>
-								<mat-label>Results Limit</mat-label>
-								<input type="number" matInput min="1" formControlName="resultsLimit">
-							</mat-form-field>
-						</div>
+                <h6 class="borderBottomClass uk-margin-medium-top uk-text-secondary">
+                  <div>General Options</div>
+                  <div class="uk-text-meta uk-text-small">Select a chart Visualisation Library, the upper limit of your results and how they are grouped</div>
+                </h6>
 
-						<div style="flex-grow: 1;">
-							<mat-form-field>
-								<mat-label>Order By</mat-label>
-								<mat-select formControlName="orderByAxis">
-									<mat-option disabled="true">Select One</mat-option>
-									<mat-option [value]="orderByAxis.value" *ngFor="let orderByAxis of orderByList">
-										{{orderByAxis.name}}
-									</mat-option>
-								</mat-select>
-							</mat-form-field>
-						</div>
-					</div>
-				</div>
+                <div class="uk-child-width-1-3 uk-margin-medium-top" uk-grid>
+                  <div>
+                    <div input placeholder="Visualisation Library" type="select"
+                         [formInput]="visualisationLibrary" [options]="visualisationLibraryList "
+                         (valueChange)="libraryChange($event)">
+                    </div>
+                  </div>
+                  <div>
+                    <div input placeholder="Results Limit" type="number"
+                         [formInput]="appearanceForm.get('chartAppearance.generalOptions.resultsLimit')">
+                    </div>
+                  </div>
+                  <div>
+                    <div input placeholder="Order By" type="select"
+                         [formInput]="appearanceForm.get('chartAppearance.generalOptions.orderByAxis')" [options]="orderByList">
+                    </div>
+                  </div>
+                </div>
+              </div>
 
-				<div formGroupName="visualisationOptions">
-					<h2 style="margin-top: 30px;">
-						Visualisation Options
-					</h2>
-					<h5 style="opacity: 0.5; margin-top: 0px;">Available options based on the selected Visualisation Library</h5>
-					<mat-divider></mat-divider>
-					<br>
+              <h6 class="borderBottomClass uk-margin-medium-top uk-text-secondary">
+                <div>Visualisation Options</div>
+                <div class="uk-text-meta uk-text-small">Available options based on the selected Visualisation Library</div>
+              </h6>
 
-					<button (click)="testing()">TESTING</button>
+              <ng-container *ngIf="visualisationLibrary.value === 'HighCharts'">
+                <app-high-charts [highChartsForm]="highCharts"></app-high-charts>
+              </ng-container>
+              <ng-container *ngIf="visualisationLibrary.value === 'GoogleCharts'">
+                <app-google-charts [googleChartsForm]="googleCharts"></app-google-charts>
+              </ng-container>
+              <ng-container *ngIf="visualisationLibrary.value === 'eCharts'">
+                <app-e-charts [eChartsForm]="eCharts"></app-e-charts>
+              </ng-container>
+              <ng-container *ngIf="visualisationLibrary.value === 'HighMaps'">
+                <app-high-maps [highMapsForm]="highMaps"></app-high-maps>
+              </ng-container>
 
-					<ng-container *ngIf="this.visualisationLibrary.value === 'HighCharts'">
-						<app-high-charts [highChartsForm]="this.highCharts"></app-high-charts>
-					</ng-container>
-					<ng-container *ngIf="this.visualisationLibrary.value === 'GoogleCharts'">
-						<app-google-charts [googleChartsForm]="this.googleCharts"></app-google-charts>
-					</ng-container>
-					<ng-container *ngIf="this.visualisationLibrary.value === 'eCharts'">
-						<app-e-charts [eChartsForm]="this.eCharts"></app-e-charts>
-					</ng-container>
+            </div>
+          </li>
+          <li>
+            <div formGroupName="tableAppearance">
+              <h6 class="borderBottomClass uk-margin-medium-top uk-text-secondary">
+                <div>Visualisation Options</div>
+                <div class="uk-text-meta uk-text-small">Available options based on the selected Visualisation Library</div>
+              </h6>
 
-				</div>
-			</div>
-		</mat-tab>
+              <div input placeholder="Table Page Size" type="number" class="uk-width-1-1 uk-margin-medium-top"
+                   [formInput]="appearanceForm.get('tableAppearance.paginationSize')">
+              </div>
 
-		<mat-tab label="Table Appearance">
-			<div formGroupName="tableAppearance">
-				<h2>
-					Visualisation Options
-				</h2>
-				<h5 style="opacity: 0.5;">Available options based on the selected Visualisation Library</h5>
-				<mat-divider></mat-divider>
-				<br>
+            </div>
+          </li>
+        </ul>
+      </div>
 
-				<mat-form-field class="example-full-width">
-					<mat-label>Table Page Size</mat-label>
-					<input type="number" matInput min="1" formControlName="paginationSize">
-				</mat-form-field>
-			</div>
-		</mat-tab>
-	</mat-tab-group>
+    </div>
+  </div>
 </div>
+

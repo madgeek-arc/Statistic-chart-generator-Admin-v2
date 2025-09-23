@@ -1,14 +1,12 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-
 import { Observable, of } from 'rxjs';
-import { catchError, retry } from 'rxjs/operators';
+import { retry } from 'rxjs/operators';
 import { UrlProviderService } from '../url-provider-service/url-provider.service';
 import { Profile } from '../mapping-profiles-service/mapping-profiles.service';
-// import { ErrorHandlerService } from '../error-handler-service/error-handler.service';
 
 @Injectable({
-  providedIn: 'root'
+	providedIn: 'root'
 })
 export class DbSchemaService {
 

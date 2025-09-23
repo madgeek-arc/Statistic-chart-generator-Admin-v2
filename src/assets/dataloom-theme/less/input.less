@@ -1,0 +1,373 @@
+@input-mode: dark;
+
+.input-wrapper {
+  /* Basic Information */
+  --input-placeholder-color: @global-meta-color;
+  --input-placeholder-weight: 400;
+  --input-placeholder-padding-horizontal: 5px;
+  --input-placeholder-top: 0px;
+  --input-placeholder-transform: translateY(-50%);
+  --input-hint-color: @global-meta-color;
+  --input-color: @global-emphasis-color;
+  --input-border-radius: @global-border-radius;
+  /* Size modifiers */
+  --input-padding-vertical: 12px;
+  --input-padding-horizontal: 25px;
+  --input-font-size: @global-small-font-size;
+  /* Styling */
+  --input-background: transparent;
+  --input-shadow: none;
+  --input-border: transparent;
+  --input-border-width: @global-border-width;
+  --input-border-style: solid;
+  /* Hover Styling */
+  --input-background-hover: var(--input-background);
+  --input-shadow-hover: var(--input-shadow);
+  --input-border-hover: var(--input-border);
+  --input-border-style-hover: var(--input-border-style);
+  /* Focus Styling */
+  --input-background-focus: var(--input-background);
+  --input-shadow-focus: var(--input-shadow);
+  --input-border-focus: var(--input-border);
+  --input-placeholder-color-focus: @global-emphasis-color;
+  --input-border-style-focus: var(--input-border-style);
+  /* Disabled */
+  --input-color-disabled: @global-muted-color;
+  /* Danger */
+  --input-danger-color: @global-danger-background;
+  /* Action */
+  --input-action-icon-color: @global-secondary-background;
+  --input-action-icon-color-disabled: @global-muted-color;
+  --input-action-icon-display: inline;
+  --input-action-icon-background-color: transparent;
+  --input-action-icon-background-color-disabled: transparent;
+  --input-action-icon-background-padding: 0px;
+}
+
+/** Input Wrapper */
+[style*="visibility: hidden"] .input-wrapper {
+  opacity: 0;
+}
+
+input[type="color"] {
+  block-size: @global-line-height !important;
+}
+
+.input-wrapper {
+  border: var(--input-border-width) solid var(--input-border);
+  border-radius: var(--input-border-radius);
+
+  /* Override border style variable in order to cheat angular optimization (DO NOT REMOVE)*/
+  & {
+    border-style: var(--input-border-style);
+  }
+
+  & > .input-box {
+    box-shadow: var(--input-shadow);
+    background: var(--input-background);
+    border-radius: var(--input-border-radius);
+    position: relative;
+    padding: calc(var(--input-padding-vertical) + var(--input-placeholder-top)) 0 calc(var(--input-padding-vertical) - var(--input-placeholder-top)) var(--input-padding-horizontal);
+    cursor: pointer;
+    color: var(--input-color);
+
+    &.static {
+      padding-top: var(--input-padding-vertical);
+    }
+
+    & > .placeholder {
+      position: absolute;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      right: 0;
+      pointer-events: none;
+      color: var(--input-placeholder-color);
+      font-weight: var(--input-placeholder-weight);
+
+      & > label {
+        position: absolute;
+        background: linear-gradient(
+                to top,
+                var(--input-background) 0%,
+                var(--input-background) 50%,
+                transparent 50%,
+                transparent 100%
+        );
+        padding: 0 var(--input-placeholder-padding-horizontal);
+        font-size: var(--input-font-size);
+        line-height: @global-line-height;
+        top: var(--input-padding-vertical);
+        left: calc(var(--input-padding-horizontal) - var(--input-placeholder-padding-horizontal));
+        transition: all 0.3s ease 0s;
+      }
+    }
+
+    & .input {
+      outline: 0 none !important;
+      box-shadow: none !important;
+      border-radius: 0;
+      border: 0 none;
+      padding: 0 var(--input-padding-horizontal) 0 0;
+      font-size: var(--input-font-size);
+      font-family: inherit;
+      background: transparent !important;
+      color: inherit;
+      width: 100%;
+      min-height: @global-line-height;
+      line-height: @global-line-height;
+      resize: none;
+      cursor: inherit;
+
+      &textarea {
+        margin-top: 5px;
+      }
+
+      &::placeholder {
+        color: var(--input-placeholder-color);
+        opacity: 1;
+      }
+
+      &:disabled, &.uk-disabled {
+        background: transparent;
+        color: var(--input-color-disabled);
+        -webkit-text-fill-color: var(--input-color-disabled);
+      }
+    }
+
+    & .uk-grid {
+      & .search-input {
+        min-width: 250px;
+
+        & > .input {
+          min-height: 27px;
+        }
+      }
+
+      &.uk-flex-nowrap {
+        scrollbar-width: none;
+
+        &::-webkit-scrollbar {
+          display: none;
+        }
+      }
+    }
+
+    & .icon {
+      transition: all 0.3s linear 0s;
+      transform: var(--input-arrow-transform);
+      margin-right: var(--input-padding-horizontal);
+    }
+
+    & .action-icon {
+      padding: 0 var(--input-padding-horizontal);
+      color: var(--input-action-icon-color);
+      cursor: pointer;
+      user-select: none;
+
+      & > icon {
+        padding: var(--input-action-icon-background-padding);
+        border-radius: 50%;
+        display: var(--input-action-icon-display);
+        background-color: var(--input-action-icon-background-color);
+      }
+
+      &.disabled {
+        color: var(--input-action-icon-color-disabled);
+        cursor: default;
+        pointer-events: none;
+
+        & > icon {
+          background-color: var(--input-action-icon-background-color-disabled);
+        }
+      }
+    }
+
+    & > .tools {
+      padding-right: var(--input-padding-horizontal);
+    }
+
+    & .chip {
+      max-width: calc(100% - var(--input-padding-horizontal));
+    }
+
+    & .more {
+      color: var(--input-hint-color);
+      font-size: var(--input-font-size);
+    }
+
+    &:not(.static) .uk-grid .input,
+    & .uk-grid-margin .input,
+    &:not(.static) .uk-grid .more,
+    &:not(.static) .chip,
+    & .uk-grid-margin.chip {
+      margin-top: 10px;
+    }
+  }
+
+  &:hover {
+    border-color: var(--input-border-hover);
+    border-style: var(--input-border-style-hover);
+
+    & > .input-box {
+      box-shadow: var(--input-shadow-hover);
+      background: var(--input-background-hover);
+    }
+  }
+
+  &.focused {
+    border-color: var(--input-border-focus);
+    border-style: var(--input-border-style-focus);
+
+    & > .input-box:not(.select)  {
+      cursor: text;
+    }
+
+    & > .input-box {
+      box-shadow: var(--input-shadow-focus);
+      background: var(--input-background-focus);
+    }
+
+    &:not(.hint):not(.disabled):not(.danger) > .input-box > .placeholder > label {
+      color: var(--input-placeholder-color-focus);
+    }
+  }
+
+  &.disabled {
+    & > .input-box {
+      cursor: not-allowed !important;
+      user-select: none;
+    }
+
+    & > .input-box {
+      & .input::placeholder, & .placeholder {
+        color: var(--input-color-disabled);
+      }
+    }
+  }
+
+  &.danger {
+    border-color: var(--input-danger-color);
+    & > .input-box {
+      & .input::placeholder, & .placeholder, & > .placeholder > label {
+        color: var(--input-danger-color);
+      }
+
+      & .icon {
+        color: var(--input-danger-color);
+      }
+    }
+  }
+
+  &.hint {
+    & > .input-box {
+      & .input::placeholder {
+        color: var(--input-hint-color);
+      }
+    }
+  }
+
+  &.active > .input-box > .placeholder > label,
+  &.focused > .input-box > .placeholder > label,
+  &.hint > .input-box > .placeholder > label {
+    transform: var(--input-placeholder-transform);
+    top: calc(var(--input-placeholder-top) + var(--input-border-width) * -1);
+    font-size: 12px;
+    line-height: 18px;
+  }
+
+  &:not(.focused) > .input-box .input.search {
+    opacity: 0;
+  }
+
+  /* Modifiers */
+  &.inner {
+    --input-shadow: @global-inset-shadow;
+    --input-background: @global-inverse-color;
+  }
+
+  &.flat {
+    --input-background: @global-inverse-color;
+    --input-border: @gray-300;
+    --input-border-focus: @global-emphasis-color;
+  }
+
+  &.border-bottom {
+    --input-border-radius: 0;
+    --input-border: @global-muted-background;
+    --input-border-style: hidden hidden solid hidden;
+    --input-padding-horizontal: 0;
+    --input-padding-vertical: 5px;
+    --input-placeholder-padding-horizontal: 0;
+    --input-border-focus: @global-color;
+  }
+
+  &.search {
+    --input-padding-horizontal: 30px;
+    --input-padding-vertical: 15px;
+  }
+
+  &.advanced-search {
+    --input-placeholder-weight: 700;
+    --input-placeholder-color: @global-color;
+    --input-border-radius: 54px;
+    --input-placeholder-top: 10px;
+    --input-placeholder-transform: none;
+    --input-padding-horizontal: 30px;
+    --input-padding-vertical: var(--search-input-icon-padding-vertical);
+    --input-background-hover: @global-muted-background;
+    --input-shadow-hover: if(@input-mode = dark, @global-medium-box-shadow, @inverse-global-medium-box-shadow);
+    --input-background-focus: @global-background;
+    --input-shadow-focus: if(@input-mode = dark, @global-medium-box-shadow, @inverse-global-medium-box-shadow);
+  }
+
+  &.icon-left {
+    --input-padding-horizontal: 0;
+    --input-placeholder-padding-horizontal: 0;
+  }
+
+  &.x-small {
+    --input-padding-horizontal: 15px;
+    --input-padding-vertical: 10px;
+  }
+
+  &.small {
+    --input-padding-horizontal: 20px;
+    --input-padding-vertical: 10px;
+  }
+
+  &.small-vertical {
+    --input-padding-vertical: 10px;
+  }
+
+  &.small-font-size {
+    --input-font-size: 14px;
+  }
+
+  &.normal-font-size {
+    --input-font-size: 16px;
+  }
+
+  &.background {
+   --input-action-icon-color: @global-inverse-color;
+   --input-action-icon-display: block;
+   --input-action-icon-background-color: @global-secondary-background;
+   --input-action-icon-background-padding: 5px;
+
+    &.small, &.small-vertical {
+      --input-action-icon-background-padding: 3px;
+    }
+  }
+}
+
+.uk-dropdown {
+  &.options {
+    max-height: 198px; /* 31px each line height, 5+5 margin top+bottom, 1+1 border top+bottom */
+    overflow: auto;
+  }
+
+  & .mat-calendar-body-selected {
+    color: @global-inverse-color;
+  }
+}
+

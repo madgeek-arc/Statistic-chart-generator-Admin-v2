@@ -16,6 +16,7 @@ import { MatDialogModule } from "@angular/material/dialog";
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatMenuModule } from "@angular/material/menu";
 import { MatRadioModule } from '@angular/material/radio';
+import { MatAutocompleteModule } from "@angular/material/autocomplete";
 
 
 @NgModule({
@@ -31,6 +32,7 @@ import { MatRadioModule } from '@angular/material/radio';
 		MatProgressBarModule,
 		MatTabsModule,
 		MatInputModule,
+    MatAutocompleteModule,
 		MatSlideToggleModule,
 		MatDialogModule,
 		MatCheckboxModule,

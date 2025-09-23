@@ -1,0 +1,46 @@
+@totop-padding: 10px;
+@totop-border-radius: 500px;
+
+@totop-color: @global-emphasis-color;
+@totop-box-shadow: @global-large-box-shadow;
+
+/* Hover */
+@totop-hover-color: @global-primary-background;
+@totop-hover-box-shadow: @global-medium-box-shadow;
+
+/** Active */
+@totop-active-color: @global-primary-background;
+@totop-active-box-shadow: @global-small-box-shadow;
+
+.hook-totop() {
+  box-shadow: @totop-box-shadow;
+  border-radius: @totop-border-radius;
+}
+
+.hook-totop-hover() {
+  box-shadow: @totop-hover-box-shadow;
+  text-decoration: none;
+}
+
+.hook-totop-active() {
+  box-shadow: @totop-active-box-shadow;
+}
+
+/** Inverse */
+@inverse-totop-box-shadow: @inverse-global-large-box-shadow;
+@inverse-totop-hover-box-shadow: @inverse-global-medium-box-shadow;
+@inverse-totop-active-box-shadow: @inverse-global-small-box-shadow;
+
+.hook-inverse-misc() {
+  .uk-totop {
+    box-shadow: @inverse-totop-box-shadow;
+  }
+
+  .uk-totop:hover {
+    box-shadow: @inverse-totop-hover-box-shadow;
+  }
+
+  .uk-totop:active {
+    box-shadow: @inverse-totop-active-box-shadow;
+  }
+}

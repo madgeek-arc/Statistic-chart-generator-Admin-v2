@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { ISupportedCategory } from "../../../services/supported-chart-types-service/supported-chart-types.service";
 
 @Component({
 	selector: 'app-diagram-card-component',
@@ -7,7 +8,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 })
 export class DiagramCardComponentComponent {
 
-	@Input() diagram: any;
+	@Input() diagram: ISupportedCategory;
 	@Output() outputEvent = new EventEmitter<any>;
 
 	constructor() { }

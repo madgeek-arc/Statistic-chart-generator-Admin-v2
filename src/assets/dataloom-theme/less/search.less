@@ -1,0 +1,167 @@
+.hook-search-misc() {
+  .search-input {
+    --search-input-shadow: none;
+    --search-input-background: none;
+    --search-input-border-width: 0;
+    --search-input-border-style: solid;
+    --search-input-border: transparent;
+    --search-input-border-radius: 500px;
+    /* Focus Styling */
+    --search-input-border-focus: var(--search-input-border);
+    --search-input-border-style-focus: var(--search-input-border-style);
+    /* Icon */
+    --search-input-icon-ratio: 1.3;
+    --search-input-icon-color: @global-secondary-background;
+    --search-input-icon-color-collapsed: @global-color;
+    --search-input-icon-color-disabled: @global-muted-color;
+    --search-input-icon-display: inline;
+    --search-input-icon-background-color: transparent;
+    --search-input-icon-background-color-disabled: transparent;
+    --search-input-icon-background-padding: 0px;
+    --search-input-divider: @global-border-width solid @global-border;
+    --search-input-icon-padding-horizontal: 15px;
+    --search-input-icon-padding-vertical: 16px;
+    /* Filters Icon */
+    --search-filters-toogle-border: @global-border-width solid @global-border;
+    --search-filters-toogle-padding: 10px;
+    border-radius: var(--search-input-border-radius);
+    border: var(--search-input-border-width) solid var(--search-input-border);
+    box-shadow: var(--search-input-shadow);
+    background: var(--search-input-background);
+    width: 100%;
+    transition: width 0.5s ease-out;
+
+    /* Override border style variable in order to cheat angular optimization (DO NOT REMOVE)*/
+    & {
+      border-style: var(--search-input-border-style);
+    }
+
+    &.focused {
+      border-color: var(--search-input-border-focus);
+      border-style: var(--search-input-border-style-focus);
+    }
+
+    &.collapsed {
+      width: calc(2 * (var(--search-input-icon-padding-horizontal) + var(--search-input-icon-background-padding)) + var(--search-input-icon-ratio)*20px);
+
+      & .search-icon {
+        color: var(--search-input-icon-color-collapsed);
+      }
+    }
+
+    & .inputs {
+      & > :not(:last-child) {
+        position: relative;
+
+        &::after {
+          content: '';
+          position: absolute;
+          right: 0;
+          top: 15px;
+          bottom: 15px;
+          width: 0;
+          border-left: var(--search-input-divider);
+        }
+      }
+    }
+
+    & .search-icon {
+      padding: var(--search-input-icon-padding-vertical) var(--search-input-icon-padding-horizontal);
+      color: var(--search-input-icon-color);
+      cursor: pointer;
+      user-select: none;
+
+      & > icon {
+        padding: var(--search-input-icon-background-padding);
+        border-radius: 50%;
+        display: var(--search-input-icon-display);
+        background-color: var(--search-input-icon-background-color);
+      }
+
+
+      &.disabled {
+        color: var(--search-input-icon-color-disabled);
+        cursor: default;
+        pointer-events: none;
+
+        & > icon {
+          background-color: var(--search-input-icon-background-color-disabled);
+        }
+      }
+    }
+
+    & .filters-toggle {
+      padding: calc(var(--search-input-icon-padding-vertical) - var(--search-filters-toogle-padding)) calc(var(--search-input-icon-padding-horizontal) - var(--search-filters-toogle-padding));
+
+      & > a {
+        border: var(--search-filters-toogle-border);
+        border-radius: 500px;
+        padding: var(--search-filters-toogle-padding);
+      }
+    }
+
+    /* Modifiers */
+    &.inner {
+      --search-input-background: @global-inverse-color;
+      --search-input-shadow: @global-inset-shadow;
+    }
+
+    &.flat {
+      --search-input-background: @global-inverse-color;
+      --search-input-border-width: @global-border-width;
+      --search-input-border: @gray-300;
+    }
+
+    &.outer {
+      --search-input-background: @global-background;
+      --search-input-shadow: @global-medium-box-shadow;
+    }
+
+    &.border-bottom {
+      --search-input-border-width: 1px;
+      --search-input-border-radius: 0;
+      --search-input-icon-padding-vertical: 10px;
+      --search-input-icon-padding-horizontal: 10px;
+      --search-input-border: @global-muted-background;
+      --search-input-border-style: hidden hidden solid hidden;
+      --search-input-border-focus: @secondary-color;
+
+      .input-wrapper {
+        --input-padding-horizontal: 0;
+        --input-padding-vertical: 0;
+        --input-font-size: 14px;
+      }
+    }
+
+    &.small-vertical {
+      --search-input-icon-padding-vertical: 10px;
+
+      & .search {
+        --input-padding-vertical: 10px;
+      }
+    }
+
+    &.background {
+      --search-input-icon-ratio: 1;
+      --search-input-icon-color: @global-inverse-color;
+      --search-input-icon-color-collapsed: @global-inverse-color;
+      --search-input-icon-display: block;
+      --search-input-icon-background-color: @global-secondary-background;
+      --search-input-icon-background-padding: 7px;
+      --search-input-icon-padding-horizontal: 10px;
+      --search-input-icon-padding-vertical: 10px;
+
+      &.small-vertical {
+        --search-input-icon-padding-vertical: 6px;
+      }
+    }
+  }
+}
+
+.hook-inverse-misc() {
+  .search-input {
+    &.outer {
+      --search-input-shadow: @inverse-global-medium-box-shadow;
+    }
+  }
+}

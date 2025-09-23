@@ -1,0 +1,91 @@
+@nav-parent-icon-width: @global-line-height;
+
+@nav-default-item-color: @global-color;
+@nav-default-item-hover-color: @global-link-hover-color;
+@nav-default-item-active-font-weight: 700;
+@nav-default-header-color: @global-secondary-background;
+@nav-default-sublist-item-color: @nav-default-item-color;
+@nav-default-sublist-item-hover-color: @nav-default-item-hover-color;
+@nav-default-sublist-item-active-font-weight: 600;
+
+@nav-primary-item-font-weight: 700;
+@nav-primary-item-color: @global-color;
+@nav-primary-item-hover-color: @global-secondary-background;
+@nav-primary-item-active-color: @global-secondary-background;
+@nav-primary-header-color: @global-secondary-background;
+@nav-primary-sublist-font-size: @global-font-size;
+@nav-primary-sublist-item-color: @nav-primary-item-color;
+@nav-primary-sublist-item-hover-color: @nav-primary-item-hover-color;
+@nav-primary-sublist-item-active-font-weight: 600;
+
+@nav-item-padding-horizontal: 30px;
+@nav-sublist-padding-vertical: 10px;
+@nav-sublist-padding-left: @nav-item-padding-horizontal + 20px;
+@nav-sublist-border-width: 2px;
+@nav-sublist-border-color: fade(@global-secondary-background, 20%);
+@nav-sublist-border-radius: 40px;
+@nav-sublist-item-padding-vertical: 5px;
+
+@nav-header-padding-horizontal: 0;
+@nav-header-color: @secondary-color;
+
+.hook-nav-default-item-active() {
+  font-weight: @nav-default-item-active-font-weight;
+}
+
+.hook-nav-primary-item() {
+  font-weight: @nav-primary-item-font-weight;
+}
+
+.hook-nav-header() {
+  color: @nav-header-color;
+}
+
+.hook-nav-sub() {
+  position: relative;
+
+  &:before {
+    content: "";
+    left: @nav-sublist-padding-left - 15px;
+    top: @nav-sublist-padding-vertical;
+    position: absolute;
+    height: calc(100% - 2*@nav-sublist-padding-vertical);
+    border-left: @nav-sublist-border-width solid @nav-sublist-border-color;
+    border-radius: @nav-sublist-border-radius;
+  }
+}
+
+.hook-nav-misc() {
+  .uk-nav-sub ul {
+    &:before {
+      content: none;
+    }
+  }
+
+  .uk-nav-default .uk-nav-sub li.uk-active > a {
+    font-weight: @nav-default-sublist-item-active-font-weight;
+  }
+
+  .uk-nav-primary .uk-nav-sub li.uk-active > a {
+    font-weight: @nav-primary-sublist-item-active-font-weight;
+  }
+
+  .uk-nav-parent-icon {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    &::after {
+      background-image: none !important;
+      font-family: "Material Icons";
+      font-weight: 400 !important;
+      font-size: 1.5em;
+      content: "\e5c5";
+    }
+  }
+
+  .uk-nav-sub .uk-nav-divider {
+    margin-top: @nav-sublist-item-padding-vertical;
+    margin-bottom: @nav-sublist-item-padding-vertical;
+  }
+}

@@ -1,0 +1,85 @@
+@offcanvas-switcher-border-radius: @global-border-radius;
+@offcanvas-switcher-box-shadow: @global-medium-box-shadow;
+@offcanvas-switcher-size: @global-control-large-height;
+@offcanvas-switcher-top: 320px;
+@offcanvas-switcher-padding: 4px;
+@offcanvas-switcher-z-index: @global-z-index - 20;
+@offcanvar-switcher-background: @global-background;
+
+@offcanvas-count-size: 20px;
+@offcanvas-count-font-size: @global-xsmall-font-size;
+@offcanvas-count-padding: 1px;
+@offcanvas-count-border-radius: 500px;
+@offcanvas-count-background: @global-secondary-background;
+@offcanvas-count-color: @global-inverse-color;
+
+@offcanvas-bar-width: 100vw;
+@offcanvas-bar-padding-vertical: @global-medium-gutter;
+@offcanvas-bar-padding-horizontal: @global-medium-gutter;
+@offcanvas-bar-width-s: 550px;
+@offcanvas-bar-border-radius: @global-small-border-radius;
+@offcanvas-bar-background: @global-background;
+@offcanvas-bar-box-shadow: @global-large-box-shadow;
+@offcanvas-bar-color-mode: dark;
+
+@offcanvas-close-position: 30px;
+
+@offcanvas-overlay-background: @global-overlay-background;
+
+.hook-offcanvas-bar() {
+  .set-blur-background(@offcanvas-bar-background, 80%);
+}
+
+.hook-offcanvas-misc() {
+
+  .uk-offcanvas-flip .uk-offcanvas {
+    right: 0 !important;
+    left: auto !important;
+  }
+
+  .uk-offcanvas-flip .uk-offcanvas-bar {
+    left: auto !important;
+    right: -@offcanvas-bar-width !important;
+  }
+
+  .uk-offcanvas-flip .uk-open > .uk-offcanvas-bar {
+    left: auto !important;
+    right: 0 !important;
+  }
+
+  .uk-offcanvas-flip .uk-offcanvas-bar-animation {
+    transition-property: right !important;
+  }
+
+  .uk-offcanvas-switcher {
+    top: @offcanvas-switcher-top;
+    position: fixed;
+    width: @offcanvas-switcher-size;
+    height: @offcanvas-switcher-size;
+    cursor: pointer;
+    padding: @offcanvas-switcher-padding;
+    box-sizing: border-box;
+    right: 0;
+    z-index: @offcanvas-switcher-z-index;
+    background: @offcanvar-switcher-background;
+    border-radius: @offcanvas-switcher-border-radius 0 0 @offcanvas-switcher-border-radius;
+    box-shadow: @offcanvas-switcher-box-shadow;
+    clip-path: inset(-30px 0px -30px -30px);
+
+    & .uk-offcanvas-count {
+      position: absolute;
+      top: 0;
+      left: 0;
+      font-size: @offcanvas-count-font-size;
+      line-height: @offcanvas-count-size;
+      -webkit-transform: translate(-50%, -50%);
+      transform: translate(-50%, -50%);
+      height: @offcanvas-count-size;
+      width: @offcanvas-count-size;
+      border-radius: @offcanvas-count-border-radius;
+      padding: @offcanvas-count-padding;
+      background-color: @offcanvas-count-background;
+      color: @offcanvas-count-color;
+    }
+  }
+}

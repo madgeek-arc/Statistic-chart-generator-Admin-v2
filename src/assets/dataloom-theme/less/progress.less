@@ -1,0 +1,197 @@
+@progress-height: 18px;
+@progress-background: fade(@progress-bar-background, 30%);
+@progress-border-radius: 500px;
+@progress-box-shadow: none;
+@progress-bar-background: @global-primary-background;
+@progress-bar-background-open-access: @open-access-color;
+@progress-background-open-access: @muted-color;
+
+@progress-circle-size: 100px;
+@progress-circle-color: @global-primary-background;
+@progress-circle-text-font-weight: @text-bold-weight;
+@progress-circle-text-font-size: @global-large-font-size;
+@progress-circle-sub-background: @table-color;
+@progress-circle-background: conic-gradient(@progress-bar-background  calc(var(--percentage) * 1%), @progress-background 0);
+@progress-circle-background-open-access: conic-gradient(@progress-bar-background-open-access  calc(var(--percentage) * 1%), @progress-background-open-access 0);
+
+@progress-semicircle-size: 120px;
+@progress-semicircle-size-small: 80px;
+@progress-semicircle-color: @global-primary-background;
+@progress-semicircle-text-font-weight: @text-bold-weight;
+@progress-semicircle-text-font-size: @global-large-font-size;
+@progress-semicircle-text-font-size-small: @global-font-size;
+@progress-semicircle-background: conic-gradient(from 0.75turn at 50% 100%, @progress-bar-background calc(var(--percentage) * 1% / 2), @progress-background calc(var(--percentage) * 1% / 2 + 0.1%));
+@progress-semicircle-background-open-access: conic-gradient(from 0.75turn at 50% 100%, @progress-bar-background-open-access calc(var(--percentage) * 1% / 2), @progress-background-open-access calc(var(--percentage) * 1% / 2 + 0.1%));
+
+
+.hook-progress() {
+  border-radius: @progress-border-radius;
+  box-shadow: @progress-box-shadow;
+
+  &.open-access {
+    background: @progress-background-open-access;
+
+    &::-moz-progress-bar  {
+      background-color: @progress-bar-background-open-access;
+    }
+
+    &::-webkit-progress-value {
+      background-color: @progress-bar-background-open-access;
+    }
+  }
+}
+
+.hook-progress-bar() {
+  border-radius: @progress-border-radius;
+  transition: none;
+}
+
+.hook-progress-misc() {
+  .uk-progress-circle[percentage] {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: @progress-circle-size;
+    height: @progress-circle-size;
+    border-radius: 50%;
+    background: @progress-circle-background;
+
+    &::before {
+      color: @progress-circle-color;
+      font-weight: @progress-circle-text-font-weight;
+      font-size: @progress-circle-text-font-size;
+      width: 80%;
+      height: 80%;
+      border-radius: inherit;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: @progress-circle-sub-background;
+      content: attr(percentage) '%';
+    }
+
+    &.open-access {
+      background: @progress-circle-background-open-access;
+    }
+  }
+
+  .uk-progress-semicircle[percentage] {
+    width: @progress-semicircle-size;
+    aspect-ratio: 2 / 1;
+    border-radius: 50% / 100% 100% 0 0;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+
+    &::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: @progress-semicircle-background;
+      mask: radial-gradient(at 50% 100%, white 62%, transparent 63%);
+      mask-mode: alpha;
+      -webkit-mask: radial-gradient(at 50% 100%, #0000 62%, #000 63%);
+      -webkit-mask-mode: alpha;
+    }
+
+    &::after {
+      color: @progress-semicircle-color;
+      font-weight: @progress-semicircle-text-font-weight;
+      font-size: @progress-semicircle-text-font-size;
+      content: attr(percentage) '%';
+    }
+
+    &.open-access {
+      &::before {
+        background: @progress-semicircle-background-open-access;
+      }
+    }
+  }
+
+  .uk-progress-semicircle-small[percentage] {
+    width: @progress-semicircle-size-small;
+
+    &::after {
+      font-size: @progress-semicircle-text-font-size-small;
+    }
+  }
+}
+
+@inverse-progress-background: @inverse-global-color;
+@inverse-progress-bar-background: @global-secondary-background;
+@inverse-progress-background-open-access: @inverse-global-color;
+@inverse-progress-bar-background-open-access: @progress-bar-background-open-access;
+
+@inverse-progress-circle-color: @inverse-global-color;
+@inverse-progress-circle-sub-background: @global-primary-background;
+@inverse-progress-circle-background: conic-gradient(@inverse-progress-bar-background  calc(var(--percentage) * 1%), @inverse-progress-background 0);
+@inverse-progress-circle-background-open-access: conic-gradient(@inverse-progress-bar-background-open-access  calc(var(--percentage) * 1%), @inverse-progress-background-open-access 0);
+
+@inverse-progress-semicircle-color: @inverse-global-color;
+@inverse-progress-semicircle-background: conic-gradient(from 0.75turn at 50% 100%, @inverse-progress-bar-background calc(var(--percentage) * 1% / 2), @inverse-progress-background calc(var(--percentage) * 1% / 2 + 0.1%));
+@inverse-progress-semicircle-background-open-access: conic-gradient(from 0.75turn at 50% 100%, @inverse-progress-bar-background-open-access calc(var(--percentage) * 1% / 2), @inverse-progress-background-open-access calc(var(--percentage) * 1% / 2 + 0.1%));
+
+.hook-inverse() {
+  .uk-progress {
+    background-color: @inverse-progress-background;
+
+    &::-moz-progress-bar  {
+      background-color: @inverse-progress-bar-background;
+    }
+
+    &::-webkit-progress-value {
+      background-color: @inverse-progress-bar-background;
+    }
+
+    &.open-access {
+      background: @inverse-progress-background-open-access;
+
+      &::-moz-progress-bar  {
+        background-color: @inverse-progress-bar-background-open-access;
+      }
+
+      &::-webkit-progress-value {
+        background-color: @inverse-progress-bar-background-open-access;
+      }
+    }
+  }
+
+  .uk-progress-circle[percentage] {
+    background: @inverse-progress-circle-background;
+
+    &::before {
+      color: @inverse-progress-circle-color;
+      background: @inverse-progress-circle-sub-background;
+    }
+
+    &.open-access {
+      background: @inverse-progress-circle-background-open-access;
+    }
+  }
+
+  .uk-progress-semicircle[percentage] {
+
+    &::before {
+      background: @inverse-progress-semicircle-background;
+    }
+
+    &::after {
+      color: @inverse-progress-semicircle-color;
+    }
+
+    &.open-access {
+      &::before {
+        background: @inverse-progress-semicircle-background-open-access;
+      }
+
+      &::after {
+        color: @inverse-progress-semicircle-color;
+      }
+    }
+  }
+}

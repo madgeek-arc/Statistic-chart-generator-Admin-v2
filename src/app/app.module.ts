@@ -27,33 +27,41 @@ import { CustomiseAppearanceComponent } from './dashboard/customise-appearance/c
 import { HighChartsComponent } from './dashboard/customise-appearance/visualisation-options/high-charts/high-charts.component';
 import { GoogleChartsComponent } from './dashboard/customise-appearance/visualisation-options/google-charts/google-charts.component';
 import { EChartsComponent } from './dashboard/customise-appearance/visualisation-options/e-charts/e-charts.component';
-import { SupportedChartTypesService } from './dashboard/customise-appearance/visualisation-options/supported-chart-types-service/supported-chart-types.service';
+import { SupportedChartTypesService } from "./services/supported-chart-types-service/supported-chart-types.service";
 import { ChartExportingService } from './services/chart-exporting-service/chart-exporting.service';
 import { FilterOperatorsPipe } from './dashboard/pipes/filter-operators.pipe';
+import { FrameModule } from './data-frames/frame.module';
+import {InputComponent} from "./shared/input.component";
+import {
+  AutocompleteInputFieldComponent
+} from "./dashboard/helper-components/autocomplete-input-field/autocomplete-input-field.component";
+import {
+  HighMapsComponent
+} from "./dashboard/customise-appearance/visualisation-options/high-maps/high-maps.component";
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    DashboardComponent,
-    HeaderComponent,
-    FooterComponent,
-    ViewSelectorComponent,
-    CategorySelectorComponent,
-    PageNotFoundComponent,
-    CardComponentComponent,
-    DiagramCardComponentComponent,
-    DataseriesSelectorComponent,
-    EntitySelectionComponentComponent,
-    SelectAttributeComponent,
-    CustomiseAppearanceComponent,
+	declarations: [
+		AppComponent,
+		DashboardComponent,
+		HeaderComponent,
+		FooterComponent,
+		ViewSelectorComponent,
+		CategorySelectorComponent,
+		PageNotFoundComponent,
+		CardComponentComponent,
+		DiagramCardComponentComponent,
+		DataseriesSelectorComponent,
+		EntitySelectionComponentComponent,
+		SelectAttributeComponent,
+		CustomiseAppearanceComponent,
 
-    // Pipes
-    CapitalizePipe,
-	FilterOperatorsPipe,
-    HighChartsComponent,
-    GoogleChartsComponent,
-    EChartsComponent,
-  ],
+		// Pipes
+		CapitalizePipe,
+		FilterOperatorsPipe,
+		HighChartsComponent,
+		GoogleChartsComponent,
+		EChartsComponent,
+	],
   imports: [
     BrowserModule,
     ReactiveFormsModule,
@@ -62,15 +70,19 @@ import { FilterOperatorsPipe } from './dashboard/pipes/filter-operators.pipe';
     AppRoutingModule,
     HttpClientModule,
     MaterialModule,
-    CommonModule
+    CommonModule,
+    FrameModule,
+    InputComponent,
+    AutocompleteInputFieldComponent,
+    HighMapsComponent,
   ],
-  providers: [
-    ChartLoadingService,
-    DynamicTreeDatabase,
-    DbSchemaService,
-    SupportedChartTypesService,
-    ChartExportingService
-  ],
-  bootstrap: [AppComponent]
+	providers: [
+		ChartLoadingService,
+		DynamicTreeDatabase,
+		DbSchemaService,
+		SupportedChartTypesService,
+		ChartExportingService,
+	],
+	bootstrap: [AppComponent]
 })
 export class AppModule { }

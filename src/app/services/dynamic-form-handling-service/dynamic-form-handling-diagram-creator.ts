@@ -1,38 +1,25 @@
 import { Observable, of } from 'rxjs';
 import { Color, ColorType } from 'highcharts';
+import { HighChartsChart } from "../supported-libraries-service/models/chart-description-HighCharts.model";
+import { DiagramCategoryService } from "../diagram-category-service/diagram-category.service";
 import {
-	HighChartsChart
-} from "../../dashboard/customise-appearance/visualisation-options/supported-libraries-service/chart-description-HighCharts.model";
+  AppearanceFormSchema,
+  CategoryFormSchema,
+  DataseriesFormSchema,
+  SCGAFormSchema,
+  ViewFormSchema
+} from "../supported-libraries-service/chart-form-schema.classes";
 import {
-	DiagramCategoryService
-} from "../../dashboard/customise-appearance/visualisation-options/diagram-category-service/diagram-category.service";
-import {
-	AppearanceFormSchema,
-	CategoryFormSchema, DataseriesFormSchema,
-	SCGAFormSchema,
-	ViewFormSchema
-} from "../../dashboard/customise-appearance/visualisation-options/chart-form-schema.classes";
-import {
-	GoogleChartsChart, GoogleChartsTable
-} from "../../dashboard/customise-appearance/visualisation-options/supported-libraries-service/chart-description-GoogleCharts.model";
-import {
-	HighMapsMap, HMSeriesInfo
-} from "../../dashboard/customise-appearance/visualisation-options/supported-libraries-service/chart-description-HighMaps.model";
-import {
-	EChartsChart, ECToolboxFeature
-} from "../../dashboard/customise-appearance/visualisation-options/supported-libraries-service/chart-description-eCharts.model";
-import { ChartInfo } from "../../dashboard/customise-appearance/visualisation-options/chart-query.model";
-import {
-	RawChartDataModel
-} from "../../dashboard/customise-appearance/visualisation-options/supported-libraries-service/chart-description-rawChartData.model";
-import {
-	QueryInfo,
-	RawDataModel
-} from "../../dashboard/customise-appearance/visualisation-options/supported-libraries-service/description-rawData.model";
+  GoogleChartsChart,
+  GoogleChartsTable
+} from "../supported-libraries-service/models/chart-description-GoogleCharts.model";
+import { HighMapsMap, HMSeriesInfo } from "../supported-libraries-service/models/chart-description-HighMaps.model";
+import { EChartsChart, ECToolboxFeature } from "../supported-libraries-service/models/chart-description-eCharts.model";
+import { ChartInfo } from "../supported-libraries-service/models/chart-query.model";
+import { RawChartDataModel } from "../supported-libraries-service/models/chart-description-rawChartData.model";
+import { QueryInfo, RawDataModel } from "../supported-libraries-service/models/description-rawData.model";
 import { EChartOption } from "echarts";
-import {
-	ISupportedMap
-} from "../../dashboard/customise-appearance/visualisation-options/supported-chart-types-service/supported-chart-types.service";
+import { ISupportedMap } from "../supported-chart-types-service/supported-chart-types.service";
 
 
 export class DiagramCreator {
@@ -45,15 +32,10 @@ export class DiagramCreator {
 
 	public createChart(formObj: SCGAFormSchema): Observable<HighChartsChart | GoogleChartsChart | HighMapsMap | EChartsChart | null> {
 
-		console.log('Form values ->', formObj);
 		const view: ViewFormSchema = formObj.view;
-		// console.log('View ->', view);
 		const category: CategoryFormSchema = formObj.category;
-		// console.log('Category ->', category);
 		const dataseries: DataseriesFormSchema[] = formObj.dataseries;
-		// console.log('Dataseries ->', dataseries);
 		const appearanceOptions: AppearanceFormSchema = formObj.appearance;
-		// console.log('Appearance ->', appearanceOptions);
 		const library: string = appearanceOptions.chartAppearance.generalOptions.visualisationLibrary;
 
 		// TODO we can make sure we dont send to the back end queries with unsupported libraries
@@ -104,13 +86,10 @@ export class DiagramCreator {
 		const tableObj = new GoogleChartsTable();
 
 		dataseries.forEach(dataElement => {
-			tableObj.tableDescription.queriesInfo.push(
-				new ChartInfo(dataElement, view.profile, appearanceOptions.chartAppearance.generalOptions.resultsLimit,
-					this.figureCategoryType(dataElement, category)));
+			tableObj.tableDescription.queriesInfo.push(new ChartInfo(dataElement, view.profile, appearanceOptions.chartAppearance.generalOptions.resultsLimit, this.figureCategoryType(dataElement, category)));
 		});
-		console.log('Creating a table!', tableObj);
+
 		tableObj.tableDescription.options.pageSize = formObj.appearance.tableAppearance.paginationSize as number;
-		console.log('Page Size:', tableObj.tableDescription.options.pageSize);
 		return of(tableObj);
 	}
 
@@ -156,8 +135,7 @@ export class DiagramCreator {
 		return of(rawDataModel);
 	}
 
-	createDynamicGoogleChartsChart(view: ViewFormSchema, category: CategoryFormSchema,
-		dataseries: DataseriesFormSchema[], appearanceOptions: AppearanceFormSchema): GoogleChartsChart {
+	createDynamicGoogleChartsChart(view: ViewFormSchema, category: CategoryFormSchema, dataseries: DataseriesFormSchema[], appearanceOptions: AppearanceFormSchema): GoogleChartsChart {
 
 		const chartObj = new GoogleChartsChart();
 		const chartDescription = chartObj.chartDescription;
@@ -198,10 +176,9 @@ export class DiagramCreator {
 		return chartObj;
 	}
 
-	createDynamicHighChartsChart(view: ViewFormSchema, category: CategoryFormSchema,
-		dataseries: DataseriesFormSchema[], appearanceOptions: AppearanceFormSchema): HighChartsChart {
+	createDynamicHighChartsChart(view: ViewFormSchema, category: CategoryFormSchema, dataseries: DataseriesFormSchema[], appearanceOptions: AppearanceFormSchema): HighChartsChart {
 
-		const chartObj = new HighChartsChart();
+    const chartObj = new HighChartsChart();
 
 		if (appearanceOptions.chartAppearance.generalOptions != null)
 			chartObj.orderBy = appearanceOptions.chartAppearance.generalOptions.orderByAxis as string;
@@ -241,6 +218,7 @@ export class DiagramCreator {
 			// Credits Options
 			chartObj.chartDescription.credits.enabled = appearanceOptions.chartAppearance.highchartsAppearanceOptions.hcCredits?.hcEnableCredits as boolean;
 			chartObj.chartDescription.credits.text = appearanceOptions.chartAppearance.highchartsAppearanceOptions.hcCredits?.hcCreditsText as string;
+
 			// Title Options
 			if (appearanceOptions.chartAppearance.highchartsAppearanceOptions.title) {
 				chartObj.chartDescription.title.text = appearanceOptions.chartAppearance.highchartsAppearanceOptions.title.titleText;
@@ -328,12 +306,12 @@ export class DiagramCreator {
 			chartObj.chartDescription.colors = this.hcColorTheme;
 
 		const queries = new Array<ChartInfo>();
-		var dataseriesColors: ColorType[] = [];
+    const dataseriesColors: ColorType[] = [];
 
-		dataseries.forEach(dataElement => {
+    dataseries.forEach(dataElement => {
 
-			var chartInfo = new ChartInfo(dataElement, view.profile, appearanceOptions.chartAppearance.generalOptions.resultsLimit, this.figureCategoryType(dataElement, category));
-			queries.push(chartInfo);
+      const chartInfo = new ChartInfo(dataElement, view.profile, appearanceOptions.chartAppearance.generalOptions.resultsLimit, this.figureCategoryType(dataElement, category));
+      queries.push(chartInfo);
 
 			// Make sure that Highcharts gets a valid stacking value
 			chartObj.chartDescription.series.push({ stacking: dataElement.chartProperties.stacking == 'null' ? undefined : dataElement.chartProperties.stacking });
@@ -350,9 +328,9 @@ export class DiagramCreator {
 		// Trim the alpha values, if the color has alpha.
 		// Hard coded logic bleehh
 		if (category.diagram.type == "treemap") {
-			var gradientMapMaxColor = this.ignoreAlphaColor(chartObj.chartDescription.colors[0] as string);
+      const gradientMapMaxColor = this.ignoreAlphaColor(chartObj.chartDescription.colors[0] as string);
 
-			chartObj.chartDescription.colorAxis = { minColor: '#FFFFFF', maxColor: gradientMapMaxColor };
+      chartObj.chartDescription.colorAxis = { minColor: '#FFFFFF', maxColor: gradientMapMaxColor };
 		}
 
 		chartObj.chartDescription.queries = queries;
@@ -369,8 +347,7 @@ export class DiagramCreator {
 		return category.diagram.type;
 	}
 
-	createDynamicEChartsChart(view: ViewFormSchema, category: CategoryFormSchema,
-		dataseries: DataseriesFormSchema[], appearanceOptions: AppearanceFormSchema): EChartsChart {
+	createDynamicEChartsChart(view: ViewFormSchema, category: CategoryFormSchema, dataseries: DataseriesFormSchema[], appearanceOptions: AppearanceFormSchema): EChartsChart {
 
 		const chartObj = new EChartsChart();
 
@@ -440,9 +417,9 @@ export class DiagramCreator {
 
 
 		const queries = new Array<ChartInfo>();
-		var dataseriesColors: string[] = [];
+    const dataseriesColors: string[] = [];
 
-		dataseries.forEach(dataElement => {
+    dataseries.forEach(dataElement => {
 			// Push queries to JSON for CDF
 			queries.push(new ChartInfo(dataElement, view.profile, appearanceOptions.chartAppearance.generalOptions.resultsLimit,
 				this.figureCategoryType(dataElement, category)));
@@ -488,9 +465,9 @@ export class DiagramCreator {
 		// Trim the alpha values, if the color has alpha.
 		// NOTE: We support treemap with only one depth (one dataseries)
 		if (category.diagram.type == "treemap") {
-			var gradientMapMaxColor = this.ignoreAlphaColor(chartObj.chartDescription.color[0] as string);
+      const gradientMapMaxColor = this.ignoreAlphaColor(chartObj.chartDescription.color[0] as string);
 
-			(chartObj.chartDescription.series[0] as EChartOption.SeriesTreemap).levels =
+      (chartObj.chartDescription.series[0] as EChartOption.SeriesTreemap).levels =
 				[{ color: ['#F0F0F0', gradientMapMaxColor], colorMappingBy: 'value' }];
 
 		}
@@ -501,8 +478,7 @@ export class DiagramCreator {
 	}
 	figureLabelPosition(isStacked: boolean): 'inside' | 'right' { return isStacked ? 'inside' : 'right' }
 
-	createDynamicHighMapsMap(view: ViewFormSchema, category: CategoryFormSchema,
-		dataseries: DataseriesFormSchema[], appearanceOptions: AppearanceFormSchema): HighMapsMap {
+	createDynamicHighMapsMap(view: ViewFormSchema, category: CategoryFormSchema, dataseries: DataseriesFormSchema[], appearanceOptions: AppearanceFormSchema): HighMapsMap {
 
 		const mapObj = new HighMapsMap();
 		mapObj.library = appearanceOptions.chartAppearance.generalOptions.visualisationLibrary;
@@ -570,8 +546,8 @@ export class DiagramCreator {
 	}
 
 	private ignoreAlphaColor(color: string): string {
-		var finalColor = null;
-		if (color.length > 7)
+    let finalColor = null;
+    if (color.length > 7)
 			finalColor = color.slice(0, 7)
 
 		return finalColor != null ? finalColor : color;

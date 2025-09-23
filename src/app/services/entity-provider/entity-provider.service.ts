@@ -17,6 +17,7 @@ export class EntityProviderService {
 	) { }
 
 	getAvailableEntities(profile: Profile | null | undefined): Observable<Array<string>> {
+		console.log("PROFILE:", profile);
 
 		if (profile === undefined || profile === null) {
 			// return this.getAvailableEntitiesNoMapping();

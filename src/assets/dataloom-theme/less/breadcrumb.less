@@ -1,0 +1,28 @@
+/** Item*/
+@breadcrumb-item-color: @global-meta-color;
+@breadcrumb-item-hover-color: @global-link-hover-color;
+@breadcrumb-item-hover-text-decoration: underline;
+@breadcrumb-item-active-color: @global-primary-background;
+
+/** Divider */
+@breadcrumb-divider: '\e5cc';
+@breadcrumb-divider-font-family: "Material Icons";
+@breadcrumb-divider-font-size: 20px;
+@breadcrumb-divider-margin-horizontal: 10px;
+
+.hook-breadcrumb-item() {
+  vertical-align: super;
+  line-height: @breadcrumb-divider-font-size;
+}
+
+.hook-breadcrumb-divider() {
+  font-family: @breadcrumb-divider-font-family;
+}
+
+/** Inverse */
+@inverse-breadcrumb-divider-color: @global-background;
+@inverse-breadcrumb-item-color: @global-background;
+@inverse-breadcrumb-item-hover-color: @global-background;
+@inverse-breadcrumb-item-active-color: @global-inverse-color;
+@inverse-breadcrumb-item-disabled-color: fade(@global-background, 0.5);
+

@@ -1,9 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-
 import { Observable, BehaviorSubject } from 'rxjs';
 import { UrlProviderService } from '../url-provider-service/url-provider.service';
-// import { ErrorHandlerService } from '../error-handler-service/error-handler.service';
 
 export class Profile {
 	name: string = '';

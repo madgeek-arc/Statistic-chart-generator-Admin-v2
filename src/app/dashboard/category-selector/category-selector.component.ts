@@ -2,14 +2,18 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { first } from 'rxjs';
 import {
-	ISupportedMap, ISupportedMiscType,
-	ISupportedPolar, ISupportedSpecialChartType, SupportedChartTypesService
-} from "../customise-appearance/visualisation-options/supported-chart-types-service/supported-chart-types.service";
+  ISupportedCategory,
+  ISupportedChart,
+  ISupportedMap,
+  ISupportedMiscType,
+  ISupportedPolar,
+  ISupportedSpecialChartType,
+  SupportedChartTypesService
+} from "../../services/supported-chart-types-service/supported-chart-types.service";
 
 @Component({
 	selector: 'app-category-selector',
 	templateUrl: './category-selector.component.html',
-	styleUrls: ['./category-selector.component.less']
 })
 export class CategorySelectorComponent implements OnInit {
 
@@ -109,12 +113,16 @@ export class CategorySelectorComponent implements OnInit {
 
 	moveToNextStep(event: ISupportedCategory): void {
 		if (event.name) {
-			(this.categoryForm.get('diagram.supportedLibraries') as FormArray).clear();
+			console.log("moveToNextStep EVENT:", event);
+			console.log("categoryForm:", this.categoryForm.value);
+			(this.categoryForm.get('diagram.supportedLibraries') as FormArray)?.clear();
 
 			for (let i = 0; i < event.supportedLibraries.length; i++) {
-				(this.categoryForm.get('diagram.supportedLibraries') as FormArray).push(new FormControl<string | null>(null));
+				(this.categoryForm.get('diagram.supportedLibraries') as FormArray)?.push(new FormControl<string | null>(null));
 			}
-			this.categoryForm.get('diagram')?.setValue(event);
+			this.categoryForm.get('diagram')?.patchValue(event);
+
+			console.log("categoryForm NEW:", this.categoryForm.value);
 
 			this.showCategorySelection.emit({
 				name: event.name,
@@ -130,16 +138,4 @@ export class CategorySelectorComponent implements OnInit {
 	}
 
 }
-
-export interface ISupportedCategory {
-	type: string;
-	supportedLibraries: Array<string>;
-	name?: string;
-	diagramId?: number;
-	description?: string;
-	imageURL?: string;
-	isPolar?: boolean;
-	isHidden?: boolean;
-}
-export interface ISupportedChart extends ISupportedCategory { }
 

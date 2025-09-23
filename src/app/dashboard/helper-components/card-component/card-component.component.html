@@ -1,25 +1,24 @@
 <div class="uk-card uk-card-default uk-card-hover uk-card-small">
-  <a  (click)="viewSelect()">
-    <div class="uk-card-header">
-      <h3 class="uk-card-title uk-text-break">
-        {{this.data.name}}
-      </h3>
-      <p class="uk-text-meta">{{this.data.description}}</p>
-    </div>
-    <div class="uk-card-body">
-      <p>{{this.data.usage}}</p>
-    </div>
-    <div class="uk-card-footer">
-      <div class="uk-flex uk-flex-middle">
-        <mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="groups"></mat-icon>
-        <span *ngFor="let shareholder of data.shareholders" class="uk-badge uk-margin-small-left">{{shareholder}}</span>
-      </div>
-    </div>
-    <!-- Fix issue with absolute position of button -->
-    <!--	<br>-->
-    <!--	<button class="uk-width-1-1 uk-button uk-button-small custom-bottom-button">-->
-    <!--		Select-->
-    <!--	</button>-->
-  </a>
+	<a (click)="viewSelect()" class="uk-link-reset">
+		<div class="uk-card-header">
+			<h3 class="uk-card-title uk-text-break">
+				{{this.data.name}}
+			</h3>
+			<p class="uk-text-meta">{{this.data.description}}</p>
+		</div>
+		<div class="uk-card-body">
+			<p>{{this.data.usage}}</p>
+		</div>
+		<div class="uk-card-footer">
+			<div class="uk-flex uk-flex-middle">
+				<mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="groups"></mat-icon>
+				<span *ngFor="let shareholder of data.shareholders" class="uk-badge uk-margin-small-left">{{shareholder}}</span>
+			</div>
+		</div>
+		<!-- Fix issue with absolute position of button -->
+		<!--	<br>-->
+		<!--	<button class="uk-width-1-1 uk-button uk-button-small custom-bottom-button">-->
+		<!--		Select-->
+		<!--	</button>-->
+	</a>
 </div>
-

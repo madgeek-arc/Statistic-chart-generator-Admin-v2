@@ -1,0 +1,21 @@
+@background-primary-background: @global-primary-background;
+@background-primary-background-gradient: @global-primary-gradient;
+/** Secondary */
+@background-secondary-background: @global-color;
+@background-color-opacity: @global-opacity;
+
+.hook-background-misc() {
+  .set-blur-background(@background-default-background, 80%);
+
+  .uk-background-default {
+    .set-blur-background(@background-default-background , 80%);
+  }
+
+  .uk-background-primary {
+    background-image: @background-primary-background-gradient;
+  }
+
+  .uk-background-primary-opacity {
+    background-color: fade(@background-primary-background, @background-color-opacity);
+  }
+}

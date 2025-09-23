@@ -5,7 +5,6 @@ import { CachedEntityNode } from '../select-attribute/dynamic-entity-tree/entity
 @Component({
 	selector: 'app-entity-selection-component',
 	templateUrl: './entity-selection-component.component.html',
-	styleUrls: ['./entity-selection-component.component.less']
 })
 export class EntitySelectionComponentComponent implements OnInit {
 

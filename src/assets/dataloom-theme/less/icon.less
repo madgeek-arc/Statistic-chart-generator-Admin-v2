@@ -1,0 +1,141 @@
+@icon-button-size: 50px;
+@icon-button-small-size: 35px;
+@icon-button-xsmall-size: 24px;
+@icon-bg-background: @global-background;
+@icon-bg-size: @icon-button-size;
+@icon-bg-size-small: @icon-button-size*0.5;
+@icon-bg-size-medium: @icon-button-size*1.5;
+@icon-bg-size-large: @icon-button-size*2;
+
+@icon-button-background: @button-default-background;
+@icon-button-color: @button-default-color;
+@icon-button-hover-background: @button-default-hover-background;
+@icon-button-hover-color: @button-default-hover-color;
+@icon-button-active-background: @button-default-active-background;
+@icon-button-active-color: @button-default-active-color;
+
+@icon-box-shadow: @global-medium-box-shadow;
+@icon-hover-box-shadow: @global-small-box-shadow;
+
+@icon-type: {
+  outlined: Outlined;
+  round: Round;
+  sharp: Sharp;
+  two-tone: Two Tone;
+}
+
+.material-icons {
+  font-family: 'Material Icons';
+  font-weight: normal;
+  font-style: normal;
+  font-size: @icon-image-size;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  background: inherit;
+  /* Support for all WebKit browsers. */
+  -webkit-font-smoothing: antialiased;
+  /* Support for Safari and Chrome. */
+  text-rendering: optimizeLegibility;
+  /* Support for Firefox. */
+  -moz-osx-font-smoothing: grayscale;
+  /* Support for IE. */
+  font-feature-settings: 'liga';
+
+
+  each(@icon-type, {
+    &.@{key} {
+      font-family: 'Material Icons @{value}';
+    }
+  });
+}
+
+.hook-icon-button() {
+  border: none;
+  box-shadow: @icon-box-shadow;
+
+  &:disabled {
+    box-shadow: none;
+    background-image: none;
+    background-color: @global-muted-background;
+    color: @global-muted-color;
+  }
+}
+
+.hook-icon-button-hover() {
+  box-shadow: @icon-hover-box-shadow;
+}
+
+.hook-icon-misc() {
+  .uk-icon-button-small {
+    width: @icon-button-small-size !important;
+    height: @icon-button-small-size !important;
+  }
+	.uk-icon-button-xsmall {
+		width: @icon-button-xsmall-size !important;
+		height: @icon-button-xsmall-size !important;
+	}
+
+  /* Default circle element for SVGs */
+  .uk-icon-bg {
+    border-radius: 100px;
+    width: @icon-bg-size;
+    height: @icon-bg-size;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: @icon-bg-background;
+  }
+
+  .uk-icon-bg-small {
+    width: @icon-bg-size-small;
+    height: @icon-bg-size-small;
+  }
+  /**/
+
+  /* Default circle element for SVGs with shadow*/
+  .uk-icon-bg-shadow {
+    border-radius: 100px;
+    width: @icon-button-size;
+    height: @icon-button-size;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: @icon-box-shadow;
+    background-color: @icon-bg-background;
+  }
+
+  .uk-icon-bg-shadow-medium {
+    width: @icon-bg-size-medium;
+    height: @icon-bg-size-medium;
+  }
+
+  .uk-icon-bg-shadow-large {
+    width: @icon-bg-size-large;
+    height: @icon-bg-size-large;
+  }
+  /**/
+}
+
+/** Inverse */
+@inverse-icon-box-shadow: @inverse-global-medium-box-shadow;
+@inverse-icon-hover-box-shadow: @inverse-global-small-box-shadow;
+
+.hook-inverse-misc() {
+
+  .uk-icon-bg-shadow {
+    box-shadow: @inverse-icon-box-shadow;
+  }
+
+  .uk-icon-button {
+    box-shadow: @inverse-icon-box-shadow;
+
+    &:hover {
+      box-shadow: @inverse-icon-hover-box-shadow;
+    }
+  }
+}

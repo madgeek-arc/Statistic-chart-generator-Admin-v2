@@ -1,0 +1,100 @@
+@banner-background: @ciel-color;
+@banner-background-gradient: none;
+
+@banner-footer-background: #000000;
+
+@banner-tab-gutter: 60px;
+@banner-tab-margin-vertical: @global-small-margin;
+@banner-tab-divider: @global-border-width solid @global-border;
+@banner-tab-divider-height: @global-line-height;
+@banner-tab-item-color: @global-inverse-color;
+@banner-tab-item-hover-color: @global-secondary-background;
+@banner-tab-item-hover-decoration: none;
+@banner-tab-item-active-color: @banner-tab-item-hover-color;
+@banner-tab-item-active-indicator: @global-background;
+
+@banner-tab-button-background: @global-secondary-background;
+@banner-tab-button-border-radius: 0;
+
+.uk-banner:extend(.uk-section) {
+  background: @banner-background;
+  position: relative;
+
+  & .uk-banner-footer:extend(.uk-light all) {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: fade(@banner-footer-background, 50%);
+
+    @supports ((-webkit-backdrop-filter: none) or (backdrop-filter: none)) {
+      -webkit-backdrop-filter: blur(30px) opacity(10%) brightness(90%);
+      backdrop-filter: blur(30px) opacity(10%) brightness(90%);
+    }
+
+    & .uk-button {
+      height: 100%;
+      background: @banner-tab-button-background;
+      border-radius: @banner-tab-button-border-radius;
+
+      &:hover {
+        background: fade(@banner-tab-button-background, 80%);
+      }
+    }
+  }
+
+  & ul.uk-banner-tab:extend(.uk-flex):extend(.uk-margin-top) {
+    list-style: none;
+    margin: @banner-tab-margin-vertical 0;
+
+    & > li {
+      &:not(:first-child) {
+        margin-left: @banner-tab-gutter;
+        position: relative;
+
+        &::before {
+          content: '';
+          position: absolute;
+          left: -1 * (@banner-tab-gutter/2);
+          transform: translateX(-100%);
+          border-left: @banner-tab-divider;
+          height: @banner-tab-divider-height;
+        }
+      }
+
+      a:extend(.uk-text-truncate) {
+        text-transform: uppercase;
+        text-decoration: none;
+        color: @banner-tab-item-color;
+      }
+
+      &:hover a {
+        color: @banner-tab-item-hover-color;
+        text-decoration: @banner-tab-item-hover-decoration;
+      }
+
+      &.uk-active a {
+        color: @banner-tab-item-active-color;
+        font-weight: @text-bold-weight;
+        position: relative;
+
+        &:after {
+          content: '';
+          position: absolute;
+          bottom: -@banner-tab-margin-vertical;
+          left: 50%;
+          transform: translate(-50%, 50%);
+          width: 0;
+          height: 0;
+          border-left: 2*@banner-tab-margin-vertical solid transparent;
+          border-right: 2*@banner-tab-margin-vertical solid transparent;
+          border-bottom: @banner-tab-margin-vertical solid @banner-tab-item-active-indicator;
+        }
+      }
+    }
+  }
+}
+
+.uk-banner.dark {
+  background: @background-secondary-background;
+}

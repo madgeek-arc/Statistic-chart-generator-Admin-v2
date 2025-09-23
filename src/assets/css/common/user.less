@@ -1,0 +1,71 @@
+@user-background: @global-primary-background;
+@user-color: @global-inverse-color;
+
+/* Hover */
+@user-hover-background: @global-secondary-background;
+@user-hover-color: @global-inverse-color;
+
+.login {
+  & > * {
+    color: @user-color;
+  }
+
+  circle {
+    fill: @user-background;
+  }
+
+  text {
+    stroke: currentColor;
+    fill: currentColor;
+  }
+
+  .notification {
+    position: absolute;
+    top: 0;
+    right: 0;
+    -webkit-transform: translate(20%, -50%);
+    transform: translate(20%, -50%);
+  }
+}
+
+a.login {
+  &:hover {
+    & > * {
+      color: @user-hover-color;
+    }
+
+    & circle {
+      fill: @user-hover-background;
+    }
+  }
+}
+
+/* Inverse */
+@inverse-user-background: @global-inverse-color;
+@inverse-user-color: @global-primary-background;
+@inverse-user-hover-background: @global-inverse-color;
+@inverse-user-hover-color: @global-secondary-background;
+
+.hook-inverse() {
+  .login {
+    & > * {
+      color: @inverse-user-color;
+    }
+
+    circle {
+      fill: @inverse-user-background;
+    }
+  }
+
+  a.login {
+    &:hover {
+      & > * {
+        color: @inverse-user-hover-color;
+      }
+
+      & circle {
+        fill: @inverse-user-hover-background;
+      }
+    }
+  }
+}
