@@ -42,22 +42,22 @@ export class DynamicTreeDatabase {
 			profile = new Profile();
 		}
 
-		this.dbService.getAvailableEntities(profile).pipe(first())
-			.subscribe((entityNames: string[]) => {
-        const entityMap = new Map<string, CachedEntityNode>(new Map<string, CachedEntityNode>());
+		this.dbService.getAvailableEntities(profile).pipe(first()).subscribe((entityNames: string[]) => {
+      const entityMap = new Map<string, CachedEntityNode>(new Map<string, CachedEntityNode>());
 
-        const array$ = entityNames.map(entity => this.getEntityRelations(profile, entity).pipe(first()));
-        forkJoin(array$).subscribe((cachedEntityNodes: CachedEntityNode[]) => {
+      const array$ = entityNames.map(entity => this.getEntityRelations(profile, entity).pipe(first()));
+      forkJoin(array$).subscribe((cachedEntityNodes: CachedEntityNode[]) => {
 
-					// forkJoin results are in the same sequence as its Observable inputs
-					// As such the cachedEntityNodes are matched in size and index by the entityNames
-					for (let index = 0; index < entityNames.length; index++)
-						entityMap.set(entityNames[index], cachedEntityNodes[index]);
+        // forkJoin results are in the same sequence as its Observable inputs
+        // As such the cachedEntityNodes are matched in size and index by the entityNames
+        for (let index = 0; index < entityNames.length; index++)
+          entityMap.set(entityNames[index], cachedEntityNodes[index]);
 
-					if (entityMap.size > 0)
-						this._entityMap$.next(entityMap);
-				});
-			});
+        if (entityMap.size > 0) {
+          this._entityMap$.next(entityMap);
+        }
+      });
+    });
 	}
 
 	getRootNode(entity: string): BehaviorSubject<DynamicEntityNode | null> | undefined {

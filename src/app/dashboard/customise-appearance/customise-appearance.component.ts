@@ -43,14 +43,12 @@ export class CustomiseAppearanceComponent implements OnInit {
   }
 
 	libraryChange(event: string) {
-		const newLibrary = event;
-    console.log(newLibrary);
     this.appearanceForm.get('chartAppearance.highchartsAppearanceOptions').disable();
     this.appearanceForm.get('chartAppearance.googlechartsAppearanceOptions').disable();
     this.appearanceForm.get('chartAppearance.echartsAppearanceOptions').disable();
     this.appearanceForm.get('chartAppearance.highmapsAppearanceOptions').disable();
 
-    switch (newLibrary) {
+    switch (event) {
       case 'HighCharts':
         this.appearanceForm.get('chartAppearance.highchartsAppearanceOptions').enable();
         break;
@@ -65,7 +63,6 @@ export class CustomiseAppearanceComponent implements OnInit {
         break;
     }
 
-    console.log(this.appearanceForm.value);
 	}
 
 	get visualisationLibrary(): FormControl {

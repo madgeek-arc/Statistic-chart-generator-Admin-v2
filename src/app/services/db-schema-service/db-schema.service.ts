@@ -19,8 +19,8 @@ export class DbSchemaService {
 	getAvailableEntities(profile: Profile | null | undefined): Observable<Array<string>> {
 
 		if (profile === undefined || profile === null) {
-			// return this.getAvailableEntitiesNoMapping();
-			return of([]);
+			return this.getAvailableEntitiesNoMapping();
+			// return of([]);
 		}
 
 		const entitiesUrl = this.urlProvider.serviceURL + '/schema/' + profile.name + '/entities';

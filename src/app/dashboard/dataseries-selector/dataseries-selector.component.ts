@@ -1,13 +1,11 @@
-import { HttpClient } from '@angular/common/http';
 import { AfterViewInit, Component, DestroyRef, inject, Input, OnInit, ViewChild } from '@angular/core';
 import { FormArray, FormControl, FormGroup, FormGroupDirective } from '@angular/forms';
-import { BehaviorSubject, first, forkJoin, Observable } from 'rxjs';
 import { Profile } from 'src/app/services/profile-provider/profile-provider.service';
-import { UrlProviderService } from "../../services/url-provider-service/url-provider.service";
-import { CachedEntityNode } from '../helper-components/select-attribute/dynamic-entity-tree/entity-tree-nodes.types';
 import { DbSchemaService } from "../../services/db-schema-service/db-schema.service";
 import { FormFactoryService } from "../../services/form-factory-service/form-factory-service";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
+import { DynamicTreeDatabase } from "../../services/dynamic-tree-database/dynamic-tree-database.service";
+import { distinctUntilChanged } from "rxjs/operators";
 import UIkit from "uikit";
 
 export enum FieldType { text, int, float, date};
@@ -40,8 +38,6 @@ export class DataseriesSelectorComponent implements OnInit, AfterViewInit {
 	hasTwoEntityFields: boolean = false;
 	dataseriesIncremment: number = 0;
 
-	private _entityMap$: BehaviorSubject<Map<string, CachedEntityNode>> = new BehaviorSubject(new Map<string, CachedEntityNode>());
-	protected entityMap = new Map<string, CachedEntityNode>(new Map<string, CachedEntityNode>());
 
   protected aggregates = [
     { label: 'Total', value: 'total' },
@@ -83,34 +79,24 @@ export class DataseriesSelectorComponent implements OnInit, AfterViewInit {
 	];
 
 	constructor(
-		private http: HttpClient,
+    private dynamicTreeDB: DynamicTreeDatabase,
 		private dbService: DbSchemaService,
-		private urlProvider: UrlProviderService,
     private formFactory: FormFactoryService,
 	) { }
 
 	ngOnInit(): void {
 		// With the change in stepper, the data is not created in the beginning, so it'll have to be initialized and not wait for "value changes"
+    const profile = new Profile();
 
 		if (this.selectedProfile && this.selectedProfile.value) {
-			this.getEntities({
-				name: this.selectedProfile.value,
-				description: '',
-				usage: '',
-				shareholders: [],
-				complexity: -1,
-			} as Profile);
+      profile.name = this.selectedProfile.value;
+      this.handleProfileChange(profile);
 		}
 
-		this.selectedProfile.valueChanges.subscribe((profile: any) => {
-			if (profile) {
-				this.getEntities({
-					name: profile,
-					description: '',
-					usage: '',
-					shareholders: [],
-					complexity: -1,
-				} as Profile);
+		this.selectedProfile.valueChanges.subscribe((profileName: string) => {
+			if (profileName) {
+        profile.name = profileName;
+        this.handleProfileChange(profile);
 			}
 		});
 
@@ -141,27 +127,15 @@ export class DataseriesSelectorComponent implements OnInit, AfterViewInit {
     UIkit.dropdown(element).hide();
   }
 
+  handleProfileChange(profile: Profile | null) {
+    this.dynamicTreeDB.changeEntityMap(profile);
 
-  getEntities(profile: Profile): void {
-		this.dbService.getAvailableEntities(profile).pipe(first()).subscribe((entityNames: Array<string>) => {
-			this.entities = entityNames;
-
-			let entityArray = entityNames.map((entity: string) => {
-				return this.getEntityRelations(profile, entity).pipe(first());
-			});
-
-			forkJoin(entityArray).subscribe((cachedEntityNodes: CachedEntityNode[]) => {
-
-				for (let i = 0; i < entityNames.length; i++) {
-					this.entityMap.set(entityNames[i], cachedEntityNodes[i]);
-				}
-
-				if (this.entityMap.size > 0) {
-					this._entityMap$.next(this.entityMap);
-				}
-			});
-		});
-	}
+    this.dbService.getAvailableEntities(profile).pipe(distinctUntilChanged()).subscribe({
+      next: (entities: Array<string>) => {
+        this.entities = entities;
+      }
+    });
+  }
 
 	getXAxisData(form: any) {
 		// console.log(form.controls.data.controls.xaxisData.controls[0].controls.xaxisEntityField);
@@ -176,13 +150,6 @@ export class DataseriesSelectorComponent implements OnInit, AfterViewInit {
 	getGroups(form: any) {
 		// console.log(form.controls.data.controls.filters.controls);
 		return form.controls.groupFilters.controls;
-	}
-
-	private getEntityRelations(profile: Profile, entity: string): Observable<CachedEntityNode> {
-		// const entityRelationsUrl = 'http://stats.madgik.di.uoa.gr:8180/schema/' + profile.name +'/entities/' + entity;
-		const entityRelationsUrl = this.urlProvider.serviceURL + '/schema/' + profile.name + '/entities/' + entity;
-
-		return this.http.get<CachedEntityNode>(entityRelationsUrl);
 	}
 
 	addFilter(form: any) {

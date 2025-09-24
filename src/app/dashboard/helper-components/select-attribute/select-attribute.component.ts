@@ -242,7 +242,7 @@ export class SelectAttributeComponent implements ControlValueAccessor, OnChanges
    * Utility calls
    */
   takeFieldName(field: FieldNode, node: DynamicEntityNode): string {
-    var parentPath = '';
+    let parentPath = '';
     node.path.map((nodeName: string) => {
       if (parentPath.length > 0)
         parentPath = parentPath + '.' + nodeName;
@@ -251,7 +251,6 @@ export class SelectAttributeComponent implements ControlValueAccessor, OnChanges
     });
     return parentPath + '.' + field.name;
   }
-  trackByFieldName(index: number, item: FieldNode) { return item.name; }
 
   public checkValidFieldNode(e: FieldNode | null) {
 
@@ -302,6 +301,7 @@ export class SelectAttributeComponent implements ControlValueAccessor, OnChanges
       }
     }
   }
+
   handleTouch(opened: boolean) {
     if (!opened) {
       if (this.control !== null) {
