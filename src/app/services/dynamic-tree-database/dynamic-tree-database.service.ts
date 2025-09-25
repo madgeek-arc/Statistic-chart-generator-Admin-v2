@@ -25,9 +25,10 @@ export class DynamicTreeDatabase {
 	constructor(private http: HttpClient, private urlProvider: UrlProviderService,
 		private profileMappingService: MappingProfilesService, private dbService: DbSchemaService) {
 
-		this.profileMappingService.selectedProfile$.pipe(distinctUntilChanged()).subscribe(
-			(profile: Profile | null) => { this.changeEntityMap(profile); }
-		);
+    // This code segment introduced issues with json loading (perhaps because subjects in profileMappingService are not updated).
+		// this.profileMappingService.selectedProfile$.pipe(distinctUntilChanged()).subscribe(
+		// 	(profile: Profile | null) => { this.changeEntityMap(profile); }
+		// );
 	}
 
 	private getEntityRelations(profile: Profile | null, entity: string): Observable<CachedEntityNode> {
