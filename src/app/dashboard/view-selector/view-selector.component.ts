@@ -9,7 +9,7 @@ import { ProfileProviderService } from 'src/app/services/profile-provider/profil
 
 export class ViewSelectorComponent {
 
-	@Input() viewForm: FormControl = new FormControl();
+	// @Input() viewForm: FormControl = new FormControl();
 	@Input() profileControl?: FormControl;
 	@Output() showViewSelection = new EventEmitter<any>;
 
@@ -17,9 +17,9 @@ export class ViewSelectorComponent {
 
 	moveToNextStep(event: any): void {
 		if (event.name) {
-			this.viewForm.setValue(event);
+			// this.viewForm.setValue(event);
 			// this.viewSavingService.setTestingView(event);
-			this.profileControl?.setValue(event.name, {onlySelf: false, emitEvent: true});
+			this.profileControl?.setValue(event.name);
       this.showViewSelection.emit({
 				name: event.name,
 				step: "profile"

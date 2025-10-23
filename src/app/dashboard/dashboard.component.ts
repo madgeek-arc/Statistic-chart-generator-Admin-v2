@@ -72,6 +72,8 @@ export class DashboardComponent implements OnInit {
     });
 
     this.diagramSettings.get('category')?.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((diagram: any) => {
+      console.log('Category value changed');
+      console.log(this.diagramSettings.get('category').value);
       this.checkDisabledTabs();
     });
 
@@ -80,10 +82,6 @@ export class DashboardComponent implements OnInit {
       this.hasChanges = true;
     });
   }
-
-	get testingView() {
-		return this.diagramSettings.get('testingView') as FormControl;
-	}
 
 	get view() {
 		return this.diagramSettings.get('view') as FormGroup;
@@ -136,6 +134,10 @@ export class DashboardComponent implements OnInit {
 	}
 
 	checkDisabledTabs() {
+    console.log(this.view.get('profile')?.value);
+    console.log(this.category.get('diagram')?.get('type')?.value);
+    console.log(this.category.get('diagram')?.value);
+    console.log(this.category.get('diagram.type')?.value);
 
     if (this.diagramSettings) {
 			if (this.view.get('profile')?.value && this.category.get('diagram')?.get('type')?.value) {
@@ -181,6 +183,8 @@ export class DashboardComponent implements OnInit {
 
         this.dynamicFormHandlingService.formSchemaObject = this.diagramSettings.value;
         this.dynamicFormHandlingService.updateFromFile = false;
+
+        this.checkDisabledTabs(); // Ensure check happens after value is patched in form.
       }, 0);
 
       this.updateStepper({
