@@ -6,10 +6,10 @@ export class HighChartsChart {
 	orderBy: string;
 	chartDescription: HighChartsDescription;
 
-	constructor() {
+	constructor(type: string, polar: boolean) {
 		this.library = 'HighCharts';
 		this.orderBy = 'xaxis';
-		this.chartDescription = new HighChartsDescription();
+		this.chartDescription = new HighChartsDescription(type, polar);
 	}
 }
 
@@ -30,10 +30,10 @@ class HighChartsDescription {
 	colorAxis: { minColor: Highcharts.ColorType, maxColor: Highcharts.ColorType };
 	series: Array<{ stacking?: undefined | 'normal' | 'percent' | 'stream' | 'overlap' }> = [];
 
-	constructor() {
+	constructor(type: string, polar: boolean) {
 		this.chart = {
-			type: 'line',
-			polar: false,
+			type: type,
+			polar: polar,
 			backgroundColor: '#ffffff',
 			borderColor: '#335cad',
 			borderRadius: 0,

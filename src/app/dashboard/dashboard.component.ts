@@ -72,8 +72,6 @@ export class DashboardComponent implements OnInit {
     });
 
     this.diagramSettings.get('category')?.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((diagram: any) => {
-      console.log('Category value changed');
-      console.log(this.diagramSettings.get('category').value);
       this.checkDisabledTabs();
     });
 
@@ -134,19 +132,7 @@ export class DashboardComponent implements OnInit {
 	}
 
 	checkDisabledTabs() {
-    console.log(this.view.get('profile')?.value);
-    console.log(this.category.get('diagram')?.get('type')?.value);
-    console.log(this.category.get('diagram')?.value);
-    console.log(this.category.get('diagram.type')?.value);
-
-    if (this.diagramSettings) {
-			if (this.view.get('profile')?.value && this.category.get('diagram')?.get('type')?.value) {
-				this.hasDataAndDiagramType = true;
-			} else {
-				this.hasDataAndDiagramType = false;
-			}
-		}
-
+    this.hasDataAndDiagramType = !!(this.view.get('profile')?.value && this.category.get('diagram')?.get('type')?.value);
 	}
 
 	newViewSelected(): void {

@@ -65,7 +65,6 @@ export class HeaderComponent {
       return;
     }
 
-    console.log(decodeURIComponent(tmpData[1]));
     // Magic starts here
     this.urlMappingService.updateFormObjet(JSON.parse(decodeURIComponent(tmpData[1])));
   }
