@@ -178,13 +178,13 @@ export class DiagramCreator {
 
 	createDynamicHighChartsChart(view: ViewFormSchema, category: CategoryFormSchema, dataseries: DataseriesFormSchema[], appearanceOptions: AppearanceFormSchema): HighChartsChart {
 
-    const chartObj = new HighChartsChart();
+    const chartObj = new HighChartsChart(category.diagram.type, category.diagram.isPolar);
 
 		if (appearanceOptions.chartAppearance.generalOptions != null)
 			chartObj.orderBy = appearanceOptions.chartAppearance.generalOptions.orderByAxis as string;
 
 		// Is this a polar diagram ?
-		chartObj.chartDescription.chart.polar = category.diagram.isPolar;
+		// chartObj.chartDescription.chart.polar = category.diagram.isPolar; // Passed to the constructor
 
 		if (appearanceOptions.chartAppearance.highchartsAppearanceOptions != null) {
 

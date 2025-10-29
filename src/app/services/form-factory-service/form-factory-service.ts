@@ -67,7 +67,7 @@ export class FormFactoryService {
 
   createForm() {
     this.formRoot = this.fb.group({
-      testingView: this.fb.control(null),
+      // testingView: this.fb.control(null),
       view: this.createViewGroup(null),
       category: this.createCategoryGroup(),
       dataseries: this.createDataseriesGroupArray(),

@@ -35,11 +35,11 @@
                 <div class="uk-width-expand@l uk-margin-small-left hide-on-close">
                   <div class="uk-text-truncate">{{ categorySelectionLabel }}</div>
                   <div class="uk-text-xsmall uk-text-wrap">
-                    <ng-container *ngIf="this.category.get('diagram')?.get('type')?.value === null || this.category.get('diagram')?.get('type')?.value === undefined">
+                    <ng-container *ngIf="category.get('diagram')?.get('type')?.value == null">
                       Choose the type of diagram you want to make
                     </ng-container>
-                    <ng-container *ngIf="this.category.get('diagram')?.get('type')?.value !== null && this.category.get('diagram')?.get('type')?.value !== undefined">
-                      {{ this.category.get('diagram')?.get('type')?.value }}
+                    <ng-container *ngIf="category.get('diagram')?.get('type')?.value != null">
+                      {{ category.get('diagram')?.get('name')?.value }}
                     </ng-container>
                   </div>
                 </div>
@@ -47,7 +47,7 @@
             </li>
 
             <li class="uk-parent">
-              <a [class]="this.hasDataAndDiagramType ? 'uk-flex uk-flex-middle' : 'uk-flex uk-flex-middle uk-disabled uk-text-muted'" title="Organisations" role="button">
+              <a [class]="hasDataAndDiagramType ? 'uk-flex uk-flex-middle' : 'uk-flex uk-flex-middle uk-disabled uk-text-muted'" title="Organisations" role="button">
                 <div class="uk-width-auto">
                   <span class="material-symbols-outlined">database</span>
                 </div>
@@ -88,7 +88,7 @@
           <div class="scrollable">
             <ul id="selection" class="uk-switcher uk-margin">
               <li class="" style="animation-duration: 200ms;">
-                <app-view-selector (showViewSelection)="updateStepper($event)" [viewForm]="testingView" [profileControl]="profile"></app-view-selector>
+                <app-view-selector (showViewSelection)="updateStepper($event)" [profileControl]="profile"></app-view-selector>
               </li>
               <li class="" style="animation-duration: 200ms;">
                 <app-category-selector (showCategorySelection)="updateStepper($event)" [categoryForm]="category"></app-category-selector>
@@ -125,7 +125,7 @@
                 <div class="iframe-container">
 
                   <div>
-                    <div *ngIf="this.dialogData?.chartObj; else notSubmittedYet">
+                    <div *ngIf="dialogData?.chartObj; else notSubmittedYet">
                       <div *ngIf="hasChanges" class="uk-alert-warning" uk-alert>
                         <!--                      <a href class="uk-alert-close" uk-close></a>-->
                         <p class="uk-text-bold">Your chart is not up to date</p>

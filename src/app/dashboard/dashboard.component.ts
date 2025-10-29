@@ -81,10 +81,6 @@ export class DashboardComponent implements OnInit {
     });
   }
 
-	get testingView() {
-		return this.diagramSettings.get('testingView') as FormControl;
-	}
-
 	get view() {
 		return this.diagramSettings.get('view') as FormGroup;
 	}
@@ -136,15 +132,7 @@ export class DashboardComponent implements OnInit {
 	}
 
 	checkDisabledTabs() {
-
-    if (this.diagramSettings) {
-			if (this.view.get('profile')?.value && this.category.get('diagram')?.get('type')?.value) {
-				this.hasDataAndDiagramType = true;
-			} else {
-				this.hasDataAndDiagramType = false;
-			}
-		}
-
+    this.hasDataAndDiagramType = !!(this.view.get('profile')?.value && this.category.get('diagram')?.get('type')?.value);
 	}
 
 	newViewSelected(): void {
@@ -181,6 +169,8 @@ export class DashboardComponent implements OnInit {
 
         this.dynamicFormHandlingService.formSchemaObject = this.diagramSettings.value;
         this.dynamicFormHandlingService.updateFromFile = false;
+
+        this.checkDisabledTabs(); // Ensure check happens after value is patched in form.
       }, 0);
 
       this.updateStepper({

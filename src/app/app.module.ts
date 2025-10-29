@@ -12,7 +12,7 @@ import { CategorySelectorComponent } from './dashboard/category-selector/categor
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 import { CardComponentComponent } from './dashboard/helper-components/card-component/card-component.component';
 import { MaterialModule } from './material/material.module';
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { DiagramCardComponentComponent } from './dashboard/helper-components/diagram-card-component/diagram-card-component.component';
 import { CapitalizePipe } from './dashboard/pipes/capitalize.pipe';
@@ -75,6 +75,7 @@ import {
     InputComponent,
     AutocompleteInputFieldComponent,
     HighMapsComponent,
+    NgOptimizedImage,
   ],
 	providers: [
 		ChartLoadingService,
