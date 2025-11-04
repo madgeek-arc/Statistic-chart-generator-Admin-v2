@@ -53,15 +53,15 @@ export class DynamicDataSource implements DataSource<DynamicEntityNode> {
 	}
 
 	/**
-	 * Toggle the node, remove from display list
+	 * Toggle the node, remove from the display list
 	 */
 	toggleNode(node: DynamicEntityNode, expand: boolean) {
 		if (expand) {
 			node.loading = true;
 
-			var children = this._database.getChildren(node);
+      const children = this._database.getChildren(node);
 
-			if (children != null)
+      if (children != null)
 				children.pipe(first()).subscribe(data => { if (node.relations != null) node.relations.next(data); });
 
 			node.loading = false;

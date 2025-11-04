@@ -1,20 +1,66 @@
 import { Injectable } from "@angular/core";
 import { DynamicFormHandlingService } from "../dynamic-form-handling-service/dynamic-form-handling.service";
-import {
-  DiagramCategoryService
-} from "../diagram-category-service/diagram-category.service";
-import {
-  ISupportedCategory
-} from "../supported-chart-types-service/supported-chart-types.service";
+import { DiagramCategoryService } from "../diagram-category-service/diagram-category.service";
+import { ISupportedCategory } from "../supported-chart-types-service/supported-chart-types.service";
+import { ChartInfo } from "../supported-libraries-service/models/chart-query.model";
+import { DynamicTreeDatabase } from "../dynamic-tree-database/dynamic-tree-database.service";
 
 @Injectable({ providedIn: 'root' })
 export class UrlMappingService {
 
-  constructor(private formHandlingService: DynamicFormHandlingService, private diagramService: DiagramCategoryService) {}
+  constructor(private formHandlingService: DynamicFormHandlingService,
+              private diagramService: DiagramCategoryService,
+              private dynamicTreeDatabase: DynamicTreeDatabase) {}
 
   updateFormObjet(urlJson: UrlJson | any) {
     this.formHandlingService.loadFormObject = this.reconstructFromUrlJson(urlJson);
     // console.log(this.formHandlingService.loadFormObject);
+  }
+
+  private getFieldType(entityName: string, fieldPath: string): string {
+    // Default to 'text' if we can't determine the type
+    let fieldType = 'text';
+
+    const entityMap = this.dynamicTreeDatabase.entityMap;
+    if (!entityMap) {
+      console.warn('EntityMap not available yet');
+      return fieldType;
+    }
+
+    // Split the field path to handle nested fields (e.g., "relation.field")
+    const pathParts = fieldPath.split('.');
+    let currentEntity = entityName;
+
+    for (let i = 0; i < pathParts.length; i++) {
+      const partName = pathParts[i];
+      const cachedEntity = entityMap.get(currentEntity);
+
+      if (!cachedEntity) {
+        console.warn(`Entity not found in map: ${currentEntity}`);
+        break;
+      }
+
+      // Check if this is the last part (actual field) or a relation
+      if (i === pathParts.length - 1) {
+        // This is the field - find its type
+        const field = cachedEntity.fields.find(f => f.name === partName);
+        if (field) {
+          fieldType = field.type;
+        } else {
+          console.warn(`Field not found: ${partName} in entity ${currentEntity}`);
+        }
+      } else {
+        // This is a relation - navigating to the next entity
+        if (cachedEntity.relations.includes(partName)) {
+          currentEntity = partName;
+        } else {
+          console.warn(`Relation not found: ${partName} in entity ${currentEntity}`);
+          break;
+        }
+      }
+    }
+
+    return fieldType;
   }
 
   reconstructFromUrlJson(urlJson: UrlJson | any): FileJson {
@@ -30,10 +76,10 @@ export class UrlMappingService {
     if (library === 'HighMaps') {
       const mapDesc = urlJson.mapDescription;
 
-      // view.profile - try to find profile inside first query
+      // view.profile - try to find the profile inside the first query
       const profile = mapDesc.queries?.[0]?.query?.profile ?? 'elastic';
 
-      // pick diagram: try to match query.type or fallback to a map-like diagram
+      // pick a diagram: try to match query.type or fallback to a map-like diagram
       const firstQueryType = mapDesc.queries?.[0]?.type ?? 'world';
       let diagram: ISupportedCategory | undefined =
         this.diagramService.availableDiagrams.find(d => d.type === firstQueryType) ||
@@ -185,7 +231,7 @@ export class UrlMappingService {
     // Check if the chart type is line, if so, there is a possibility that the chart type is not set correctly
     let chartType = urlJson.chartDescription.chart.type;
     if (urlJson.chartDescription.chart.type === 'line') {
-      urlJson.chartDescription.queries.forEach((q, index) => {
+      urlJson.chartDescription.queries.forEach((q: ChartInfo, index: number) => {
         if (q.type !== chartType) { // Not a line series found
           chartType = q.type; // Set the chart type to the first non-line series
           if (index > 0) // If there are more than one type mismatch, set the chart type to combo
@@ -202,17 +248,29 @@ export class UrlMappingService {
     }
 
     // 3) Build `dataseries`
-    const dataseries = urlJson.chartDescription.queries.map((q, index) => {
+    const dataseries = urlJson.chartDescription.queries.map((q: ChartInfo, index: number) => {
+
       // 3a) yaxisData
-      const yaxisField = q.query.select[0]; // e.g. { field: "result", aggregate: "count" }
+      const yaxisField = {...q.query.select[0]}; // e.g. { field: "result", aggregate: "count" }
+      if (yaxisField.field === q.query.entity && yaxisField.aggregate === 'count') {
+        yaxisField.aggregate = 'total';
+      }
+
       const yaxisData = {
-        entity: yaxisField.field,
-        yaxisAggregate: yaxisField.aggregate === "count" ? "total" : yaxisField.aggregate || "",
+        entity: q.query.entity,
+        yaxisAggregate: yaxisField.aggregate,
+        yaxisEntityField: yaxisField.aggregate === 'total' ? { name: null, type: null } : {
+          name: yaxisField.field,
+          type: this.getFieldType(q.query.entity, yaxisField.field) // Look up type dynamically
+        },
       };
 
       // 3b) xaxisData (everything beyond index 0 in `select`)
-      const xaxisData = q.query.select.slice(1).map((sel) => ({
-        xaxisEntityField: { name: sel.field, type: "int" },
+      const xaxisData = q.query.select.slice(1).map((select) => ({
+        xaxisEntityField: {
+          name: select.field,
+          type: this.getFieldType(q.query.entity, yaxisField.field) // Look up type dynamically
+        },
       }));
 
       // 3c) filters (copy groupFilters verbatim, inferring type)
@@ -220,7 +278,8 @@ export class UrlMappingService {
         groupFilters: group.groupFilters.map((f) => ({
           field: {
             name: f.field,
-            type: typeof f.values[0] === "string" && /^\d+$/.test(f.values[0]) ? "int" : "text",
+            type: this.getFieldType(q.query.entity, f.field), // Look up type dynamically
+            // type: typeof f.values[0] === "string" && /^\d+$/.test(f.values[0]) ? "int" : "text",
           },
           type: f.type,
           values: f.values,

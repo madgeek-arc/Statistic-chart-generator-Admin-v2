@@ -44,7 +44,7 @@ export class HighMapsComponent implements OnInit {
         if (Array.isArray(response)) {
           this.countriesList = response.map((country) => ({label: country.name.common, value: country.cca2}));
         }
-        console.log(this.countriesList);
+        // console.log(this.countriesList);
       }
     });
   }
