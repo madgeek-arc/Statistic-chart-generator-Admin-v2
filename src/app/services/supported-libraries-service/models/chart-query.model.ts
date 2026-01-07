@@ -67,7 +67,7 @@ export class ChartInfo {
     query: Query;
 
     constructor(dataseriesElement: DataseriesFormSchema, profile: string, limit: number, category: string) {
-        this.name = dataseriesElement.chartProperties.dataseriesName as string;
+        this.name = dataseriesElement.chartProperties.dataseriesName;
         if (dataseriesElement.chartProperties.chartType) {
             this.type = dataseriesElement.chartProperties.chartType;
         } else {
