@@ -24,8 +24,7 @@ export class FieldAutocompleteService {
     const profile: Profile = this.profileMappingService.selectedProfile$.value;
 
     let autocompleteFieldTextUrl = this.urlProvider.serviceURL
-    + '/schema/' + (profile === null ? '' : profile.name)
-    + '/fields/' + field + (text === null ? '' : '/' + text);
+      + '/schema/' + (profile === null ? '' : (profile.name + '/')) + 'fields/' + field + (text === null ? '' : '/' + text);
 
     autocompleteFieldTextUrl = encodeURI(autocompleteFieldTextUrl);
 

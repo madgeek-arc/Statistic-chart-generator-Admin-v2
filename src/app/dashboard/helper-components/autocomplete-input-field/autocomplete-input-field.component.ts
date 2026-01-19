@@ -1,7 +1,19 @@
-import { Component, OnInit, ElementRef, ViewChild, Input, AfterViewInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
-import { Observable, of, fromEvent, Subscription } from 'rxjs';
-import { map, filter, debounceTime, tap, switchAll, distinctUntilChanged } from 'rxjs/operators';
-import { FieldAutocompleteService, AutocompleteResponse } from "../../../services/field-autocomplete-service/field-autocomplete.service";
+import {
+  AfterViewInit,
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
+  Input,
+  OnDestroy,
+  OnInit,
+  ViewChild
+} from '@angular/core';
+import { fromEvent, Observable, of, Subscription } from 'rxjs';
+import { debounceTime, filter, map, switchAll, tap } from 'rxjs/operators';
+import {
+  AutocompleteResponse,
+  FieldAutocompleteService
+} from "../../../services/field-autocomplete-service/field-autocomplete.service";
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MaterialModule } from "../../../material/material.module";
 import { AsyncPipe, NgClass, NgForOf, NgIf } from "@angular/common";
@@ -21,7 +33,7 @@ import { AsyncPipe, NgClass, NgForOf, NgIf } from "@angular/common";
   ]
 })
 
-export class AutocompleteInputFieldComponent implements OnInit, AfterViewInit, OnDestroy {
+export class AutocompleteInputFieldComponent implements AfterViewInit, OnDestroy {
 
   // The FormGroup of the current filter
   @Input() inputFormGroup: FormControl;
@@ -45,12 +57,6 @@ export class AutocompleteInputFieldComponent implements OnInit, AfterViewInit, O
     this.numberOfpossibleFieldValues = 0;
   }
 
-  ngOnInit() {
-    // console.log('Autocomplete:');
-    // console.log(this.inputFormGroup);
-    // console.log(this.filterValueIndex);
-  }
-
   ngAfterViewInit() {
     this.setupAutocompleteInputField();
   }
@@ -67,25 +73,20 @@ export class AutocompleteInputFieldComponent implements OnInit, AfterViewInit, O
       debounceTime(this.typeToSearchDelay),
       tap(() => {this.possibleFieldValues = of([]); this.loading = true; this.cdr.markForCheck(); } ),
       map((queryText: string) => this.fieldAutocompleteService.getAutocompleteFields(this.filterfield, queryText)),
-      switchAll())
-      .subscribe(
-        (result: AutocompleteResponse) => {
+      switchAll()).subscribe({
+        next: (result: AutocompleteResponse) => {
           console.log('Returned ' + result.count + ' possible values');
           this.possibleFieldValues = of(result.values);
           this.numberOfpossibleFieldValues = result.count;
           this.loading = false;
           this.cdr.markForCheck();
         },
-        (err: any) => {
+        error: (err: any) => {
           console.log(err);
-          this.numberOfpossibleFieldValues = -1;
-          this.loading = false;
-          this.cdr.markForCheck();
         },
-        () => {
+        complete: () => {
           this.loading = false;
-          // this.cdr.detectChanges();
         }
-      );
+      });
   }
 }

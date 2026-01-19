@@ -5,6 +5,7 @@ import { DynamicFormHandlingService } from "../services/dynamic-form-handling-se
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { ChartExportingService } from '../services/chart-exporting-service/chart-exporting.service';
 import { FormFactoryService } from "../services/form-factory-service/form-factory-service";
+import { MappingProfilesService } from "../services/mapping-profiles-service/mapping-profiles.service";
 import UIkit from 'uikit';
 
 @Component({
@@ -14,6 +15,7 @@ import UIkit from 'uikit';
 
 export class DashboardComponent implements OnInit {
 	private destroyRef = inject(DestroyRef);
+  private profileService = inject(MappingProfilesService);
 
 	diagramSettings: FormGroup;
 
@@ -69,6 +71,10 @@ export class DashboardComponent implements OnInit {
       }
 
       // this.checkDisabledTabs();
+    });
+
+    this.diagramSettings.get('view.profile')?.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((profile: string) => {
+      this.profileService.changeSelectedProfile(profile);
     });
 
     this.diagramSettings.get('category')?.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((diagram: any) => {
@@ -166,6 +172,8 @@ export class DashboardComponent implements OnInit {
 
         console.log('📁 About to patchValue with:', this.dynamicFormHandlingService.loadFormObject);
         this.diagramSettings.patchValue(this.dynamicFormHandlingService.loadFormObject, { emitEvent: false });
+        // Update selected profile in mapping profiles service.
+        this.profileService.changeSelectedProfile(this.diagramSettings.get('view.profile')?.value);
 
         this.dynamicFormHandlingService.formSchemaObject = this.diagramSettings.value;
         this.dynamicFormHandlingService.updateFromFile = false;
