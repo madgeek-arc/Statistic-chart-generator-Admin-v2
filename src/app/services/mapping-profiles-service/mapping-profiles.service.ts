@@ -18,32 +18,29 @@ export class MappingProfilesService {
 	mappingProfiles$: BehaviorSubject<Array<Profile>>;
 	selectedProfile$: BehaviorSubject<Profile | null>;
 
-	constructor(
-		private http: HttpClient,
-		private urlProvider: UrlProviderService,
-		// private errorHandler: ErrorHandlerService
-	) {
+	constructor(private http: HttpClient, private urlProvider: UrlProviderService) {
+
 		this.selectedProfile$ = new BehaviorSubject<Profile | null>(null);
 		this.mappingProfiles$ = new BehaviorSubject<Array<Profile>>([]);
 
-		const sub = this.getProfileMappings().subscribe(
-			(result: Profile[]) => {
-				this.mappingProfiles$.next(result);
-			},
-			(err: any) => {
-				// errorHandler.handleError(err);
-			},
-			() => {
-				sub.unsubscribe();
-			}
-		);
+		const sub = this.getProfileMappings().subscribe({
+      next: (result: Profile[]) => {
+        this.mappingProfiles$.next(result);
+      },
+      error: err => {
+        console.log("Error:", err)
+      },
+      complete: () => {
+        sub.unsubscribe();
+      }
+    });
 	}
 
 	changeSelectedProfile(profile: string) {
 
-		var selectedProfile = this.mappingProfiles$.value.find((e: Profile) => e.name === profile);
+    const selectedProfile = this.mappingProfiles$.value.find((e: Profile) => e.name === profile);
 
-		if (selectedProfile !== undefined)
+    if (selectedProfile !== undefined)
 			this.selectedProfile$.next(selectedProfile);
 		else
 			this.selectedProfile$.next(null);

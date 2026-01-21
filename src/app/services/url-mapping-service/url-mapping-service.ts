@@ -77,7 +77,7 @@ export class UrlMappingService {
       const mapDesc = urlJson.mapDescription;
 
       // view.profile - try to find the profile inside the first query
-      const profile = mapDesc.queries?.[0]?.query?.profile ?? 'elastic';
+      const profile = mapDesc.queries?.[0]?.query?.profile;
 
       // pick a diagram: try to match query.type or fallback to a map-like diagram
       const firstQueryType = mapDesc.queries?.[0]?.type ?? 'world';
@@ -87,11 +87,19 @@ export class UrlMappingService {
         this.diagramService.availableDiagrams[0];
 
       // build dataseries similar to charts but adapted for maps
-      const dataseries = (mapDesc.queries ?? []).map((q: any, index: number) => {
-        const yaxisField = q.query?.select?.[0] ?? { field: '', aggregate: '' };
+      const dataseries = (mapDesc.queries ?? []).map((q: ChartInfo, index: number) => {
+        const yaxisField = {...q.query.select[0]}; // Select[0] is always the y-axis data
+        if (yaxisField.field === q.query.entity && yaxisField.aggregate === 'count') { // Handle total count specially
+          yaxisField.aggregate = 'total';
+        }
+
         const yaxisData = {
-          entity: yaxisField.field,
-          yaxisAggregate: yaxisField.aggregate === 'count' ? 'total' : (yaxisField.aggregate || '')
+          entity: yaxisField.field.split('.')[0], // Entity is always(?) the first part of the field name
+          yaxisAggregate: yaxisField.aggregate,
+          yaxisEntityField: yaxisField.aggregate === 'total' ? { name: null, type: null } : {
+            name: yaxisField.field,
+            type: this.getFieldType(q.query.entity, yaxisField.field) // Look up type dynamically
+          },
         };
 
         const xaxisData = (q.query?.select ?? []).slice(1).map((sel: any) => ({
@@ -251,13 +259,13 @@ export class UrlMappingService {
     const dataseries = urlJson.chartDescription.queries.map((q: ChartInfo, index: number) => {
 
       // 3a) yaxisData
-      const yaxisField = {...q.query.select[0]}; // e.g. { field: "result", aggregate: "count" }
-      if (yaxisField.field === q.query.entity && yaxisField.aggregate === 'count') {
+      const yaxisField = {...q.query.select[0]}; // Select[0] is always the y-axis data
+      if (yaxisField.field === q.query.entity && yaxisField.aggregate === 'count') { // Handle total count specially
         yaxisField.aggregate = 'total';
       }
 
       const yaxisData = {
-        entity: q.query.entity,
+        entity: yaxisField.field.split('.')[0], // Entity is always(?) the first part of the field name
         yaxisAggregate: yaxisField.aggregate,
         yaxisEntityField: yaxisField.aggregate === 'total' ? { name: null, type: null } : {
           name: yaxisField.field,

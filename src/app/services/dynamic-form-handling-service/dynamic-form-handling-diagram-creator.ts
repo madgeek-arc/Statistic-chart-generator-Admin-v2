@@ -311,6 +311,7 @@ export class DiagramCreator {
     dataseries.forEach(dataElement => {
 
       const chartInfo = new ChartInfo(dataElement, view.profile, appearanceOptions.chartAppearance.generalOptions.resultsLimit, this.figureCategoryType(dataElement, category));
+      console.log(chartInfo);
       queries.push(chartInfo);
 
 			// Make sure that Highcharts gets a valid stacking value
