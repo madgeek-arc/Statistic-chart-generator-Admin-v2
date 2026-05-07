@@ -4,17 +4,32 @@ import { DiagramCategoryService } from "../diagram-category-service/diagram-cate
 import { ISupportedCategory } from "../supported-chart-types-service/supported-chart-types.service";
 import { ChartInfo } from "../supported-libraries-service/models/chart-query.model";
 import { DynamicTreeDatabase } from "../dynamic-tree-database/dynamic-tree-database.service";
+import { filter, first } from "rxjs/operators";
+import { MappingProfilesService } from "../mapping-profiles-service/mapping-profiles.service";
 
 @Injectable({ providedIn: 'root' })
 export class UrlMappingService {
 
   constructor(private formHandlingService: DynamicFormHandlingService,
               private diagramService: DiagramCategoryService,
-              private dynamicTreeDatabase: DynamicTreeDatabase) {}
+              private dynamicTreeDatabase: DynamicTreeDatabase,
+              private profileService: MappingProfilesService) {}
 
   updateFormObjet(urlJson: UrlJson | any) {
-    this.formHandlingService.loadFormObject = this.reconstructFromUrlJson(urlJson);
-    // console.log(this.formHandlingService.loadFormObject);
+    const profile = urlJson.library === 'HighMaps'
+      ? urlJson.mapDescription?.queries?.[0]?.query?.profile
+      : urlJson.chartDescription?.queries?.[0]?.query?.profile;
+
+    if (profile) {
+      this.profileService.changeSelectedProfile(profile);
+    }
+
+    this.dynamicTreeDatabase.entityMap$.pipe(
+      filter(map => map !== null && map.size > 0),
+      first()
+    ).subscribe(() => {
+      this.formHandlingService.loadFormObject = this.reconstructFromUrlJson(urlJson);
+    });
   }
 
   private getFieldType(entityName: string, fieldPath: string): string {
@@ -31,7 +46,7 @@ export class UrlMappingService {
     const pathParts = fieldPath.split('.');
     let currentEntity = entityName;
 
-    for (let i = 0; i < pathParts.length; i++) {
+    for (let i = 1; i < pathParts.length; i++) {
       const partName = pathParts[i];
       const cachedEntity = entityMap.get(currentEntity);
 
@@ -103,7 +118,10 @@ export class UrlMappingService {
         };
 
         const xaxisData = (q.query?.select ?? []).slice(1).map((sel: any) => ({
-          xaxisEntityField: { name: sel.field, type: 'text' } // country codes are text
+          xaxisEntityField: {
+            name: sel.field,
+            type: this.getFieldType(q.query.entity, sel.field)
+          }
         }));
 
         const filters = (q.query?.filters ?? []).map((group: any) => ({
@@ -242,7 +260,7 @@ export class UrlMappingService {
       urlJson.chartDescription.queries.forEach((q: ChartInfo, index: number) => {
         if (q.type !== chartType) { // Not a line series found
           chartType = q.type; // Set the chart type to the first non-line series
-          if (index > 0) // If there are more than one type mismatch, set the chart type to combo
+          if (index > 0) // If there is more than one type mismatch, set the chart type to combo
             chartType = 'combo';
         }
       });
@@ -277,7 +295,7 @@ export class UrlMappingService {
       const xaxisData = q.query.select.slice(1).map((select) => ({
         xaxisEntityField: {
           name: select.field,
-          type: this.getFieldType(q.query.entity, yaxisField.field) // Look up type dynamically
+          type: this.getFieldType(q.query.entity, select.field) // Look up type dynamically
         },
       }));
 
