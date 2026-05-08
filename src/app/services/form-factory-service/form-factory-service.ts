@@ -2,6 +2,12 @@ import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, Valida
 import { DestroyRef, inject, Injectable } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 
+interface InvalidControl {
+  path: string;
+  errors: any;
+  value: any;
+}
+
 @Injectable({ providedIn: 'root' })
 
 export class FormFactoryService {
@@ -376,4 +382,51 @@ export class FormFactoryService {
     return group;
   }
 
+}
+
+/** Utils **/
+export function findInvalidControls(
+  control: AbstractControl,
+  path: string = ''
+): InvalidControl[] {
+
+  const invalidControls: InvalidControl[] = [];
+
+  if (control instanceof FormControl) {
+
+    if (control.invalid) {
+      invalidControls.push({
+        path,
+        errors: control.errors,
+        value: control.value
+      });
+    }
+
+  } else if (control instanceof FormGroup) {
+
+    Object.keys(control.controls).forEach(key => {
+      const childControl = control.controls[key];
+
+      const childPath = path
+        ? `${path}.${key}`
+        : key;
+
+      invalidControls.push(
+        ...findInvalidControls(childControl, childPath)
+      );
+    });
+
+  } else if (control instanceof FormArray) {
+
+    control.controls.forEach((childControl, index) => {
+
+      const childPath = `${path}[${index}]`;
+
+      invalidControls.push(
+        ...findInvalidControls(childControl, childPath)
+      );
+    });
+  }
+
+  return invalidControls;
 }
