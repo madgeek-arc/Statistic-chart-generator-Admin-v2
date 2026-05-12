@@ -194,7 +194,8 @@ export class UrlMappingService {
           hcPABorderColor: mapDesc.chart?.plotBorderColor ?? '#00000000'
         },
         hcCredits: {
-          hcEnableCredits: mapDesc.credits?.enabled ?? false
+          hcEnableCredits: mapDesc.credits?.enabled ?? false,
+          hcCreditsText: mapDesc.credits.text,
         },
         hcLegend: {
           hcEnableLegend: mapDesc.legend?.enabled ?? true,
@@ -374,6 +375,7 @@ export class UrlMappingService {
       },
       hcCredits: {
         hcEnableCredits: hcaOpts.credits.enabled,
+        hcCreditsText: hcaOpts.credits.text,
       },
       hcLegend: {
         hcEnableLegend: hcaOpts.legend.enabled,
