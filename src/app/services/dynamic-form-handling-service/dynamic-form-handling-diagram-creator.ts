@@ -325,8 +325,8 @@ export class DiagramCreator {
 		if (dataseriesColors.length > 0)
 			chartObj.chartDescription.colors = dataseriesColors.concat(chartObj.chartDescription.colors);
 
-		// TREEMAP ONLY : Set Color Gradient min and max color. Takes only the first of the colors array.
-		// Trim the alpha values, if the color has alpha.
+		// TREEMAP ONLY: Set Color Gradient min and max color. Takes only the first of the colors array.
+		// Trim the alpha values if the color has alpha.
 		// Hard coded logic bleehh
 		if (category.diagram.type == "treemap") {
       const gradientMapMaxColor = this.ignoreAlphaColor(chartObj.chartDescription.colors[0] as string);

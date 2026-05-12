@@ -57,11 +57,13 @@ export class DynamicFormHandlingService {
 		// } else {
 		// 	return false;
 		// }
+
     if (this.formFactoryService.getFormRoot().invalid) {
 
       this.formFactoryService.getFormRoot().markAllAsTouched();
 
-      console.log(findInvalidControls(this.formFactoryService.getFormRoot()));
+      // log invalid form inputs
+      // console.log(findInvalidControls(this.formFactoryService.getFormRoot()));
 
     }
 
