@@ -217,7 +217,7 @@ export class FormFactoryService {
       chartAppearance: this.fb.group({
         generalOptions: this.fb.group({
           visualisationLibrary: this.fb.control('HighCharts', Validators.required),
-          resultsLimit: this.fb.control(30, [Validators.required, Validators.min(1)]),
+          resultsLimit: this.fb.control<number>(30, [Validators.required, Validators.min(0)]),
           orderByAxis: this.fb.control(null),
         }),
         highchartsAppearanceOptions: this.fb.group({
