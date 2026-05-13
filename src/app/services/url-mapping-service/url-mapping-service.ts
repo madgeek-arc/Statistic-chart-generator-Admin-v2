@@ -211,7 +211,7 @@ export class UrlMappingService {
           mapNavigation: mapDesc.mapNavigation ?? null,
           zoomTo: mapDesc.zoomTo ?? null,
           // keep stacking default for compatibility
-          stackedChart: mapDesc.plotOptions?.series?.stacking ?? 'normal'
+          stackedChart: mapDesc.plotOptions?.series?.stacking ?? undefined
         },
         hcDataLabels: {
           enabled: mapDesc.series?.[0]?.dataLabels?.enabled ?? false
@@ -275,6 +275,7 @@ export class UrlMappingService {
     }
 
     // 3) Build `dataseries`
+    const validStacking = ['normal', 'percent', 'stream', 'overlap'];
     const dataseries = urlJson.chartDescription.queries.map((q: ChartInfo, index: number) => {
 
       // 3a) yaxisData
@@ -319,7 +320,7 @@ export class UrlMappingService {
         chartType: q.type,
         dataseriesColor: q.color,
         dataseriesName: q.name,
-        stacking: urlJson.chartDescription.series[index]?.stacking || 'null',
+        stacking: validStacking.includes(urlJson.chartDescription.series[index]?.stacking) ? urlJson.chartDescription.series[index].stacking : 'null',
       };
 
       return {
@@ -385,7 +386,7 @@ export class UrlMappingService {
       },
       hcMiscOptions: {
         exporting: hcaOpts.exporting.enabled,
-        stackedChart: hcaOpts.plotOptions.series.stacking,
+        stackedChart: validStacking.includes(hcaOpts.plotOptions.series.stacking) ? hcaOpts.plotOptions.series.stacking : 'null',
       },
       hcDataLabels: {
         enabled: hcaOpts.plotOptions.series.dataLabels.enabled,
@@ -528,7 +529,7 @@ interface FileJson {
           hcLegendHorizontalAlignment: string;
           hcLegendVerticalAlignment: string;
         };
-        hcMiscOptions: { exporting: boolean; stackedChart: string };
+        hcMiscOptions: { exporting: boolean; stackedChart: undefined | "normal" | "percent" | "stream" | "overlap" };
         hcDataLabels: { enabled: boolean };
         hcZoomOptions: { enableXaxisZoom: boolean; enableYaxisZoom: boolean };
       };

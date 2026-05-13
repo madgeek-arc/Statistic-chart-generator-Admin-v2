@@ -247,7 +247,7 @@ export class FormFactoryService {
           hcMiscOptions: this.fb.group({
             exporting: this.fb.control<boolean>(true),
             drilldown: this.fb.control<boolean>(false),
-            stackedChart: this.fb.control('disabled')
+            stackedChart: this.fb.control('null')
           }),
           hcChartArea: this.fb.group({
             hcCABackGroundColor: this.fb.control<string | null>(null),
@@ -286,6 +286,7 @@ export class FormFactoryService {
           }),
           dataSeriesColorArray: this.fb.array<string>([])
         }),
+
         googlechartsAppearanceOptions: this.fb.group({
           titles: this.fb.group({
             title: this.fb.control<string>(''),
@@ -300,6 +301,7 @@ export class FormFactoryService {
           gcCABackGroundColor: this.fb.control<string>('#ffffff'),
           gcPABackgroundColor: this.fb.control<string>('#ffffff')
         }),
+
         echartsAppearanceOptions: this.fb.group({
           titles: this.fb.group({
             title: this.fb.control<string>(''),
@@ -329,6 +331,7 @@ export class FormFactoryService {
             enableYaxisZoom: this.fb.control<boolean>(false)
           })
         }),
+
         highmapsAppearanceOptions: this.fb.group({
           title: this.fb.group({
             titleText: this.fb.control<string>(''),

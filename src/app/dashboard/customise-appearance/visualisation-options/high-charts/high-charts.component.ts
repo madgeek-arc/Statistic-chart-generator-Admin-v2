@@ -16,9 +16,9 @@ export class HighChartsComponent {
 	];
 
 	protected stackedGraphList = [
-		{ label: 'Disabled', value: 'disabled' },
-		{ label: 'Stacked by Value', value: 'stackedByValue' },
-		{ label: 'Stacked by Percentage', value: 'stackedByPercentage' }
+		{ label: 'Disabled', value: 'null' },
+		{ label: 'Stacked by Value', value: 'normal' },
+		{ label: 'Stacked by Percentage', value: 'percent' }
 	];
 
 	protected itemLayoutList = [
