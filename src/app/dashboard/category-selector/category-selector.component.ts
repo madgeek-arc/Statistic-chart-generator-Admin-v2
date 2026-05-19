@@ -11,6 +11,7 @@ import {
   SupportedChartTypesService
 } from "../../services/supported-chart-types-service/supported-chart-types.service";
 import { FormFactoryService } from "../../services/form-factory-service/form-factory-service";
+import { DiagramCategoryService } from "../../services/diagram-category-service/diagram-category.service";
 
 @Component({
 	selector: 'app-category-selector',
@@ -18,6 +19,7 @@ import { FormFactoryService } from "../../services/form-factory-service/form-fac
 })
 export class CategorySelectorComponent implements OnInit {
   private formFactoryService = inject(FormFactoryService);
+  private diagramCategoryService = inject(DiagramCategoryService);
 
 	@Input('categoryForm') categoryForm: FormGroup;
 	@Output() showCategorySelection = new EventEmitter<any>;
@@ -123,6 +125,7 @@ export class CategorySelectorComponent implements OnInit {
 				(this.categoryForm.get('diagram.supportedLibraries') as FormArray)?.push(new FormControl<string | null>(null));
 			}
 			this.categoryForm.get('diagram')?.patchValue(event);
+      this.diagramCategoryService.changeDiagramCategory(event);
 
       // Reset the chartType of all dataseries to null. So chart type change can take place.
       // The above issue occurs when loading a chart from url.

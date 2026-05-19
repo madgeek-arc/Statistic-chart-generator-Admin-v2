@@ -54,7 +54,7 @@ export class HeaderComponent {
       return;
     }
 
-    const tmpData = this.urlJson.split('/chart?json=');
+    const tmpData = this.urlJson.split('?json=');
     if (tmpData.length !== 2){
       this.errorMsg = 'Invalid URL';
       return;
@@ -66,7 +66,9 @@ export class HeaderComponent {
     }
 
     // Magic starts here
-    this.urlMappingService.updateFormObjet(JSON.parse(decodeURIComponent(tmpData[1])));
+    let raw = tmpData[0].endsWith('/raw');
+    console.log('Is raw data: ', raw);
+    this.urlMappingService.updateFormObjet(JSON.parse(decodeURIComponent(tmpData[1])), raw);
   }
 
   isValidJson(str: string): boolean {

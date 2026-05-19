@@ -1,25 +1,38 @@
-import { Injectable } from "@angular/core";
+import { inject, Injectable } from "@angular/core";
 import { DynamicFormHandlingService } from "../dynamic-form-handling-service/dynamic-form-handling.service";
 import { DiagramCategoryService } from "../diagram-category-service/diagram-category.service";
 import { ISupportedCategory } from "../supported-chart-types-service/supported-chart-types.service";
-import { ChartInfo } from "../supported-libraries-service/models/chart-query.model";
+import { ChartInfo, Query } from "../supported-libraries-service/models/chart-query.model";
 import { DynamicTreeDatabase } from "../dynamic-tree-database/dynamic-tree-database.service";
 import { filter, first } from "rxjs/operators";
 import { MappingProfilesService } from "../mapping-profiles-service/mapping-profiles.service";
+import { FormFactoryService } from "../form-factory-service/form-factory-service";
+import {
+  AppearanceFormSchema,
+  ChartAppearanceFormSchema,
+  SCGAFormSchema, TableAppearanceFormSchema
+} from "../supported-libraries-service/chart-form-schema.classes";
 
 @Injectable({ providedIn: 'root' })
 export class UrlMappingService {
+  private diagramService = inject(DiagramCategoryService);
+  private formFactory = inject(FormFactoryService);
 
   constructor(private formHandlingService: DynamicFormHandlingService,
-              private diagramService: DiagramCategoryService,
               private dynamicTreeDatabase: DynamicTreeDatabase,
               private profileService: MappingProfilesService) {}
 
-  updateFormObjet(urlJson: UrlJson | any) {
-    const profile = urlJson.library === 'HighMaps'
+  updateFormObjet(urlJson: any, rawData: boolean = false) {
+    console.log(urlJson);
+    let profile = urlJson.library === 'HighMaps'
       ? urlJson.mapDescription?.queries?.[0]?.query?.profile
       : urlJson.chartDescription?.queries?.[0]?.query?.profile;
 
+    if (rawData) {
+      profile = urlJson.series?.[0]?.query.profile;
+    }
+
+    console.log(profile);
     if (profile) {
       this.profileService.changeSelectedProfile(profile);
     }
@@ -28,7 +41,7 @@ export class UrlMappingService {
       filter(map => map !== null && map.size > 0),
       first()
     ).subscribe(() => {
-      this.formHandlingService.loadFormObject = this.reconstructFromUrlJson(urlJson);
+      this.formHandlingService.loadFormObject = this.reconstructFromUrlJson(urlJson, rawData);
     });
   }
 
@@ -78,10 +91,101 @@ export class UrlMappingService {
     return fieldType;
   }
 
-  reconstructFromUrlJson(urlJson: UrlJson | any): FileJson {
+  reconstructFromUrlJson(urlJson: any, rawData?: boolean): SCGAFormSchema {
+
+    console.log(urlJson);
     // Defensive guard
     if (!urlJson || typeof urlJson !== 'object') {
       throw new Error('Invalid urlJson provided');
+    }
+
+    if (rawData) { // If rawData is true, we consider the chart to be a number chart
+      const chartType = 'numbers';
+
+      // 1) Build `view`
+      const view = {
+        profile: urlJson.series?.[0]?.query.profile
+      };
+
+
+      // 2) Build `category.diagram` matching polar and type in availableDiagrams
+      const category = {
+        // type should eventually be inferred from chartDescription.chart.type!'
+        diagram: this.diagramService.availableDiagrams.find(d => d.type === chartType)
+      }
+      console.log(category);
+      this.diagramService.changeDiagramCategory(category.diagram);
+
+      // 3) Build `dataseries`
+
+      type NumberSeries = {
+        query: Query;
+      }
+      const dataseries = urlJson.series.map((s: NumberSeries, index: number) => {
+
+        // 3a) yaxisData
+        const yaxisField = {...s.query.select[0]}; // Select[0] is always the y-axis data
+        if (yaxisField.field === s.query.entity && yaxisField.aggregate === 'count') { // Handle total count specially
+          yaxisField.aggregate = 'total';
+        }
+
+        const yaxisData = {
+          entity: yaxisField.field.split('.')[0], // Entity is always(?) the first part of the field name
+          yaxisAggregate: yaxisField.aggregate,
+          yaxisEntityField: yaxisField.aggregate === 'total' ? { name: null, type: null } : {
+            name: yaxisField.field,
+            type: this.getFieldType(s.query.entity, yaxisField.field) // Look up type dynamically
+          },
+        };
+
+        // 3b) xaxisData (everything beyond index 0 in `select`)
+        const xaxisData = s.query.select.slice(1).map((select) => ({
+          xaxisEntityField: {
+            name: select.field,
+            type: this.getFieldType(s.query.entity, select.field) // Look up type dynamically
+          },
+        }));
+
+        // 3c) filters (copy groupFilters verbatim, inferring type)
+        const filters = s.query.filters.map((group) => ({
+          groupFilters: group.groupFilters.map((f) => ({
+            field: {
+              name: f.field,
+              type: this.getFieldType(s.query.entity, f.field), // Look up type dynamically
+              // type: typeof f.values[0] === "string" && /^\d+$/.test(f.values[0]) ? "int" : "text",
+            },
+            type: f.type,
+            values: f.values,
+          })),
+          op: group.op,
+        }));
+
+        // 3d) chartProperties
+        const chartProperties = {
+          chartType: null,
+          dataseriesColor: null,
+          dataseriesName: 'Data (' + index + ')',
+          stacking: 'null',
+        };
+
+        return {
+          data: { yaxisData, xaxisData, filters },
+          chartProperties,
+        };
+      });
+
+      const appearance: AppearanceFormSchema = new class implements AppearanceFormSchema {
+        chartAppearance: ChartAppearanceFormSchema;
+        tableAppearance: TableAppearanceFormSchema;
+      }
+
+      return {
+        view,
+        category,
+        dataseries,
+        appearance
+      };
+
     }
 
     // determine library
@@ -151,7 +255,7 @@ export class UrlMappingService {
 
       // appearance.generalOptions
       const generalOptions = {
-        library: library,
+        visualisationLibrary: library,
         resultsLimit: parseInt(mapDesc.queries?.[0]?.query?.limit ?? '0', 10),
         orderByAxis: urlJson.orderBy ?? 'xaxis'
       };
@@ -273,6 +377,7 @@ export class UrlMappingService {
         d.isPolar === urlJson.chartDescription.chart.polar && d.type === chartType
       )
     }
+    this.diagramService.changeDiagramCategory(category.diagram);
 
     // 3) Build `dataseries`
     const validStacking = ['normal', 'percent', 'stream', 'overlap'];
@@ -331,7 +436,7 @@ export class UrlMappingService {
 
     // 4) Build `appearance.chartAppearance.generalOptions`
     const generalOptions = {
-      library: urlJson.library,
+      visualisationLibrary: urlJson.library,
       resultsLimit: parseInt(urlJson.chartDescription.queries[0]?.query.limit || "30", 10),
       orderByAxis: urlJson.orderBy,
     };
@@ -390,6 +495,8 @@ export class UrlMappingService {
       },
       hcDataLabels: {
         enabled: hcaOpts.plotOptions.series.dataLabels.enabled,
+        format: undefined,
+        style: {'textOutline': '2px contrast', 'stroke-width': 0} // Further inspect this!
       },
       hcZoomOptions: {
         enableXaxisZoom: hcaOpts.xAxis.zoomEnabled,

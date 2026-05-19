@@ -125,20 +125,22 @@
                 <div class="iframe-container">
 
                   <div>
-                    <div *ngIf="dialogData?.chartObj; else notSubmittedYet">
+                    <div *ngIf="dialogData?.rawDataObj; else notSubmittedYet">
                       <div *ngIf="hasChanges" class="uk-alert-warning" uk-alert>
                         <!--                      <a href class="uk-alert-close" uk-close></a>-->
                         <p class="uk-text-bold">Your chart is not up to date</p>
                         <p>You updated the values in the control panel, but the chart was not updated automatically. Run the query by clicking on the "Create Chart" button.</p>
                       </div>
-                      <div class="container">
-                        <chart-frame [chart]="this.dialogData.chartObj"></chart-frame>
-                      </div>
-                      <div class="actions">
-                        <div class="label">
-                          <generated-short-url-field [shortUrl]="chartExportingService.chartTinyUrl$"></generated-short-url-field>
+                      <ng-container *ngIf="dialogData?.chartObj">
+                        <div class="container">
+                          <chart-frame [chart]="dialogData.chartObj"></chart-frame>
                         </div>
-                      </div>
+                        <div class="actions">
+                          <div class="label">
+                            <generated-short-url-field [shortUrl]="chartExportingService.chartTinyUrl$"></generated-short-url-field>
+                          </div>
+                        </div>
+                      </ng-container>
                     </div>
                     <ng-template #notSubmittedYet>
                       <div class="uk-text-center uk-flex uk-flex-middle" [style.height.px]="frameHeight">
@@ -153,7 +155,7 @@
 
                   <div class="uk-margin-medium-top">
                     <mat-tab-group mat-stretch-tabs="true" mat-align-tabs="start" animationDuration="250ms">
-                      <mat-tab label="Table">
+                      <mat-tab label="Table" *ngIf="dialogData?.tableObj">
                         <div class="container">
                           <table-frame [table]="this.dialogData.tableObj"></table-frame>
                         </div>
@@ -163,7 +165,7 @@
                           </div>
                         </div>
                       </mat-tab>
-                      <mat-tab label="Raw Chart Data">
+                      <mat-tab label="Raw Chart Data" *ngIf="dialogData?.rawChartDataObj">
                         <div class="container">
                           <raw-chart-data-frame [rawChartData]="this.dialogData.rawChartDataObj"></raw-chart-data-frame>
                         </div>
@@ -173,7 +175,7 @@
                           </div>
                         </div>
                       </mat-tab>
-                      <mat-tab label="Raw Data">
+                      <mat-tab label="Raw Data" *ngIf="dialogData?.rawDataObj">
                         <div class="container">
                           <raw-data-frame [rawData]="this.dialogData.rawDataObj"></raw-data-frame>
                         </div>
