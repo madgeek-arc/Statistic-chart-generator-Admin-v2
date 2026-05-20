@@ -2,6 +2,12 @@ import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, Valida
 import { DestroyRef, inject, Injectable } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 
+interface InvalidControl {
+  path: string;
+  errors: any;
+  value: any;
+}
+
 @Injectable({ providedIn: 'root' })
 
 export class FormFactoryService {
@@ -211,7 +217,7 @@ export class FormFactoryService {
       chartAppearance: this.fb.group({
         generalOptions: this.fb.group({
           visualisationLibrary: this.fb.control('HighCharts', Validators.required),
-          resultsLimit: this.fb.control(30, [Validators.required, Validators.min(1)]),
+          resultsLimit: this.fb.control<number>(30, [Validators.required, Validators.min(0)]),
           orderByAxis: this.fb.control(null),
         }),
         highchartsAppearanceOptions: this.fb.group({
@@ -241,7 +247,7 @@ export class FormFactoryService {
           hcMiscOptions: this.fb.group({
             exporting: this.fb.control<boolean>(true),
             drilldown: this.fb.control<boolean>(false),
-            stackedChart: this.fb.control('disabled')
+            stackedChart: this.fb.control('null')
           }),
           hcChartArea: this.fb.group({
             hcCABackGroundColor: this.fb.control<string | null>(null),
@@ -280,6 +286,7 @@ export class FormFactoryService {
           }),
           dataSeriesColorArray: this.fb.array<string>([])
         }),
+
         googlechartsAppearanceOptions: this.fb.group({
           titles: this.fb.group({
             title: this.fb.control<string>(''),
@@ -294,6 +301,7 @@ export class FormFactoryService {
           gcCABackGroundColor: this.fb.control<string>('#ffffff'),
           gcPABackgroundColor: this.fb.control<string>('#ffffff')
         }),
+
         echartsAppearanceOptions: this.fb.group({
           titles: this.fb.group({
             title: this.fb.control<string>(''),
@@ -323,6 +331,7 @@ export class FormFactoryService {
             enableYaxisZoom: this.fb.control<boolean>(false)
           })
         }),
+
         highmapsAppearanceOptions: this.fb.group({
           title: this.fb.group({
             titleText: this.fb.control<string>(''),
@@ -376,4 +385,51 @@ export class FormFactoryService {
     return group;
   }
 
+}
+
+/** Utils **/
+export function findInvalidControls(
+  control: AbstractControl,
+  path: string = ''
+): InvalidControl[] {
+
+  const invalidControls: InvalidControl[] = [];
+
+  if (control instanceof FormControl) {
+
+    if (control.invalid) {
+      invalidControls.push({
+        path,
+        errors: control.errors,
+        value: control.value
+      });
+    }
+
+  } else if (control instanceof FormGroup) {
+
+    Object.keys(control.controls).forEach(key => {
+      const childControl = control.controls[key];
+
+      const childPath = path
+        ? `${path}.${key}`
+        : key;
+
+      invalidControls.push(
+        ...findInvalidControls(childControl, childPath)
+      );
+    });
+
+  } else if (control instanceof FormArray) {
+
+    control.controls.forEach((childControl, index) => {
+
+      const childPath = `${path}[${index}]`;
+
+      invalidControls.push(
+        ...findInvalidControls(childControl, childPath)
+      );
+    });
+  }
+
+  return invalidControls;
 }

@@ -20,15 +20,20 @@ export class DynamicTreeDatabase {
 
 	// The cached data of a Profile's Entities
 	public get entityMap(): Map<string, CachedEntityNode> { return this._entityMap$.getValue() as Map<string, CachedEntityNode>; }
+	public get entityMap$() { return this._entityMap$.asObservable(); }
 	private _entityMap$ = new BehaviorSubject<Map<string, CachedEntityNode> | null>(null);
 
 	constructor(private http: HttpClient, private urlProvider: UrlProviderService,
 		private profileMappingService: MappingProfilesService, private dbService: DbSchemaService) {
 
-    // This code segment introduced issues with json loading (perhaps because subjects in profileMappingService are not updated).
-		// this.profileMappingService.selectedProfile$.pipe(distinctUntilChanged()).subscribe(
-		// 	(profile: Profile | null) => { this.changeEntityMap(profile); }
-		// );
+    // This code segment introduced issues with JSON loading (perhaps because subjects in profileMappingService are not updated).
+		this.profileMappingService.selectedProfile$.pipe(distinctUntilChanged()).subscribe(
+			(profile: Profile | null) => {
+        if (profile) {
+          this.changeEntityMap(profile);
+        }
+      }
+		);
 	}
 
 	private getEntityRelations(profile: Profile | null, entity: string): Observable<CachedEntityNode> {

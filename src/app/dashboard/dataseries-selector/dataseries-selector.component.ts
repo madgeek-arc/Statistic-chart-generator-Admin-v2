@@ -221,7 +221,12 @@ export class DataseriesSelectorComponent implements OnInit, AfterViewInit {
 
 	move(step: number, index: number) {
 		let items = this.form as FormArray;
-    [items.controls[index], items.controls[index + step]] = [items.controls[index + step], items.controls[index]]
+    const newIndex = index + step;
+    if (newIndex >= 0 && newIndex < items.length) {
+      const control = items.at(index);
+      items.removeAt(index);
+      items.insert(newIndex, control);
+    }
 	}
 
 	checkYAxisAggregate(form: FormGroup): boolean {

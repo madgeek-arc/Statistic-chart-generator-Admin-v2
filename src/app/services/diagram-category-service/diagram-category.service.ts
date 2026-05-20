@@ -63,12 +63,12 @@ export class DiagramCategoryService {
       }
     );
     this.chartTypesService.getSupportedMiscTypes().subscribe(
-        (data: Array<ISupportedMiscType>) => this.supportedMiscTypes = data.filter(this.hideChartFilter), // success path
-          error => {}, // error path
-          () => {
-              this.supportedMiscTypes
-              .map((elem: ISupportedMiscType) => this.availableDiagrams.push(elem) );
-        }
+      (data: Array<ISupportedMiscType>) => this.supportedMiscTypes = data.filter(this.hideChartFilter), // success path
+      error => {}, // error path
+      () => {
+        this.supportedMiscTypes
+          .map((elem: ISupportedMiscType) => this.availableDiagrams.push(elem));
+      }
     );
 
     this.selectedDiagramCategory$ = new BehaviorSubject(null as any);

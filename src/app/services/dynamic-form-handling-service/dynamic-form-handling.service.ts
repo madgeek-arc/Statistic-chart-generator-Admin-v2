@@ -16,7 +16,7 @@ import { EChartsChart } from "../supported-libraries-service/models/chart-descri
 import { RawChartDataModel } from "../supported-libraries-service/models/chart-description-rawChartData.model";
 import { RawDataModel } from "../supported-libraries-service/models/description-rawData.model";
 import { AbstractControl, FormArray, FormControl, FormGroup } from "@angular/forms";
-import { FormFactoryService } from "../form-factory-service/form-factory-service";
+import { findInvalidControls, FormFactoryService } from "../form-factory-service/form-factory-service";
 
 @Injectable({
 	providedIn: 'root'
@@ -57,6 +57,16 @@ export class DynamicFormHandlingService {
 		// } else {
 		// 	return false;
 		// }
+
+    if (this.formFactoryService.getFormRoot().invalid) {
+
+      this.formFactoryService.getFormRoot().markAllAsTouched();
+
+      // log invalid form inputs
+      // console.log(findInvalidControls(this.formFactoryService.getFormRoot()));
+
+    }
+
 		return this.formFactoryService.getFormRoot()?.valid || false;
 	}
 
@@ -272,6 +282,7 @@ export class DynamicFormHandlingService {
 
 	public submitForm() {
 		console.log('Submitted this form', this.formSchemaObject);
+    console.log('this.isFormValid', this.isFormValid);
 
 		if (this.formSchemaObject !== null && this.isFormValid)
 			this.createDataObjectsFromSchemaObject(this.formSchemaObject);
@@ -279,11 +290,13 @@ export class DynamicFormHandlingService {
 
 	private createDataObjectsFromSchemaObject(value: SCGAFormSchema) {
 
-		if (this.diagramcategoryService.selectedDiagramCategory$.value?.type === "numbers") {
+    console.log(value);
+    if (this.diagramcategoryService.selectedDiagramCategory$.value?.type === "numbers") {
 			this._diagramCreator.createRawData(value).pipe(first()).subscribe(rawDataObject => this.changeDataObjects(null, null, null, rawDataObject))
 			return;
 		}
 
+    console.log(value, 'value')
 		forkJoin([this._diagramCreator.createChart(value), this._diagramCreator.createTable(value),
 		this._diagramCreator.createRawChartData(value), this._diagramCreator.createRawData(value)])
 			.pipe(first())
