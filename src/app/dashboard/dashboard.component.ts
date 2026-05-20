@@ -7,6 +7,15 @@ import { ChartExportingService } from '../services/chart-exporting-service/chart
 import { FormFactoryService } from "../services/form-factory-service/form-factory-service";
 import { MappingProfilesService } from "../services/mapping-profiles-service/mapping-profiles.service";
 import UIkit from 'uikit';
+import { HighChartsChart } from "../services/supported-libraries-service/models/chart-description-HighCharts.model";
+import {
+  GoogleChartsChart,
+  GoogleChartsTable
+} from "../services/supported-libraries-service/models/chart-description-GoogleCharts.model";
+import { HighMapsMap } from "../services/supported-libraries-service/models/chart-description-HighMaps.model";
+import { EChartsChart } from "../services/supported-libraries-service/models/chart-description-eCharts.model";
+import { RawChartDataModel } from "../services/supported-libraries-service/models/chart-description-rawChartData.model";
+import { RawDataModel } from "../services/supported-libraries-service/models/description-rawData.model";
 
 @Component({
 	selector: 'app-dashboard',
@@ -16,6 +25,9 @@ import UIkit from 'uikit';
 export class DashboardComponent implements OnInit {
 	private destroyRef = inject(DestroyRef);
   private profileService = inject(MappingProfilesService);
+  private formFactory = inject(FormFactoryService);
+  private dynamicFormHandlingService = inject(DynamicFormHandlingService);
+
 
 	diagramSettings: FormGroup;
 
@@ -32,18 +44,14 @@ export class DashboardComponent implements OnInit {
   frameHeight: number;
   hasChanges: boolean = false;
 
-	dialogData: ChartTableModalContext = {
-		chartObj: this.dynamicFormHandlingService.ChartObject,
-		tableObj: this.dynamicFormHandlingService.TableObject,
-		rawChartDataObj: this.dynamicFormHandlingService.RawChartDataObject,
-		rawDataObj: this.dynamicFormHandlingService.RawDataObject
-	};
+	dialogData: ChartTableModalContext = new class implements ChartTableModalContext {
+    chartObj: HighChartsChart | GoogleChartsChart | HighMapsMap | EChartsChart | null;
+    rawChartDataObj: RawChartDataModel | null;
+    rawDataObj: RawDataModel | null;
+    tableObj: GoogleChartsTable | null;
+  };
 
-  constructor(
-    public chartExportingService: ChartExportingService,
-    private dynamicFormHandlingService: DynamicFormHandlingService,
-    private formFactory: FormFactoryService
-  ) {}
+  constructor(public chartExportingService: ChartExportingService) {}
 
 	ngOnInit(): void {
 
@@ -172,7 +180,7 @@ export class DashboardComponent implements OnInit {
 
         console.log('📁 About to patchValue with:', this.dynamicFormHandlingService.loadFormObject);
         this.diagramSettings.patchValue(this.dynamicFormHandlingService.loadFormObject, { emitEvent: false });
-        // Update selected profile in mapping profiles service.
+        // Update the selected profile in the mapping profiles service.
         this.profileService.changeSelectedProfile(this.diagramSettings.get('view.profile')?.value);
 
         this.dynamicFormHandlingService.formSchemaObject = this.diagramSettings.value;
@@ -211,9 +219,17 @@ export class DashboardComponent implements OnInit {
 	}
 
 	clearData() {
-    console.log('resetting form');
+    // Reset the form to its initial state.
     this.diagramSettings = this.formFactory.createForm();
     this.setFormObservers();
+
+    // Reset chart, table, rawChartData, rawData objects.
+    this.dialogData = {
+      chartObj: null,
+      rawChartDataObj: null,
+      rawDataObj: null,
+      tableObj: null
+    }
 
     this.updateStepper({
       name: null,
