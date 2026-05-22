@@ -477,7 +477,7 @@ export class InputComponent implements OnInit, OnDestroy, AfterViewInit, OnChang
   constructor(private cdr: ChangeDetectorRef) {}
 
   @HostListener('window:keydown.arrowUp', ['$event'])
-  arrowUp(event: KeyboardEvent) {
+  arrowUp(event: Event) {
     if (this.opened && this.optionBox) {
       event.preventDefault();
       if (this.selectedIndex > 0) {
@@ -488,7 +488,7 @@ export class InputComponent implements OnInit, OnDestroy, AfterViewInit, OnChang
   }
 
   @HostListener('window:keydown.arrowDown', ['$event'])
-  arrowDown(event: KeyboardEvent) {
+  arrowDown(event: Event) {
     if (this.opened && this.optionBox) {
       event.preventDefault();
       if (this.selectedIndex < (this.filteredOptions.length - 1)) {
@@ -499,7 +499,7 @@ export class InputComponent implements OnInit, OnDestroy, AfterViewInit, OnChang
   }
 
   @HostListener('window:keydown.arrowLeft', ['$event'])
-  arrowLeft(event: KeyboardEvent) {
+  arrowLeft(event: Event) {
     if (this.type === 'chips' && this.focused) {
       if (this.activeElement.getValue()) {
         event.preventDefault();
@@ -513,7 +513,7 @@ export class InputComponent implements OnInit, OnDestroy, AfterViewInit, OnChang
   }
 
   @HostListener('window:keydown.arrowRight', ['$event'])
-  arrowRight(event: KeyboardEvent) {
+  arrowRight(event: Event) {
     if (this.type === 'chips' && this.focused) {
       if (this.activeElement.getValue()) {
         event.preventDefault();
@@ -527,7 +527,7 @@ export class InputComponent implements OnInit, OnDestroy, AfterViewInit, OnChang
   }
 
   @HostListener('window:keydown.enter', ['$event'])
-  enter(event: KeyboardEvent) {
+  enter(event: Event) {
     if (this.extendEnter) {
       this.extendEnter();
     }
@@ -559,7 +559,7 @@ export class InputComponent implements OnInit, OnDestroy, AfterViewInit, OnChang
   }
 
   @HostListener('window:keydown.escape', ['$event'])
-  esc(event: KeyboardEvent) {
+  esc(event: Event) {
     this.focus(false);
   }
 
