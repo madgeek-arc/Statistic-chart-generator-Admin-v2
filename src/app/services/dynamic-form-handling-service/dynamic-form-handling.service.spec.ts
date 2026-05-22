@@ -6,7 +6,7 @@ describe('DynamicFormHandlingService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it('should be created', () => {
-    const service: DynamicFormHandlingService = TestBed.get(DynamicFormHandlingService);
+    const service: DynamicFormHandlingService = TestBed.inject(DynamicFormHandlingService);
     expect(service).toBeTruthy();
   });
 });

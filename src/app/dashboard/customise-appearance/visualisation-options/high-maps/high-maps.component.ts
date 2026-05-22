@@ -2,7 +2,7 @@ import { Component, DestroyRef, inject, Input, OnInit } from "@angular/core";
 import { FormGroup, ReactiveFormsModule } from "@angular/forms";
 import { InputComponent, Option } from "../../../../shared/input.component";
 import { MatSlideToggleModule } from "@angular/material/slide-toggle";
-import { NgIf } from "@angular/common";
+
 import { CountriesListingService } from "../../../../services/countries-listing-service/countries-listing.service";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 
@@ -10,11 +10,10 @@ import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
     selector: 'app-high-maps',
     templateUrl: './high-maps.component.html',
     imports: [
-        ReactiveFormsModule,
-        InputComponent,
-        MatSlideToggleModule,
-        NgIf
-    ]
+    ReactiveFormsModule,
+    InputComponent,
+    MatSlideToggleModule
+]
 })
 
 export class HighMapsComponent implements OnInit {

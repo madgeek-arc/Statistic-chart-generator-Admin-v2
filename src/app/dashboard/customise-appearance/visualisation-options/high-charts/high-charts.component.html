@@ -1,11 +1,11 @@
 <div style="width: 100%;" [formGroup]="highChartsForm">
 
-	<div>
-		<ul data-uk-accordion="multiple: true">
-			<li class="uk-open">
-				<a class="uk-accordion-title" href>Title</a>
+  <div>
+    <ul data-uk-accordion="multiple: true">
+      <li class="uk-open">
+        <a class="uk-accordion-title" href>Title</a>
 
-				<div class="uk-accordion-content" formGroupName="title">
+        <div class="uk-accordion-content" formGroupName="title">
 
           <div class="uk-child-width-1-2" data-uk-grid>
             <div class="">
@@ -16,7 +16,7 @@
             </div>
             <div class="">
               <div input placeholder="Horizontal Alignment" type="select" [formInput]="highChartsForm.get('title.align')"
-                   [options]="horizontalAlignmentList"></div>
+              [options]="horizontalAlignmentList"></div>
             </div>
             <div>
               <div input placeholder="Margin" type="number" [formInput]="highChartsForm.get('title.margin')"></div>
@@ -25,13 +25,13 @@
               <div input placeholder="Font Size" type="number" [formInput]="highChartsForm.get('title.fontSize')"></div>
             </div>
           </div>
-				</div>
-			</li>
+        </div>
+      </li>
 
-			<li>
-				<a class="uk-accordion-title" href>Subtitle</a>
+      <li>
+        <a class="uk-accordion-title" href>Subtitle</a>
 
-				<div class="uk-accordion-content" formGroupName="subtitle">
+        <div class="uk-accordion-content" formGroupName="subtitle">
 
           <div class="uk-child-width-1-2" uk-grid>
             <div class="">
@@ -42,19 +42,19 @@
             </div>
             <div class="">
               <div input placeholder="Horizontal Alignment" type="select" [formInput]="highChartsForm.get('subtitle.align')"
-                   [options]="horizontalAlignmentList"></div>
+              [options]="horizontalAlignmentList"></div>
             </div>
             <div class="">
               <div input placeholder="Font Size" type="number" [formInput]="highChartsForm.get('subtitle.fontSize')"></div>
             </div>
           </div>
 
-				</div>
-			</li>
-			<li>
-				<a class="uk-accordion-title" href>X Axis</a>
+        </div>
+      </li>
+      <li>
+        <a class="uk-accordion-title" href>X Axis</a>
 
-				<div class="uk-accordion-content" formGroupName="xAxis">
+        <div class="uk-accordion-content" formGroupName="xAxis">
 
           <div class="uk-child-width-1-2" uk-grid>
             <div class="">
@@ -67,13 +67,13 @@
               <div input placeholder="Font Size" type="number" [formInput]="highChartsForm.get('xAxis.fontSize')"></div>
             </div>
           </div>
-				</div>
-			</li>
+        </div>
+      </li>
 
-			<li>
-				<a class="uk-accordion-title" href>Y Axis</a>
+      <li>
+        <a class="uk-accordion-title" href>Y Axis</a>
 
-				<div class="uk-accordion-content" formGroupName="yAxis">
+        <div class="uk-accordion-content" formGroupName="yAxis">
 
           <div class="uk-child-width-1-2" uk-grid>
             <div class="">
@@ -86,13 +86,13 @@
               <div input placeholder="Font Size" type="number" [formInput]="highChartsForm.get('yAxis.fontSize')"></div>
             </div>
           </div>
-				</div>
-			</li>
+        </div>
+      </li>
 
-			<li>
-				<a class="uk-accordion-title" href>Misc Options</a>
+      <li>
+        <a class="uk-accordion-title" href>Misc Options</a>
 
-				<div class="uk-accordion-content" formGroupName="hcMiscOptions">
+        <div class="uk-accordion-content" formGroupName="hcMiscOptions">
 
           <div class="uk-child-width-1-2" uk-grid>
             <div class="">
@@ -103,17 +103,17 @@
             </div>
             <div class="">
               <div input placeholder="Stacked Graph" type="select" [formInput]="highChartsForm.get('hcMiscOptions.stackedChart')"
-                   [options]="stackedGraphList"></div>
+              [options]="stackedGraphList"></div>
             </div>
           </div>
 
-				</div>
-			</li>
+        </div>
+      </li>
 
-			<li>
-				<a class="uk-accordion-title" href>Chart Area</a>
+      <li>
+        <a class="uk-accordion-title" href>Chart Area</a>
 
-				<div class="uk-accordion-content" formGroupName="hcChartArea">
+        <div class="uk-accordion-content" formGroupName="hcChartArea">
 
           <div class="uk-child-width-1-2" uk-grid>
             <div class="">
@@ -129,14 +129,14 @@
               <div input placeholder="Border Width" type="number" [formInput]="highChartsForm.get('hcChartArea.hcCABorderWidth')"></div>
             </div>
           </div>
-				</div>
-			</li>
+        </div>
+      </li>
 
 
-			<li>
-				<a class="uk-accordion-title" href>Plot Area</a>
+      <li>
+        <a class="uk-accordion-title" href>Plot Area</a>
 
-				<div class="uk-accordion-content" formGroupName="hcPlotArea">
+        <div class="uk-accordion-content" formGroupName="hcPlotArea">
 
           <div class="uk-child-width-1-2" uk-grid>
             <div class="">
@@ -147,83 +147,89 @@
             </div>
             <div class="">
               <div input placeholder="Background Image URL" type="URL" hint="https://domain.com/picture.png"
-                   [formInput]="highChartsForm.get('hcPlotArea.hcPABackgroundImageURL')"></div>
+              [formInput]="highChartsForm.get('hcPlotArea.hcPABackgroundImageURL')"></div>
             </div>
             <div class="">
               <div input placeholder="Border Width" type="number" [formInput]="highChartsForm.get('hcPlotArea.hcPABorderWidth')"></div>
             </div>
           </div>
-				</div>
-			</li>
+        </div>
+      </li>
 
 
-			<li>
-				<a class="uk-accordion-title" href>Data Labels</a>
+      <li>
+        <a class="uk-accordion-title" href>Data Labels</a>
 
-				<div class="uk-accordion-content" formGroupName="hcDataLabels">
+        <div class="uk-accordion-content" formGroupName="hcDataLabels">
 
           <div class="" uk-grid>
             <div class="">
               <mat-slide-toggle formControlName="enabled">Enable data labels for all series</mat-slide-toggle>
             </div>
-            <div class="uk-width-expand" *ngIf="highChartsForm.get('hcDataLabels.enabled').value">
-              <div input placeholder="Data Label Color" type="color" [formInput]="highChartsForm.get('hcDataLabels.style.color')"></div>
-            </div>
+            @if (highChartsForm.get('hcDataLabels.enabled').value) {
+              <div class="uk-width-expand">
+                <div input placeholder="Data Label Color" type="color" [formInput]="highChartsForm.get('hcDataLabels.style.color')"></div>
+              </div>
+            }
           </div>
-				</div>
-			</li>
+        </div>
+      </li>
 
 
-			<li>
-				<a class="uk-accordion-title" href>Credits</a>
+      <li>
+        <a class="uk-accordion-title" href>Credits</a>
 
-				<div class="uk-accordion-content" formGroupName="hcCredits">
+        <div class="uk-accordion-content" formGroupName="hcCredits">
 
           <div class="" uk-grid>
             <div class="">
               <mat-slide-toggle formControlName="hcEnableCredits">Enable Credits</mat-slide-toggle>
             </div>
-            <div class="uk-width-expand" *ngIf="highChartsForm.get('hcCredits.hcEnableCredits').value">
-              <div input placeholder="Credits Text" [formInput]="highChartsForm.get('hcCredits.hcCreditsText')"></div>
-            </div>
+            @if (highChartsForm.get('hcCredits.hcEnableCredits').value) {
+              <div class="uk-width-expand">
+                <div input placeholder="Credits Text" [formInput]="highChartsForm.get('hcCredits.hcCreditsText')"></div>
+              </div>
+            }
           </div>
 
-				</div>
-			</li>
+        </div>
+      </li>
 
 
-			<li>
-				<a class="uk-accordion-title" href>Legend</a>
+      <li>
+        <a class="uk-accordion-title" href>Legend</a>
 
-				<div class="uk-accordion-content" formGroupName="hcLegend">
+        <div class="uk-accordion-content" formGroupName="hcLegend">
 
           <div>
             <mat-slide-toggle formControlName="hcEnableLegend">Enable Legend</mat-slide-toggle>
           </div>
 
-          <div *ngIf="highChartsForm.get('hcLegend.hcEnableLegend').value" class="uk-child-width-1-3 uk-margin-medium-top" uk-grid>
-            <div class="">
-              <div input placeholder="Item Layout" type="select" [formInput]="highChartsForm.get('hcLegend.hcLegendLayout')"
-                   [options]="itemLayoutList"></div>
+          @if (highChartsForm.get('hcLegend.hcEnableLegend').value) {
+            <div class="uk-child-width-1-3 uk-margin-medium-top" uk-grid>
+              <div class="">
+                <div input placeholder="Item Layout" type="select" [formInput]="highChartsForm.get('hcLegend.hcLegendLayout')"
+                [options]="itemLayoutList"></div>
+              </div>
+              <div class="">
+                <div input placeholder="Horizontal Alignment" type="select" [formInput]="highChartsForm.get('hcLegend.hcLegendHorizontalAlignment')"
+                [options]="horizontalAlignmentList"></div>
+              </div>
+              <div class="">
+                <div input placeholder="Vertical Alignment" type="select" [formInput]="highChartsForm.get('hcLegend.hcLegendVerticalAlignment')"
+                [options]="verticalAlignmentList"></div>
+              </div>
             </div>
-            <div class="">
-              <div input placeholder="Horizontal Alignment" type="select" [formInput]="highChartsForm.get('hcLegend.hcLegendHorizontalAlignment')"
-                   [options]="horizontalAlignmentList"></div>
-            </div>
-            <div class="">
-              <div input placeholder="Vertical Alignment" type="select" [formInput]="highChartsForm.get('hcLegend.hcLegendVerticalAlignment')"
-                   [options]="verticalAlignmentList"></div>
-            </div>
-          </div>
+          }
 
-				</div>
-			</li>
+        </div>
+      </li>
 
 
-			<li>
-				<a class="uk-accordion-title" href>Zoom Options</a>
+      <li>
+        <a class="uk-accordion-title" href>Zoom Options</a>
 
-				<div class="uk-accordion-content" formGroupName="hcZoomOptions">
+        <div class="uk-accordion-content" formGroupName="hcZoomOptions">
 
           <div class="uk-child-width-1-2" uk-grid>
             <div class="">
@@ -234,33 +240,33 @@
             </div>
           </div>
 
-				</div>
-			</li>
+        </div>
+      </li>
 
 
-			<li>
-				<a class="uk-accordion-title" href>Data Series Color Palette</a>
+      <li>
+        <a class="uk-accordion-title" href>Data Series Color Palette</a>
 
-				<div class="uk-accordion-content" formArrayName="dataSeriesColorArray">
+        <div class="uk-accordion-content" formArrayName="dataSeriesColorArray">
 
-					<ng-container *ngFor="let dataSeriesColor of getSeriesColors(highChartsForm); let i = index">
-						<div class="uk-flex uk-flex-middle uk-grid-small" uk-grid>
+          @for (dataSeriesColor of getSeriesColors(highChartsForm); track dataSeriesColor; let i = $index) {
+            <div class="uk-flex uk-flex-middle uk-grid-small" uk-grid>
               <div class="uk-width-expand" input type="color" [formInput]="highChartsForm.get('dataSeriesColorArray').get(i.toString())"></div>
-							<a (click)="removeSeriesColor(highChartsForm, i)" class="uk-link-reset">
+              <a (click)="removeSeriesColor(highChartsForm, i)" class="uk-link-reset">
                 <span class="material-symbols-outlined uk-margin-small-left">close</span>
               </a>
-						</div>
-					</ng-container>
+            </div>
+          }
 
-					<div class="uk-margin-top">
+          <div class="uk-margin-top">
             <a class="uk-link uk-flex uk-flex-middle" (click)="addSeriesColor(highChartsForm)">
               <span class="material-symbols-outlined">add</span>
               <span>Add Series Color</span>
             </a>
-					</div>
+          </div>
 
-				</div>
-			</li>
-		</ul>
-	</div>
+        </div>
+      </li>
+    </ul>
+  </div>
 </div>

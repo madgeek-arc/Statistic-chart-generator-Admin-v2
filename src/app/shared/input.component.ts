@@ -82,217 +82,280 @@ declare var UIkit;
     selector: '[input]',
     imports: [CommonModule, RouterModule, FormsModule, ReactiveFormsModule, MatDatepickerModule, MatNativeDateModule, MatInputModule],
     template: `
-    <div *ngIf="formControl" [id]="id">
-      <div class="input-wrapper" [class.disabled]="formControl.disabled" [class.opened]="opened"
-           [class.focused]="focused" [ngClass]="inputClass" [class.hint]="hint"
-           [class.active]="!focused && (formAsControl?.value || formAsControl?.value === 0 || selectable || type === 'date' || formAsArray?.length > 0 || getLabel(formAsControl?.value) || yearRangeActive)"
-           [class.danger]="(formControl.invalid && (formControl.touched || !!searchControl?.touched)) || (!!searchControl?.invalid && !!searchControl?.touched)">
-        <div #inputBox class="input-box" [class.select]="selectable || type ==='date'"
-             [class.static]="placeholderInfo?.static">
-          <div *ngIf="!placeholderInfo?.static && placeholderInfo?.label" class="placeholder">
-            <label>{{ placeholderInfo.label }} <sup *ngIf="required">*</sup></label>
-          </div>
-          <div class="uk-flex" [class.uk-flex-middle]="type !== 'textarea'"
+    @if (formControl) {
+      <div [id]="id">
+        <div class="input-wrapper" [class.disabled]="formControl.disabled" [class.opened]="opened"
+          [class.focused]="focused" [ngClass]="inputClass" [class.hint]="hint"
+          [class.active]="!focused && (formAsControl?.value || formAsControl?.value === 0 || selectable || type === 'date' || formAsArray?.length > 0 || getLabel(formAsControl?.value) || yearRangeActive)"
+          [class.danger]="(formControl.invalid && (formControl.touched || !!searchControl?.touched)) || (!!searchControl?.invalid && !!searchControl?.touched)">
+          <div #inputBox class="input-box" [class.select]="selectable || type ==='date'"
+            [class.static]="placeholderInfo?.static">
+            @if (!placeholderInfo?.static && placeholderInfo?.label) {
+              <div class="placeholder">
+                <label>{{ placeholderInfo.label }} @if (required) {
+                  <sup>*</sup>
+                }</label>
+              </div>
+            }
+            <div class="uk-flex" [class.uk-flex-middle]="type !== 'textarea'"
                [attr.uk-tooltip]="placeholderInfo.tooltip?('title: ' + placeholderInfo.tooltip + '; delay: 500; pos: bottom-left'):
                        ((tooltip && !focused && type !== 'chips' && type !== 'textarea' && (formControl.value || hint || placeholderInfo?.label))?
                        ('title: ' + (formControl.value ?getTooltip(formControl.value):(hint?hint:placeholderInfo?.label)) + '; delay: 500; pos: bottom-left'):null)">
-            <ng-template [ngIf]="type === 'text' || type === 'URL' || type === 'logoURL'">
-              <input #input class="input"
-                     [attr.placeholder]="placeholderInfo?.static?placeholderInfo.label:hint"
-                     [type]="password?'password':'text'" [formControl]="formAsControl"
-                     [class.uk-text-truncate]="!focused">
-            </ng-template>
-            <ng-template [ngIf]="type === 'textarea'">
-              <textarea #textArea class="input"
+              @if (type === 'text' || type === 'URL' || type === 'logoURL') {
+                <input #input class="input"
+                  [attr.placeholder]="placeholderInfo?.static?placeholderInfo.label:hint"
+                  [type]="password?'password':'text'" [formControl]="formAsControl"
+                  [class.uk-text-truncate]="!focused">
+              }
+              @if (type === 'textarea') {
+                <textarea #textArea class="input"
+                  [attr.placeholder]="placeholderInfo?.static?placeholderInfo.label:hint"
+                [rows]="rows" [formControl]="formAsControl"></textarea>
+              }
+              @if (type === 'number') {
+                <input #input class="input" type="number"
+                  [attr.placeholder]="placeholderInfo?.static?placeholderInfo.label:hint"
+                  [formControl]="formAsControl"
+                  [class.uk-text-truncate]="!focused">
+              }
+              @if (type === 'color') {
+                <input #input class="input" type="color"
+                  [attr.placeholder]="placeholderInfo?.static?placeholderInfo.label:hint"
+                  [formControl]="formAsControl"
+                  [class.uk-text-truncate]="!focused">
+              }
+              @if (type === 'select') {
+                @if (placeholderInfo?.static) {
+                  @if (!getLabel(formControl.value)) {
+                    <div
+                      class="input placeholder uk-width-expand uk-text-truncate"
+                      [class.uk-disabled]="formControl.disabled">{{ placeholderInfo.label }}
+                    </div>
+                  }
+                  @if (getLabel(formControl.value)) {
+                    <div
+                      class="input uk-width-expand uk-text-truncate"
+                      [class.uk-disabled]="formControl.disabled">{{ getLabel(formControl.value) }}
+                    </div>
+                  }
+                }
+                @if (!placeholderInfo?.static) {
+                  @if (!getLabel(formControl.value)) {
+                    <div
+                      class="input uk-width-expand uk-text-truncate"
+                      [class.uk-disabled]="formControl.disabled">{{ noValueSelected }}
+                    </div>
+                  }
+                  @if (getLabel(formControl.value)) {
+                    <div
+                      class="input uk-width-expand uk-text-truncate"
+                      [class.uk-disabled]="formControl.disabled">{{ getLabel(formControl.value) }}
+                    </div>
+                  }
+                }
+              }
+              @if (type === 'autocomplete') {
+                @if (focused) {
+                  <input [attr.placeholder]="placeholderInfo?.static?placeholderInfo.label:hint"
+                    #searchInput class="input" [formControl]="searchControl"
+                    [class.uk-text-truncate]="!focused">
+                }
+                @if (!focused && !selectable) {
+                  @if (!getLabel(formControl.value)) {
+                    <div
+                      class="input placeholder uk-text-truncate"
+                      [class.uk-disabled]="formControl.disabled">{{ placeholderInfo?.static ? placeholderInfo.label : getLabel(formAsControl.value) }}
+                    </div>
+                  }
+                  @if (getLabel(formControl.value)) {
+                    <div
+                      class="input uk-text-truncate"
+                      [class.uk-disabled]="formControl.disabled">{{ getLabel(formAsControl.value) }}
+                    </div>
+                  }
+                }
+                @if (!focused && selectable) {
+                  @if (!getLabel(formControl.value)) {
+                    <div class="input uk-text-truncate"
+                      [class.uk-disabled]="formControl.disabled">{{ noValueSelected }}
+                    </div>
+                  }
+                  @if (getLabel(formControl.value)) {
+                    <div
+                      class="input uk-text-truncate"
+                      [class.uk-disabled]="formControl.disabled">{{ getLabel(formControl.value) }}
+                    </div>
+                  }
+                }
+              }
+              @if (type === 'autocomplete_soft') {
+                <input #input class="input"
+                  [attr.placeholder]="placeholderInfo?.static?placeholderInfo.label:hint"
+                  [formControl]="formAsControl" [class.uk-text-truncate]="!focused">
+              }
+              @if (type === 'chips') {
+                <div class="uk-grid uk-grid-small uk-grid-row-collapse uk-overflow-auto uk-width-expand"
+                  [class.uk-flex-nowrap]="noWrap" [class.uk-overflow-auto]="noWrap" uk-grid>
+                  @for (chip of formAsArray.controls; track chip; let i = $index) {
+                    <div #chip
+                      [class.uk-hidden]="!focused && i > visibleChips - 1" class="chip">
+                      <div class="uk-label uk-label-small uk-text-transform-none uk-flex uk-flex-middle"
+                        [attr.uk-tooltip]="(tooltip)?('title: ' + getLabel(chip.value) + '; delay: 500; pos: bottom-left'):null">
+                        <span class="uk-text-truncate uk-width-expand">{{ getLabel(chip.value) }}</span>
+                        <span class="uk-link-text uk-margin-small-left clickable">
+                          @if (focused) {
+                            <span class="uk-flex ng-star-inserted">
+                              <span class="material-icons" style="font-size: 14px;">close</span>
+                            </span>
+                          }
+                        </span>
+                      </div>
+                    </div>
+                  }
+                  @if (searchControl && (focused || formAsArray.length === 0)) {
+                    <div #chip
+                      class="uk-width-expand search-input uk-flex uk-flex-column uk-flex-center">
+                      <input #searchInput class="input" [class.search]="searchControl.value"
                         [attr.placeholder]="placeholderInfo?.static?placeholderInfo.label:hint"
-                        [rows]="rows" [formControl]="formAsControl"></textarea>
-            </ng-template>
-            <ng-template [ngIf]="type === 'number'">
-              <input #input class="input" type="number"
-                     [attr.placeholder]="placeholderInfo?.static?placeholderInfo.label:hint"
-                     [formControl]="formAsControl"
-                     [class.uk-text-truncate]="!focused">
-            </ng-template>
-            <ng-template [ngIf]="type === 'color'">
-              <input #input class="input" type="color"
-                     [attr.placeholder]="placeholderInfo?.static?placeholderInfo.label:hint"
-                     [formControl]="formAsControl"
-                     [class.uk-text-truncate]="!focused">
-            </ng-template>
-            <ng-template [ngIf]="type === 'select'">
-              <ng-container *ngIf="placeholderInfo?.static">
-                <div *ngIf="!getLabel(formControl.value)"
-                     class="input placeholder uk-width-expand uk-text-truncate"
-                     [class.uk-disabled]="formControl.disabled">{{ placeholderInfo.label }}
+                        [formControl]="searchControl" [class.uk-text-truncate]="!focused">
+                    </div>
+                  }
+                  @if (!focused && formAsArray.length > visibleChips) {
+                    <div
+                      class="uk-width-expand uk-flex uk-flex-column uk-flex-center more">
+                      + {{ (formAsArray.length - visibleChips) }} more
+                    </div>
+                  }
                 </div>
-                <div *ngIf="getLabel(formControl.value)"
-                     class="input uk-width-expand uk-text-truncate"
-                     [class.uk-disabled]="formControl.disabled">{{ getLabel(formControl.value) }}
+              }
+              @if (type === 'year-range' && yearRange && formAsGroup) {
+                <div class="uk-width-2-5">
+                  <input #input class="input uk-text-center uk-text-truncate"
+                    [attr.placeholder]="yearRange.from.placeholder"
+                    maxlength="4" (click)="activeIndex = 0;$event.preventDefault()"
+                    [formControl]="getFormByName(yearRange.from.control)">
                 </div>
-              </ng-container>
-              <ng-container *ngIf="!placeholderInfo?.static">
-                <div *ngIf="!getLabel(formControl.value)"
-                     class="input uk-width-expand uk-text-truncate"
-                     [class.uk-disabled]="formControl.disabled">{{ noValueSelected }}
+                <div class="uk-width-1-5 uk-text-center">-</div>
+                <div class="uk-width-2-5">
+                  <input #input class="input uk-text-center uk-text-truncate"
+                    [attr.placeholder]="yearRange.to.placeholder"
+                    maxlength="4" (click)="activeIndex = 1;$event.preventDefault()"
+                    [formControl]="getFormByName(yearRange.to.control)">
                 </div>
-                <div *ngIf="getLabel(formControl.value)"
-                     class="input uk-width-expand uk-text-truncate"
-                     [class.uk-disabled]="formControl.disabled">{{ getLabel(formControl.value) }}
-                </div>
-              </ng-container>
-            </ng-template>
-            <ng-template [ngIf]="type === 'autocomplete'">
-              <input *ngIf="focused" [attr.placeholder]="placeholderInfo?.static?placeholderInfo.label:hint"
-                     #searchInput class="input" [formControl]="searchControl"
-                     [class.uk-text-truncate]="!focused">
-              <ng-container *ngIf="!focused && !selectable">
-                <div *ngIf="!getLabel(formControl.value)"
-                     class="input placeholder uk-text-truncate"
-                     [class.uk-disabled]="formControl.disabled">{{ placeholderInfo?.static ? placeholderInfo.label : getLabel(formAsControl.value) }}
-                </div>
-                <div *ngIf="getLabel(formControl.value)"
-                     class="input uk-text-truncate"
-                     [class.uk-disabled]="formControl.disabled">{{ getLabel(formAsControl.value) }}
-                </div>
-              </ng-container>
-              <ng-container *ngIf="!focused && selectable">
-                <div *ngIf="!getLabel(formControl.value)" class="input uk-text-truncate"
-                     [class.uk-disabled]="formControl.disabled">{{ noValueSelected }}
-                </div>
-                <div *ngIf="getLabel(formControl.value)"
-                     class="input uk-text-truncate"
-                     [class.uk-disabled]="formControl.disabled">{{ getLabel(formControl.value) }}
-                </div>
-              </ng-container>
-            </ng-template>
-            <ng-template [ngIf]="type === 'autocomplete_soft'">
-              <input #input class="input"
-                     [attr.placeholder]="placeholderInfo?.static?placeholderInfo.label:hint"
-                     [formControl]="formAsControl" [class.uk-text-truncate]="!focused">
-            </ng-template>
-            <ng-template [ngIf]="type === 'chips'">
-              <div class="uk-grid uk-grid-small uk-grid-row-collapse uk-overflow-auto uk-width-expand"
-                   [class.uk-flex-nowrap]="noWrap" [class.uk-overflow-auto]="noWrap" uk-grid>
-                <div *ngFor="let chip of formAsArray.controls; let i=index" #chip
-                     [class.uk-hidden]="!focused && i > visibleChips - 1" class="chip">
-                  <div class="uk-label uk-label-small uk-text-transform-none uk-flex uk-flex-middle"
-                       [attr.uk-tooltip]="(tooltip)?('title: ' + getLabel(chip.value) + '; delay: 500; pos: bottom-left'):null">
-                    <span class="uk-text-truncate uk-width-expand">{{ getLabel(chip.value) }}</span>
-                    <span class="uk-link-text uk-margin-small-left clickable">
-                      <span *ngIf="focused" class="uk-flex ng-star-inserted">
-                        <span class="material-icons" style="font-size: 14px;">close</span>
-                      </span>
-                    </span>
+              }
+              @if (type === 'date') {
+                @if (!formAsControl.getRawValue()) {
+                  <div class="input uk-text-truncate"
+                    [class.uk-disabled]="formControl.disabled">{{ selectADate }}
                   </div>
-                </div>
-                <div *ngIf="searchControl && (focused || formAsArray.length === 0)" #chip
-                     class="uk-width-expand search-input uk-flex uk-flex-column uk-flex-center">
-                  <input #searchInput class="input" [class.search]="searchControl.value"
-                         [attr.placeholder]="placeholderInfo?.static?placeholderInfo.label:hint"
-                         [formControl]="searchControl" [class.uk-text-truncate]="!focused">
-                </div>
-                <div *ngIf="!focused && formAsArray.length > visibleChips"
-                     class="uk-width-expand uk-flex uk-flex-column uk-flex-center more">
-                  + {{ (formAsArray.length - visibleChips) }} more
-                </div>
-              </div>
-            </ng-template>
-            <ng-template [ngIf]="type === 'year-range' && yearRange && formAsGroup">
-              <div class="uk-width-2-5">
-                <input #input class="input uk-text-center uk-text-truncate"
-                       [attr.placeholder]="yearRange.from.placeholder"
-                       maxlength="4" (click)="activeIndex = 0;$event.preventDefault()"
-                       [formControl]="getFormByName(yearRange.from.control)">
-              </div>
-              <div class="uk-width-1-5 uk-text-center">-</div>
-              <div class="uk-width-2-5">
-                <input #input class="input uk-text-center uk-text-truncate"
-                       [attr.placeholder]="yearRange.to.placeholder"
-                       maxlength="4" (click)="activeIndex = 1;$event.preventDefault()"
-                       [formControl]="getFormByName(yearRange.to.control)">
-              </div>
-            </ng-template>
-            <ng-template [ngIf]="type === 'date'">
-              <div *ngIf="!formAsControl.getRawValue()" class="input uk-text-truncate"
-                   [class.uk-disabled]="formControl.disabled">{{ selectADate }}
-              </div>
-              <div *ngIf="formAsControl.getRawValue()" class="input uk-text-truncate"
-                   [class.uk-disabled]="formControl.disabled">{{ formAsControl.getRawValue() | date: 'dd-MM-yyyy' }}
-              </div>
-            </ng-template>
-            <div
-              *ngIf="(formControl.disabled && disabledIcon) || icon || (selectable && selectArrow) || type === 'autocomplete' || searchable || type === 'date'"
-              class="uk-margin-small-left icon">
-              <span *ngIf="formControl.disabled && disabledIcon" class="uk-flex">
-                <span class="material-icons" style="font-size: 20px;">{{ disabledIcon }}</span>
-              </span>
-              <ng-template [ngIf]="formControl.enabled">
-                <span *ngIf="!searchControl?.value && icon" class="uk-flex">
-                  <span class="material-icons" style="font-size: 20px;">{{ icon }}</span>
-                </span>
-                <span *ngIf="!icon && selectable && selectArrow" class="uk-flex">
-                  <span class="material-icons" style="font-size: 20px;">{{ selectArrow }}</span>
-                </span>
-                <button *ngIf="focused && type === 'autocomplete' && (!selectable || searchControl.value)"
+                }
+                @if (formAsControl.getRawValue()) {
+                  <div class="input uk-text-truncate"
+                    [class.uk-disabled]="formControl.disabled">{{ formAsControl.getRawValue() | date: 'dd-MM-yyyy' }}
+                  </div>
+                }
+              }
+              @if ((formControl.disabled && disabledIcon) || icon || (selectable && selectArrow) || type === 'autocomplete' || searchable || type === 'date') {
+                <div
+                  class="uk-margin-small-left icon">
+                  @if (formControl.disabled && disabledIcon) {
+                    <span class="uk-flex">
+                      <span class="material-icons" style="font-size: 20px;">{{ disabledIcon }}</span>
+                    </span>
+                  }
+                  @if (formControl.enabled) {
+                    @if (!searchControl?.value && icon) {
+                      <span class="uk-flex">
+                        <span class="material-icons" style="font-size: 20px;">{{ icon }}</span>
+                      </span>
+                    }
+                    @if (!icon && selectable && selectArrow) {
+                      <span class="uk-flex">
+                        <span class="material-icons" style="font-size: 20px;">{{ selectArrow }}</span>
+                      </span>
+                    }
+                    @if (focused && type === 'autocomplete' && (!selectable || searchControl.value)) {
+                      <button
                         class="uk-close uk-icon" (click)="resetSearch($event)">
-                  <span class="uk-flex"><span class="material-icons" style="font-size: 20px;">close</span></span>
-                </button>
-                <button *ngIf="(!focused && type === 'autocomplete' && !selectable) ||
-                              (type !== 'autocomplete' && !searchControl?.value && !!formControl?.value && (searchable || !selectable)) ||
-                              (type === 'date' && formAsControl?.value)"
+                        <span class="uk-flex"><span class="material-icons" style="font-size: 20px;">close</span></span>
+                      </button>
+                    }
+                    @if ((!focused && type === 'autocomplete' && !selectable) ||
+                      (type !== 'autocomplete' && !searchControl?.value && !!formControl?.value && (searchable || !selectable)) ||
+                      (type === 'date' && formAsControl?.value)) {
+                      <button
                         class="uk-close uk-icon" (click)="resetValue($event);">
-                  <span class="uk-flex"><span class="material-icons" style="font-size: 20px;">close</span></span>
-                </button>
-              </ng-template>
+                        <span class="uk-flex"><span class="material-icons" style="font-size: 20px;">close</span></span>
+                      </button>
+                    }
+                  }
+                </div>
+              }
+              <!-- use action-icon class in order to apply css in your icon button-->
+              <ng-content select="[action]"></ng-content>
             </div>
-            <!-- use action-icon class in order to apply css in your icon button-->
-            <ng-content select="[action]"></ng-content>
-          </div>
-          <div class="tools">
-            <ng-content select="[tools]"></ng-content>
+            <div class="tools">
+              <ng-content select="[tools]"></ng-content>
+            </div>
           </div>
         </div>
+        @if (type === 'date' && opened) {
+          <div class="uk-dropdown" #calendarBox
+            uk-dropdown="pos: bottom-left; mode: none; flip: false ; shift: false" [attr.target]="'#' + id"
+            [attr.boundary]="'#' + id" (click)="$event.stopPropagation()">
+            <mat-calendar [selected]="selectedDate" [startAt]="selectedDate"
+            (selectedChange)="dateChanged($event)"></mat-calendar>
+          </div>
+        }
+        @if (filteredOptions && filteredOptions.length > 0 && opened) {
+          <div class="options uk-dropdown"
+            #optionBox uk-dropdown="mode: none; stretch: true; flip: false; shift: false" [attr.boundary]="'#' + id">
+            <ul class="uk-nav uk-dropdown-nav">
+              @for (option of filteredOptions; track option; let i = $index) {
+                <li [class.uk-hidden]="option.hidden"
+                  [class.uk-active]="(formControl.value === option.value) || selectedIndex === i">
+                  <a (click)="selectOption(option, $event)" [class]="option.disabled ? 'uk-disabled uk-text-muted' : ''">
+                    <span [attr.uk-tooltip]="(tooltip)?('title: ' + (option.tooltip ? option.tooltip : option.label) + '; delay: 500; pos:bottom-left'):null">{{ option.label }}</span>
+                  </a>
+                </li>
+              }
+            </ul>
+          </div>
+        }
       </div>
-      <div *ngIf="type === 'date' && opened" class="uk-dropdown" #calendarBox
-           uk-dropdown="pos: bottom-left; mode: none; flip: false ; shift: false" [attr.target]="'#' + id"
-           [attr.boundary]="'#' + id" (click)="$event.stopPropagation()">
-        <mat-calendar [selected]="selectedDate" [startAt]="selectedDate"
-                      (selectedChange)="dateChanged($event)"></mat-calendar>
-      </div>
-      <div *ngIf="filteredOptions && filteredOptions.length > 0 && opened" class="options uk-dropdown"
-           #optionBox uk-dropdown="mode: none; stretch: true; flip: false; shift: false" [attr.boundary]="'#' + id">
-        <ul class="uk-nav uk-dropdown-nav">
-          <li *ngFor="let option of filteredOptions; let i=index" [class.uk-hidden]="option.hidden"
-              [class.uk-active]="(formControl.value === option.value) || selectedIndex === i">
-            <a (click)="selectOption(option, $event)" [class]="option.disabled ? 'uk-disabled uk-text-muted' : ''">
-              <span [attr.uk-tooltip]="(tooltip)?('title: ' + (option.tooltip ? option.tooltip : option.label) + '; delay: 500; pos:bottom-left'):null">{{ option.label }}</span>
-            </a>
-          </li>
-        </ul>
-      </div>
-    </div>
-    <span *ngIf="formControl?.invalid && formControl?.touched" class="uk-text-small uk-text-danger">
-      <span *ngIf="errors?.error">{{ errors?.error }}</span>
-      <span *ngIf="type === 'URL' || type === 'logoURL'">Please provide a valid URL (e.g. https://example.com)</span>
-    </span>
+    }
+    @if (formControl?.invalid && formControl?.touched) {
+      <span class="uk-text-small uk-text-danger">
+        @if (errors?.error) {
+          <span>{{ errors?.error }}</span>
+        }
+        @if (type === 'URL' || type === 'logoURL') {
+          <span>Please provide a valid URL (e.g. https://example.com)</span>
+        }
+      </span>
+    }
     <span class="uk-text-small uk-text-danger">
       <ng-content select="[error]"></ng-content>
     </span>
     <span class="uk-text-small uk-text-success">
       <ng-content select="[success]"></ng-content>
     </span>
-    <span *ngIf="formControl?.valid" class="uk-text-small uk-text-warning uk-margin-xsmall-top">
-      <ng-content select="[warning]"></ng-content>
-      <span *ngIf="!secure">
-        <span class="uk-text-bold">Note:</span> Prefer urls like "<span class="uk-text-bold">https://</span>example.com/my-secure-image.png"
+    @if (formControl?.valid) {
+      <span class="uk-text-small uk-text-warning uk-margin-xsmall-top">
+        <ng-content select="[warning]"></ng-content>
+        @if (!secure) {
+          <span>
+            <span class="uk-text-bold">Note:</span> Prefer urls like "<span class="uk-text-bold">https://</span>example.com/my-secure-image.png"
             instead of "<span class="uk-text-bold">http://</span>example.com/my-image.png".
             <span class="uk-text-bold">Browsers may not load non secure content.</span>
+          </span>
+        }
       </span>
-    </span>
+    }
     <i class="uk-text-small uk-text-meta uk-margin-xsmall-top">
       <ng-content select="[note]"></ng-content>
     </i>
-  `
+    `
 })
 
 export class InputComponent implements OnInit, OnDestroy, AfterViewInit, OnChanges {

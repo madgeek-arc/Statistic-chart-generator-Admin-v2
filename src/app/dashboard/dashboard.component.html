@@ -1,6 +1,6 @@
 <div id="sidebar" class="sidebar_main_swipe uk-flex uk-background-default"
-     [class.sidebar_main_active]="open"
-     [class.sidebar_mini]="!open">
+  [class.sidebar_main_active]="open"
+  [class.sidebar_mini]="!open">
   <div id="sidebar_main" uk-sticky="end: .sidebar_main_swipe;" offset="80">
     <div sidebar-content="">
       <div id="sidebar_toggle" (click)="toggleSidebar()"></div>
@@ -16,12 +16,12 @@
                 <div class="uk-width-expand@l uk-margin-small-left hide-on-close">
                   <div class="uk-text-truncate">{{ viewSelectionLabel }}</div>
                   <div class="uk-text-xsmall uk-text-wrap">
-                    <ng-container *ngIf="this.view.get('profile')?.value === null || this.view.get('profile')?.value === undefined">
+                    @if (this.view.get('profile')?.value === null || this.view.get('profile')?.value === undefined) {
                       Choose what type of data interest you
-                    </ng-container>
-                    <ng-container *ngIf="this.view.get('profile')?.value !== null && this.view.get('profile')?.value !== undefined">
+                    }
+                    @if (this.view.get('profile')?.value !== null && this.view.get('profile')?.value !== undefined) {
                       {{ this.view.get('profile')?.value }}
-                    </ng-container>
+                    }
                   </div>
                 </div>
               </a>
@@ -35,12 +35,12 @@
                 <div class="uk-width-expand@l uk-margin-small-left hide-on-close">
                   <div class="uk-text-truncate">{{ categorySelectionLabel }}</div>
                   <div class="uk-text-xsmall uk-text-wrap">
-                    <ng-container *ngIf="category.get('diagram')?.get('type')?.value == null">
+                    @if (category.get('diagram')?.get('type')?.value == null) {
                       Choose the type of diagram you want to make
-                    </ng-container>
-                    <ng-container *ngIf="category.get('diagram')?.get('type')?.value != null">
+                    }
+                    @if (category.get('diagram')?.get('type')?.value != null) {
                       {{ category.get('diagram')?.get('name')?.value }}
-                    </ng-container>
+                    }
                   </div>
                 </div>
               </a>
@@ -94,21 +94,21 @@
                 <app-category-selector (showCategorySelection)="updateStepper($event)" [categoryForm]="category"></app-category-selector>
               </li>
               <li class="" style="animation-duration: 200ms;">
-                <ng-container *ngIf="hasDataAndDiagramType">
+                @if (hasDataAndDiagramType) {
                   <app-dataseries-selector [selectedProfile]="profile"></app-dataseries-selector>
-                </ng-container>
+                }
               </li>
               <li class="" style="animation-duration: 200ms;">
-                <ng-container *ngIf="this.hasDataAndDiagramType">
+                @if (this.hasDataAndDiagramType) {
                   <app-customise-appearance></app-customise-appearance>
-                </ng-container>
+                }
               </li>
             </ul>
             <!-- <div class="actionButtons"> -->
             <div class="uk-width-1-1">
               <div class="uk-flex uk-flex-center actionButtons uk-padding-small">
                 <button class="uk-button uk-button-primary" (click)="submitData()"
-                        [disabled]="!(view.valid && category.valid && dataseries.valid)">Create Chart
+                  [disabled]="!(view.valid && category.valid && dataseries.valid)">Create Chart
                 </button>
                 <button class="uk-button uk-button-default uk-margin-small-left" (click)="clearData()">Clear</button>
               </div>
@@ -120,29 +120,32 @@
             <div class="uk-section uk-section-small uk-section-primary uk-preserve-color">
               <div class="uk-container uk-container-expand uk-padding-remove uk-margin-medium-right">
 
-<!--                <pre>{{ diagramSettings.value | json }}</pre>-->
+                <!--                <pre>{{ diagramSettings.value | json }}</pre>-->
 
                 <div class="iframe-container">
 
                   <div>
-                    <div *ngIf="dialogData?.rawDataObj; else notSubmittedYet">
-                      <div *ngIf="hasChanges" class="uk-alert-warning" uk-alert>
-                        <!--                      <a href class="uk-alert-close" uk-close></a>-->
-                        <p class="uk-text-bold">Your chart is not up to date</p>
-                        <p>You updated the values in the control panel, but the chart was not updated automatically. Run the query by clicking on the "Create Chart" button.</p>
-                      </div>
-                      <ng-container *ngIf="dialogData?.chartObj">
-                        <div class="container">
-                          <chart-frame [chart]="dialogData.chartObj"></chart-frame>
-                        </div>
-                        <div class="actions">
-                          <div class="label">
-                            <generated-short-url-field [shortUrl]="chartExportingService.chartTinyUrl$"></generated-short-url-field>
+                    @if (dialogData?.rawDataObj) {
+                      <div>
+                        @if (hasChanges) {
+                          <div class="uk-alert-warning" uk-alert>
+                            <!--                      <a href class="uk-alert-close" uk-close></a>-->
+                            <p class="uk-text-bold">Your chart is not up to date</p>
+                            <p>You updated the values in the control panel, but the chart was not updated automatically. Run the query by clicking on the "Create Chart" button.</p>
                           </div>
-                        </div>
-                      </ng-container>
-                    </div>
-                    <ng-template #notSubmittedYet>
+                        }
+                        @if (dialogData?.chartObj) {
+                          <div class="container">
+                            <chart-frame [chart]="dialogData.chartObj"></chart-frame>
+                          </div>
+                          <div class="actions">
+                            <div class="label">
+                              <generated-short-url-field [shortUrl]="chartExportingService.chartTinyUrl$"></generated-short-url-field>
+                            </div>
+                          </div>
+                        }
+                      </div>
+                    } @else {
                       <div class="uk-text-center uk-flex uk-flex-middle" [style.height.px]="frameHeight">
                         <div>
                           <div><span class="material-symbols-outlined" style="font-size: 80px">bar_chart_4_bars</span></div>
@@ -150,41 +153,47 @@
                           <p class="">Select values in highlighted field(s) in the control panel. Then run the query by clicking on the "Create chart" button.</p>
                         </div>
                       </div>
-                    </ng-template>
+                    }
                   </div>
 
                   <div class="uk-margin-medium-top">
                     <mat-tab-group mat-stretch-tabs="true" mat-align-tabs="start" animationDuration="250ms">
-                      <mat-tab label="Table" *ngIf="dialogData?.tableObj">
-                        <div class="container">
-                          <table-frame [table]="this.dialogData.tableObj"></table-frame>
-                        </div>
-                        <div class="actions">
-                          <div class="label">
-                            <generated-short-url-field [shortUrl]="chartExportingService.tableTinyUrl$"></generated-short-url-field>
+                      @if (dialogData?.tableObj) {
+                        <mat-tab label="Table">
+                          <div class="container">
+                            <table-frame [table]="this.dialogData.tableObj"></table-frame>
                           </div>
-                        </div>
-                      </mat-tab>
-                      <mat-tab label="Raw Chart Data" *ngIf="dialogData?.rawChartDataObj">
-                        <div class="container">
-                          <raw-chart-data-frame [rawChartData]="this.dialogData.rawChartDataObj"></raw-chart-data-frame>
-                        </div>
-                        <div class="actions">
-                          <div class="label">
-                            <generated-short-url-field [shortUrl]="chartExportingService.rawChartDataTinyUrl$"></generated-short-url-field>
+                          <div class="actions">
+                            <div class="label">
+                              <generated-short-url-field [shortUrl]="chartExportingService.tableTinyUrl$"></generated-short-url-field>
+                            </div>
                           </div>
-                        </div>
-                      </mat-tab>
-                      <mat-tab label="Raw Data" *ngIf="dialogData?.rawDataObj">
-                        <div class="container">
-                          <raw-data-frame [rawData]="this.dialogData.rawDataObj"></raw-data-frame>
-                        </div>
-                        <div class="actions">
-                          <div class="label">
-                            <generated-short-url-field [shortUrl]="chartExportingService.rawDataTinyUrl$"></generated-short-url-field>
+                        </mat-tab>
+                      }
+                      @if (dialogData?.rawChartDataObj) {
+                        <mat-tab label="Raw Chart Data">
+                          <div class="container">
+                            <raw-chart-data-frame [rawChartData]="this.dialogData.rawChartDataObj"></raw-chart-data-frame>
                           </div>
-                        </div>
-                      </mat-tab>
+                          <div class="actions">
+                            <div class="label">
+                              <generated-short-url-field [shortUrl]="chartExportingService.rawChartDataTinyUrl$"></generated-short-url-field>
+                            </div>
+                          </div>
+                        </mat-tab>
+                      }
+                      @if (dialogData?.rawDataObj) {
+                        <mat-tab label="Raw Data">
+                          <div class="container">
+                            <raw-data-frame [rawData]="this.dialogData.rawDataObj"></raw-data-frame>
+                          </div>
+                          <div class="actions">
+                            <div class="label">
+                              <generated-short-url-field [shortUrl]="chartExportingService.rawDataTinyUrl$"></generated-short-url-field>
+                            </div>
+                          </div>
+                        </mat-tab>
+                      }
                     </mat-tab-group>
                   </div>
                 </div>

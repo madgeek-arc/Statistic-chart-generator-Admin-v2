@@ -71,55 +71,55 @@
     <div class="uk-margin-medium-bottom">
       <h6 class="">Basic Types</h6>
       <div class="uk-text-center uk-grid-small" uk-grid>
-        <ng-container *ngFor="let basicDiagram of this.supportedChartTypes">
+        @for (basicDiagram of this.supportedChartTypes; track basicDiagram) {
           <div>
             <app-diagram-card-component (outputEvent)="moveToNextStep($event)" [diagram]="basicDiagram"></app-diagram-card-component>
           </div>
-        </ng-container>
+        }
       </div>
     </div>
 
     <div class="uk-margin-medium-bottom">
       <h6>Polar Types</h6>
       <div class="uk-text-center uk-grid-small" uk-grid>
-        <ng-container *ngFor="let polarDiagram of this.supportedPolarTypes">
+        @for (polarDiagram of this.supportedPolarTypes; track polarDiagram) {
           <div>
             <app-diagram-card-component (outputEvent)="moveToNextStep($event)" [diagram]="polarDiagram"></app-diagram-card-component>
           </div>
-        </ng-container>
+        }
       </div>
     </div>
 
     <div class="uk-margin-medium-bottom">
       <h6>Map Types</h6>
       <div class="uk-text-center uk-grid-small" uk-grid>
-        <ng-container *ngFor="let mapDiagram of this.supportedMaps">
+        @for (mapDiagram of this.supportedMaps; track mapDiagram) {
           <div>
             <app-diagram-card-component (outputEvent)="moveToNextStep($event)" [diagram]="mapDiagram"></app-diagram-card-component>
           </div>
-        </ng-container>
+        }
       </div>
     </div>
 
     <div class="uk-margin-medium-bottom">
       <h6>Special Types</h6>
       <div class="uk-text-center uk-grid-small" uk-grid>
-        <ng-container *ngFor="let specialDiagram of this.supportedSpecialisedDiagrams">
+        @for (specialDiagram of this.supportedSpecialisedDiagrams; track specialDiagram) {
           <div>
             <app-diagram-card-component (outputEvent)="moveToNextStep($event)" [diagram]="specialDiagram"></app-diagram-card-component>
           </div>
-        </ng-container>
+        }
       </div>
     </div>
 
     <div class="uk-margin-medium-bottom">
       <h6>Other Types</h6>
       <div class="uk-text-center uk-grid-small" uk-grid>
-        <ng-container *ngFor="let miscDiagram of this.supportedMiscTypes">
+        @for (miscDiagram of this.supportedMiscTypes; track miscDiagram) {
           <div>
             <app-diagram-card-component (outputEvent)="moveToNextStep($event)" [diagram]="miscDiagram"></app-diagram-card-component>
           </div>
-        </ng-container>
+        }
       </div>
     </div>
 
