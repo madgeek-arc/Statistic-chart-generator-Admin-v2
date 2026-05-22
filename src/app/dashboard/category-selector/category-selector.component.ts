@@ -14,8 +14,9 @@ import { FormFactoryService } from "../../services/form-factory-service/form-fac
 import { DiagramCategoryService } from "../../services/diagram-category-service/diagram-category.service";
 
 @Component({
-	selector: 'app-category-selector',
-	templateUrl: './category-selector.component.html',
+    selector: 'app-category-selector',
+    templateUrl: './category-selector.component.html',
+    standalone: false
 })
 export class CategorySelectorComponent implements OnInit {
   private formFactoryService = inject(FormFactoryService);

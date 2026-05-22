@@ -4,8 +4,9 @@ import { UrlProviderService } from '../../services/url-provider-service/url-prov
 import { RawChartDataModel } from "../../services/supported-libraries-service/models/chart-description-rawChartData.model";
 
 @Component({
-  selector: 'raw-chart-data-frame',
-  templateUrl: './raw-chart-data-frame.component.html',
+    selector: 'raw-chart-data-frame',
+    templateUrl: './raw-chart-data-frame.component.html',
+    standalone: false
 })
 export class RawChartDataFrameComponent implements OnInit, OnChanges {
 

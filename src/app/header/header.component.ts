@@ -5,9 +5,10 @@ import { ChartExportingService } from "../services/chart-exporting-service/chart
 import { UrlMappingService } from "../services/url-mapping-service/url-mapping-service";
 
 @Component({
-  selector: 'app-header',
-  templateUrl: './header.component.html',
-  styleUrls: ['./header.component.less']
+    selector: 'app-header',
+    templateUrl: './header.component.html',
+    styleUrls: ['./header.component.less'],
+    standalone: false
 })
 export class HeaderComponent {
 

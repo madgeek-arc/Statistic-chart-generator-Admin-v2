@@ -18,8 +18,9 @@ import { RawDataModel } from "../services/supported-libraries-service/models/des
 import UIkit from 'uikit';
 
 @Component({
-	selector: 'app-dashboard',
-	templateUrl: './dashboard.component.html',
+    selector: 'app-dashboard',
+    templateUrl: './dashboard.component.html',
+    standalone: false
 })
 
 export class DashboardComponent implements OnInit {

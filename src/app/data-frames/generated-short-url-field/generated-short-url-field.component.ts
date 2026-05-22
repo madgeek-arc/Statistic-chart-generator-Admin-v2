@@ -5,9 +5,10 @@ import { Observable } from 'rxjs';
 // import { NgbAlert } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
-  selector: 'generated-short-url-field',
-  templateUrl: './generated-short-url-field.component.html',
-  styleUrls: ['./generated-short-url-field.component.scss']
+    selector: 'generated-short-url-field',
+    templateUrl: './generated-short-url-field.component.html',
+    styleUrls: ['./generated-short-url-field.component.scss'],
+    standalone: false
 })
 export class GeneratedShortUrlFieldComponent implements OnChanges {
 

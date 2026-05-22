@@ -7,15 +7,14 @@ import { CountriesListingService } from "../../../../services/countries-listing-
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 
 @Component({
-  selector: 'app-high-maps',
-  templateUrl: './high-maps.component.html',
-  imports: [
-    ReactiveFormsModule,
-    InputComponent,
-    MatSlideToggleModule,
-    NgIf
-  ],
-  standalone: true
+    selector: 'app-high-maps',
+    templateUrl: './high-maps.component.html',
+    imports: [
+        ReactiveFormsModule,
+        InputComponent,
+        MatSlideToggleModule,
+        NgIf
+    ]
 })
 
 export class HighMapsComponent implements OnInit {

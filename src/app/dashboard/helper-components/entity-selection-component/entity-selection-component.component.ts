@@ -3,8 +3,9 @@ import { MatSelectChange } from '@angular/material/select';
 import { CachedEntityNode } from '../select-attribute/dynamic-entity-tree/entity-tree-nodes.types';
 
 @Component({
-	selector: 'app-entity-selection-component',
-	templateUrl: './entity-selection-component.component.html',
+    selector: 'app-entity-selection-component',
+    templateUrl: './entity-selection-component.component.html',
+    standalone: false
 })
 export class EntitySelectionComponentComponent implements OnInit {
 

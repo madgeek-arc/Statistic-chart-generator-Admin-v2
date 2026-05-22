@@ -79,10 +79,9 @@ declare var UIkit;
  *
  * */
 @Component({
-  selector: '[input]',
-  standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule, ReactiveFormsModule, MatDatepickerModule, MatNativeDateModule, MatInputModule],
-  template: `
+    selector: '[input]',
+    imports: [CommonModule, RouterModule, FormsModule, ReactiveFormsModule, MatDatepickerModule, MatNativeDateModule, MatInputModule],
+    template: `
     <div *ngIf="formControl" [id]="id">
       <div class="input-wrapper" [class.disabled]="formControl.disabled" [class.opened]="opened"
            [class.focused]="focused" [ngClass]="inputClass" [class.hint]="hint"

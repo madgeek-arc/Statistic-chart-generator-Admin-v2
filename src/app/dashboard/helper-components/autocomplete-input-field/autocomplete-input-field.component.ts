@@ -19,18 +19,17 @@ import { MaterialModule } from "../../../material/material.module";
 import { AsyncPipe, NgClass, NgForOf, NgIf } from "@angular/common";
 
 @Component({
-  selector: 'autocomplete-input-field',
-  templateUrl: './autocomplete-input-field.component.html',
-  styleUrls: ['./autocomplete-input-field.component.scss'],
-  standalone: true,
-  imports: [
-    MaterialModule,
-    NgClass,
-    ReactiveFormsModule,
-    NgForOf,
-    NgIf,
-    AsyncPipe
-  ]
+    selector: 'autocomplete-input-field',
+    templateUrl: './autocomplete-input-field.component.html',
+    styleUrls: ['./autocomplete-input-field.component.scss'],
+    imports: [
+        MaterialModule,
+        NgClass,
+        ReactiveFormsModule,
+        NgForOf,
+        NgIf,
+        AsyncPipe
+    ]
 })
 
 export class AutocompleteInputFieldComponent implements AfterViewInit, OnDestroy {

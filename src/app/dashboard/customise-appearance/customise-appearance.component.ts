@@ -3,8 +3,9 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { FormFactoryService } from "../../services/form-factory-service/form-factory-service";
 
 @Component({
-	selector: 'app-customise-appearance',
-	templateUrl: './customise-appearance.component.html',
+    selector: 'app-customise-appearance',
+    templateUrl: './customise-appearance.component.html',
+    standalone: false
 })
 
 export class CustomiseAppearanceComponent implements OnInit {
