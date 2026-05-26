@@ -30,13 +30,14 @@ import { ChartLoadingService } from "../../../services/chart-loading-service/cha
 import { DynamicTreeDatabase } from "../../../services/dynamic-tree-database/dynamic-tree-database.service";
 
 @Component({
-  selector: 'select-attribute',
-  templateUrl: './select-attribute.component.html',
-  styleUrls: ['./select-attribute.component.scss'],
-  viewProviders: [
-    { provide: ControlContainer, useExisting: FormGroupDirective }
-  ],
-  providers: [{ provide: NG_VALUE_ACCESSOR, useExisting: forwardRef(() => SelectAttributeComponent), multi: true }]
+    selector: 'select-attribute',
+    templateUrl: './select-attribute.component.html',
+    styleUrls: ['./select-attribute.component.scss'],
+    viewProviders: [
+        { provide: ControlContainer, useExisting: FormGroupDirective }
+    ],
+    providers: [{ provide: NG_VALUE_ACCESSOR, useExisting: forwardRef(() => SelectAttributeComponent), multi: true }],
+    standalone: false
 })
 
 export class SelectAttributeComponent implements ControlValueAccessor, OnChanges, AfterViewInit {

@@ -9,7 +9,8 @@ export interface FilterType {
 }
 
 @Pipe({
-	name: 'filterOperators'
+    name: 'filterOperators',
+    standalone: false
 })
 export class FilterOperatorsPipe implements PipeTransform {
 

@@ -6,7 +6,6 @@ import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { ChartExportingService } from '../services/chart-exporting-service/chart-exporting.service';
 import { FormFactoryService } from "../services/form-factory-service/form-factory-service";
 import { MappingProfilesService } from "../services/mapping-profiles-service/mapping-profiles.service";
-import UIkit from 'uikit';
 import { HighChartsChart } from "../services/supported-libraries-service/models/chart-description-HighCharts.model";
 import {
   GoogleChartsChart,
@@ -16,10 +15,12 @@ import { HighMapsMap } from "../services/supported-libraries-service/models/char
 import { EChartsChart } from "../services/supported-libraries-service/models/chart-description-eCharts.model";
 import { RawChartDataModel } from "../services/supported-libraries-service/models/chart-description-rawChartData.model";
 import { RawDataModel } from "../services/supported-libraries-service/models/description-rawData.model";
+import UIkit from 'uikit';
 
 @Component({
-	selector: 'app-dashboard',
-	templateUrl: './dashboard.component.html',
+    selector: 'app-dashboard',
+    templateUrl: './dashboard.component.html',
+    standalone: false
 })
 
 export class DashboardComponent implements OnInit {

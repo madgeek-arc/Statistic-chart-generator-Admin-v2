@@ -4,8 +4,9 @@ import { UrlProviderService } from '../../services/url-provider-service/url-prov
 import { RawDataModel } from "../../services/supported-libraries-service/models/description-rawData.model";
 
 @Component({
-  selector: 'raw-data-frame',
-  templateUrl: './raw-data-frame.component.html',
+    selector: 'raw-data-frame',
+    templateUrl: './raw-data-frame.component.html',
+    standalone: false
 })
 export class RawDataFrameComponent implements OnInit, OnChanges {
 

@@ -4,9 +4,10 @@ import { UrlProviderService } from '../../services/url-provider-service/url-prov
 import { GoogleChartsTable } from "../../services/supported-libraries-service/models/chart-description-GoogleCharts.model";
 
 @Component({
-  selector: 'table-frame',
-  templateUrl: './table-frame.component.html',
-  styleUrls: ['./table-frame.component.scss']
+    selector: 'table-frame',
+    templateUrl: './table-frame.component.html',
+    styleUrls: ['./table-frame.component.scss'],
+    standalone: false
 })
 export class TableFrameComponent implements OnInit, OnChanges {
 

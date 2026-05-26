@@ -1,8 +1,9 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({
-	selector: 'app-card-component',
-	templateUrl: './card-component.component.html',
+    selector: 'app-card-component',
+    templateUrl: './card-component.component.html',
+    standalone: false
 })
 export class CardComponentComponent {
 

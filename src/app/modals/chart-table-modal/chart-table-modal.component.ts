@@ -21,11 +21,10 @@ export interface ChartTableModalContext {
 }
 
 @Component({
-  selector: 'chart-table-modal',
-  templateUrl: 'chart-table-modal.component.html',
-  styleUrls: ['chart-table-modal.component.scss'],
-  standalone: true,
-  imports: [MaterialModule, FrameModule]
+    selector: 'chart-table-modal',
+    templateUrl: 'chart-table-modal.component.html',
+    styleUrls: ['chart-table-modal.component.scss'],
+    imports: [MaterialModule, FrameModule]
 })
 
 export class ChartTableModalComponent {

@@ -40,7 +40,7 @@ class HighChartsDescription {
 			borderWidth: 0,
 			plotBorderColor: '#cccccc',
 			plotBorderWidth: 0,
-			zoomType: 'xy'
+			zooming: {type: "xy"}
 		}
 		this.title = { style: {} } as Highcharts.TitleOptions;
 		this.subtitle = { style: {} } as Highcharts.SubtitleOptions;

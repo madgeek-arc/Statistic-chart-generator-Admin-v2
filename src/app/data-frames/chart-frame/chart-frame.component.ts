@@ -7,9 +7,10 @@ import { HighMapsMap } from "../../services/supported-libraries-service/models/c
 import { EChartsChart } from "../../services/supported-libraries-service/models/chart-description-eCharts.model";
 
 @Component({
-	selector: 'chart-frame',
-	templateUrl: './chart-frame.component.html',
-	styleUrls: ['./chart-frame.component.scss']
+    selector: 'chart-frame',
+    templateUrl: './chart-frame.component.html',
+    styleUrls: ['./chart-frame.component.scss'],
+    standalone: false
 })
 
 export class ChartFrameComponent implements OnInit, OnChanges {
