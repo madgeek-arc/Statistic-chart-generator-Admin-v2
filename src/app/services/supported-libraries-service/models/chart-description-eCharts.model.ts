@@ -1,88 +1,99 @@
-import type { EChartOption, EChartTitleOption } from 'echarts';
 import { ChartInfo } from './chart-query.model';
+import type {
+  DataZoomComponentOption,
+  SeriesOption,
+  TitleComponentOption,
+  TooltipComponentOption,
+  XAXisComponentOption,
+  YAXisComponentOption
+} from 'echarts';
 
 export class EChartsChart {
-    library: string;
-    orderBy: string;
-    chartDescription: EChartsDescription;
+  library: string;
+  orderBy: string;
+  chartDescription: EChartsDescription;
 
-    constructor() {
-        this.library = 'eCharts';
-        this.orderBy = 'xaxis';
-        this.chartDescription = new EChartsDescription();
-    }
+  constructor() {
+    this.library = 'eCharts';
+    this.orderBy = 'xaxis';
+    this.chartDescription = new EChartsDescription();
+  }
 }
 
 class EChartsDescription {
 
-    title?: EChartTitleOption;
-    xAxis?: EChartOption.XAxis;
-    yAxis?: EChartOption.YAxis;
-    series: EChartOption.Series[];
-    backgroundColor?: EChartOption.Color;
-    tooltip?: EChartOption.Tooltip;
-    dataZoom?: EChartOption.DataZoom[];
-    color: string[];
+  title?: TitleComponentOption;
+  xAxis?: XAXisComponentOption;
+  yAxis?: YAXisComponentOption;
+  series: SeriesOption[];
+  backgroundColor?: string;
+  tooltip?: TooltipComponentOption;
+  dataZoom?: DataZoomComponentOption[];
+  color: string[];
 
-    // not Echarts fields
-    toolbox: ECToolbox;
-    legend: ECLegend;
+  // not Echarts fields
+  toolbox: ECToolbox;
+  legend: ECLegend;
 
 
-    queries: Array<ChartInfo> = [];
+  queries: Array<ChartInfo> = [];
 
-    constructor() {
+  constructor() {
 
-        this.title = {} as EChartTitleOption;
-        this.yAxis = {} as EChartOption.YAxis;
-        this.xAxis = {} as EChartOption.XAxis
-        this.toolbox = new ECToolbox();
-        this.legend = new ECLegend();
-        this.tooltip = {} as EChartOption.Tooltip;
-        this.dataZoom = [
-            // Xaxis Zoom options
-            { show: false },
-            // Yaxis Zoom options
-            { show:false, yAxisIndex:0}
-        ];
-        this.series = [];
-    }
+    this.title = {} as TitleComponentOption;
+    this.yAxis = {} as YAXisComponentOption;
+    this.xAxis = {} as XAXisComponentOption;
+    this.tooltip = {} as TooltipComponentOption;
+    this.toolbox = new ECToolbox();
+    this.legend = new ECLegend();
+    this.dataZoom = [
+      // Xaxis Zoom options
+      {show: false},
+      // Yaxis Zoom options
+      {show: false, yAxisIndex: 0}
+    ];
+    this.series = [];
+  }
 }
+
 export class ECToolbox {
-    show: boolean;
-    right: string | number = 'auto';
-    left: string | number = 'auto';
-    top: string | number = 'auto';
-    bottom: string | number = 'auto';
-    feature: ECToolboxFeature;
-    constructor() {
-        this.show = false;
-        this.feature = new ECToolboxFeature();
-    }
+  show: boolean;
+  right: string | number = 'auto';
+  left: string | number = 'auto';
+  top: string | number = 'auto';
+  bottom: string | number = 'auto';
+  feature: ECToolboxFeature;
+
+  constructor() {
+    this.show = false;
+    this.feature = new ECToolboxFeature();
+  }
 }
 
 export class ECToolboxFeature {
-    saveAsImage: ECToolboxFeatureItem;
-    dataView: ECToolboxFeatureItem;
-    constructor() {
-        this.saveAsImage = new ECToolboxFeatureItem('Save as image');
-        this.dataView = new ECToolboxFeatureItem('Data view');
-    }
+  saveAsImage: ECToolboxFeatureItem;
+  dataView: ECToolboxFeatureItem;
+
+  constructor() {
+    this.saveAsImage = new ECToolboxFeatureItem('Save as image');
+    this.dataView = new ECToolboxFeatureItem('Data view');
+  }
 }
 
 export class ECToolboxFeatureItem {
-    title: string;
-    constructor(title: string) {
-        this.title = title;
-    }
+  title: string;
+
+  constructor(title: string) {
+    this.title = title;
+  }
 }
 
 export class ECLegend {
-    show: boolean = true;
-    orient: 'horizontal' | 'vertical' = 'horizontal';
-    right: string | number = 'auto';
-    left: string | number = 'auto';
-    top: string | number = 'auto';
-    bottom: string | number = 'auto';
+  show: boolean = true;
+  orient: 'horizontal' | 'vertical' = 'horizontal';
+  right: string | number = 'auto';
+  left: string | number = 'auto';
+  top: string | number = 'auto';
+  bottom: string | number = 'auto';
 }
 
