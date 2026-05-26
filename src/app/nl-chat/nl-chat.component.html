@@ -1,0 +1,206 @@
+<div class="nl-chat-container">
+
+  <!-- Phase indicator -->
+  <mat-card class="phase-indicator">
+    <mat-card-content>
+      <div class="phase-steps">
+        <mat-chip-set>
+          <mat-chip [highlighted]="phase() === 'query'" [disabled]="phase() !== 'query'">
+            <mat-icon>search</mat-icon>
+            1. Define Query
+          </mat-chip>
+          <mat-chip [highlighted]="phase() === 'options'" [disabled]="phase() !== 'options'">
+            <mat-icon>palette</mat-icon>
+            2. Chart Appearance
+          </mat-chip>
+          <mat-chip [highlighted]="phase() === 'done'" [disabled]="phase() !== 'done'">
+            <mat-icon>check_circle</mat-icon>
+            3. Complete
+          </mat-chip>
+        </mat-chip-set>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Error message -->
+  <mat-card *ngIf="error()" class="error-card">
+    <mat-card-content>
+      <div class="error-message">
+        <mat-icon>error</mat-icon>
+        <span>{{ error() }}</span>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Phase 1: Data query conversation -->
+  <ng-container *ngIf="phase() === 'query'">
+    <mat-card class="conversation-card">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>chat</mat-icon>
+          Describe Your Data
+        </mat-card-title>
+        <mat-card-subtitle>
+          Tell the AI what data you want to visualize
+        </mat-card-subtitle>
+      </mat-card-header>
+
+      <mat-card-content>
+        <div class="messages-container">
+          <div *ngFor="let msg of queryMessages()"
+               [class]="'message message-' + msg.role">
+            <div class="message-header">
+              <mat-icon>{{ msg.role === 'user' ? 'person' : 'smart_toy' }}</mat-icon>
+              <strong>{{ msg.role === 'user' ? 'You' : 'AI Assistant' }}</strong>
+            </div>
+            <div class="message-text">{{ msg.text }}</div>
+          </div>
+
+          <div *ngIf="loading()" class="message message-assistant">
+            <div class="message-header">
+              <mat-icon>smart_toy</mat-icon>
+              <strong>AI Assistant</strong>
+            </div>
+            <div class="message-text">
+              <mat-spinner diameter="20"></mat-spinner>
+              <em>Thinking...</em>
+            </div>
+          </div>
+        </div>
+      </mat-card-content>
+
+      <mat-card-actions class="input-actions">
+        <mat-form-field class="input-field" appearance="outline">
+          <mat-label>Your message</mat-label>
+          <input matInput
+                 [(ngModel)]="inputText"
+                 placeholder="e.g., Show me publications per year"
+                 [disabled]="loading()"
+                 (keydown.enter)="send()" />
+        </mat-form-field>
+        <button mat-raised-button
+                color="primary"
+                (click)="send()"
+                [disabled]="loading() || !inputText().trim()">
+          <mat-icon>send</mat-icon>
+          Send
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  </ng-container>
+
+  <!-- Phase 2: Chart appearance conversation -->
+  <ng-container *ngIf="phase() === 'options'">
+    <mat-card class="info-card">
+      <mat-card-content>
+        <div class="query-ready">
+          <mat-icon>check_circle</mat-icon>
+          <div class="query-info">
+            <strong>Query Ready:</strong> {{ canonicalNl() }}
+            <div *ngIf="queryDescription()" class="query-description">
+              <em>{{ queryDescription() }}</em>
+            </div>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="conversation-card">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>palette</mat-icon>
+          Customize Chart Appearance
+        </mat-card-title>
+        <mat-card-subtitle>
+          Describe how you'd like the chart to look (or skip to use defaults)
+        </mat-card-subtitle>
+      </mat-card-header>
+
+      <mat-card-content>
+        <div class="messages-container">
+          <div *ngFor="let msg of optionsMessages()"
+               [class]="'message message-' + msg.role">
+            <div class="message-header">
+              <mat-icon>{{ msg.role === 'user' ? 'person' : 'smart_toy' }}</mat-icon>
+              <strong>{{ msg.role === 'user' ? 'You' : 'AI Assistant' }}</strong>
+            </div>
+            <div class="message-text">{{ msg.text }}</div>
+          </div>
+
+          <div *ngIf="loading()" class="message message-assistant">
+            <div class="message-header">
+              <mat-icon>smart_toy</mat-icon>
+              <strong>AI Assistant</strong>
+            </div>
+            <div class="message-text">
+              <mat-spinner diameter="20"></mat-spinner>
+              <em>Thinking...</em>
+            </div>
+          </div>
+        </div>
+      </mat-card-content>
+
+      <mat-card-actions class="input-actions">
+        <mat-form-field class="input-field" appearance="outline">
+          <mat-label>Your message</mat-label>
+          <input matInput
+                 [(ngModel)]="inputText"
+                 placeholder="e.g., Blue bars with a red title"
+                 [disabled]="loading()"
+                 (keydown.enter)="send()" />
+        </mat-form-field>
+        <button mat-raised-button
+                color="primary"
+                (click)="send()"
+                [disabled]="loading() || !inputText().trim()">
+          <mat-icon>send</mat-icon>
+          Send
+        </button>
+        <button mat-button
+                (click)="skipOptions()"
+                [disabled]="loading()">
+          <mat-icon>skip_next</mat-icon>
+          Skip / Use Defaults
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  </ng-container>
+
+  <!-- Phase 3: Chart output -->
+  <ng-container *ngIf="phase() === 'done'">
+    <mat-card class="success-card">
+      <mat-card-content>
+        <div class="success-message">
+          <mat-icon>check_circle</mat-icon>
+          <div>
+            <strong>Chart Ready!</strong>
+            <p>Your AI-generated chart has been created successfully.</p>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="result-card">
+      <mat-card-header>
+        <mat-card-title>Result Summary</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="result-details">
+          <div class="result-item">
+            <strong>Query:</strong> {{ canonicalNl() }}
+          </div>
+          <div class="result-item" *ngIf="queryDescription()">
+            <strong>Description:</strong> {{ queryDescription() }}
+          </div>
+          <div class="result-item" *ngIf="canonicalDescription()">
+            <strong>Appearance:</strong> {{ canonicalDescription() }}
+          </div>
+          <div class="result-item">
+            <strong>Library:</strong> {{ library() }}
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </ng-container>
+
+</div>

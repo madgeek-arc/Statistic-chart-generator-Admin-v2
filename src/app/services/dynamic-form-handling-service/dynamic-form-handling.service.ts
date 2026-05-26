@@ -58,7 +58,7 @@ export class DynamicFormHandlingService {
 		// 	return false;
 		// }
 
-    if (this.formFactoryService.getFormRoot().invalid) {
+    if (this.formFactoryService.getFormRoot()?.invalid) {
 
       this.formFactoryService.getFormRoot().markAllAsTouched();
 

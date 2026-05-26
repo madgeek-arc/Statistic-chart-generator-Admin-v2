@@ -111,6 +111,11 @@
                   [disabled]="!(view.valid && category.valid && dataseries.valid)">Create Chart
                 </button>
                 <button class="uk-button uk-button-default uk-margin-small-left" (click)="clearData()">Clear</button>
+                <button class="uk-button uk-button-secondary uk-margin-small-left" (click)="openAiChat()"
+                  title="Use AI to generate your chart with natural language">
+                  <span class="material-symbols-outlined uk-margin-small-right" style="vertical-align: middle;">smart_toy</span>
+                  AI Chat
+                </button>
               </div>
             </div>
           </div>
