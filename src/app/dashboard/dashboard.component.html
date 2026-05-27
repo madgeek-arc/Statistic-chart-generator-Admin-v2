@@ -95,7 +95,23 @@
               </li>
               <li class="" style="animation-duration: 200ms;">
                 @if (hasDataAndDiagramType) {
-                  <app-dataseries-selector [selectedProfile]="profile"></app-dataseries-selector>
+                  <div class="uk-section uk-section-xsmall uk-section-primary uk-preserve-color">
+                    <div class="uk-container uk-container-expand uk-padding-remove uk-margin-medium-left">
+                      <div class="uk-padding-small uk-padding-remove-vertical uk-padding-remove-right">
+
+                        <ul class="uk-subnav uk-subnav-pill" uk-switcher>
+                          <li class="uk-active"><a href="#"><mat-icon>construction</mat-icon></a></li>
+                          <li><a href="#"><mat-icon>smart_toy</mat-icon></a></li>
+                        </ul>
+
+                        <div class="uk-switcher uk-margin">
+                          <app-dataseries-selector [selectedProfile]="profile"></app-dataseries-selector>
+                          <app-nl-chat (chatComplete)="onChatComplete($event)"></app-nl-chat>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
                 }
               </li>
               <li class="" style="animation-duration: 200ms;">
@@ -111,11 +127,11 @@
                   [disabled]="!(view.valid && category.valid && dataseries.valid)">Create Chart
                 </button>
                 <button class="uk-button uk-button-default uk-margin-small-left" (click)="clearData()">Clear</button>
-                <button class="uk-button uk-button-secondary uk-margin-small-left" (click)="openAiChat()"
-                  title="Use AI to generate your chart with natural language">
-                  <span class="material-symbols-outlined uk-margin-small-right" style="vertical-align: middle;">smart_toy</span>
-                  AI Chat
-                </button>
+<!--                <button class="uk-button uk-button-secondary uk-margin-small-left" (click)="openAiChat()"-->
+<!--                  title="Use AI to generate your chart with natural language">-->
+<!--                  <span class="material-symbols-outlined uk-margin-small-right" style="vertical-align: middle;">smart_toy</span>-->
+<!--                  AI Chat-->
+<!--                </button>-->
               </div>
             </div>
           </div>

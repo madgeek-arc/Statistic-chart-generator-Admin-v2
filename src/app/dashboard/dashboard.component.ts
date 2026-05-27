@@ -16,7 +16,6 @@ import { EChartsChart } from "../services/supported-libraries-service/models/cha
 import { RawChartDataModel } from "../services/supported-libraries-service/models/chart-description-rawChartData.model";
 import { RawDataModel } from "../services/supported-libraries-service/models/description-rawData.model";
 import { MatDialog } from '@angular/material/dialog';
-import { NlChatModalComponent } from "../modals/nl-chat-modal/nl-chat-modal.component";
 import { NlChatResult } from "../nl-chat/nl-chat.component";
 import UIkit from 'uikit';
 
@@ -31,7 +30,6 @@ export class DashboardComponent implements OnInit {
   private profileService = inject(MappingProfilesService);
   private formFactory = inject(FormFactoryService);
   private dynamicFormHandlingService = inject(DynamicFormHandlingService);
-  private dialog = inject(MatDialog);
 
 
 	diagramSettings: FormGroup;
@@ -258,24 +256,15 @@ export class DashboardComponent implements OnInit {
 	}
 
 	/**
-	 * Open the AI chat dialog to generate a chart using natural language
+	 * Handles the completion of the AI chat session.
+	 * @param result - The result of the chat session.
 	 */
-	openAiChat(): void {
-		const dialogRef = this.dialog.open(NlChatModalComponent, {
-			width: '900px',
-			maxWidth: '95vw',
-			maxHeight: '95vh',
-			disableClose: false,
-			autoFocus: true
-		});
-
-		dialogRef.afterClosed().subscribe((result: NlChatResult | undefined) => {
-			if (result) {
-				console.log('AI Chat completed with result:', result);
-				// TODO: Integrate the NL query result with the form
-				// For now, just log it. You can extend this to populate the form
-				// or directly submit the chart request
-			}
-		});
-	}
+  onChatComplete(result: NlChatResult): void {
+    if (result) {
+      console.log('AI Chat completed with result:', result);
+      // TODO: Integrate the NL query result with the form
+      // For now, just log it. You can extend this to populate the form
+      // or directly submit the chart request
+    }
+  }
 }

@@ -1,19 +1,12 @@
-import { Component, DestroyRef, inject, signal, output } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { AfterViewChecked, Component, DestroyRef, ElementRef, inject, output, signal, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { MatCardModule } from '@angular/material/card';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatIconModule } from '@angular/material/icon';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import {
-  NlChatService,
-  ChatResponse,
-  OptionsResponse,
-  NlQuery
-} from '../services/nl-chat-service/nl-chat.service';
+import { ChatResponse, NlChatService, NlQuery, OptionsResponse } from '../services/nl-chat-service/nl-chat.service';
 import { ChartLoadingService } from '../services/chart-loading-service/chart-loading.service';
 import { MappingProfilesService } from '../services/mapping-profiles-service/mapping-profiles.service';
 import { MaterialModule } from "../material/material.module";
@@ -38,7 +31,6 @@ export interface NlChatResult {
   selector: 'app-nl-chat',
   standalone: true,
   imports: [
-    CommonModule,
     FormsModule,
     MaterialModule,
     MatInputModule,
@@ -50,11 +42,15 @@ export interface NlChatResult {
   templateUrl: './nl-chat.component.html',
   styleUrl: './nl-chat.component.less'
 })
-export class NlChatComponent {
+export class NlChatComponent implements AfterViewChecked {
   private destroyRef = inject(DestroyRef);
   private nlChatService = inject(NlChatService);
   private chartLoadingService = inject(ChartLoadingService);
   private profileService = inject(MappingProfilesService);
+
+  // ViewChild references for message containers
+  @ViewChild('queryMessagesContainer') queryMessagesContainer?: ElementRef;
+  @ViewChild('optionsMessagesContainer') optionsMessagesContainer?: ElementRef;
 
   // Output event when chat is complete
   chatComplete = output<NlChatResult>();
@@ -91,6 +87,25 @@ export class NlChatComponent {
         }
       }
     });
+  }
+
+  ngAfterViewChecked(): void {
+    // Auto-scroll to the bottom when messages change
+    this.scrollToBottom();
+  }
+
+  private scrollToBottom(): void {
+    try {
+      if (this.phase() === 'query' && this.queryMessagesContainer) {
+        const element = this.queryMessagesContainer.nativeElement;
+        element.scrollTop = element.scrollHeight;
+      } else if (this.phase() === 'options' && this.optionsMessagesContainer) {
+        const element = this.optionsMessagesContainer.nativeElement;
+        element.scrollTop = element.scrollHeight;
+      }
+    } catch (err) {
+      // Silently handle any scrolling errors
+    }
   }
 
   send(): void {

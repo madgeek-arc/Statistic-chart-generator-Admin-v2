@@ -23,17 +23,19 @@
   </mat-card>
 
   <!-- Error message -->
-  <mat-card *ngIf="error()" class="error-card">
-    <mat-card-content>
-      <div class="error-message">
-        <mat-icon>error</mat-icon>
-        <span>{{ error() }}</span>
-      </div>
-    </mat-card-content>
-  </mat-card>
+  @if (error()) {
+    <mat-card class="error-card">
+      <mat-card-content>
+        <div class="error-message">
+          <mat-icon>error</mat-icon>
+          <span>{{ error() }}</span>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  }
 
   <!-- Phase 1: Data query conversation -->
-  <ng-container *ngIf="phase() === 'query'">
+  @if (phase() === 'query') {
     <mat-card class="conversation-card">
       <mat-card-header>
         <mat-card-title>
@@ -44,67 +46,68 @@
           Tell the AI what data you want to visualize
         </mat-card-subtitle>
       </mat-card-header>
-
       <mat-card-content>
-        <div class="messages-container">
-          <div *ngFor="let msg of queryMessages()"
-               [class]="'message message-' + msg.role">
-            <div class="message-header">
-              <mat-icon>{{ msg.role === 'user' ? 'person' : 'smart_toy' }}</mat-icon>
-              <strong>{{ msg.role === 'user' ? 'You' : 'AI Assistant' }}</strong>
+        <div class="messages-container" #queryMessagesContainer>
+          @for (msg of queryMessages(); track msg) {
+            <div [class]="'nl-message message-' + msg.role">
+              <div class="message-header">
+                <mat-icon>{{ msg.role === 'user' ? 'person' : 'smart_toy' }}</mat-icon>
+                <strong>{{ msg.role === 'user' ? 'You' : 'AI Assistant' }}</strong>
+              </div>
+              <div class="message-text">{{ msg.text }}</div>
             </div>
-            <div class="message-text">{{ msg.text }}</div>
-          </div>
-
-          <div *ngIf="loading()" class="message message-assistant">
-            <div class="message-header">
-              <mat-icon>smart_toy</mat-icon>
-              <strong>AI Assistant</strong>
+          }
+          @if (loading()) {
+            <div class="nl-message message-assistant">
+              <div class="message-header">
+                <mat-icon>smart_toy</mat-icon>
+                <strong>AI Assistant</strong>
+              </div>
+              <div class="message-text">
+                <mat-spinner diameter="20"></mat-spinner>
+                <em>Thinking...</em>
+              </div>
             </div>
-            <div class="message-text">
-              <mat-spinner diameter="20"></mat-spinner>
-              <em>Thinking...</em>
-            </div>
-          </div>
+          }
         </div>
       </mat-card-content>
-
       <mat-card-actions class="input-actions">
         <mat-form-field class="input-field" appearance="outline">
           <mat-label>Your message</mat-label>
           <input matInput
-                 [(ngModel)]="inputText"
-                 placeholder="e.g., Show me publications per year"
-                 [disabled]="loading()"
-                 (keydown.enter)="send()" />
+            [(ngModel)]="inputText"
+            placeholder="e.g., Show me publications per year"
+            [disabled]="loading()"
+            (keydown.enter)="send()" />
         </mat-form-field>
         <button mat-raised-button
-                color="primary"
-                (click)="send()"
-                [disabled]="loading() || !inputText().trim()">
+          color="primary"
+          (click)="send()"
+          [disabled]="loading() || !inputText().trim()">
           <mat-icon>send</mat-icon>
           Send
         </button>
       </mat-card-actions>
     </mat-card>
-  </ng-container>
+  }
 
   <!-- Phase 2: Chart appearance conversation -->
-  <ng-container *ngIf="phase() === 'options'">
+  @if (phase() === 'options') {
     <mat-card class="info-card">
       <mat-card-content>
         <div class="query-ready">
           <mat-icon>check_circle</mat-icon>
           <div class="query-info">
             <strong>Query Ready:</strong> {{ canonicalNl() }}
-            <div *ngIf="queryDescription()" class="query-description">
-              <em>{{ queryDescription() }}</em>
-            </div>
+            @if (queryDescription()) {
+              <div class="query-description">
+                <em>{{ queryDescription() }}</em>
+              </div>
+            }
           </div>
         </div>
       </mat-card-content>
     </mat-card>
-
     <mat-card class="conversation-card">
       <mat-card-header>
         <mat-card-title>
@@ -115,59 +118,59 @@
           Describe how you'd like the chart to look (or skip to use defaults)
         </mat-card-subtitle>
       </mat-card-header>
-
       <mat-card-content>
-        <div class="messages-container">
-          <div *ngFor="let msg of optionsMessages()"
-               [class]="'message message-' + msg.role">
-            <div class="message-header">
-              <mat-icon>{{ msg.role === 'user' ? 'person' : 'smart_toy' }}</mat-icon>
-              <strong>{{ msg.role === 'user' ? 'You' : 'AI Assistant' }}</strong>
+        <div class="messages-container" #optionsMessagesContainer>
+          @for (msg of optionsMessages(); track msg) {
+            <div [class]="'nl-message message-' + msg.role">
+              <div class="message-header">
+                <mat-icon>{{ msg.role === 'user' ? 'person' : 'smart_toy' }}</mat-icon>
+                <strong>{{ msg.role === 'user' ? 'You' : 'AI Assistant' }}</strong>
+              </div>
+              <div class="message-text">{{ msg.text }}</div>
             </div>
-            <div class="message-text">{{ msg.text }}</div>
-          </div>
-
-          <div *ngIf="loading()" class="message message-assistant">
-            <div class="message-header">
-              <mat-icon>smart_toy</mat-icon>
-              <strong>AI Assistant</strong>
+          }
+          @if (loading()) {
+            <div class="nl-message message-assistant">
+              <div class="message-header">
+                <mat-icon>smart_toy</mat-icon>
+                <strong>AI Assistant</strong>
+              </div>
+              <div class="message-text">
+                <mat-spinner diameter="20"></mat-spinner>
+                <em>Thinking...</em>
+              </div>
             </div>
-            <div class="message-text">
-              <mat-spinner diameter="20"></mat-spinner>
-              <em>Thinking...</em>
-            </div>
-          </div>
+          }
         </div>
       </mat-card-content>
-
       <mat-card-actions class="input-actions">
         <mat-form-field class="input-field" appearance="outline">
           <mat-label>Your message</mat-label>
           <input matInput
-                 [(ngModel)]="inputText"
-                 placeholder="e.g., Blue bars with a red title"
-                 [disabled]="loading()"
-                 (keydown.enter)="send()" />
+            [(ngModel)]="inputText"
+            placeholder="e.g., Blue bars with a red title"
+            [disabled]="loading()"
+            (keydown.enter)="send()" />
         </mat-form-field>
         <button mat-raised-button
-                color="primary"
-                (click)="send()"
-                [disabled]="loading() || !inputText().trim()">
+          color="primary"
+          (click)="send()"
+          [disabled]="loading() || !inputText().trim()">
           <mat-icon>send</mat-icon>
           Send
         </button>
         <button mat-button
-                (click)="skipOptions()"
-                [disabled]="loading()">
+          (click)="skipOptions()"
+          [disabled]="loading()">
           <mat-icon>skip_next</mat-icon>
           Skip / Use Defaults
         </button>
       </mat-card-actions>
     </mat-card>
-  </ng-container>
+  }
 
   <!-- Phase 3: Chart output -->
-  <ng-container *ngIf="phase() === 'done'">
+  @if (phase() === 'done') {
     <mat-card class="success-card">
       <mat-card-content>
         <div class="success-message">
@@ -179,7 +182,6 @@
         </div>
       </mat-card-content>
     </mat-card>
-
     <mat-card class="result-card">
       <mat-card-header>
         <mat-card-title>Result Summary</mat-card-title>
@@ -189,18 +191,22 @@
           <div class="result-item">
             <strong>Query:</strong> {{ canonicalNl() }}
           </div>
-          <div class="result-item" *ngIf="queryDescription()">
-            <strong>Description:</strong> {{ queryDescription() }}
-          </div>
-          <div class="result-item" *ngIf="canonicalDescription()">
-            <strong>Appearance:</strong> {{ canonicalDescription() }}
-          </div>
+          @if (queryDescription()) {
+            <div class="result-item">
+              <strong>Description:</strong> {{ queryDescription() }}
+            </div>
+          }
+          @if (canonicalDescription()) {
+            <div class="result-item">
+              <strong>Appearance:</strong> {{ canonicalDescription() }}
+            </div>
+          }
           <div class="result-item">
             <strong>Library:</strong> {{ library() }}
           </div>
         </div>
       </mat-card-content>
     </mat-card>
-  </ng-container>
+  }
 
 </div>
