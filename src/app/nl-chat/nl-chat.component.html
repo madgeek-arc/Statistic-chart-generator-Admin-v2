@@ -5,15 +5,18 @@
     <mat-card-content>
       <div class="phase-steps">
         <mat-chip-set>
-          <mat-chip [highlighted]="phase() === 'query'" [disabled]="phase() !== 'query'">
+<!--          <mat-chip [highlighted]="phase() === 'query'" [disabled]="phase() !== 'query'">-->
+          <mat-chip [highlighted]="phase() === 'query'" (click)="phase.set('query')">
             <mat-icon>search</mat-icon>
             1. Define Query
           </mat-chip>
-          <mat-chip [highlighted]="phase() === 'options'" [disabled]="phase() !== 'options'">
+          <mat-chip [highlighted]="phase() === 'options'" (click)="phase.set('options')">
+<!--          <mat-chip [highlighted]="phase() === 'options'" [disabled]="phase() !== 'options'">-->
             <mat-icon>palette</mat-icon>
             2. Chart Appearance
           </mat-chip>
-          <mat-chip [highlighted]="phase() === 'done'" [disabled]="phase() !== 'done'">
+          <mat-chip [highlighted]="phase() === 'done'">
+<!--          <mat-chip [highlighted]="phase() === 'done'" [disabled]="phase() !== 'done'">-->
             <mat-icon>check_circle</mat-icon>
             3. Complete
           </mat-chip>
@@ -54,7 +57,7 @@
                 <mat-icon>{{ msg.role === 'user' ? 'person' : 'smart_toy' }}</mat-icon>
                 <strong>{{ msg.role === 'user' ? 'You' : 'AI Assistant' }}</strong>
               </div>
-              <div class="message-text">{{ msg.text }}</div>
+              <markdown class="message-text" [data]="msg.text"></markdown>
             </div>
           }
           @if (loading()) {
@@ -204,6 +207,11 @@
           <div class="result-item">
             <strong>Library:</strong> {{ library() }}
           </div>
+          @if (chartData()) {
+            <div class="result-item">
+              <strong>Data:</strong> <pre>{{ chartData() | json }}</pre>
+            </div>
+          }
         </div>
       </mat-card-content>
     </mat-card>

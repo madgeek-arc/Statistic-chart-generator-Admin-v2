@@ -45,6 +45,8 @@ import {
   HighMapsComponent
 } from "./dashboard/customise-appearance/visualisation-options/high-maps/high-maps.component";
 import { NlChatComponent } from "./nl-chat/nl-chat.component";
+import { provideMarkdown, MARKED_OPTIONS } from "ngx-markdown";
+import { markedOptionsFactory } from "./services/marked-option-factory/marked-options.factory";
 
 @NgModule({
   declarations: [
@@ -88,6 +90,12 @@ import { NlChatComponent } from "./nl-chat/nl-chat.component";
     DbSchemaService,
     SupportedChartTypesService,
     ChartExportingService,
+    provideMarkdown({
+      markedOptions: {
+        provide: MARKED_OPTIONS,
+        useFactory: markedOptionsFactory,
+      },
+    }),
     provideHttpClient(withInterceptorsFromDi()),
   ],
   bootstrap: [AppComponent]

@@ -6,7 +6,7 @@ import { UrlProviderService } from '../url-provider-service/url-provider.service
 // --- NL query (data) ---
 
 export interface ChatRequest {
-  sessionId?: string;   // omit on first message; the server creates one
+  sessionId?: string;   // omit on the first message; the server creates one
   profile: string;      // e.g. "openaire"
   message: string;
 }
@@ -24,7 +24,7 @@ export interface ChatResponse {
 // --- NL options (appearance) ---
 
 export interface OptionsRequest {
-  sessionId?: string;   // omit on first message; the server creates one
+  sessionId?: string;   // omit on the first message; the server creates one
   library: string;      // "HighCharts", "eCharts", or "GoogleCharts"
   message: string;
 }

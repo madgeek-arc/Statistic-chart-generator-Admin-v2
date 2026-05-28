@@ -102,9 +102,7 @@ export class ChartExportingService {
 		const postHeaders = new HttpHeaders();
 		postHeaders.append('Content-Type', 'application/json');
 
-		this.http.post<ShortenUrlResponse>(postUrl,
-			{ 'url': encodeURIComponent(chartUrl) },
-			{ headers: postHeaders })
+		this.http.post<ShortenUrlResponse>(postUrl, { 'url': encodeURIComponent(chartUrl) }, { headers: postHeaders })
 			.pipe(first(),
 				catchError(
 					err => {

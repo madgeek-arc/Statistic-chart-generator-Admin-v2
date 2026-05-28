@@ -7,9 +7,13 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatIconModule } from '@angular/material/icon';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ChatResponse, NlChatService, NlQuery, OptionsResponse } from '../services/nl-chat-service/nl-chat.service';
-import { ChartLoadingService } from '../services/chart-loading-service/chart-loading.service';
 import { MappingProfilesService } from '../services/mapping-profiles-service/mapping-profiles.service';
 import { MaterialModule } from "../material/material.module";
+import { DiagramCategoryService } from "../services/diagram-category-service/diagram-category.service";
+import { MarkdownModule } from "ngx-markdown";
+import { ChartInfo } from "../services/supported-libraries-service/models/chart-query.model";
+import { JsonPipe } from "@angular/common";
+import { UrlProviderService } from "../services/url-provider-service/url-provider.service";
 
 interface Message {
   role: 'user' | 'assistant';
@@ -37,7 +41,9 @@ export interface NlChatResult {
     MatCardModule,
     MatProgressSpinnerModule,
     MatChipsModule,
-    MatIconModule
+    MatIconModule,
+    MarkdownModule,
+    JsonPipe
   ],
   templateUrl: './nl-chat.component.html',
   styleUrl: './nl-chat.component.less'
@@ -45,8 +51,9 @@ export interface NlChatResult {
 export class NlChatComponent implements AfterViewChecked {
   private destroyRef = inject(DestroyRef);
   private nlChatService = inject(NlChatService);
-  private chartLoadingService = inject(ChartLoadingService);
   private profileService = inject(MappingProfilesService);
+  private diagramCategoryService = inject(DiagramCategoryService);
+  private urlProviderService = inject(UrlProviderService);
 
   // ViewChild references for message containers
   @ViewChild('queryMessagesContainer') queryMessagesContainer?: ElementRef;
@@ -57,6 +64,7 @@ export class NlChatComponent implements AfterViewChecked {
 
   // Reactive state using signals
   profile = signal<string>('');
+  chartType = signal<string>('');
   library = signal<string>('HighCharts');
 
   // NL query conversation state
@@ -87,6 +95,14 @@ export class NlChatComponent implements AfterViewChecked {
         }
       }
     });
+
+    this.diagramCategoryService.selectedDiagramCategory$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+      next: (category) => {
+        if (category && category.type) {
+          this.chartType.set(category.type);
+        }
+      }
+    })
   }
 
   ngAfterViewChecked(): void {
@@ -126,7 +142,6 @@ export class NlChatComponent implements AfterViewChecked {
   private sendQueryMessage(text: string): void {
     this.queryMessages.update(messages => [...messages, { role: 'user', text }]);
 
-    this.chartLoadingService.chartLoadingStatus = true;
 
     this.nlChatService.chat({
       sessionId: this.querySessionId(),
@@ -135,16 +150,30 @@ export class NlChatComponent implements AfterViewChecked {
     }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (res: ChatResponse) => {
         this.querySessionId.set(res.sessionId);
-        this.queryMessages.update(messages => [...messages, { role: 'assistant', text: res.reply }]);
         this.loading.set(false);
-        this.chartLoadingService.chartLoadingStatus = false;
 
         if (res.done && res.canonicalNl && res.sig) {
+          // const match = res.reply.match(/```([\s\S]*?)```/);
+          // const url = match ? match[1].trim() : '';
+          // console.log(url);
+          res.reply = res.reply.replace(/`/g, '') // remove backticks
+            .replace(
+              /(\/chart\/json[^\s]*)/g,
+              (path) => {
+                const updatedPath = path.replace('/chart/json', '/nl/info');
+
+              return `[${this.urlProviderService.serviceURL}${updatedPath}](${this.urlProviderService.serviceURL}${updatedPath})`;
+            }
+          );
+          console.log(res.reply);
+
           this.canonicalNl.set(res.canonicalNl);
           this.querySig.set(res.sig);
           this.queryDescription.set(res.description);
           this.phase.set('options');
         }
+
+        this.queryMessages.update(messages => [...messages, { role: 'assistant', text: res.reply }]);
       },
       error: (err) => {
         console.error('NL chat error', err);
@@ -154,15 +183,12 @@ export class NlChatComponent implements AfterViewChecked {
         ]);
         this.error.set('Failed to process your request. Please try again.');
         this.loading.set(false);
-        this.chartLoadingService.chartLoadingStatus = false;
       },
     });
   }
 
   private sendOptionsMessage(text: string): void {
     this.optionsMessages.update(messages => [...messages, { role: 'user', text }]);
-
-    this.chartLoadingService.chartLoadingStatus = true;
 
     this.nlChatService.optionsChat({
       sessionId: this.optionsSessionId(),
@@ -173,7 +199,6 @@ export class NlChatComponent implements AfterViewChecked {
         this.optionsSessionId.set(res.sessionId);
         this.optionsMessages.update(messages => [...messages, { role: 'assistant', text: res.reply }]);
         this.loading.set(false);
-        this.chartLoadingService.chartLoadingStatus = false;
 
         if (res.done && res.canonicalDescription && res.sig) {
           this.canonicalDescription.set(res.canonicalDescription);
@@ -190,7 +215,6 @@ export class NlChatComponent implements AfterViewChecked {
         ]);
         this.error.set('Failed to process your request. Please try again.');
         this.loading.set(false);
-        this.chartLoadingService.chartLoadingStatus = false;
       },
     });
   }
@@ -202,26 +226,25 @@ export class NlChatComponent implements AfterViewChecked {
   }
 
   private loadChart(): void {
-    this.chartLoadingService.chartLoadingStatus = true;
+    const chartInfo = [{
+      type: this.chartType(),
+      name: this.canonicalNl(),
+      query: {
+        nl: this.canonicalNl()!,
+        sig: this.querySig()!,
+        profile: this.profile(),
+      } as NlQuery
+    }]
 
     this.nlChatService.fetchChart({
       library: this.library(),
-      chartsInfo: [{
-        type: 'bar',
-        name: this.canonicalNl(),
-        query: {
-          nl: this.canonicalNl()!,
-          sig: this.querySig()!,
-          profile: this.profile(),
-        } as NlQuery
-      }],
+      chartsInfo: chartInfo,
       // Include options only if the user went through the options conversation
       nlOptions: this.canonicalDescription(),
       optionsSig: this.optionsSig(),
     }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (data) => {
         this.chartData.set(data);
-        this.chartLoadingService.chartLoadingStatus = false;
         console.log('Chart data ready:', data);
 
         // Emit the complete result
@@ -239,7 +262,6 @@ export class NlChatComponent implements AfterViewChecked {
       error: (err) => {
         console.error('Chart fetch error', err);
         this.error.set('Failed to load chart data. Please try again.');
-        this.chartLoadingService.chartLoadingStatus = false;
       },
     });
   }
