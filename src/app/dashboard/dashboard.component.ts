@@ -29,7 +29,7 @@ export class DashboardComponent implements OnInit {
 	private destroyRef = inject(DestroyRef);
   private profileService = inject(MappingProfilesService);
   private formFactory = inject(FormFactoryService);
-  private dynamicFormHandlingService = inject(DynamicFormHandlingService);
+  protected dynamicFormHandlingService = inject(DynamicFormHandlingService);
 
 
 	diagramSettings: FormGroup;

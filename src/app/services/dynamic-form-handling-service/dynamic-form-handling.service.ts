@@ -367,7 +367,7 @@ export class DynamicFormHandlingService {
 		return true;
 	}
 
-  private changeDataObjects(chartObject: HighChartsChart | GoogleChartsChart | HighMapsMap | EChartsChart | null,
+  public changeDataObjects(chartObject: HighChartsChart | GoogleChartsChart | HighMapsMap | EChartsChart | null,
                             tableObject: GoogleChartsTable | null,
                             rawChartDataObject: RawChartDataModel | null,
                             rawDataObject: RawDataModel | null) {

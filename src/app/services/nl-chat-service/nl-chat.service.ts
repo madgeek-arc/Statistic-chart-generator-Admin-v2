@@ -15,10 +15,11 @@ export interface ChatResponse {
   sessionId: string;    // keep this and send it back on every subsequent turn
   reply: string;        // the assistant's text to show the user
   done: boolean;        // true when the query is fully resolved
-  canonicalNl?: string; // populated when done — human-readable summary of the query
-  sig?: string;         // populated when done — HMAC signature authorising the query
+  canonicalNl?: string; // populated when done — human-readable summary of the query (display only)
+  sig?: string;         // populated when done — HMAC signature (also inside queryJson)
   sql?: string;         // populated when done — the generated SQL (informational)
   description?: string; // populated when done — plain-English sentence describing the query results
+  queryJson?: NlQuery;  // populated when done — drop directly into chartsInfo[i].query
 }
 
 // --- NL options (appearance) ---
@@ -122,7 +123,7 @@ export class NlChatService {
 
   /**
    * Returns the SQL and description for a previously signed NL query without executing it.
-   * Use this when loading a chart URL to show metadata (e.g. a "Query info" panel).
+   * Use this when loading a chart URL to show metadata (e.g., a "Query info" panel).
    * Returns null if the query is not in cache (chart must be executed first).
    */
   nlInfo(
