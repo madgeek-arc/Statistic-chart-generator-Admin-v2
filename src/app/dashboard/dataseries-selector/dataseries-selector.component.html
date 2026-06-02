@@ -83,14 +83,10 @@
     </li>
   </ul>
   <ul id="switcher-content" class="uk-switcher">
-    @for (ctrl of form.controls; track ctrl; let i = $index) {
+    @for (ctrl of form.controls; track ctrl;) {
       <li [formGroup]="ctrl">
-        <!-- <h2>{{ctrl.get('chartProperties')?.get('dataseriesName')?.value}}</h2> -->
-        <!--        <ng-container *ngIf="form.length > 1">-->
-        <!--          <button (click)="removeDataseries(i)">Remove Dataseries</button>-->
-      <!--        </ng-container>-->
         <div class="dataSelectionDiv" formGroupName="data">
-        <h6 class="borderBottomClass uk-margin-medium-top uk-text-secondary">Data Selection</h6>
+          <h6 class="borderBottomClass uk-margin-medium-top uk-text-secondary">Data Selection</h6>
           <div class="dataSelection">
             <ul uk-accordion="multiple: true">
               <li class="uk-open">
@@ -110,13 +106,13 @@
                         </div>
                       </div>
                     </div>
-                    <!-- Issue with TypeError regusterOnChange -->
+                    <!-- Issue with TypeError registerOnChange -->
                     @if (checkYAxisAggregate(ctrl)) {
                       <div>
                         <div class="uk-margin-bottom">Entity Field</div>
                         <div>
                           <select-attribute [chosenEntity]="ctrl.get('data.yaxisData.entity')?.value"
-                            [control]="ctrl.get('data.yaxisData.yaxisEntityField')">
+                            [formControl]="$any(ctrl.get('data.yaxisData.yaxisEntityField'))">
                           </select-attribute>
                         </div>
                       </div>
@@ -135,7 +131,7 @@
                             <!--                          <div>Entity Field</div>-->
                             <div style="display: inline-block; width: 90%; vertical-align: middle;">
                               <select-attribute [chosenEntity]="ctrl.get('data.yaxisData.entity')?.value"
-                                [control]="data.get('xaxisEntityField')">
+                                [formControl]="data.get('xaxisEntityField')">
                               </select-attribute>
                             </div>
                             <div style="display: inline-block; width: 10%; vertical-align: middle;">
@@ -180,9 +176,8 @@
                                     <div class="uk-width-1-1 uk-margin-small-bottom">
                                       <ng-container formGroupName="field">
                                         <div>
-                                          <select-attribute
-                                            [chosenEntity]="ctrl.get('data.yaxisData.entity')?.value"
-                                            [control]="group.get('field')">
+                                          <select-attribute [chosenEntity]="ctrl.get('data.yaxisData.entity')?.value"
+                                            [formControl]="group.get('field')">
                                           </select-attribute>
                                         </div>
                                       </ng-container>

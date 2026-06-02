@@ -241,4 +241,5 @@ export class DataseriesSelectorComponent implements OnInit, AfterViewInit {
 		return false;
 	}
 
+  protected readonly FormGroup = FormGroup;
 }
