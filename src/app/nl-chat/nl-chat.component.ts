@@ -16,6 +16,11 @@ import { DiagramCreator } from "../services/dynamic-form-handling-service/dynami
 import { FormFactoryService } from "../services/form-factory-service/form-factory-service";
 import { DynamicFormHandlingService } from "../services/dynamic-form-handling-service/dynamic-form-handling.service";
 import { HighChartsChart } from "../services/supported-libraries-service/models/chart-description-HighCharts.model";
+import { forkJoin } from "rxjs";
+import { first } from "rxjs/operators";
+import { GoogleChartsTable } from "../services/supported-libraries-service/models/chart-description-GoogleCharts.model";
+import { RawChartDataModel } from "../services/supported-libraries-service/models/chart-description-rawChartData.model";
+import { RawDataModel } from "../services/supported-libraries-service/models/description-rawData.model";
 
 interface Message {
   role: 'user' | 'assistant';
@@ -230,15 +235,39 @@ export class NlChatComponent implements AfterViewChecked {
       query: this.queryJson()
     }];
 
-    this._diagramCreator.createChart(this.formFactoryService.getFormRoot().value).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: (chart) => {
-        console.log(chart);
-        if (this.library() === 'HighCharts') {
-          (chart as HighChartsChart).chartDescription.queries = chartInfo as any; // Fixme use proper type
-          this.dynamicFormHandlingService.changeDataObjects(chart, null, null, null);
+    const value = this.formFactoryService.getFormRoot().value;
+    forkJoin([this._diagramCreator.createChart(value), this._diagramCreator.createTable(value),
+      this._diagramCreator.createRawChartData(value), this._diagramCreator.createRawData(value)])
+      .pipe(first())
+      .subscribe(([chartObject, tableObject, rawChartDataObject, rawDataObject]) => {
+        if (chartObject) {
+          if (this.library() === 'HighCharts') {
+            (chartObject as HighChartsChart).chartDescription.queries = chartInfo as any; // Fixme use proper type
+          }
         }
-      }
-    });
+        if (tableObject) {
+          (tableObject as GoogleChartsTable).tableDescription.queriesInfo = chartInfo as any;
+        }
+        if (rawChartDataObject) {
+          (rawChartDataObject as RawChartDataModel).chartsInfo = chartInfo as any;
+        }
+        if (rawDataObject) {
+          (rawDataObject as RawDataModel).series = chartInfo as any;
+        }
+
+
+        return this.dynamicFormHandlingService.changeDataObjects(chartObject, tableObject, rawChartDataObject, rawDataObject);
+      })
+
+    // this._diagramCreator.createChart(this.formFactoryService.getFormRoot().value).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+    //   next: (chart) => {
+    //     console.log(chart);
+    //     if (this.library() === 'HighCharts') {
+    //       (chart as HighChartsChart).chartDescription.queries = chartInfo as any; // Fixme use proper type
+    //       this.dynamicFormHandlingService.changeDataObjects(chart, null, null, null);
+    //     }
+    //   }
+    // });
 
     // this.nlChatService.fetchChart({
     //   library: this.library(),

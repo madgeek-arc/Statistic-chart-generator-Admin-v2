@@ -18,6 +18,7 @@ import { RawDataModel } from "../services/supported-libraries-service/models/des
 import { MatDialog } from '@angular/material/dialog';
 import { NlChatResult } from "../nl-chat/nl-chat.component";
 import UIkit from 'uikit';
+import { UrlProviderService } from "../services/url-provider-service/url-provider.service";
 
 @Component({
     selector: 'app-dashboard',
@@ -30,15 +31,16 @@ export class DashboardComponent implements OnInit {
   private profileService = inject(MappingProfilesService);
   private formFactory = inject(FormFactoryService);
   protected dynamicFormHandlingService = inject(DynamicFormHandlingService);
+  protected chartExportingService = inject(ChartExportingService);
 
 
 	diagramSettings: FormGroup;
 
 	viewSelectionLabel: string = "View";
 	categorySelectionLabel: string = "Chart type";
-	selectedCategory: string = "";
+	// selectedCategory: string = "";
 	configureDatasieriesLabel: string = "Data";
-	selectedDataseries: string = "";
+	// selectedDataseries: string = "";
 	customiseAppearanceLabel: string = "Appearance";
 
 	open = true;
@@ -54,7 +56,7 @@ export class DashboardComponent implements OnInit {
     tableObj: GoogleChartsTable | null;
   };
 
-  constructor(public chartExportingService: ChartExportingService) {}
+  constructor() {}
 
 	ngOnInit(): void {
 
@@ -138,7 +140,7 @@ export class DashboardComponent implements OnInit {
           window.scrollTo({top: 0, left: 0, behavior: "smooth"});
         }, 0);
 			} else if (event.step === 'category') {
-				this.selectedCategory = event.name;
+				// this.selectedCategory = event.name;
         setTimeout(() => {
           UIkit.switcher('#navTab').show(2);
           window.scrollTo({top: 0, left: 0, behavior: "smooth"});
@@ -157,8 +159,8 @@ export class DashboardComponent implements OnInit {
 		// this.updateDefaultFormGroupValues();
 		// this.diagramSettings.updateValueAndValidity();
 
-		this.selectedCategory = '';
-		this.selectedDataseries = '';
+		// this.selectedCategory = '';
+		// this.selectedDataseries = '';
 		// this.selectedAppearance = '';
 	}
 

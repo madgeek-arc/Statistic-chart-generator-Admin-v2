@@ -13,31 +13,33 @@ import { EChartsChart } from "../../services/supported-libraries-service/models/
     standalone: false
 })
 
-export class ChartFrameComponent implements OnInit, OnChanges {
+export class ChartFrameComponent implements OnChanges {
 
 	@ViewChild('chartFrame', { static: false })
 	private chartFrameRef: ElementRef;
 
 	@Input() chart: HighChartsChart | GoogleChartsChart | HighMapsMap | EChartsChart | null;
+  @Input() chartUrl: string | null = null;
 	frameHeight: number;
 	frameWidth: number;
-	frameUrl: SafeResourceUrl;
+	frameUrl: SafeResourceUrl | null = null;
 
 	constructor(private sanitizer: DomSanitizer, private urlProvider: UrlProviderService) {
+
+    this.frameHeight = (3 * window.outerHeight) / 5;
 		this.frameUrl = this.getSanitizedFrameUrl(urlProvider.serviceURL + '/chart');
 		console.log("CHART URL:", this.frameUrl);
 	}
 
-	ngOnInit() {
-		this.frameHeight = (3 * window.outerHeight) / 5;
-	}
-
 	ngOnChanges(changes: SimpleChanges) {
-		const stringObj = JSON.stringify(changes['chart'].currentValue);
-		console.log('[chart-frame.component] On changes: ' + stringObj);
+		console.log('[chart-frame.component] On changes: ' + changes['chartUrl']?.currentValue);
 
-		if (changes['chart'].currentValue) {
-			this.frameUrl = this.getSanitizedFrameUrl(this.urlProvider.createChartURL(changes['chart'].currentValue));
+    if (changes['chartUrl'] && changes['chartUrl'].currentValue) {
+      // Force iframe reload by destroying and recreating
+      this.frameUrl = null;
+      setTimeout(() => {
+        this.frameUrl = this.getSanitizedFrameUrl(this.chartUrl);
+      }, 0);
 			console.log(this.frameUrl);
 		} else {
 			this.frameUrl = this.getSanitizedFrameUrl(this.urlProvider.serviceURL + '/chart');

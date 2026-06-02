@@ -109,7 +109,7 @@
                     <!-- Issue with TypeError registerOnChange -->
                     @if (checkYAxisAggregate(ctrl)) {
                       <div>
-                        <div class="uk-margin-bottom">Entity Field</div>
+                        <div class="uk-margin-top uk-margin-xsmall-bottom">Entity Field</div>
                         <div>
                           <select-attribute [chosenEntity]="ctrl.get('data.yaxisData.entity')?.value"
                             [formControl]="$any(ctrl.get('data.yaxisData.yaxisEntityField'))">
@@ -128,7 +128,6 @@
                       @for (data of getXAxisData(ctrl); track data; let j = $index) {
                         <div [formGroup]="data">
                           <div formGroupName="xaxisEntityField" style="width: 100%;">
-                            <!--                          <div>Entity Field</div>-->
                             <div style="display: inline-block; width: 90%; vertical-align: middle;">
                               <select-attribute [chosenEntity]="ctrl.get('data.yaxisData.entity')?.value"
                                 [formControl]="data.get('xaxisEntityField')">

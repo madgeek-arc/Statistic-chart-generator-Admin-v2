@@ -28,7 +28,8 @@ export class ChartExportingService {
 
 	// Chart Url
 	private _chartUrl = new BehaviorSubject<string | null>(null);
-	private _chartTinyUrl = new BehaviorSubject<string>(null as any);
+  get chartUrl$() { return this._chartUrl.asObservable(); }
+	private _chartTinyUrl = new BehaviorSubject<string | null>(null);
 	get chartTinyUrl$() { return this._chartTinyUrl.asObservable(); }
 	// Chart Load Url
 	private _loadingChartTinyUrl = new BehaviorSubject<boolean>(false);

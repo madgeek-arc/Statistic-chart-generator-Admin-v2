@@ -146,7 +146,7 @@
                 <div class="iframe-container">
 
                   <div>
-                    @if (dialogData?.rawDataObj) {
+                    @if ((chartExportingService.chartUrl$ | async) != null) {
                       <div>
                         @if (hasChanges) {
                           <div class="uk-alert-warning" uk-alert>
@@ -156,9 +156,10 @@
                           </div>
                         }
 <!--                        FIXME: Do not use object from service, find a way to upgrade it to signal -->
-                        @if (dynamicFormHandlingService.ChartObject) {
+                        @if ((chartExportingService.chartUrl$ | async) != null) {
                           <div class="container">
-                            <chart-frame [chart]="dynamicFormHandlingService.ChartObject"></chart-frame>
+                            <chart-frame [chartUrl]="chartExportingService.chartUrl$ | async"></chart-frame>
+<!--                            <chart-frame [chart]="dynamicFormHandlingService.ChartObject"></chart-frame>-->
                           </div>
                           <div class="actions">
                             <div class="label">

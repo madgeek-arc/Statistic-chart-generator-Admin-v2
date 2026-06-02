@@ -9,12 +9,10 @@ import {
   ChangeDetectorRef,
   Component,
   DestroyRef,
-  EventEmitter,
   forwardRef,
   inject,
   Input,
   OnChanges,
-  Output,
   SimpleChanges,
   ViewRef
 } from '@angular/core';
@@ -24,6 +22,7 @@ import { filter, switchMap, take } from 'rxjs/operators';
 import { ChartLoadingService } from "../../../services/chart-loading-service/chart-loading.service";
 import { DynamicTreeDatabase } from "../../../services/dynamic-tree-database/dynamic-tree-database.service";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
+import { FormFactoryService } from "../../../services/form-factory-service/form-factory-service";
 
 @Component({
   selector: 'select-attribute',
@@ -94,18 +93,22 @@ export class SelectAttributeComponent implements ControlValueAccessor, OnChanges
     //   return;
 
     // Check if the Data Source is connected and if it is, populate the Tree Root node
+    // this.nestedEntityDataSource.connected$.subscribe(
+    //   connected => { if(connected) this.populateRootNode(entity, resetSelectField) }
+    // );
+
     this.nestedEntityDataSource.connected$ //  Every call to getEntityTreeNode() creates a new subscription chain, may create a repeated setup overhead.
       .pipe(
-        take(1),
-        filter(Boolean),
+        // take(1),
         switchMap(() => this.dynamicTreeDB.getRootNode(entity)),
         takeUntilDestroyed(this.destroyRef)
       ).subscribe(rootNode => {
 
         if (rootNode) {
-          this.nestedEntityDataSource.data = [rootNode];
-
-          this.nestedEntityTreeControl.expand(rootNode);
+          this.populateRootNode(entity, resetSelectField)
+          // this.nestedEntityDataSource.data = [rootNode];
+          //
+          // this.nestedEntityTreeControl.expand(rootNode);
         }
 
         if (resetSelectField) {
@@ -113,12 +116,11 @@ export class SelectAttributeComponent implements ControlValueAccessor, OnChanges
         }
       });
 
-    // if (resetSelectField)
-    //   this.clearSelection();
+    if (resetSelectField)
+      this.clearSelection();
   }
 
-  private populateRootNode(entity: string, resetSelectField: boolean)
-  {
+  private populateRootNode(entity: string, resetSelectField: boolean) {
 
     this.dynamicTreeDB.getRootNode(entity).pipe(takeUntilDestroyed(this.destroyRef)).subscribe((rootNode: DynamicEntityNode) => {
 

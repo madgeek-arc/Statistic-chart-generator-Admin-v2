@@ -16,8 +16,6 @@ export class FormFactoryService {
 
   private formRoot: FormGroup;
 
-  constructor() {}
-
   //////////////////////
   // Helpers
   //////////////////////

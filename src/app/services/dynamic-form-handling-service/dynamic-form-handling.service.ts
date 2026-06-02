@@ -16,7 +16,7 @@ import { EChartsChart } from "../supported-libraries-service/models/chart-descri
 import { RawChartDataModel } from "../supported-libraries-service/models/chart-description-rawChartData.model";
 import { RawDataModel } from "../supported-libraries-service/models/description-rawData.model";
 import { AbstractControl, FormArray, FormControl, FormGroup } from "@angular/forms";
-import { findInvalidControls, FormFactoryService } from "../form-factory-service/form-factory-service";
+import { FormFactoryService } from "../form-factory-service/form-factory-service";
 
 @Injectable({
 	providedIn: 'root'
