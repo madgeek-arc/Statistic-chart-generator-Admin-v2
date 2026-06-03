@@ -1,29 +1,29 @@
 <div class="nl-chat-container">
 
   <!-- Phase indicator -->
-  <mat-card class="phase-indicator">
-    <mat-card-content>
-      <div class="phase-steps">
-        <mat-chip-set>
-<!--          <mat-chip [highlighted]="phase() === 'query'" [disabled]="phase() !== 'query'">-->
-          <mat-chip [highlighted]="phase() === 'query'" (click)="phase.set('query')">
-            <mat-icon>search</mat-icon>
-            1. Define Query
-          </mat-chip>
-          <mat-chip [highlighted]="phase() === 'options'" (click)="phase.set('options')">
-<!--          <mat-chip [highlighted]="phase() === 'options'" [disabled]="phase() !== 'options'">-->
-            <mat-icon>palette</mat-icon>
-            2. Chart Appearance
-          </mat-chip>
-          <mat-chip [highlighted]="phase() === 'done'">
-<!--          <mat-chip [highlighted]="phase() === 'done'" [disabled]="phase() !== 'done'">-->
-            <mat-icon>check_circle</mat-icon>
-            3. Complete
-          </mat-chip>
-        </mat-chip-set>
-      </div>
-    </mat-card-content>
-  </mat-card>
+<!--  <mat-card class="phase-indicator">-->
+<!--    <mat-card-content>-->
+<!--      <div class="phase-steps">-->
+<!--        <mat-chip-set>-->
+<!--&lt;!&ndash;          <mat-chip [highlighted]="phase() === 'query'" [disabled]="phase() !== 'query'">&ndash;&gt;-->
+<!--          <mat-chip [highlighted]="phase() === 'query'" (click)="phase.set('query')">-->
+<!--            <mat-icon>search</mat-icon>-->
+<!--            1. Define Query-->
+<!--          </mat-chip>-->
+<!--          <mat-chip [highlighted]="phase() === 'options'" (click)="phase.set('options')">-->
+<!--&lt;!&ndash;          <mat-chip [highlighted]="phase() === 'options'" [disabled]="phase() !== 'options'">&ndash;&gt;-->
+<!--            <mat-icon>palette</mat-icon>-->
+<!--            2. Chart Appearance-->
+<!--          </mat-chip>-->
+<!--          <mat-chip [highlighted]="phase() === 'done'">-->
+<!--&lt;!&ndash;          <mat-chip [highlighted]="phase() === 'done'" [disabled]="phase() !== 'done'">&ndash;&gt;-->
+<!--            <mat-icon>check_circle</mat-icon>-->
+<!--            3. Complete-->
+<!--          </mat-chip>-->
+<!--        </mat-chip-set>-->
+<!--      </div>-->
+<!--    </mat-card-content>-->
+<!--  </mat-card>-->
 
   <!-- Error message -->
   @if (error()) {
@@ -38,12 +38,11 @@
   }
 
   <!-- Phase 1: Data query conversation -->
-  @if (phase() === 'query') {
+<!--  @if (phase() === 'query') {-->
     <mat-card class="conversation-card">
       <mat-card-header>
         <mat-card-title>
-          <mat-icon>chat</mat-icon>
-          Describe Your Data
+          <mat-icon>chat</mat-icon>Describe Your Data
         </mat-card-title>
         <mat-card-subtitle>
           Tell the AI what data you want to visualize
@@ -83,138 +82,134 @@
             [disabled]="loading()"
             (keydown.enter)="send()" />
         </mat-form-field>
-        <button mat-raised-button
-          color="primary"
-          (click)="send()"
-          [disabled]="loading() || !inputText().trim()">
-          <mat-icon>send</mat-icon>
-          Send
+        <button mat-raised-button color="primary" (click)="send()" [disabled]="loading() || !inputText().trim()">
+          <mat-icon>send</mat-icon>Send
         </button>
       </mat-card-actions>
     </mat-card>
-  }
+<!--  }-->
 
   <!-- Phase 2: Chart appearance conversation -->
-  @if (phase() === 'options') {
-    <mat-card class="info-card">
-      <mat-card-content>
-        <div class="query-ready">
-          <mat-icon>check_circle</mat-icon>
-          <div class="query-info">
-            <strong>Query Ready:</strong> {{ canonicalNl() }}
-            @if (queryDescription()) {
-              <div class="query-description">
-                <em>{{ queryDescription() }}</em>
-              </div>
-            }
-          </div>
-        </div>
-      </mat-card-content>
-    </mat-card>
-    <mat-card class="conversation-card">
-      <mat-card-header>
-        <mat-card-title>
-          <mat-icon>palette</mat-icon>
-          Customize Chart Appearance
-        </mat-card-title>
-        <mat-card-subtitle>
-          Describe how you'd like the chart to look (or skip to use defaults)
-        </mat-card-subtitle>
-      </mat-card-header>
-      <mat-card-content>
-        <div class="messages-container" #optionsMessagesContainer>
-          @for (msg of optionsMessages(); track msg) {
-            <div [class]="'nl-message message-' + msg.role">
-              <div class="message-header">
-                <mat-icon>{{ msg.role === 'user' ? 'person' : 'smart_toy' }}</mat-icon>
-                <strong>{{ msg.role === 'user' ? 'You' : 'AI Assistant' }}</strong>
-              </div>
-              <div class="message-text">{{ msg.text }}</div>
-            </div>
-          }
-          @if (loading()) {
-            <div class="nl-message message-assistant">
-              <div class="message-header">
-                <mat-icon>smart_toy</mat-icon>
-                <strong>AI Assistant</strong>
-              </div>
-              <div class="message-text">
-                <mat-spinner diameter="20"></mat-spinner>
-                <em>Thinking...</em>
-              </div>
-            </div>
-          }
-        </div>
-      </mat-card-content>
-      <mat-card-actions class="input-actions">
-        <mat-form-field class="input-field" appearance="outline">
-          <mat-label>Your message</mat-label>
-          <input matInput
-            [(ngModel)]="inputText"
-            placeholder="e.g., Blue bars with a red title"
-            [disabled]="loading()"
-            (keydown.enter)="send()" />
-        </mat-form-field>
-        <button mat-raised-button
-          color="primary"
-          (click)="send()"
-          [disabled]="loading() || !inputText().trim()">
-          <mat-icon>send</mat-icon>
-          Send
-        </button>
-        <button mat-button
-          (click)="skipOptions()"
-          [disabled]="loading()">
-          <mat-icon>skip_next</mat-icon>
-          Skip / Use Defaults
-        </button>
-      </mat-card-actions>
-    </mat-card>
-  }
-
-  <!-- Phase 3: Chart output -->
-  @if (phase() === 'done') {
-    <mat-card class="success-card">
-      <mat-card-content>
-        <div class="success-message">
-          <mat-icon>check_circle</mat-icon>
-          <div>
-            <strong>Chart Ready!</strong>
-            <p>Your AI-generated chart has been created successfully.</p>
-          </div>
-        </div>
-      </mat-card-content>
-    </mat-card>
-    <mat-card class="result-card">
-      <mat-card-header>
-        <mat-card-title>Result Summary</mat-card-title>
-      </mat-card-header>
-      <mat-card-content>
-        <div class="result-details">
-          <div class="result-item">
-            <strong>Query:</strong> {{ canonicalNl() }}
-          </div>
-          @if (queryDescription()) {
-            <div class="result-item">
-              <strong>Description:</strong> {{ queryDescription() }}
-            </div>
-          }
-          @if (canonicalDescription()) {
-            <div class="result-item">
-              <strong>Appearance:</strong> {{ canonicalDescription() }}
-            </div>
-          }
-          <div class="result-item">
-            <strong>Library:</strong> {{ library() }}
-          </div>
-<!--          @if (chartData()) {-->
-<!--            <div class="result-item">-->
-<!--              <strong>Data:</strong> <pre>{{ chartData() | json }}</pre>-->
+<!--  @if (phase() === 'options') {-->
+<!--    <mat-card class="info-card">-->
+<!--      <mat-card-content>-->
+<!--        <div class="query-ready">-->
+<!--          <mat-icon>check_circle</mat-icon>-->
+<!--          <div class="query-info">-->
+<!--            <strong>Query Ready:</strong> {{ canonicalNl() }}-->
+<!--            @if (queryDescription()) {-->
+<!--              <div class="query-description">-->
+<!--                <em>{{ queryDescription() }}</em>-->
+<!--              </div>-->
+<!--            }-->
+<!--          </div>-->
+<!--        </div>-->
+<!--      </mat-card-content>-->
+<!--    </mat-card>-->
+<!--    <mat-card class="conversation-card">-->
+<!--      <mat-card-header>-->
+<!--        <mat-card-title>-->
+<!--          <mat-icon>palette</mat-icon>-->
+<!--          Customize Chart Appearance-->
+<!--        </mat-card-title>-->
+<!--        <mat-card-subtitle>-->
+<!--          Describe how you'd like the chart to look (or skip to use defaults)-->
+<!--        </mat-card-subtitle>-->
+<!--      </mat-card-header>-->
+<!--      <mat-card-content>-->
+<!--        <div class="messages-container" #optionsMessagesContainer>-->
+<!--          @for (msg of optionsMessages(); track msg) {-->
+<!--            <div [class]="'nl-message message-' + msg.role">-->
+<!--              <div class="message-header">-->
+<!--                <mat-icon>{{ msg.role === 'user' ? 'person' : 'smart_toy' }}</mat-icon>-->
+<!--                <strong>{{ msg.role === 'user' ? 'You' : 'AI Assistant' }}</strong>-->
+<!--              </div>-->
+<!--              <div class="message-text">{{ msg.text }}</div>-->
 <!--            </div>-->
 <!--          }-->
-        </div>
-      </mat-card-content>
-    </mat-card>
-  }
+<!--          @if (loading()) {-->
+<!--            <div class="nl-message message-assistant">-->
+<!--              <div class="message-header">-->
+<!--                <mat-icon>smart_toy</mat-icon>-->
+<!--                <strong>AI Assistant</strong>-->
+<!--              </div>-->
+<!--              <div class="message-text">-->
+<!--                <mat-spinner diameter="20"></mat-spinner>-->
+<!--                <em>Thinking...</em>-->
+<!--              </div>-->
+<!--            </div>-->
+<!--          }-->
+<!--        </div>-->
+<!--      </mat-card-content>-->
+<!--      <mat-card-actions class="input-actions">-->
+<!--        <mat-form-field class="input-field" appearance="outline">-->
+<!--          <mat-label>Your message</mat-label>-->
+<!--          <input matInput-->
+<!--            [(ngModel)]="inputText"-->
+<!--            placeholder="e.g., Blue bars with a red title"-->
+<!--            [disabled]="loading()"-->
+<!--            (keydown.enter)="send()" />-->
+<!--        </mat-form-field>-->
+<!--        <button mat-raised-button-->
+<!--          color="primary"-->
+<!--          (click)="send()"-->
+<!--          [disabled]="loading() || !inputText().trim()">-->
+<!--          <mat-icon>send</mat-icon>-->
+<!--          Send-->
+<!--        </button>-->
+<!--        <button mat-button-->
+<!--          (click)="skipOptions()"-->
+<!--          [disabled]="loading()">-->
+<!--          <mat-icon>skip_next</mat-icon>-->
+<!--          Skip / Use Defaults-->
+<!--        </button>-->
+<!--      </mat-card-actions>-->
+<!--    </mat-card>-->
+<!--  }-->
+
+  <!-- Phase 3: Chart output -->
+<!--  @if (phase() === 'done') {-->
+<!--    <mat-card class="success-card">-->
+<!--      <mat-card-content>-->
+<!--        <div class="success-message">-->
+<!--          <mat-icon>check_circle</mat-icon>-->
+<!--          <div>-->
+<!--            <strong>Chart Ready!</strong>-->
+<!--            <p>Your AI-generated chart has been created successfully.</p>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--      </mat-card-content>-->
+<!--    </mat-card>-->
+<!--    <mat-card class="result-card">-->
+<!--      <mat-card-header>-->
+<!--        <mat-card-title>Result Summary</mat-card-title>-->
+<!--      </mat-card-header>-->
+<!--      <mat-card-content>-->
+<!--        <div class="result-details">-->
+<!--          <div class="result-item">-->
+<!--            <strong>Query:</strong> {{ canonicalNl() }}-->
+<!--          </div>-->
+<!--          @if (queryDescription()) {-->
+<!--            <div class="result-item">-->
+<!--              <strong>Description:</strong> {{ queryDescription() }}-->
+<!--            </div>-->
+<!--          }-->
+<!--          @if (canonicalDescription()) {-->
+<!--            <div class="result-item">-->
+<!--              <strong>Appearance:</strong> {{ canonicalDescription() }}-->
+<!--            </div>-->
+<!--          }-->
+<!--          <div class="result-item">-->
+<!--            <strong>Library:</strong> {{ library() }}-->
+<!--          </div>-->
+<!--&lt;!&ndash;          @if (chartData()) {&ndash;&gt;-->
+<!--&lt;!&ndash;            <div class="result-item">&ndash;&gt;-->
+<!--&lt;!&ndash;              <strong>Data:</strong> <pre>{{ chartData() | json }}</pre>&ndash;&gt;-->
+<!--&lt;!&ndash;            </div>&ndash;&gt;-->
+<!--&lt;!&ndash;          }&ndash;&gt;-->
+<!--        </div>-->
+<!--      </mat-card-content>-->
+<!--    </mat-card>-->
+<!--  }-->
 
 </div>

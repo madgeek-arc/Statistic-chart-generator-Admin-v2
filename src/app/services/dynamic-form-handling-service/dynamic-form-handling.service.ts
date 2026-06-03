@@ -17,6 +17,7 @@ import { RawChartDataModel } from "../supported-libraries-service/models/chart-d
 import { RawDataModel } from "../supported-libraries-service/models/description-rawData.model";
 import { AbstractControl, FormArray, FormControl, FormGroup } from "@angular/forms";
 import { FormFactoryService } from "../form-factory-service/form-factory-service";
+import { ChartInfo } from "../nl-chat-service/nl-chat.service";
 
 @Injectable({
 	providedIn: 'root'
@@ -288,20 +289,41 @@ export class DynamicFormHandlingService {
 			this.createDataObjectsFromSchemaObject(this.formSchemaObject);
 	}
 
-	private createDataObjectsFromSchemaObject(value: SCGAFormSchema) {
+  public submitNLQuery(chartInfo: ChartInfo[]) {
+    console.log('Submitted this nlQuery', chartInfo);
+    this.createDataObjectsFromSchemaObject(this.formSchemaObject, chartInfo);
+  }
 
-    console.log(value);
+	private createDataObjectsFromSchemaObject(value: SCGAFormSchema, chartInfo: ChartInfo[] | null = null) {
+
     if (this.diagramcategoryService.selectedDiagramCategory$.value?.type === "numbers") {
 			this._diagramCreator.createRawData(value).pipe(first()).subscribe(rawDataObject => this.changeDataObjects(null, null, null, rawDataObject))
 			return;
 		}
 
-    console.log(value, 'value')
 		forkJoin([this._diagramCreator.createChart(value), this._diagramCreator.createTable(value),
 		this._diagramCreator.createRawChartData(value), this._diagramCreator.createRawData(value)])
 			.pipe(first())
-			.subscribe(([chartObject, tableObject, rawChartDataObject, rawDataObject]) =>
-				this.changeDataObjects(chartObject, tableObject, rawChartDataObject, rawDataObject));
+			.subscribe(([chartObject, tableObject, rawChartDataObject, rawDataObject]) => {
+        if (chartInfo) {
+          if (chartObject) {
+            if (this.formFactoryService.getFormRoot().get('appearance.chartAppearance.generalOptions.visualisationLibrary').value === 'HighCharts') {
+              (chartObject as HighChartsChart).chartDescription.queries = chartInfo as any; // Fixme use proper type
+            }
+          }
+          if (tableObject) {
+            (tableObject as GoogleChartsTable).tableDescription.queriesInfo = chartInfo as any;
+          }
+          if (rawChartDataObject) {
+            (rawChartDataObject as RawChartDataModel).chartsInfo = chartInfo as any;
+          }
+          if (rawDataObject) {
+            (rawDataObject as RawDataModel).series = chartInfo as any;
+          }
+        }
+
+        return this.changeDataObjects(chartObject, tableObject, rawChartDataObject, rawDataObject);
+      });
 	}
 
 	public publishURLS() {

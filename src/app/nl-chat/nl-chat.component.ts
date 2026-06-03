@@ -27,17 +27,6 @@ interface Message {
   text: string;
 }
 
-export interface NlChatResult {
-  canonicalNl: string;
-  querySig: string;
-  profile: string;
-  queryDescription?: string;
-  canonicalDescription?: string;
-  optionsSig?: string;
-  library: string;
-  chartData?: unknown;
-}
-
 @Component({
   selector: 'app-nl-chat',
   standalone: true,
@@ -61,10 +50,10 @@ export class NlChatComponent implements AfterViewChecked {
 
   // ViewChild references for message containers
   @ViewChild('queryMessagesContainer') queryMessagesContainer?: ElementRef;
-  @ViewChild('optionsMessagesContainer') optionsMessagesContainer?: ElementRef;
+  // @ViewChild('optionsMessagesContainer') optionsMessagesContainer?: ElementRef;
 
   // Output event when chat is complete
-  chatComplete = output<NlChatResult>();
+  chatComplete = output<ChartInfo[]>();
 
   // Reactive state using signals
   profile = signal<string>('');
@@ -87,7 +76,7 @@ export class NlChatComponent implements AfterViewChecked {
 
   inputText = signal<string>('');
   loading = signal<boolean>(false);
-  phase = signal<'query' | 'options' | 'done'>('query');
+  // phase = signal<'query' | 'options' | 'done'>('query');
   chartData = signal<unknown | null>(null);
   error = signal<string | null>(null);
 
@@ -107,7 +96,7 @@ export class NlChatComponent implements AfterViewChecked {
           this.chartType.set(category.type);
         }
       }
-    })
+    });
   }
 
   ngAfterViewChecked(): void {
@@ -117,13 +106,15 @@ export class NlChatComponent implements AfterViewChecked {
 
   private scrollToBottom(): void {
     try {
-      if (this.phase() === 'query' && this.queryMessagesContainer) {
+      // if (this.phase() === 'query' && this.queryMessagesContainer) {
+      if (this.queryMessagesContainer) {
         const element = this.queryMessagesContainer.nativeElement;
         element.scrollTop = element.scrollHeight;
-      } else if (this.phase() === 'options' && this.optionsMessagesContainer) {
-        const element = this.optionsMessagesContainer.nativeElement;
-        element.scrollTop = element.scrollHeight;
       }
+      // else if (this.phase() === 'options' && this.optionsMessagesContainer) {
+      //   const element = this.optionsMessagesContainer.nativeElement;
+      //   element.scrollTop = element.scrollHeight;
+      // }
     } catch (err) {
       // Silently handle any scrolling errors
     }
@@ -137,11 +128,11 @@ export class NlChatComponent implements AfterViewChecked {
     this.loading.set(true);
     this.error.set(null);
 
-    if (this.phase() === 'query') {
+    // if (this.phase() === 'query') {
       this.sendQueryMessage(text);
-    } else if (this.phase() === 'options') {
-      this.sendOptionsMessage(text);
-    }
+    // } else if (this.phase() === 'options') {
+    //   this.sendOptionsMessage(text);
+    // }
   }
 
   private sendQueryMessage(text: string): void {
@@ -173,7 +164,14 @@ export class NlChatComponent implements AfterViewChecked {
           this.querySig.set(res.sig);
           this.queryDescription.set(res.description);
           this.queryJson.set(res.queryJson);
-          this.phase.set('options');
+
+          const chartInfo: ChartInfo[] = [{
+            type: this.chartType(),
+            name: this.canonicalNl(),
+            query: this.queryJson()
+          }];
+          this.chatComplete.emit(chartInfo);
+          // this.phase.set('options');
         }
 
         this.queryMessages.update(messages => [...messages, { role: 'assistant', text: res.reply }]);
@@ -206,7 +204,7 @@ export class NlChatComponent implements AfterViewChecked {
         if (res.done && res.canonicalDescription && res.sig) {
           this.canonicalDescription.set(res.canonicalDescription);
           this.optionsSig.set(res.sig);
-          this.phase.set('done');
+          // this.phase.set('done');
           this.loadChart();
         }
       },
@@ -224,7 +222,7 @@ export class NlChatComponent implements AfterViewChecked {
 
   skipOptions(): void {
     // User skips the appearance conversation — fetch chart without options
-    this.phase.set('done');
+    // this.phase.set('done');
     this.loadChart();
   }
 
@@ -313,7 +311,7 @@ export class NlChatComponent implements AfterViewChecked {
 
     this.inputText.set('');
     this.loading.set(false);
-    this.phase.set('query');
+    // this.phase.set('query');
     this.chartData.set(null);
     this.error.set(null);
   }

@@ -1,4 +1,4 @@
-import { Component, DestroyRef, inject, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { ChartTableModalContext } from "../modals/chart-table-modal/chart-table-modal.component";
 import { DynamicFormHandlingService } from "../services/dynamic-form-handling-service/dynamic-form-handling.service";
@@ -15,10 +15,8 @@ import { HighMapsMap } from "../services/supported-libraries-service/models/char
 import { EChartsChart } from "../services/supported-libraries-service/models/chart-description-eCharts.model";
 import { RawChartDataModel } from "../services/supported-libraries-service/models/chart-description-rawChartData.model";
 import { RawDataModel } from "../services/supported-libraries-service/models/description-rawData.model";
-import { MatDialog } from '@angular/material/dialog';
-import { NlChatResult } from "../nl-chat/nl-chat.component";
 import UIkit from 'uikit';
-import { UrlProviderService } from "../services/url-provider-service/url-provider.service";
+import { ChartInfo } from "../services/nl-chat-service/nl-chat.service";
 
 @Component({
     selector: 'app-dashboard',
@@ -30,17 +28,16 @@ export class DashboardComponent implements OnInit {
 	private destroyRef = inject(DestroyRef);
   private profileService = inject(MappingProfilesService);
   private formFactory = inject(FormFactoryService);
-  protected dynamicFormHandlingService = inject(DynamicFormHandlingService);
+  private dynamicFormHandlingService = inject(DynamicFormHandlingService);
   protected chartExportingService = inject(ChartExportingService);
 
+  nlQuery = signal<boolean>(false);
 
 	diagramSettings: FormGroup;
 
 	viewSelectionLabel: string = "View";
 	categorySelectionLabel: string = "Chart type";
-	// selectedCategory: string = "";
 	configureDatasieriesLabel: string = "Data";
-	// selectedDataseries: string = "";
 	customiseAppearanceLabel: string = "Appearance";
 
 	open = true;
@@ -49,14 +46,14 @@ export class DashboardComponent implements OnInit {
   frameHeight: number;
   hasChanges: boolean = false;
 
+  chartInfo: ChartInfo[] | null = null;
+
 	dialogData: ChartTableModalContext = new class implements ChartTableModalContext {
     chartObj: HighChartsChart | GoogleChartsChart | HighMapsMap | EChartsChart | null;
     rawChartDataObj: RawChartDataModel | null;
     rawDataObj: RawDataModel | null;
     tableObj: GoogleChartsTable | null;
   };
-
-  constructor() {}
 
 	ngOnInit(): void {
 
@@ -208,6 +205,10 @@ export class DashboardComponent implements OnInit {
 		console.log("SUBMIT this form:", this.diagramSettings.value);
 
     this.hasChanges = false;
+    if (this.nlQuery()) {
+      this.dynamicFormHandlingService.submitNLQuery(this.chartInfo);
+      return;
+    }
 
 		this.dynamicFormHandlingService.submitForm();
 
@@ -261,12 +262,11 @@ export class DashboardComponent implements OnInit {
 	 * Handles the completion of the AI chat session.
 	 * @param result - The result of the chat session.
 	 */
-  onChatComplete(result: NlChatResult): void {
+  onChatComplete(result: ChartInfo[]): void {
     if (result) {
       console.log('AI Chat completed with result:', result);
-      // TODO: Integrate the NL query result with the form
-      // For now, just log it. You can extend this to populate the form
-      // or directly submit the chart request
+      this.chartInfo = result;
+      this.nlQuery.set(true);
     }
   }
 }

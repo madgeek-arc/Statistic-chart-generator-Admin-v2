@@ -36,24 +36,27 @@ export class ChartExportingService {
 	get loadingChartTinyUrl$() { return this._loadingChartTinyUrl.asObservable(); }
 
 	// Table Url
-	private _tableUrl = new BehaviorSubject<string>(null as any);
-	private _tableTinyUrl = new BehaviorSubject<string>(null as any);
+	private _tableUrl = new BehaviorSubject<string | null>(null);
+  get tableUrl$() { return this._tableUrl.asObservable(); }
+	private _tableTinyUrl = new BehaviorSubject<string | null>(null);
 	get tableTinyUrl$() { return this._tableTinyUrl.asObservable(); }
 	// Table Load Url
 	private _loadingTableTinyUrl = new BehaviorSubject<boolean>(false);
 	get loadingTableTinyUrl$() { return this._loadingTableTinyUrl.asObservable(); }
 
 	// Raw Chart Data Url
-	private _rawChartDataUrl = new BehaviorSubject<string>(null as any);
-	private _rawChartDataTinyUrl = new BehaviorSubject<string>(null as any);
+	private _rawChartDataUrl = new BehaviorSubject<string | null>(null);
+  get rawChartDataUrl$() { return this._rawChartDataUrl.asObservable(); }
+	private _rawChartDataTinyUrl = new BehaviorSubject<string | null>(null);
 	get rawChartDataTinyUrl$() { return this._rawChartDataTinyUrl.asObservable(); }
 	// Raw Chart Data Load Url
 	private _loadingRawChartDataTinyUrl = new BehaviorSubject<boolean>(false);
 	get loadingRawChartDataTinyUrl$() { return this._loadingRawChartDataTinyUrl.asObservable(); }
 
 	// Raw Data Url
-	private _rawDataUrl = new BehaviorSubject<string>(null as any);
-	private _rawDataTinyUrl = new BehaviorSubject<string>(null as any);
+	private _rawDataUrl = new BehaviorSubject<string | null>(null);
+  get rawDataUrl$() { return this._rawDataUrl.asObservable(); }
+	private _rawDataTinyUrl = new BehaviorSubject<string | null>(null);
 	get rawDataTinyUrl$() { return this._rawDataTinyUrl.asObservable(); }
 	// Raw Data Load Url
 	private _loadingRawDataTinyUrl = new BehaviorSubject<boolean>(false);

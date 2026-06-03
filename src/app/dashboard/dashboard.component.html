@@ -124,7 +124,7 @@
             <div class="uk-width-1-1">
               <div class="uk-flex uk-flex-center actionButtons uk-padding-small">
                 <button class="uk-button uk-button-primary" (click)="submitData()"
-                  [disabled]="!(view.valid && category.valid && dataseries.valid)">Create Chart
+                  [disabled]="!(view.valid && category.valid && dataseries.valid) && !nlQuery()">Create Chart
                 </button>
                 <button class="uk-button uk-button-default uk-margin-small-left" (click)="clearData()">Clear</button>
 <!--                <button class="uk-button uk-button-secondary uk-margin-small-left" (click)="openAiChat()"-->
@@ -181,10 +181,11 @@
 
                   <div class="uk-margin-medium-top">
                     <mat-tab-group mat-stretch-tabs="true" mat-align-tabs="start" animationDuration="250ms">
-                      @if (dialogData?.tableObj) {
+                      @if ((chartExportingService.tableUrl$ | async) != null) {
                         <mat-tab label="Table">
                           <div class="container">
-                            <table-frame [table]="this.dialogData.tableObj"></table-frame>
+                            <chart-frame [chartUrl]="chartExportingService.tableUrl$ | async"></chart-frame>
+<!--                            <table-frame [table]="this.dialogData.tableObj"></table-frame>-->
                           </div>
                           <div class="actions">
                             <div class="label">
@@ -193,10 +194,11 @@
                           </div>
                         </mat-tab>
                       }
-                      @if (dialogData?.rawChartDataObj) {
+                      @if ((chartExportingService.rawChartDataUrl$ | async) != null) {
                         <mat-tab label="Raw Chart Data">
                           <div class="container">
-                            <raw-chart-data-frame [rawChartData]="this.dialogData.rawChartDataObj"></raw-chart-data-frame>
+                            <chart-frame [chartUrl]="chartExportingService.rawChartDataUrl$ | async"></chart-frame>
+<!--                            <raw-chart-data-frame [rawChartData]="this.dialogData.rawChartDataObj"></raw-chart-data-frame>-->
                           </div>
                           <div class="actions">
                             <div class="label">
@@ -205,10 +207,11 @@
                           </div>
                         </mat-tab>
                       }
-                      @if (dialogData?.rawDataObj) {
+                      @if ((chartExportingService.rawDataUrl$ | async) != null) {
                         <mat-tab label="Raw Data">
                           <div class="container">
-                            <raw-data-frame [rawData]="this.dialogData.rawDataObj"></raw-data-frame>
+                            <chart-frame [chartUrl]="chartExportingService.rawDataUrl$ | async"></chart-frame>
+<!--                            <raw-data-frame [rawData]="this.dialogData.rawDataObj"></raw-data-frame>-->
                           </div>
                           <div class="actions">
                             <div class="label">
