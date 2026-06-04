@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, of } from 'rxjs';
+import { BehaviorSubject, Observable, of } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { catchError, distinctUntilChanged, first } from 'rxjs/operators';
 import { UrlProviderService } from '../url-provider-service/url-provider.service';
@@ -21,151 +21,134 @@ export class ShortenUrlResponse {
 	public shortUrl: string;
 }
 
+interface UrlState {
+  url$: Observable<string | null>;
+  tinyUrl$: Observable<string | null>;
+  loadingTinyUrl$: Observable<boolean>;
+
+  setUrl(url: string | null): void;
+  setTinyUrl(url: string | null): void;
+  setLoading(isLoading: boolean): void;
+
+  clear(): void;
+}
+
 @Injectable({
 	providedIn: 'root'
 })
 export class ChartExportingService {
 
-	// Chart Url
-	private _chartUrl = new BehaviorSubject<string | null>(null);
-  get chartUrl$() { return this._chartUrl.asObservable(); }
-	private _chartTinyUrl = new BehaviorSubject<string | null>(null);
-	get chartTinyUrl$() { return this._chartTinyUrl.asObservable(); }
-	// Chart Load Url
-	private _loadingChartTinyUrl = new BehaviorSubject<boolean>(false);
-	get loadingChartTinyUrl$() { return this._loadingChartTinyUrl.asObservable(); }
+  private readonly chartState = this.createUrlState();
+  private readonly tableState = this.createUrlState();
+  private readonly rawChartDataState = this.createUrlState();
+  private readonly rawDataState = this.createUrlState();
 
-	// Table Url
-	private _tableUrl = new BehaviorSubject<string | null>(null);
-  get tableUrl$() { return this._tableUrl.asObservable(); }
-	private _tableTinyUrl = new BehaviorSubject<string | null>(null);
-	get tableTinyUrl$() { return this._tableTinyUrl.asObservable(); }
-	// Table Load Url
-	private _loadingTableTinyUrl = new BehaviorSubject<boolean>(false);
-	get loadingTableTinyUrl$() { return this._loadingTableTinyUrl.asObservable(); }
+  get chartUrl$() { return this.chartState.url$; }
+  get chartTinyUrl$() { return this.chartState.tinyUrl$; }
+  get loadingChartTinyUrl$() { return this.chartState.loadingTinyUrl$; }
 
-	// Raw Chart Data Url
-	private _rawChartDataUrl = new BehaviorSubject<string | null>(null);
-  get rawChartDataUrl$() { return this._rawChartDataUrl.asObservable(); }
-	private _rawChartDataTinyUrl = new BehaviorSubject<string | null>(null);
-	get rawChartDataTinyUrl$() { return this._rawChartDataTinyUrl.asObservable(); }
-	// Raw Chart Data Load Url
-	private _loadingRawChartDataTinyUrl = new BehaviorSubject<boolean>(false);
-	get loadingRawChartDataTinyUrl$() { return this._loadingRawChartDataTinyUrl.asObservable(); }
+  get tableUrl$() { return this.tableState.url$; }
+  get tableTinyUrl$() { return this.tableState.tinyUrl$; }
+  get loadingTableTinyUrl$() { return this.tableState.loadingTinyUrl$; }
 
-	// Raw Data Url
-	private _rawDataUrl = new BehaviorSubject<string | null>(null);
-  get rawDataUrl$() { return this._rawDataUrl.asObservable(); }
-	private _rawDataTinyUrl = new BehaviorSubject<string | null>(null);
-	get rawDataTinyUrl$() { return this._rawDataTinyUrl.asObservable(); }
-	// Raw Data Load Url
-	private _loadingRawDataTinyUrl = new BehaviorSubject<boolean>(false);
-	get loadingRawDataTinyUrl$() { return this._loadingRawDataTinyUrl.asObservable(); }
+  get rawChartDataUrl$() { return this.rawChartDataState.url$; }
+  get rawChartDataTinyUrl$() { return this.rawChartDataState.tinyUrl$; }
+  get loadingRawChartDataTinyUrl$() { return this.rawChartDataState.loadingTinyUrl$; }
+
+  get rawDataUrl$() { return this.rawDataState.url$; }
+  get rawDataTinyUrl$() { return this.rawDataState.tinyUrl$; }
+  get loadingRawDataTinyUrl$() { return this.rawDataState.loadingTinyUrl$; }
 
 	constructor(private http: HttpClient, private errorHandler: ErrorHandlerService, private urlProvider: UrlProviderService) {
-
-		// Chart Url Loader
-		this._chartUrl.pipe(distinctUntilChanged()).subscribe({
-      next: chartUrl => {
-        this.handleStringURL(chartUrl, this._loadingChartTinyUrl, this._chartTinyUrl)
-      },
-      error: err =>  {
-        this.errorHandler.handleError(err) // error path
-      }
+    // Update Tiny Urls when Urls change
+    [this.chartState, this.tableState, this.rawChartDataState, this.rawDataState].forEach(state => {
+      state.url$.pipe(distinctUntilChanged()).subscribe({
+        next: url => this.handleStringURL(url, state),
+        error: err => this.errorHandler.handleError(err)
+      });
     });
-
-		// Table Url Loader
-		this._tableUrl.pipe(distinctUntilChanged()).subscribe(
-			(tableUrl: string) => this.handleStringURL(tableUrl, this._loadingTableTinyUrl, this._tableTinyUrl), // success path
-			error => this.errorHandler.handleError(error) // error path
-		);
-
-		// Raw Chart Data Url Loader
-		this._rawChartDataUrl.pipe(distinctUntilChanged()).subscribe(
-			(rawChartDataUrl: string) => this.handleStringURL(rawChartDataUrl, this._loadingRawChartDataTinyUrl, this._rawChartDataTinyUrl), // success path
-			error => this.errorHandler.handleError(error) // error path
-		);
-
-		// Raw Data Url Loader
-		this._rawDataUrl.pipe(distinctUntilChanged()).subscribe(
-			(rawDataUrl: string) => this.handleStringURL(rawDataUrl, this._loadingRawDataTinyUrl, this._rawDataTinyUrl), // success path
-			error => this.errorHandler.handleError(error) // error path
-		);
 	}
 
-	private handleStringURL(stringURL: string | null, _loadingTinyUrl: BehaviorSubject<boolean>, _tinyUrl: BehaviorSubject<string>) {
-    stringURL ? this.postTinyUrl(stringURL, _loadingTinyUrl, _tinyUrl) : _tinyUrl.next(null as any);
+  private createUrlState(): UrlState {
+    const urlSubject = new BehaviorSubject<string | null>(null);
+    const tinyUrlSubject = new BehaviorSubject<string | null>(null);
+    const loadingSubject = new BehaviorSubject<boolean>(false);
+
+    return {
+      url$: urlSubject.asObservable(),
+      tinyUrl$: tinyUrlSubject.asObservable(),
+      loadingTinyUrl$: loadingSubject.asObservable(),
+
+      setUrl: (url: string | null) => urlSubject.next(url),
+      setTinyUrl: (url: string | null) => tinyUrlSubject.next(url),
+      setLoading: (isLoading: boolean) => loadingSubject.next(isLoading),
+
+      clear: () => {
+        urlSubject.next(null);
+        tinyUrlSubject.next(null);
+        loadingSubject.next(false);
+      }
+    };
   }
 
-	private postTinyUrl(chartUrl: string, loader: BehaviorSubject<boolean>, tinyUrlSubject: BehaviorSubject<string>) {
+	private handleStringURL(stringURL: string | null, urlState: UrlState) {
+    stringURL ? this.postTinyUrl(stringURL, urlState) : urlState.setTinyUrl(null);
+  }
 
-		loader.next(true);
+	private postTinyUrl(chartUrl: string, state: UrlState) {
+
+    state.setLoading(true);
 
 		const postUrl = this.urlProvider.serviceURL + '/chart/shorten';
 
-		const postHeaders = new HttpHeaders();
-		postHeaders.append('Content-Type', 'application/json');
+		// const postHeaders = new HttpHeaders();
+		// postHeaders.append('Content-Type', 'application/json');
 
-		this.http.post<ShortenUrlResponse>(postUrl, { 'url': encodeURIComponent(chartUrl) }, { headers: postHeaders })
-			.pipe(first(),
-				catchError(
-					err => {
-						this.errorHandler.handleError(err);
-						const unshortenedResponse = new ShortenUrlResponse(chartUrl);
-						return of(unshortenedResponse);
-					}))
-			.subscribe(
-				// success path
-				(response: ShortenUrlResponse) => {
-					tinyUrlSubject.next(response.shortUrl);
-					console.log('tinyURLResponse ->', response.shortUrl);
-				},
-				// error path
-				error => this.errorHandler.handleError(error)
-				,
-				// complete path
-				() => loader.next(false)
-			);
+    this.http.post<ShortenUrlResponse>(postUrl, { url: encodeURIComponent(chartUrl) })
+      .pipe(
+        first(),
+        catchError(err => {
+          this.errorHandler.handleError(err);
+          return of(new ShortenUrlResponse(chartUrl));
+        })
+      )
+      .subscribe({
+        next: response => {
+          state.setTinyUrl(response.shortUrl);
+        },
+        error: err => this.errorHandler.handleError(err),
+        complete: () => state.setLoading(false)
+      });
 	}
 
-	public changeChartUrl(chartObject: HighChartsChart | GoogleChartsChart | HighMapsMap | EChartsChart | null) {
+  public changeChartUrl(chartObject: HighChartsChart | GoogleChartsChart | HighMapsMap | EChartsChart | null): void {
 
-		if (!chartObject) {
-			this._chartUrl.next(null);
-			return;
-		}
+    this.updateStateUrl(this.chartState, chartObject ? this.urlProvider.createChartURL(chartObject) : null);
+  }
 
-		console.log("chartObject", chartObject);
-		this._chartUrl.next(this.urlProvider.createChartURL(chartObject));
-	}
+  public changeTableUrl(tableObject: GoogleChartsTable | null): void {
 
-	public changeTableUrl(tableObject: GoogleChartsTable | null) {
+    this.updateStateUrl(this.tableState, tableObject ? this.urlProvider.createTableURL(tableObject) : null);
+  }
 
-		if (!tableObject) {
-			this._tableUrl.next(null as any)
-			return;
-		}
+  public changeRawChartDataUrl(rawChartDataObject: RawChartDataModel | null): void {
 
-		this._tableUrl.next(this.urlProvider.createTableURL(tableObject));
-	}
+    this.updateStateUrl(this.rawChartDataState, rawChartDataObject ? this.urlProvider.createRawChartDataUrl(rawChartDataObject) : null);
+  }
 
-	public changeRawChartDataUrl(rawChartDataObject: RawChartDataModel | null) {
+  public changeRawDataUrl(rawDataObject: RawDataModel | null): void {
 
-		if (!rawChartDataObject) {
-			this._rawChartDataUrl.next(null as any)
-			return;
-		}
+    this.updateStateUrl(this.rawDataState, rawDataObject ? this.urlProvider.createRawDataUrl(rawDataObject) : null);
+  }
 
-		this._rawChartDataUrl.next(this.urlProvider.createRawChartDataUrl(rawChartDataObject));
-	}
+  private updateStateUrl(state: UrlState, url: string | null): void {
+    state.setUrl(url);
+  }
 
-	public changeRawDataUrl(rawDataObject: RawDataModel | null) {
-
-		if (!rawDataObject) {
-			this._rawDataUrl.next(null as any)
-			return;
-		}
-
-		this._rawDataUrl.next(this.urlProvider.createRawDataUrl(rawDataObject));
-	}
+  public clearChartUrls(): void {
+    this.chartState.clear();
+    this.tableState.clear();
+    this.rawChartDataState.clear();
+    this.rawDataState.clear();
+  }
 }
