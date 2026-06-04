@@ -18,11 +18,10 @@ import {
 } from '@angular/core';
 import { ControlContainer, ControlValueAccessor, FormGroupDirective, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { NestedTreeControl } from '@angular/cdk/tree';
-import { filter, switchMap, take } from 'rxjs/operators';
+import { switchMap } from 'rxjs/operators';
 import { ChartLoadingService } from "../../../services/chart-loading-service/chart-loading.service";
 import { DynamicTreeDatabase } from "../../../services/dynamic-tree-database/dynamic-tree-database.service";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
-import { FormFactoryService } from "../../../services/form-factory-service/form-factory-service";
 
 @Component({
   selector: 'select-attribute',
@@ -124,14 +123,14 @@ export class SelectAttributeComponent implements ControlValueAccessor, OnChanges
 
     this.dynamicTreeDB.getRootNode(entity).pipe(takeUntilDestroyed(this.destroyRef)).subscribe((rootNode: DynamicEntityNode) => {
 
-        if(rootNode != null) {
-          // Initialise the NestedTree's data
-          this.nestedEntityDataSource.data = [rootNode];
-          // Expand the first tree node
-          if(this.nestedEntityDataSource.data.length > 0)
-            this.nestedEntityTreeControl.expand(this.nestedEntityDataSource.data[0]);
-        }
-      });
+      if (rootNode != null) {
+        // Initialise the NestedTree's data
+        this.nestedEntityDataSource.data = [rootNode];
+        // Expand the first tree node
+        if (this.nestedEntityDataSource.data.length > 0)
+          this.nestedEntityTreeControl.expand(this.nestedEntityDataSource.data[0]);
+      }
+    });
   }
 
   nodeSelected(field: FieldNode, node: DynamicEntityNode, pathOnly?: boolean) {
@@ -182,8 +181,6 @@ export class SelectAttributeComponent implements ControlValueAccessor, OnChanges
     });
     return parentPath + '.' + field.name;
   }
-
-  trackByFieldName(index: number, item: FieldNode) { return item.name; }
 
   public checkValidFieldNode(e: FieldNode) {
 

@@ -100,8 +100,8 @@
                       <div class="uk-padding-small uk-padding-remove-vertical uk-padding-remove-right">
 
                         <ul class="uk-subnav uk-subnav-pill" uk-switcher>
-                          <li class="uk-active"><a href="#"><mat-icon>construction</mat-icon></a></li>
-                          <li><a href="#"><mat-icon>smart_toy</mat-icon></a></li>
+                          <li class="uk-active"><a href="#"><span class="material-symbols-outlined">construction</span></a></li>
+                          <li><a href="#"><span class="material-symbols-outlined">smart_toy</span></a></li>
                         </ul>
 
                         <div class="uk-switcher uk-margin">
@@ -155,11 +155,9 @@
                             <p>You updated the values in the control panel, but the chart was not updated automatically. Run the query by clicking on the "Create Chart" button.</p>
                           </div>
                         }
-<!--                        FIXME: Do not use object from service, find a way to upgrade it to signal -->
                         @if ((chartExportingService.chartUrl$ | async) != null) {
                           <div class="container">
                             <chart-frame [chartUrl]="chartExportingService.chartUrl$ | async"></chart-frame>
-<!--                            <chart-frame [chart]="dynamicFormHandlingService.ChartObject"></chart-frame>-->
                           </div>
                           <div class="actions">
                             <div class="label">
