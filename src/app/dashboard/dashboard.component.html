@@ -98,13 +98,50 @@
                   <div class="uk-section uk-section-xsmall uk-section-primary uk-preserve-color">
                     <div class="uk-container uk-container-expand uk-padding-remove uk-margin-medium-left">
                       <div class="uk-padding-small uk-padding-remove-vertical uk-padding-remove-right">
+                        <div class="modeswitch-wrap">
+                          <div class="segmented" uk-switcher="toggle: > *; connect: .switcher-container; animation: uk-animation-fade;">
+<!--                            <div class="seg-thumb" style="left: 4px; width: 98px;"></div>-->
+                            <button data-seg="builder" class="seg-btn">
+                              <span class="seg-icon">
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                     stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="icon">
+                                  <g>
+                                    <rect x="3" y="3" width="7" height="7" rx="1.2"></rect>
+                                    <rect x="14" y="3" width="7" height="7" rx="1.2"></rect>
+                                    <rect x="3" y="14" width="7" height="7" rx="1.2"></rect>
+                                    <rect x="14" y="14" width="7" height="7" rx="1.2"></rect>
+                                  </g>
+                                </svg>
+                              </span>Builder
+                            </button>
+<!--                            <button data-seg="sql" class="seg-btn ">-->
+<!--                        <span class="seg-icon">-->
+<!--                          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"-->
+<!--                               stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="icon ">-->
+<!--                            <g>-->
+<!--                              <path d="M4 6v12M4 6c0-1.5 3.6-3 8-3s8 1.5 8 3M4 18c0 1.5 3.6 3 8 3s8-1.5 8-3"></path>-->
+<!--                              <path d="M20 6v12M4 12c0 1.5 3.6 3 8 3s8-1.5 8-3"></path>-->
+<!--                            </g>-->
+<!--                          </svg>-->
+<!--                        </span>SQL-->
+<!--                            </button>-->
+                            <button data-seg="chat" class="seg-btn">
+                              <span class="seg-icon">
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                     stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="icon">
+                                  <g>
+                                    <path d="M5 3v4M3 5h4M19 14v6M16 17h6M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8L12 3z"></path>
+                                  </g>
+                                </svg>
+                              </span>Ask agent
+                            </button>
+                          </div>
+                          <div class="modeswitch-right">
+                            <!--                      <div class="sync-pill"><span class="dot"></span> Synced query</div>-->
+                          </div>
+                        </div>
 
-                        <ul class="uk-subnav uk-subnav-pill" uk-switcher>
-                          <li class="uk-active"><a href="#"><span class="material-symbols-outlined">construction</span></a></li>
-                          <li><a href="#"><span class="material-symbols-outlined">smart_toy</span></a></li>
-                        </ul>
-
-                        <div class="uk-switcher uk-margin">
+                        <div class="uk-switcher switcher-container uk-margin">
                           <app-dataseries-selector [selectedProfile]="profile"></app-dataseries-selector>
                           <app-nl-chat (chatComplete)="onChatComplete($event)"></app-nl-chat>
                         </div>

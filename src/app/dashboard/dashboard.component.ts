@@ -5,13 +5,14 @@ import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { ChartExportingService } from '../services/chart-exporting-service/chart-exporting.service';
 import { FormFactoryService } from "../services/form-factory-service/form-factory-service";
 import { MappingProfilesService } from "../services/mapping-profiles-service/mapping-profiles.service";
-import UIkit from 'uikit';
 import { ChartInfo } from "../services/nl-chat-service/nl-chat.service";
+import UIkit from 'uikit';
 
 @Component({
-    selector: 'app-dashboard',
-    templateUrl: './dashboard.component.html',
-    standalone: false
+  selector: 'app-dashboard',
+  templateUrl: './dashboard.component.html',
+  styleUrl: './dashboard.component.less',
+  standalone: false
 })
 
 export class DashboardComponent implements OnInit {

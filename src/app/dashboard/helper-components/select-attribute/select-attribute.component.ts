@@ -26,7 +26,7 @@ import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 @Component({
   selector: 'select-attribute',
   templateUrl: './select-attribute.component.html',
-  styleUrls: ['./select-attribute.component.scss'],
+  styleUrls: ['./select-attribute.component.less'],
   viewProviders: [
     { provide: ControlContainer, useExisting: FormGroupDirective }
   ],
