@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
@@ -13,7 +12,6 @@ import { PageNotFoundComponent } from './page-not-found/page-not-found.component
 import { CardComponentComponent } from './dashboard/helper-components/card-component/card-component.component';
 import { MaterialModule } from './material/material.module';
 import { CommonModule, NgOptimizedImage } from '@angular/common';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {
   DiagramCardComponentComponent
 } from './dashboard/helper-components/diagram-card-component/diagram-card-component.component';
@@ -46,6 +44,9 @@ import {
 import {
   HighMapsComponent
 } from "./dashboard/customise-appearance/visualisation-options/high-maps/high-maps.component";
+import { NlChatComponent } from "./nl-chat/nl-chat.component";
+import { provideMarkdown, MARKED_OPTIONS } from "ngx-markdown";
+import { markedOptionsFactory } from "./services/marked-option-factory/marked-options.factory";
 
 @NgModule({
   declarations: [
@@ -69,10 +70,11 @@ import {
     GoogleChartsComponent,
     EChartsComponent,
   ],
-  imports: [BrowserModule,
+  imports: [
+    BrowserModule,
     ReactiveFormsModule,
     FormsModule,
-    BrowserAnimationsModule,
+    // BrowserAnimationsModule,
     AppRoutingModule,
     MaterialModule,
     CommonModule,
@@ -80,13 +82,20 @@ import {
     InputComponent,
     AutocompleteInputFieldComponent,
     HighMapsComponent,
-    NgOptimizedImage],
+    NgOptimizedImage,
+    NlChatComponent],
   providers: [
     ChartLoadingService,
     DynamicTreeDatabase,
     DbSchemaService,
     SupportedChartTypesService,
     ChartExportingService,
+    provideMarkdown({
+      markedOptions: {
+        provide: MARKED_OPTIONS,
+        useFactory: markedOptionsFactory,
+      },
+    }),
     provideHttpClient(withInterceptorsFromDi()),
   ],
   bootstrap: [AppComponent]

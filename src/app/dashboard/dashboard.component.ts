@@ -1,26 +1,18 @@
-import { Component, DestroyRef, inject, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
-import { ChartTableModalContext } from "../modals/chart-table-modal/chart-table-modal.component";
 import { DynamicFormHandlingService } from "../services/dynamic-form-handling-service/dynamic-form-handling.service";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { ChartExportingService } from '../services/chart-exporting-service/chart-exporting.service';
 import { FormFactoryService } from "../services/form-factory-service/form-factory-service";
 import { MappingProfilesService } from "../services/mapping-profiles-service/mapping-profiles.service";
-import { HighChartsChart } from "../services/supported-libraries-service/models/chart-description-HighCharts.model";
-import {
-  GoogleChartsChart,
-  GoogleChartsTable
-} from "../services/supported-libraries-service/models/chart-description-GoogleCharts.model";
-import { HighMapsMap } from "../services/supported-libraries-service/models/chart-description-HighMaps.model";
-import { EChartsChart } from "../services/supported-libraries-service/models/chart-description-eCharts.model";
-import { RawChartDataModel } from "../services/supported-libraries-service/models/chart-description-rawChartData.model";
-import { RawDataModel } from "../services/supported-libraries-service/models/description-rawData.model";
+import { ChartInfo } from "../services/nl-chat-service/nl-chat.service";
 import UIkit from 'uikit';
 
 @Component({
-    selector: 'app-dashboard',
-    templateUrl: './dashboard.component.html',
-    standalone: false
+  selector: 'app-dashboard',
+  templateUrl: './dashboard.component.html',
+  styleUrl: './dashboard.component.less',
+  standalone: false
 })
 
 export class DashboardComponent implements OnInit {
@@ -28,15 +20,15 @@ export class DashboardComponent implements OnInit {
   private profileService = inject(MappingProfilesService);
   private formFactory = inject(FormFactoryService);
   private dynamicFormHandlingService = inject(DynamicFormHandlingService);
+  protected chartExportingService = inject(ChartExportingService);
 
+  nlQuery = signal<boolean>(false);
 
 	diagramSettings: FormGroup;
 
 	viewSelectionLabel: string = "View";
 	categorySelectionLabel: string = "Chart type";
-	selectedCategory: string = "";
 	configureDatasieriesLabel: string = "Data";
-	selectedDataseries: string = "";
 	customiseAppearanceLabel: string = "Appearance";
 
 	open = true;
@@ -45,14 +37,7 @@ export class DashboardComponent implements OnInit {
   frameHeight: number;
   hasChanges: boolean = false;
 
-	dialogData: ChartTableModalContext = new class implements ChartTableModalContext {
-    chartObj: HighChartsChart | GoogleChartsChart | HighMapsMap | EChartsChart | null;
-    rawChartDataObj: RawChartDataModel | null;
-    rawDataObj: RawDataModel | null;
-    tableObj: GoogleChartsTable | null;
-  };
-
-  constructor(public chartExportingService: ChartExportingService) {}
+  chartInfo: ChartInfo[] | null = null;
 
 	ngOnInit(): void {
 
@@ -76,7 +61,7 @@ export class DashboardComponent implements OnInit {
       console.log("New View Selected.");
       if (profile) {
         console.log("resetting diagramSettings");
-        this.newViewSelected();
+        this.resetForm();
       }
 
       // this.checkDisabledTabs();
@@ -136,7 +121,7 @@ export class DashboardComponent implements OnInit {
           window.scrollTo({top: 0, left: 0, behavior: "smooth"});
         }, 0);
 			} else if (event.step === 'category') {
-				this.selectedCategory = event.name;
+				// this.selectedCategory = event.name;
         setTimeout(() => {
           UIkit.switcher('#navTab').show(2);
           window.scrollTo({top: 0, left: 0, behavior: "smooth"});
@@ -148,16 +133,6 @@ export class DashboardComponent implements OnInit {
 
 	checkDisabledTabs() {
     this.hasDataAndDiagramType = !!(this.view.get('profile')?.value && this.category.get('diagram')?.get('type')?.value);
-	}
-
-	newViewSelected(): void {
-		this.resetForm();
-		// this.updateDefaultFormGroupValues();
-		// this.diagramSettings.updateValueAndValidity();
-
-		this.selectedCategory = '';
-		this.selectedDataseries = '';
-		// this.selectedAppearance = '';
 	}
 
 	resetForm(): void {
@@ -204,33 +179,24 @@ export class DashboardComponent implements OnInit {
 		console.log("SUBMIT this form:", this.diagramSettings.value);
 
     this.hasChanges = false;
+    if (this.nlQuery()) {
+      this.dynamicFormHandlingService.submitNLQuery(this.chartInfo);
+      return;
+    }
 
 		this.dynamicFormHandlingService.submitForm();
 
-		const data: ChartTableModalContext = {
-			chartObj: this.dynamicFormHandlingService.ChartObject,
-			tableObj: this.dynamicFormHandlingService.TableObject,
-			rawChartDataObj: this.dynamicFormHandlingService.RawChartDataObject,
-			rawDataObj: this.dynamicFormHandlingService.RawDataObject
-		}
-
-		this.dialogData = data;
-
-		console.log("THIS IS THE DATA:", data);
 	}
 
 	clearData() {
     // Reset the form to its initial state.
     this.diagramSettings = this.formFactory.createForm();
     this.setFormObservers();
+    this.nlQuery.set(false);
+    this.chartInfo = null;
 
     // Reset chart, table, rawChartData, rawData objects.
-    this.dialogData = {
-      chartObj: null,
-      rawChartDataObj: null,
-      rawDataObj: null,
-      tableObj: null
-    }
+    this.chartExportingService.clearChartUrls();
 
     this.updateStepper({
       name: null,
@@ -252,4 +218,16 @@ export class DashboardComponent implements OnInit {
 			el.classList.remove('sidebar_mini');
 		}
 	}
+
+	/**
+	 * Handles the completion of the AI chat session.
+	 * @param result - The result of the chat session.
+	 */
+  onChatComplete(result: ChartInfo[]): void {
+    if (result) {
+      console.log('AI Chat completed with result:', result);
+      this.chartInfo = result;
+      this.nlQuery.set(true);
+    }
+  }
 }

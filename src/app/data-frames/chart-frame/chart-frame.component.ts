@@ -1,45 +1,56 @@
-import { Component, ElementRef, Input, OnChanges, OnInit, SimpleChanges, ViewChild } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  Input,
+  OnChanges,
+  OnInit,
+  SimpleChanges,
+  ViewChild
+} from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { UrlProviderService } from '../../services/url-provider-service/url-provider.service';
-import { HighChartsChart } from "../../services/supported-libraries-service/models/chart-description-HighCharts.model";
-import { GoogleChartsChart } from "../../services/supported-libraries-service/models/chart-description-GoogleCharts.model";
-import { HighMapsMap } from "../../services/supported-libraries-service/models/chart-description-HighMaps.model";
-import { EChartsChart } from "../../services/supported-libraries-service/models/chart-description-eCharts.model";
 
 @Component({
     selector: 'chart-frame',
     templateUrl: './chart-frame.component.html',
-    styleUrls: ['./chart-frame.component.scss'],
     standalone: false
 })
 
-export class ChartFrameComponent implements OnInit, OnChanges {
+export class ChartFrameComponent implements OnChanges, AfterViewInit, OnInit {
 
 	@ViewChild('chartFrame', { static: false })
 	private chartFrameRef: ElementRef;
 
-	@Input() chart: HighChartsChart | GoogleChartsChart | HighMapsMap | EChartsChart | null;
+	// @Input() chart: HighChartsChart | GoogleChartsChart | HighMapsMap | EChartsChart | null;
+  @Input() chartUrl: string | null = null;
 	frameHeight: number;
 	frameWidth: number;
-	frameUrl: SafeResourceUrl;
+	frameUrl: SafeResourceUrl | null = null;
 
 	constructor(private sanitizer: DomSanitizer, private urlProvider: UrlProviderService) {
-		this.frameUrl = this.getSanitizedFrameUrl(urlProvider.serviceURL + '/chart');
+    this.frameHeight = (3 * window.outerHeight) / 5;
+		this.frameUrl = this.getSanitizedFrameUrl(urlProvider.serviceURL + '/chart?json');
 		console.log("CHART URL:", this.frameUrl);
 	}
 
-	ngOnInit() {
-		this.frameHeight = (3 * window.outerHeight) / 5;
-	}
+  ngOnInit() {
+    this.frameHeight = (3 * window.outerHeight) / 5;
+  }
 
-	ngOnChanges(changes: SimpleChanges) {
-		const stringObj = JSON.stringify(changes['chart'].currentValue);
-		console.log('[chart-frame.component] On changes: ' + stringObj);
+  ngAfterViewInit() {
+    this.frameHeight = (3 * window.outerHeight) / 5;
+  }
 
-		if (changes['chart'].currentValue) {
-			this.frameUrl = this.getSanitizedFrameUrl(this.urlProvider.createChartURL(changes['chart'].currentValue));
-			console.log(this.frameUrl);
-		} else {
+  ngOnChanges(changes: SimpleChanges) {
+		console.log('[chart-frame.component] On changes: ' + changes['chartUrl']?.currentValue);
+
+    if (changes['chartUrl'] && changes['chartUrl'].currentValue) {
+      this.frameUrl = null;
+      setTimeout(() => { // Ahh, the magic of setTimeout... even claude shat the bed on this one.
+        this.frameUrl = this.getSanitizedFrameUrl(this.chartUrl);
+      }, 0);
+    } else {
 			this.frameUrl = this.getSanitizedFrameUrl(this.urlProvider.serviceURL + '/chart');
 		}
 	}

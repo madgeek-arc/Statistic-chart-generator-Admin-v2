@@ -36,13 +36,15 @@ export class DiagramCreator {
 
 	public createChart(formObj: SCGAFormSchema): Observable<HighChartsChart | GoogleChartsChart | HighMapsMap | EChartsChart | null> {
 
+    console.log('Create chart called with: ', formObj);
 		const view: ViewFormSchema = formObj.view;
 		const category: CategoryFormSchema = formObj.category;
 		const dataseries: DataseriesFormSchema[] = formObj.dataseries;
 		const appearanceOptions: AppearanceFormSchema = formObj.appearance;
 		const library: string = appearanceOptions.chartAppearance.generalOptions.visualisationLibrary;
+    console.log(library);
 
-		// TODO we can make sure we dont send to the back end queries with unsupported libraries
+    // TODO we can make sure we dont send to the back end queries with unsupported libraries
 		// ----------------------
 		// this.supportedLibrariesService.getSupportedLibraries().subscribe(
 		// (data: Array<string>) =>  {

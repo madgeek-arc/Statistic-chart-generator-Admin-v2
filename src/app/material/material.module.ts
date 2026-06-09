@@ -17,6 +17,9 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatMenuModule } from "@angular/material/menu";
 import { MatRadioModule } from '@angular/material/radio';
 import { MatAutocompleteModule } from "@angular/material/autocomplete";
+import { MatCardModule } from '@angular/material/card';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 
 @NgModule({
@@ -37,7 +40,10 @@ import { MatAutocompleteModule } from "@angular/material/autocomplete";
 		MatDialogModule,
 		MatCheckboxModule,
 		MatMenuModule,
-		MatRadioModule
+		MatRadioModule,
+		MatCardModule,
+		MatChipsModule,
+		MatProgressSpinnerModule
 	]
 })
 

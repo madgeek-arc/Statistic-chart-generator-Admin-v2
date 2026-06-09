@@ -2,12 +2,10 @@ import { first } from 'rxjs/operators';
 import { Component, Input, OnChanges, SimpleChanges, ViewChild } from '@angular/core';
 import { Observable } from 'rxjs';
 
-// import { NgbAlert } from '@ng-bootstrap/ng-bootstrap';
-
 @Component({
     selector: 'generated-short-url-field',
     templateUrl: './generated-short-url-field.component.html',
-    styleUrls: ['./generated-short-url-field.component.scss'],
+    styleUrls: ['./generated-short-url-field.component.less'],
     standalone: false
 })
 export class GeneratedShortUrlFieldComponent implements OnChanges {

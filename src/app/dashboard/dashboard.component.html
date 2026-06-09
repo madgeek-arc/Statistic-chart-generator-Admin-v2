@@ -95,7 +95,60 @@
               </li>
               <li class="" style="animation-duration: 200ms;">
                 @if (hasDataAndDiagramType) {
-                  <app-dataseries-selector [selectedProfile]="profile"></app-dataseries-selector>
+                  <div class="uk-section uk-section-xsmall uk-section-primary uk-preserve-color">
+                    <div class="uk-container uk-container-expand uk-padding-remove uk-margin-medium-left">
+                      <div class="uk-padding-small uk-padding-remove-vertical uk-padding-remove-right">
+                        <div class="modeswitch-wrap">
+                          <div class="segmented" uk-switcher="toggle: > *; connect: .switcher-container; animation: uk-animation-fade;">
+<!--                            <div class="seg-thumb" style="left: 4px; width: 98px;"></div>-->
+                            <button data-seg="builder" class="seg-btn">
+                              <span class="seg-icon">
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                     stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="icon">
+                                  <g>
+                                    <rect x="3" y="3" width="7" height="7" rx="1.2"></rect>
+                                    <rect x="14" y="3" width="7" height="7" rx="1.2"></rect>
+                                    <rect x="3" y="14" width="7" height="7" rx="1.2"></rect>
+                                    <rect x="14" y="14" width="7" height="7" rx="1.2"></rect>
+                                  </g>
+                                </svg>
+                              </span>Builder
+                            </button>
+<!--                            <button data-seg="sql" class="seg-btn ">-->
+<!--                        <span class="seg-icon">-->
+<!--                          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"-->
+<!--                               stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="icon ">-->
+<!--                            <g>-->
+<!--                              <path d="M4 6v12M4 6c0-1.5 3.6-3 8-3s8 1.5 8 3M4 18c0 1.5 3.6 3 8 3s8-1.5 8-3"></path>-->
+<!--                              <path d="M20 6v12M4 12c0 1.5 3.6 3 8 3s8-1.5 8-3"></path>-->
+<!--                            </g>-->
+<!--                          </svg>-->
+<!--                        </span>SQL-->
+<!--                            </button>-->
+                            <button data-seg="chat" class="seg-btn">
+                              <span class="seg-icon">
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                     stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="icon">
+                                  <g>
+                                    <path d="M5 3v4M3 5h4M19 14v6M16 17h6M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8L12 3z"></path>
+                                  </g>
+                                </svg>
+                              </span>Ask agent
+                            </button>
+                          </div>
+                          <div class="modeswitch-right">
+                            <!--                      <div class="sync-pill"><span class="dot"></span> Synced query</div>-->
+                          </div>
+                        </div>
+
+                        <div class="uk-switcher switcher-container uk-margin">
+                          <app-dataseries-selector [selectedProfile]="profile"></app-dataseries-selector>
+                          <app-nl-chat (chatComplete)="onChatComplete($event)"></app-nl-chat>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
                 }
               </li>
               <li class="" style="animation-duration: 200ms;">
@@ -108,9 +161,14 @@
             <div class="uk-width-1-1">
               <div class="uk-flex uk-flex-center actionButtons uk-padding-small">
                 <button class="uk-button uk-button-primary" (click)="submitData()"
-                  [disabled]="!(view.valid && category.valid && dataseries.valid)">Create Chart
+                  [disabled]="!(view.valid && category.valid && dataseries.valid) && !nlQuery()">Create Chart
                 </button>
                 <button class="uk-button uk-button-default uk-margin-small-left" (click)="clearData()">Clear</button>
+<!--                <button class="uk-button uk-button-secondary uk-margin-small-left" (click)="openAiChat()"-->
+<!--                  title="Use AI to generate your chart with natural language">-->
+<!--                  <span class="material-symbols-outlined uk-margin-small-right" style="vertical-align: middle;">smart_toy</span>-->
+<!--                  AI Chat-->
+<!--                </button>-->
               </div>
             </div>
           </div>
@@ -125,7 +183,7 @@
                 <div class="iframe-container">
 
                   <div>
-                    @if (dialogData?.rawDataObj) {
+                    @if ((chartExportingService.chartUrl$ | async) != null) {
                       <div>
                         @if (hasChanges) {
                           <div class="uk-alert-warning" uk-alert>
@@ -134,9 +192,9 @@
                             <p>You updated the values in the control panel, but the chart was not updated automatically. Run the query by clicking on the "Create Chart" button.</p>
                           </div>
                         }
-                        @if (dialogData?.chartObj) {
+                        @if ((chartExportingService.chartUrl$ | async) != null) {
                           <div class="container">
-                            <chart-frame [chart]="dialogData.chartObj"></chart-frame>
+                            <chart-frame [chartUrl]="chartExportingService.chartUrl$ | async"></chart-frame>
                           </div>
                           <div class="actions">
                             <div class="label">
@@ -158,10 +216,11 @@
 
                   <div class="uk-margin-medium-top">
                     <mat-tab-group mat-stretch-tabs="true" mat-align-tabs="start" animationDuration="250ms">
-                      @if (dialogData?.tableObj) {
+                      @if ((chartExportingService.tableUrl$ | async) != null) {
                         <mat-tab label="Table">
                           <div class="container">
-                            <table-frame [table]="this.dialogData.tableObj"></table-frame>
+                            <chart-frame [chartUrl]="chartExportingService.tableUrl$ | async"></chart-frame>
+<!--                            <table-frame [table]="this.dialogData.tableObj"></table-frame>-->
                           </div>
                           <div class="actions">
                             <div class="label">
@@ -170,10 +229,11 @@
                           </div>
                         </mat-tab>
                       }
-                      @if (dialogData?.rawChartDataObj) {
+                      @if ((chartExportingService.rawChartDataUrl$ | async) != null) {
                         <mat-tab label="Raw Chart Data">
                           <div class="container">
-                            <raw-chart-data-frame [rawChartData]="this.dialogData.rawChartDataObj"></raw-chart-data-frame>
+                            <chart-frame [chartUrl]="chartExportingService.rawChartDataUrl$ | async"></chart-frame>
+<!--                            <raw-chart-data-frame [rawChartData]="this.dialogData.rawChartDataObj"></raw-chart-data-frame>-->
                           </div>
                           <div class="actions">
                             <div class="label">
@@ -182,10 +242,11 @@
                           </div>
                         </mat-tab>
                       }
-                      @if (dialogData?.rawDataObj) {
+                      @if ((chartExportingService.rawDataUrl$ | async) != null) {
                         <mat-tab label="Raw Data">
                           <div class="container">
-                            <raw-data-frame [rawData]="this.dialogData.rawDataObj"></raw-data-frame>
+                            <chart-frame [chartUrl]="chartExportingService.rawDataUrl$ | async"></chart-frame>
+<!--                            <raw-data-frame [rawData]="this.dialogData.rawDataObj"></raw-data-frame>-->
                           </div>
                           <div class="actions">
                             <div class="label">
