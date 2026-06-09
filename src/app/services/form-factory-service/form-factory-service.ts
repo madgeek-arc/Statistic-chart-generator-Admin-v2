@@ -12,10 +12,9 @@ interface InvalidControl {
 
 export class FormFactoryService {
   private destroyRef = inject(DestroyRef);
+  private fb = inject(FormBuilder);
 
   private formRoot: FormGroup;
-
-  constructor(private fb: FormBuilder) {}
 
   //////////////////////
   // Helpers

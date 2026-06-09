@@ -2,8 +2,9 @@ import { Component, Input } from '@angular/core';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
 
 @Component({
-	selector: 'app-high-charts',
-	templateUrl: './high-charts.component.html',
+    selector: 'app-high-charts',
+    templateUrl: './high-charts.component.html',
+    standalone: false
 })
 export class HighChartsComponent {
 

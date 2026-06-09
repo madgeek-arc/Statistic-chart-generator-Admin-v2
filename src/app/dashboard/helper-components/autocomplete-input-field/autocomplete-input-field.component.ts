@@ -16,21 +16,18 @@ import {
 } from "../../../services/field-autocomplete-service/field-autocomplete.service";
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MaterialModule } from "../../../material/material.module";
-import { AsyncPipe, NgClass, NgForOf, NgIf } from "@angular/common";
+import { AsyncPipe, NgClass } from "@angular/common";
 
 @Component({
-  selector: 'autocomplete-input-field',
-  templateUrl: './autocomplete-input-field.component.html',
-  styleUrls: ['./autocomplete-input-field.component.scss'],
-  standalone: true,
-  imports: [
+    selector: 'autocomplete-input-field',
+    templateUrl: './autocomplete-input-field.component.html',
+    styleUrls: ['./autocomplete-input-field.component.scss'],
+    imports: [
     MaterialModule,
     NgClass,
     ReactiveFormsModule,
-    NgForOf,
-    NgIf,
     AsyncPipe
-  ]
+]
 })
 
 export class AutocompleteInputFieldComponent implements AfterViewInit, OnDestroy {

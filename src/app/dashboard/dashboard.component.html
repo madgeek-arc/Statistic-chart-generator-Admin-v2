@@ -1,6 +1,6 @@
 <div id="sidebar" class="sidebar_main_swipe uk-flex uk-background-default"
-     [class.sidebar_main_active]="open"
-     [class.sidebar_mini]="!open">
+  [class.sidebar_main_active]="open"
+  [class.sidebar_mini]="!open">
   <div id="sidebar_main" uk-sticky="end: .sidebar_main_swipe;" offset="80">
     <div sidebar-content="">
       <div id="sidebar_toggle" (click)="toggleSidebar()"></div>
@@ -16,12 +16,12 @@
                 <div class="uk-width-expand@l uk-margin-small-left hide-on-close">
                   <div class="uk-text-truncate">{{ viewSelectionLabel }}</div>
                   <div class="uk-text-xsmall uk-text-wrap">
-                    <ng-container *ngIf="this.view.get('profile')?.value === null || this.view.get('profile')?.value === undefined">
+                    @if (this.view.get('profile')?.value === null || this.view.get('profile')?.value === undefined) {
                       Choose what type of data interest you
-                    </ng-container>
-                    <ng-container *ngIf="this.view.get('profile')?.value !== null && this.view.get('profile')?.value !== undefined">
+                    }
+                    @if (this.view.get('profile')?.value !== null && this.view.get('profile')?.value !== undefined) {
                       {{ this.view.get('profile')?.value }}
-                    </ng-container>
+                    }
                   </div>
                 </div>
               </a>
@@ -35,12 +35,12 @@
                 <div class="uk-width-expand@l uk-margin-small-left hide-on-close">
                   <div class="uk-text-truncate">{{ categorySelectionLabel }}</div>
                   <div class="uk-text-xsmall uk-text-wrap">
-                    <ng-container *ngIf="category.get('diagram')?.get('type')?.value == null">
+                    @if (category.get('diagram')?.get('type')?.value == null) {
                       Choose the type of diagram you want to make
-                    </ng-container>
-                    <ng-container *ngIf="category.get('diagram')?.get('type')?.value != null">
+                    }
+                    @if (category.get('diagram')?.get('type')?.value != null) {
                       {{ category.get('diagram')?.get('name')?.value }}
-                    </ng-container>
+                    }
                   </div>
                 </div>
               </a>
@@ -94,23 +94,81 @@
                 <app-category-selector (showCategorySelection)="updateStepper($event)" [categoryForm]="category"></app-category-selector>
               </li>
               <li class="" style="animation-duration: 200ms;">
-                <ng-container *ngIf="hasDataAndDiagramType">
-                  <app-dataseries-selector [selectedProfile]="profile"></app-dataseries-selector>
-                </ng-container>
+                @if (hasDataAndDiagramType) {
+                  <div class="uk-section uk-section-xsmall uk-section-primary uk-preserve-color">
+                    <div class="uk-container uk-container-expand uk-padding-remove uk-margin-medium-left">
+                      <div class="uk-padding-small uk-padding-remove-vertical uk-padding-remove-right">
+                        <div class="modeswitch-wrap">
+                          <div class="segmented" uk-switcher="toggle: > *; connect: .switcher-container; animation: uk-animation-fade;">
+<!--                            <div class="seg-thumb" style="left: 4px; width: 98px;"></div>-->
+                            <button data-seg="builder" class="seg-btn">
+                              <span class="seg-icon">
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                     stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="icon">
+                                  <g>
+                                    <rect x="3" y="3" width="7" height="7" rx="1.2"></rect>
+                                    <rect x="14" y="3" width="7" height="7" rx="1.2"></rect>
+                                    <rect x="3" y="14" width="7" height="7" rx="1.2"></rect>
+                                    <rect x="14" y="14" width="7" height="7" rx="1.2"></rect>
+                                  </g>
+                                </svg>
+                              </span>Builder
+                            </button>
+<!--                            <button data-seg="sql" class="seg-btn ">-->
+<!--                        <span class="seg-icon">-->
+<!--                          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"-->
+<!--                               stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="icon ">-->
+<!--                            <g>-->
+<!--                              <path d="M4 6v12M4 6c0-1.5 3.6-3 8-3s8 1.5 8 3M4 18c0 1.5 3.6 3 8 3s8-1.5 8-3"></path>-->
+<!--                              <path d="M20 6v12M4 12c0 1.5 3.6 3 8 3s8-1.5 8-3"></path>-->
+<!--                            </g>-->
+<!--                          </svg>-->
+<!--                        </span>SQL-->
+<!--                            </button>-->
+                            <button data-seg="chat" class="seg-btn">
+                              <span class="seg-icon">
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                     stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="icon">
+                                  <g>
+                                    <path d="M5 3v4M3 5h4M19 14v6M16 17h6M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8L12 3z"></path>
+                                  </g>
+                                </svg>
+                              </span>Ask agent
+                            </button>
+                          </div>
+                          <div class="modeswitch-right">
+                            <!--                      <div class="sync-pill"><span class="dot"></span> Synced query</div>-->
+                          </div>
+                        </div>
+
+                        <div class="uk-switcher switcher-container uk-margin">
+                          <app-dataseries-selector [selectedProfile]="profile"></app-dataseries-selector>
+                          <app-nl-chat (chatComplete)="onChatComplete($event)"></app-nl-chat>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                }
               </li>
               <li class="" style="animation-duration: 200ms;">
-                <ng-container *ngIf="this.hasDataAndDiagramType">
+                @if (this.hasDataAndDiagramType) {
                   <app-customise-appearance></app-customise-appearance>
-                </ng-container>
+                }
               </li>
             </ul>
             <!-- <div class="actionButtons"> -->
             <div class="uk-width-1-1">
               <div class="uk-flex uk-flex-center actionButtons uk-padding-small">
                 <button class="uk-button uk-button-primary" (click)="submitData()"
-                        [disabled]="!(view.valid && category.valid && dataseries.valid)">Create Chart
+                  [disabled]="!(view.valid && category.valid && dataseries.valid) && !nlQuery()">Create Chart
                 </button>
                 <button class="uk-button uk-button-default uk-margin-small-left" (click)="clearData()">Clear</button>
+<!--                <button class="uk-button uk-button-secondary uk-margin-small-left" (click)="openAiChat()"-->
+<!--                  title="Use AI to generate your chart with natural language">-->
+<!--                  <span class="material-symbols-outlined uk-margin-small-right" style="vertical-align: middle;">smart_toy</span>-->
+<!--                  AI Chat-->
+<!--                </button>-->
               </div>
             </div>
           </div>
@@ -120,29 +178,32 @@
             <div class="uk-section uk-section-small uk-section-primary uk-preserve-color">
               <div class="uk-container uk-container-expand uk-padding-remove uk-margin-medium-right">
 
-<!--                <pre>{{ diagramSettings.value | json }}</pre>-->
+                <!--                <pre>{{ diagramSettings.value | json }}</pre>-->
 
                 <div class="iframe-container">
 
                   <div>
-                    <div *ngIf="dialogData?.rawDataObj; else notSubmittedYet">
-                      <div *ngIf="hasChanges" class="uk-alert-warning" uk-alert>
-                        <!--                      <a href class="uk-alert-close" uk-close></a>-->
-                        <p class="uk-text-bold">Your chart is not up to date</p>
-                        <p>You updated the values in the control panel, but the chart was not updated automatically. Run the query by clicking on the "Create Chart" button.</p>
-                      </div>
-                      <ng-container *ngIf="dialogData?.chartObj">
-                        <div class="container">
-                          <chart-frame [chart]="dialogData.chartObj"></chart-frame>
-                        </div>
-                        <div class="actions">
-                          <div class="label">
-                            <generated-short-url-field [shortUrl]="chartExportingService.chartTinyUrl$"></generated-short-url-field>
+                    @if ((chartExportingService.chartUrl$ | async) != null) {
+                      <div>
+                        @if (hasChanges) {
+                          <div class="uk-alert-warning" uk-alert>
+                            <!--                      <a href class="uk-alert-close" uk-close></a>-->
+                            <p class="uk-text-bold">Your chart is not up to date</p>
+                            <p>You updated the values in the control panel, but the chart was not updated automatically. Run the query by clicking on the "Create Chart" button.</p>
                           </div>
-                        </div>
-                      </ng-container>
-                    </div>
-                    <ng-template #notSubmittedYet>
+                        }
+                        @if ((chartExportingService.chartUrl$ | async) != null) {
+                          <div class="container">
+                            <chart-frame [chartUrl]="chartExportingService.chartUrl$ | async"></chart-frame>
+                          </div>
+                          <div class="actions">
+                            <div class="label">
+                              <generated-short-url-field [shortUrl]="chartExportingService.chartTinyUrl$"></generated-short-url-field>
+                            </div>
+                          </div>
+                        }
+                      </div>
+                    } @else {
                       <div class="uk-text-center uk-flex uk-flex-middle" [style.height.px]="frameHeight">
                         <div>
                           <div><span class="material-symbols-outlined" style="font-size: 80px">bar_chart_4_bars</span></div>
@@ -150,41 +211,50 @@
                           <p class="">Select values in highlighted field(s) in the control panel. Then run the query by clicking on the "Create chart" button.</p>
                         </div>
                       </div>
-                    </ng-template>
+                    }
                   </div>
 
                   <div class="uk-margin-medium-top">
                     <mat-tab-group mat-stretch-tabs="true" mat-align-tabs="start" animationDuration="250ms">
-                      <mat-tab label="Table" *ngIf="dialogData?.tableObj">
-                        <div class="container">
-                          <table-frame [table]="this.dialogData.tableObj"></table-frame>
-                        </div>
-                        <div class="actions">
-                          <div class="label">
-                            <generated-short-url-field [shortUrl]="chartExportingService.tableTinyUrl$"></generated-short-url-field>
+                      @if ((chartExportingService.tableUrl$ | async) != null) {
+                        <mat-tab label="Table">
+                          <div class="container">
+                            <chart-frame [chartUrl]="chartExportingService.tableUrl$ | async"></chart-frame>
+<!--                            <table-frame [table]="this.dialogData.tableObj"></table-frame>-->
                           </div>
-                        </div>
-                      </mat-tab>
-                      <mat-tab label="Raw Chart Data" *ngIf="dialogData?.rawChartDataObj">
-                        <div class="container">
-                          <raw-chart-data-frame [rawChartData]="this.dialogData.rawChartDataObj"></raw-chart-data-frame>
-                        </div>
-                        <div class="actions">
-                          <div class="label">
-                            <generated-short-url-field [shortUrl]="chartExportingService.rawChartDataTinyUrl$"></generated-short-url-field>
+                          <div class="actions">
+                            <div class="label">
+                              <generated-short-url-field [shortUrl]="chartExportingService.tableTinyUrl$"></generated-short-url-field>
+                            </div>
                           </div>
-                        </div>
-                      </mat-tab>
-                      <mat-tab label="Raw Data" *ngIf="dialogData?.rawDataObj">
-                        <div class="container">
-                          <raw-data-frame [rawData]="this.dialogData.rawDataObj"></raw-data-frame>
-                        </div>
-                        <div class="actions">
-                          <div class="label">
-                            <generated-short-url-field [shortUrl]="chartExportingService.rawDataTinyUrl$"></generated-short-url-field>
+                        </mat-tab>
+                      }
+                      @if ((chartExportingService.rawChartDataUrl$ | async) != null) {
+                        <mat-tab label="Raw Chart Data">
+                          <div class="container">
+                            <chart-frame [chartUrl]="chartExportingService.rawChartDataUrl$ | async"></chart-frame>
+<!--                            <raw-chart-data-frame [rawChartData]="this.dialogData.rawChartDataObj"></raw-chart-data-frame>-->
                           </div>
-                        </div>
-                      </mat-tab>
+                          <div class="actions">
+                            <div class="label">
+                              <generated-short-url-field [shortUrl]="chartExportingService.rawChartDataTinyUrl$"></generated-short-url-field>
+                            </div>
+                          </div>
+                        </mat-tab>
+                      }
+                      @if ((chartExportingService.rawDataUrl$ | async) != null) {
+                        <mat-tab label="Raw Data">
+                          <div class="container">
+                            <chart-frame [chartUrl]="chartExportingService.rawDataUrl$ | async"></chart-frame>
+<!--                            <raw-data-frame [rawData]="this.dialogData.rawDataObj"></raw-data-frame>-->
+                          </div>
+                          <div class="actions">
+                            <div class="label">
+                              <generated-short-url-field [shortUrl]="chartExportingService.rawDataTinyUrl$"></generated-short-url-field>
+                            </div>
+                          </div>
+                        </mat-tab>
+                      }
                     </mat-tab-group>
                   </div>
                 </div>

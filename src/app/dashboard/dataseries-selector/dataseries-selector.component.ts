@@ -17,10 +17,11 @@ export class FilterType {
 }
 
 @Component({
-	selector: 'app-dataseries-selector',
-	templateUrl: './dataseries-selector.component.html',
-	styleUrls: ['./dataseries-selector.component.less'],
-	providers: [FormGroupDirective]
+    selector: 'app-dataseries-selector',
+    templateUrl: './dataseries-selector.component.html',
+    styleUrls: ['./dataseries-selector.component.less'],
+    providers: [FormGroupDirective],
+    standalone: false
 })
 
 export class DataseriesSelectorComponent implements OnInit, AfterViewInit {
@@ -240,4 +241,5 @@ export class DataseriesSelectorComponent implements OnInit, AfterViewInit {
 		return false;
 	}
 
+  protected readonly FormGroup = FormGroup;
 }

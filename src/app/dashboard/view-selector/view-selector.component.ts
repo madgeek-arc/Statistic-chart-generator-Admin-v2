@@ -3,8 +3,9 @@ import { FormControl } from '@angular/forms';
 import { ProfileProviderService } from 'src/app/services/profile-provider/profile-provider.service';
 
 @Component({
-	selector: 'app-view-selector',
-	templateUrl: './view-selector.component.html'
+    selector: 'app-view-selector',
+    templateUrl: './view-selector.component.html',
+    standalone: false
 })
 
 export class ViewSelectorComponent {

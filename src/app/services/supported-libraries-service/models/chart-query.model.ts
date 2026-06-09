@@ -1,5 +1,6 @@
 import { Filter, FilterGroup } from './query-filter.model';
 import { DataFormSchema, DataseriesFormSchema } from "../chart-form-schema.classes";
+import { DslQuery, NlQuery } from "../../nl-chat-service/nl-chat.service";
 
 export class Query {
 

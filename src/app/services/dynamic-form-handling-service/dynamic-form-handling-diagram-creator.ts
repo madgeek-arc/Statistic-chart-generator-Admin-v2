@@ -1,5 +1,6 @@
 import { Observable, of } from 'rxjs';
-import { Color, ColorType } from 'highcharts';
+import * as Highcharts from 'highcharts';
+import { ColorType } from 'highcharts';
 import { HighChartsChart } from "../supported-libraries-service/models/chart-description-HighCharts.model";
 import { DiagramCategoryService } from "../diagram-category-service/diagram-category.service";
 import {
@@ -18,11 +19,14 @@ import { EChartsChart, ECToolboxFeature } from "../supported-libraries-service/m
 import { ChartInfo } from "../supported-libraries-service/models/chart-query.model";
 import { RawChartDataModel } from "../supported-libraries-service/models/chart-description-rawChartData.model";
 import { QueryInfo, RawDataModel } from "../supported-libraries-service/models/description-rawData.model";
-import { EChartOption } from "echarts";
 import { ISupportedMap } from "../supported-chart-types-service/supported-chart-types.service";
+import { TreemapSeriesOption } from 'echarts';
+import { ChartType, EChartsCreationHelperService } from "./eCharts-creation-helper.service";
+import { inject } from "@angular/core";
 
 
 export class DiagramCreator {
+  private eChartsHelperService = inject(EChartsCreationHelperService);
 
 	private hcColorTheme = ['#2f7ed8', '#0d233a', '#8bbc21', '#910000', '#1aadce', '#492970', '#f28f43', '#77a1e5', '#c42525', '#a6c96a'];
 	private ecColorTheme = ['#c23531', '#2f4554', '#61a0a8', '#d48265', '#91c7ae', '#749f83', '#ca8622', '#bda29a', '#6e7074',
@@ -32,13 +36,15 @@ export class DiagramCreator {
 
 	public createChart(formObj: SCGAFormSchema): Observable<HighChartsChart | GoogleChartsChart | HighMapsMap | EChartsChart | null> {
 
+    console.log('Create chart called with: ', formObj);
 		const view: ViewFormSchema = formObj.view;
 		const category: CategoryFormSchema = formObj.category;
 		const dataseries: DataseriesFormSchema[] = formObj.dataseries;
 		const appearanceOptions: AppearanceFormSchema = formObj.appearance;
 		const library: string = appearanceOptions.chartAppearance.generalOptions.visualisationLibrary;
+    console.log(library);
 
-		// TODO we can make sure we dont send to the back end queries with unsupported libraries
+    // TODO we can make sure we dont send to the back end queries with unsupported libraries
 		// ----------------------
 		// this.supportedLibrariesService.getSupportedLibraries().subscribe(
 		// (data: Array<string>) =>  {
@@ -226,7 +232,7 @@ export class DiagramCreator {
 				chartObj.chartDescription.title.align = appearanceOptions.chartAppearance.highchartsAppearanceOptions.title.align;
 				if (chartObj.chartDescription.title.style !== undefined) {
 					chartObj.chartDescription.title.style.color = appearanceOptions.chartAppearance.highchartsAppearanceOptions.title.color;
-					chartObj.chartDescription.title.style.fontSize = appearanceOptions.chartAppearance.highchartsAppearanceOptions.title.fontSize?.toString() + "px";
+					(chartObj.chartDescription.title.style as Highcharts.CSSObject).fontSize = appearanceOptions.chartAppearance.highchartsAppearanceOptions.title.fontSize?.toString() + "px";
 				}
 			}
 
@@ -271,7 +277,7 @@ export class DiagramCreator {
 					chartObj.chartDescription.xAxis.title.text = appearanceOptions.chartAppearance.highchartsAppearanceOptions.xAxis.xAxisText;
 				}
 				if (chartObj.chartDescription.xAxis.title !== undefined && chartObj.chartDescription.xAxis.title.style !== undefined) {
-					chartObj.chartDescription.xAxis.title.style.color = appearanceOptions.chartAppearance.highchartsAppearanceOptions.xAxis.color;
+					(chartObj.chartDescription.xAxis.title.style as Highcharts.CSSObject).color = appearanceOptions.chartAppearance.highchartsAppearanceOptions.xAxis.color;
 					chartObj.chartDescription.xAxis.title.style.fontSize = appearanceOptions.chartAppearance.highchartsAppearanceOptions.xAxis.fontSize?.toString() + "px";
 				}
 			}
@@ -281,7 +287,7 @@ export class DiagramCreator {
 					chartObj.chartDescription.yAxis.title.text = appearanceOptions.chartAppearance.highchartsAppearanceOptions.yAxis.yAxisText;
 				}
 				if (chartObj.chartDescription.yAxis.title !== undefined && chartObj.chartDescription.yAxis.title.style !== undefined) {
-					chartObj.chartDescription.yAxis.title.style.color = appearanceOptions.chartAppearance.highchartsAppearanceOptions.yAxis.color;
+					(chartObj.chartDescription.yAxis.title.style as Highcharts.CSSObject).color = appearanceOptions.chartAppearance.highchartsAppearanceOptions.yAxis.color;
 					chartObj.chartDescription.yAxis.title.style.fontSize = appearanceOptions.chartAppearance.highchartsAppearanceOptions.yAxis.fontSize?.toString() + "px";
 				}
 				chartObj.chartDescription.yAxis.reversedStacks = appearanceOptions.chartAppearance.highchartsAppearanceOptions.yAxis.reversedStacks;
@@ -437,29 +443,38 @@ export class DiagramCreator {
 
 		// Initialize the echarts series
 		dataseries.forEach(dataElement => {
-			chartObj.chartDescription.series.push({
-				type: category.diagram.type === 'area' ? 'line' : category.diagram.type,
-				areaStyle: category.diagram.type === 'area' ? {} : null,
 
-				// Stack options
-				// NOTE: To enable a stack chart in echarts, the stack property needs to be a truthy value.
-				// Since the property type is (wrongly) just string a truthy value would be literally any string
-				stack: appearanceOptions.chartAppearance.echartsAppearanceOptions?.ecMiscOptions?.stackedChart ? 'true' : null,
-				// Label options
-				label: {
-					show: appearanceOptions.chartAppearance.echartsAppearanceOptions?.ecMiscOptions?.ecEnableDataLabels,
-					position: this.figureLabelPosition(appearanceOptions.chartAppearance.echartsAppearanceOptions?.ecMiscOptions?.ecEnableDataLabels as boolean),
-					formatter: (a: any) => a.value.toLocaleString()
-				}
-			} as {
-				color?: Color | undefined;
-				origin?: string | undefined;
-				shadowBlur?: number | undefined;
-				shadowColor?: Color | undefined;
-				shadowOffsetX?: number | undefined;
-				shadowOffsetY?: number | undefined;
-				opacity?: number | undefined;
-			});
+      const seriesItem = this.eChartsHelperService.buildSeries(category.diagram.type as ChartType, {
+        // IMPORTANT: Data were omitted in the previous implementation. Uncomment to add if needed.
+        // data: dataElement,
+        stack: appearanceOptions.chartAppearance.echartsAppearanceOptions?.ecMiscOptions?.stackedChart,
+        showLabels: appearanceOptions.chartAppearance.echartsAppearanceOptions?.ecMiscOptions?.ecEnableDataLabels
+      });
+      chartObj.chartDescription.series.push(seriesItem);
+
+			// chartObj.chartDescription.series.push({
+			// 	type: category.diagram.type === 'area' ? 'line' : category.diagram.type,
+			// 	areaStyle: category.diagram.type === 'area' ? {} : null,
+      //
+			// 	// Stack options
+			// 	// NOTE: To enable a stack chart in echarts, the stack property needs to be a truthy value.
+			// 	// Since the property type is (wrongly) just string a truthy value would be literally any string
+			// 	stack: appearanceOptions.chartAppearance.echartsAppearanceOptions?.ecMiscOptions?.stackedChart ? 'true' : null,
+			// 	// Label options
+			// 	label: {
+			// 		show: appearanceOptions.chartAppearance.echartsAppearanceOptions?.ecMiscOptions?.ecEnableDataLabels,
+			// 		position: this.figureLabelPosition(appearanceOptions.chartAppearance.echartsAppearanceOptions?.ecMiscOptions?.ecEnableDataLabels as boolean),
+			// 		formatter: (a: any) => a.value.toLocaleString()
+			// 	}
+			// } as {
+			// 	color?: Color | undefined;
+			// 	origin?: string | undefined;
+			// 	shadowBlur?: number | undefined;
+			// 	shadowColor?: Color | undefined;
+			// 	shadowOffsetX?: number | undefined;
+			// 	shadowOffsetY?: number | undefined;
+			// 	opacity?: number | undefined;
+			// });
 		});
 
 		// TREEMAP ONLY : Set Color Gradient min and max color. Takes only the first of the colors array.
@@ -468,7 +483,7 @@ export class DiagramCreator {
 		if (category.diagram.type == "treemap") {
       const gradientMapMaxColor = this.ignoreAlphaColor(chartObj.chartDescription.color[0] as string);
 
-      (chartObj.chartDescription.series[0] as EChartOption.SeriesTreemap).levels =
+      (chartObj.chartDescription.series[0] as TreemapSeriesOption).levels =
 				[{ color: ['#F0F0F0', gradientMapMaxColor], colorMappingBy: 'value' }];
 
 		}
@@ -477,6 +492,7 @@ export class DiagramCreator {
 
 		return chartObj;
 	}
+
 	figureLabelPosition(isStacked: boolean): 'inside' | 'right' { return isStacked ? 'inside' : 'right' }
 
 	createDynamicHighMapsMap(view: ViewFormSchema, category: CategoryFormSchema, dataseries: DataseriesFormSchema[], appearanceOptions: AppearanceFormSchema): HighMapsMap {
@@ -503,7 +519,7 @@ export class DiagramCreator {
 				mapObj.mapDescription.title.margin = appearanceOptions.chartAppearance.highmapsAppearanceOptions.title.margin;
 				if (mapObj.mapDescription.title.style !== undefined) {
 					mapObj.mapDescription.title.style.color = appearanceOptions.chartAppearance.highmapsAppearanceOptions.title.color;
-					mapObj.mapDescription.title.style.fontSize = appearanceOptions.chartAppearance.highmapsAppearanceOptions.title.fontSize?.toString() + "px";
+					(mapObj.mapDescription.title.style as Highcharts.CSSObject).fontSize = appearanceOptions.chartAppearance.highmapsAppearanceOptions.title.fontSize?.toString() + "px";
 				}
 			}
 			// Subtitle

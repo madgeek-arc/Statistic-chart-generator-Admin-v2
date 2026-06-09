@@ -1,29 +1,34 @@
-import { Component, DestroyRef, inject, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
-import { ChartTableModalContext } from "../modals/chart-table-modal/chart-table-modal.component";
 import { DynamicFormHandlingService } from "../services/dynamic-form-handling-service/dynamic-form-handling.service";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { ChartExportingService } from '../services/chart-exporting-service/chart-exporting.service';
 import { FormFactoryService } from "../services/form-factory-service/form-factory-service";
 import { MappingProfilesService } from "../services/mapping-profiles-service/mapping-profiles.service";
+import { ChartInfo } from "../services/nl-chat-service/nl-chat.service";
 import UIkit from 'uikit';
 
 @Component({
-	selector: 'app-dashboard',
-	templateUrl: './dashboard.component.html',
+  selector: 'app-dashboard',
+  templateUrl: './dashboard.component.html',
+  styleUrl: './dashboard.component.less',
+  standalone: false
 })
 
 export class DashboardComponent implements OnInit {
 	private destroyRef = inject(DestroyRef);
   private profileService = inject(MappingProfilesService);
+  private formFactory = inject(FormFactoryService);
+  private dynamicFormHandlingService = inject(DynamicFormHandlingService);
+  protected chartExportingService = inject(ChartExportingService);
+
+  nlQuery = signal<boolean>(false);
 
 	diagramSettings: FormGroup;
 
 	viewSelectionLabel: string = "View";
 	categorySelectionLabel: string = "Chart type";
-	selectedCategory: string = "";
 	configureDatasieriesLabel: string = "Data";
-	selectedDataseries: string = "";
 	customiseAppearanceLabel: string = "Appearance";
 
 	open = true;
@@ -32,18 +37,7 @@ export class DashboardComponent implements OnInit {
   frameHeight: number;
   hasChanges: boolean = false;
 
-	dialogData: ChartTableModalContext = {
-		chartObj: this.dynamicFormHandlingService.ChartObject,
-		tableObj: this.dynamicFormHandlingService.TableObject,
-		rawChartDataObj: this.dynamicFormHandlingService.RawChartDataObject,
-		rawDataObj: this.dynamicFormHandlingService.RawDataObject
-	};
-
-  constructor(
-    public chartExportingService: ChartExportingService,
-    private dynamicFormHandlingService: DynamicFormHandlingService,
-    private formFactory: FormFactoryService
-  ) {}
+  chartInfo: ChartInfo[] | null = null;
 
 	ngOnInit(): void {
 
@@ -67,7 +61,7 @@ export class DashboardComponent implements OnInit {
       console.log("New View Selected.");
       if (profile) {
         console.log("resetting diagramSettings");
-        this.newViewSelected();
+        this.resetForm();
       }
 
       // this.checkDisabledTabs();
@@ -127,7 +121,7 @@ export class DashboardComponent implements OnInit {
           window.scrollTo({top: 0, left: 0, behavior: "smooth"});
         }, 0);
 			} else if (event.step === 'category') {
-				this.selectedCategory = event.name;
+				// this.selectedCategory = event.name;
         setTimeout(() => {
           UIkit.switcher('#navTab').show(2);
           window.scrollTo({top: 0, left: 0, behavior: "smooth"});
@@ -139,16 +133,6 @@ export class DashboardComponent implements OnInit {
 
 	checkDisabledTabs() {
     this.hasDataAndDiagramType = !!(this.view.get('profile')?.value && this.category.get('diagram')?.get('type')?.value);
-	}
-
-	newViewSelected(): void {
-		this.resetForm();
-		// this.updateDefaultFormGroupValues();
-		// this.diagramSettings.updateValueAndValidity();
-
-		this.selectedCategory = '';
-		this.selectedDataseries = '';
-		// this.selectedAppearance = '';
 	}
 
 	resetForm(): void {
@@ -172,7 +156,7 @@ export class DashboardComponent implements OnInit {
 
         console.log('📁 About to patchValue with:', this.dynamicFormHandlingService.loadFormObject);
         this.diagramSettings.patchValue(this.dynamicFormHandlingService.loadFormObject, { emitEvent: false });
-        // Update selected profile in mapping profiles service.
+        // Update the selected profile in the mapping profiles service.
         this.profileService.changeSelectedProfile(this.diagramSettings.get('view.profile')?.value);
 
         this.dynamicFormHandlingService.formSchemaObject = this.diagramSettings.value;
@@ -195,25 +179,24 @@ export class DashboardComponent implements OnInit {
 		console.log("SUBMIT this form:", this.diagramSettings.value);
 
     this.hasChanges = false;
+    if (this.nlQuery()) {
+      this.dynamicFormHandlingService.submitNLQuery(this.chartInfo);
+      return;
+    }
 
 		this.dynamicFormHandlingService.submitForm();
 
-		const data: ChartTableModalContext = {
-			chartObj: this.dynamicFormHandlingService.ChartObject,
-			tableObj: this.dynamicFormHandlingService.TableObject,
-			rawChartDataObj: this.dynamicFormHandlingService.RawChartDataObject,
-			rawDataObj: this.dynamicFormHandlingService.RawDataObject
-		}
-
-		this.dialogData = data;
-
-		console.log("THIS IS THE DATA:", data);
 	}
 
 	clearData() {
-    console.log('resetting form');
+    // Reset the form to its initial state.
     this.diagramSettings = this.formFactory.createForm();
     this.setFormObservers();
+    this.nlQuery.set(false);
+    this.chartInfo = null;
+
+    // Reset chart, table, rawChartData, rawData objects.
+    this.chartExportingService.clearChartUrls();
 
     this.updateStepper({
       name: null,
@@ -235,4 +218,16 @@ export class DashboardComponent implements OnInit {
 			el.classList.remove('sidebar_mini');
 		}
 	}
+
+	/**
+	 * Handles the completion of the AI chat session.
+	 * @param result - The result of the chat session.
+	 */
+  onChatComplete(result: ChartInfo[]): void {
+    if (result) {
+      console.log('AI Chat completed with result:', result);
+      this.chartInfo = result;
+      this.nlQuery.set(true);
+    }
+  }
 }

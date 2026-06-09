@@ -19,25 +19,23 @@
                   Share
                 </a>
                 <div data-uk-dropdown="mode: click">
-                  <ng-container *ngIf="true">
+                  @if (true) {
                     <generated-short-url-field dataName="Chart" [shortUrl]="chartExportingService.chartTinyUrl$"
-                                               [isUrlLoading]="chartExportingService.loadingChartTinyUrl$" >
+                      [isUrlLoading]="chartExportingService.loadingChartTinyUrl$" >
                     </generated-short-url-field>
                     <hr/>
-
                     <generated-short-url-field dataName="Table" [shortUrl]="chartExportingService.tableTinyUrl$"
-                                               [isUrlLoading]="chartExportingService.loadingTableTinyUrl$">
+                      [isUrlLoading]="chartExportingService.loadingTableTinyUrl$">
                     </generated-short-url-field>
                     <hr/>
-
                     <generated-short-url-field dataName="Raw Chart Data" [shortUrl]="chartExportingService.rawChartDataTinyUrl$"
-                                               [isUrlLoading]="chartExportingService.loadingRawChartDataTinyUrl$">
+                      [isUrlLoading]="chartExportingService.loadingRawChartDataTinyUrl$">
                     </generated-short-url-field>
                     <hr/>
-                  </ng-container>
+                  }
 
                   <generated-short-url-field dataName="Raw Data" [shortUrl]="chartExportingService.rawDataTinyUrl$"
-                                             [isUrlLoading]="chartExportingService.loadingRawDataTinyUrl$">
+                    [isUrlLoading]="chartExportingService.loadingRawDataTinyUrl$">
                   </generated-short-url-field>
                 </div>
               </li>
@@ -48,12 +46,13 @@
                   <button class="uk-button uk-button-small" type="button" (click)="initiateFilePicker()">
                     <div class="">
                       <div class="">
-                        <span *ngIf="chartLoadingService.chartLoadingStatus; else showPlusSign" class="" role="status" aria-hidden="true"></span>
-                        <ng-template #showPlusSign>
+                        @if (chartLoadingService.chartLoadingStatus) {
+                          <span class="" role="status" aria-hidden="true"></span>
+                        } @else {
                           <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="currentColor" class="bi bi-plus-square" viewBox="0 0 16 16">
                             <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
                           </svg>
-                        </ng-template>
+                        }
                       </div>
 
                       <div class="" style="font-size: 1.1em;">
@@ -61,10 +60,12 @@
                       </div>
                     </div>
                   </button>
-                  <div *ngIf="chartLoadingService.isChartLoaded">
-                    <hr/>
-                    <p class="text-center">Chart model is loaded!</p>
-                  </div>
+                  @if (chartLoadingService.isChartLoaded) {
+                    <div>
+                      <hr/>
+                      <p class="text-center">Chart model is loaded!</p>
+                    </div>
+                  }
                   <hr class="uk-divider-icon">
                   <form class="uk-form-stacked">
 
@@ -72,9 +73,11 @@
                       <label for="url-input" class="uk-form-label">Or provide url</label>
                       <div class="uk-form-controls">
                         <textarea class="uk-textarea" id="url-input" rows="4" [(ngModel)]="urlJson"
-                                  [ngModelOptions]="{standalone: true}">
+                          [ngModelOptions]="{standalone: true}">
                         </textarea>
-                        <span *ngIf="errorMsg" class="uk-text-danger">{{errorMsg}}</span>
+                        @if (errorMsg) {
+                          <span class="uk-text-danger">{{errorMsg}}</span>
+                        }
                       </div>
                       <div class="uk-flex uk-flex-right uk-margin-small-top" data-uk-tooltip="Input url to load">
                         <button class="uk-button uk-button-default" (click)="loadFormFromUrl()">Load</button>
