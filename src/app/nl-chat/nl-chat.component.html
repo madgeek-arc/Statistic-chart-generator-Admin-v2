@@ -11,7 +11,7 @@
         </mat-card-content>
       </mat-card>
     }
-    <div class="messages-container" #queryMessagesContainer>
+    <div class="messages-container uk-margin-top" #queryMessagesContainer>
       @for (msg of queryMessages(); track msg) {
         <div [class]="'nl-message message-' + msg.role">
           <div class="message-header">
