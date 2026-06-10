@@ -38,6 +38,7 @@ export class DashboardComponent implements OnInit {
   hasChanges: boolean = false;
 
   chartInfo: ChartInfo[] | null = null;
+  activeTab = signal('builder');
 
 	ngOnInit(): void {
 
@@ -229,5 +230,9 @@ export class DashboardComponent implements OnInit {
       this.chartInfo = result;
       this.nlQuery.set(true);
     }
+  }
+
+  setActiveTab(tab: string) {
+    this.activeTab.set(tab);
   }
 }
