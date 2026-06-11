@@ -51,22 +51,15 @@ export class DynamicFormHandlingService {
 	}
 
 	get isFormValid(): boolean {
-		// if (this.$formErrorObject.value === null) {
-		// 	return true;
-		// } else if (!this._xAxisRequired && this.isOnlyxAxisRequirementError()) {
-		// 	return true;
-		// } else {
-		// 	return false;
-		// }
 
-    if (this.formFactoryService.getFormRoot()?.invalid) {
+    // if (this.formFactoryService.getFormRoot()?.invalid) {
 
-      this.formFactoryService.getFormRoot().markAllAsTouched();
+      // this.formFactoryService.getFormRoot().markAllAsTouched();
 
       // log invalid form inputs
       // console.log(findInvalidControls(this.formFactoryService.getFormRoot()));
 
-    }
+    // }
 
 		return this.formFactoryService.getFormRoot()?.valid || false;
 	}

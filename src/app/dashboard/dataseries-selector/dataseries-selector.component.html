@@ -19,7 +19,7 @@
             <a class="uk-link-reset uk-flex uk-flex-middle">
               <span class="material-symbols-outlined">more_vert</span>
             </a>
-            <div #element uk-dropdown="mode: click; pos: bottom-left; offset: 5; delay-hide: 0; container: body">
+            <div #element data-uk-dropdown="mode: click; pos: bottom-left; offset: 5; delay-hide: 0; container: body">
               <ul class="uk-nav uk-dropdown-nav">
                 <li>
                   <a (click)="editDataseriesTitle(i); hide(element)">
@@ -88,12 +88,12 @@
         <div class="dataSelectionDiv" formGroupName="data">
           <h6 class="borderBottomClass uk-margin-medium-top uk-text-secondary">Data Selection</h6>
           <div class="dataSelection">
-            <ul uk-accordion="multiple: true">
+            <ul data-uk-accordion="multiple: true">
               <li class="uk-open">
                 <a class="uk-accordion-title" href>Y Axis</a>
                 <div class="uk-accordion-content">
                   <div formGroupName="yaxisData">
-                    <div class="uk-child-width-1-2" uk-grid>
+                    <div class="uk-child-width-1-2" data-uk-grid>
                       <div>
                         <div input placeholder="Entity" type="select"
                           [formInput]="ctrl.get('data.yaxisData.entity')" [options]="entities">
@@ -181,7 +181,7 @@
                                         </div>
                                       </ng-container>
                                     </div>
-                                    <div class="uk-child-width-1-2" uk-grid>
+                                    <div class="uk-child-width-1-2" data-uk-grid>
                                       <div input placeholder="Filter Operator" type="select"
                                         [formInput]="group.get('type')" [options]="filterOperators | filterOperators: group.get('field.type').value">
                                       </div>

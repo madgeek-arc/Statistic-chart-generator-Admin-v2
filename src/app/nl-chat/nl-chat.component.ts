@@ -8,6 +8,8 @@ import {
   NlQuery,
   OptionsResponse
 } from '../services/nl-chat-service/nl-chat.service';
+import { first } from "rxjs/operators";
+import { forkJoin } from "rxjs";
 import { MappingProfilesService } from '../services/mapping-profiles-service/mapping-profiles.service';
 import { DiagramCategoryService } from "../services/diagram-category-service/diagram-category.service";
 import { MarkdownModule } from "ngx-markdown";
@@ -16,14 +18,13 @@ import { DiagramCreator } from "../services/dynamic-form-handling-service/dynami
 import { FormFactoryService } from "../services/form-factory-service/form-factory-service";
 import { DynamicFormHandlingService } from "../services/dynamic-form-handling-service/dynamic-form-handling.service";
 import { HighChartsChart } from "../services/supported-libraries-service/models/chart-description-HighCharts.model";
-import { forkJoin } from "rxjs";
-import { first } from "rxjs/operators";
 import { GoogleChartsTable } from "../services/supported-libraries-service/models/chart-description-GoogleCharts.model";
 import { RawChartDataModel } from "../services/supported-libraries-service/models/chart-description-rawChartData.model";
 import { RawDataModel } from "../services/supported-libraries-service/models/description-rawData.model";
+import { format } from 'sql-formatter';
 
 interface Message {
-  role: 'user' | 'assistant';
+  role: 'user' | 'assistant' | 'sql';
   text: string;
 }
 
@@ -148,22 +149,21 @@ export class NlChatComponent implements AfterViewChecked {
         this.querySessionId.set(res.sessionId);
         this.loading.set(false);
 
+        this.queryMessages.update(messages => [...messages, { role: 'assistant', text: res.reply }]);
+
         if (res.done && res.canonicalNl && res.sig) {
-          // res.reply = res.reply.replace(/`/g, '') // remove backticks
-          //   .replace(
-          //     /(\/chart\/json[^\s]*)/g,
-          //     (path) => {
-          //       const updatedPath = path.replace('/chart/json', '/nl/info');
-          //
-          //     return `[${this.urlProviderService.serviceURL}${updatedPath}](${this.urlProviderService.serviceURL}${updatedPath})`;
-          //   }
-          // );
-          // console.log(res.reply);
 
           this.canonicalNl.set(res.canonicalNl);
           this.querySig.set(res.sig);
           this.queryDescription.set(res.description);
           this.queryJson.set(res.queryJson);
+          const markdownSql = [
+            '```sql',
+            format(res.sql, {language: 'sql'}),
+            '```'
+          ].join('\n');
+
+          this.queryMessages.update(messages => [...messages, { role: 'sql', text: markdownSql }]);
 
           const chartInfo: ChartInfo[] = [{
             type: this.chartType(),
@@ -173,8 +173,6 @@ export class NlChatComponent implements AfterViewChecked {
           this.chatComplete.emit(chartInfo);
           // this.phase.set('options');
         }
-
-        this.queryMessages.update(messages => [...messages, { role: 'assistant', text: res.reply }]);
       },
       error: (err) => {
         console.error('NL chat error', err);
@@ -188,114 +186,114 @@ export class NlChatComponent implements AfterViewChecked {
     });
   }
 
-  private sendOptionsMessage(text: string): void {
-    this.optionsMessages.update(messages => [...messages, { role: 'user', text }]);
+  // private sendOptionsMessage(text: string): void {
+  //   this.optionsMessages.update(messages => [...messages, { role: 'user', text }]);
+  //
+  //   this.nlChatService.optionsChat({
+  //     sessionId: this.optionsSessionId(),
+  //     library: this.library(),
+  //     message: text,
+  //   }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+  //     next: (res: OptionsResponse) => {
+  //       this.optionsSessionId.set(res.sessionId);
+  //       this.optionsMessages.update(messages => [...messages, { role: 'assistant', text: res.reply }]);
+  //       this.loading.set(false);
+  //
+  //       if (res.done && res.canonicalDescription && res.sig) {
+  //         this.canonicalDescription.set(res.canonicalDescription);
+  //         this.optionsSig.set(res.sig);
+  //         // this.phase.set('done');
+  //         // this.loadChart();
+  //       }
+  //     },
+  //     error: (err) => {
+  //       console.error('Options chat error', err);
+  //       this.optionsMessages.update(messages => [
+  //         ...messages,
+  //         { role: 'assistant', text: 'Sorry, something went wrong. Please try again.' }
+  //       ]);
+  //       this.error.set('Failed to process your request. Please try again.');
+  //       this.loading.set(false);
+  //     },
+  //   });
+  // }
 
-    this.nlChatService.optionsChat({
-      sessionId: this.optionsSessionId(),
-      library: this.library(),
-      message: text,
-    }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: (res: OptionsResponse) => {
-        this.optionsSessionId.set(res.sessionId);
-        this.optionsMessages.update(messages => [...messages, { role: 'assistant', text: res.reply }]);
-        this.loading.set(false);
+  // skipOptions(): void {
+  //   // User skips the appearance conversation — fetch chart without options
+  //   // this.phase.set('done');
+  //   // this.loadChart();
+  // }
 
-        if (res.done && res.canonicalDescription && res.sig) {
-          this.canonicalDescription.set(res.canonicalDescription);
-          this.optionsSig.set(res.sig);
-          // this.phase.set('done');
-          this.loadChart();
-        }
-      },
-      error: (err) => {
-        console.error('Options chat error', err);
-        this.optionsMessages.update(messages => [
-          ...messages,
-          { role: 'assistant', text: 'Sorry, something went wrong. Please try again.' }
-        ]);
-        this.error.set('Failed to process your request. Please try again.');
-        this.loading.set(false);
-      },
-    });
-  }
-
-  skipOptions(): void {
-    // User skips the appearance conversation — fetch chart without options
-    // this.phase.set('done');
-    this.loadChart();
-  }
-
-  private loadChart(): void {
-    const chartInfo: ChartInfo[] = [{
-      type: this.chartType(),
-      name: this.canonicalNl(),
-      query: this.queryJson()
-    }];
-
-    const value = this.formFactoryService.getFormRoot().value;
-    forkJoin([this._diagramCreator.createChart(value), this._diagramCreator.createTable(value),
-      this._diagramCreator.createRawChartData(value), this._diagramCreator.createRawData(value)])
-      .pipe(first())
-      .subscribe(([chartObject, tableObject, rawChartDataObject, rawDataObject]) => {
-        if (chartObject) {
-          if (this.library() === 'HighCharts') {
-            (chartObject as HighChartsChart).chartDescription.queries = chartInfo as any; // Fixme use proper type
-          }
-        }
-        if (tableObject) {
-          (tableObject as GoogleChartsTable).tableDescription.queriesInfo = chartInfo as any;
-        }
-        if (rawChartDataObject) {
-          (rawChartDataObject as RawChartDataModel).chartsInfo = chartInfo as any;
-        }
-        if (rawDataObject) {
-          (rawDataObject as RawDataModel).series = chartInfo as any;
-        }
-
-
-        return this.dynamicFormHandlingService.changeDataObjects(chartObject, tableObject, rawChartDataObject, rawDataObject);
-      })
-
-    // this._diagramCreator.createChart(this.formFactoryService.getFormRoot().value).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-    //   next: (chart) => {
-    //     console.log(chart);
-    //     if (this.library() === 'HighCharts') {
-    //       (chart as HighChartsChart).chartDescription.queries = chartInfo as any; // Fixme use proper type
-    //       this.dynamicFormHandlingService.changeDataObjects(chart, null, null, null);
-    //     }
-    //   }
-    // });
-
-    // this.nlChatService.fetchChart({
-    //   library: this.library(),
-    //   chartsInfo: chartInfo,
-    //   // Include options only if the user went through the options conversation
-    //   nlOptions: this.canonicalDescription(),
-    //   optionsSig: this.optionsSig(),
-    // }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-    //   next: (data) => {
-    //     this.chartData.set(data);
-    //     console.log('Chart data ready:', data);
-    //
-    //     // Emit the complete result
-    //     this.chatComplete.emit({
-    //       canonicalNl: this.canonicalNl()!,
-    //       querySig: this.querySig()!,
-    //       profile: this.profile(),
-    //       queryDescription: this.queryDescription(),
-    //       canonicalDescription: this.canonicalDescription(),
-    //       optionsSig: this.optionsSig(),
-    //       library: this.library(),
-    //       chartData: data
-    //     });
-    //   },
-    //   error: (err) => {
-    //     console.error('Chart fetch error', err);
-    //     this.error.set('Failed to load chart data. Please try again.');
-    //   },
-    // });
-  }
+  // private loadChart(): void {
+  //   const chartInfo: ChartInfo[] = [{
+  //     type: this.chartType(),
+  //     name: this.canonicalNl(),
+  //     query: this.queryJson()
+  //   }];
+  //
+  //   const value = this.formFactoryService.getFormRoot().value;
+  //   forkJoin([this._diagramCreator.createChart(value), this._diagramCreator.createTable(value),
+  //     this._diagramCreator.createRawChartData(value), this._diagramCreator.createRawData(value)])
+  //     .pipe(first())
+  //     .subscribe(([chartObject, tableObject, rawChartDataObject, rawDataObject]) => {
+  //       if (chartObject) {
+  //         if (this.library() === 'HighCharts') {
+  //           (chartObject as HighChartsChart).chartDescription.queries = chartInfo as any; // Fixme use proper type
+  //         }
+  //       }
+  //       if (tableObject) {
+  //         (tableObject as GoogleChartsTable).tableDescription.queriesInfo = chartInfo as any;
+  //       }
+  //       if (rawChartDataObject) {
+  //         (rawChartDataObject as RawChartDataModel).chartsInfo = chartInfo as any;
+  //       }
+  //       if (rawDataObject) {
+  //         (rawDataObject as RawDataModel).series = chartInfo as any;
+  //       }
+  //
+  //
+  //       return this.dynamicFormHandlingService.changeDataObjects(chartObject, tableObject, rawChartDataObject, rawDataObject);
+  //     })
+  //
+  //   // this._diagramCreator.createChart(this.formFactoryService.getFormRoot().value).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+  //   //   next: (chart) => {
+  //   //     console.log(chart);
+  //   //     if (this.library() === 'HighCharts') {
+  //   //       (chart as HighChartsChart).chartDescription.queries = chartInfo as any; // Fixme use proper type
+  //   //       this.dynamicFormHandlingService.changeDataObjects(chart, null, null, null);
+  //   //     }
+  //   //   }
+  //   // });
+  //
+  //   // this.nlChatService.fetchChart({
+  //   //   library: this.library(),
+  //   //   chartsInfo: chartInfo,
+  //   //   // Include options only if the user went through the options conversation
+  //   //   nlOptions: this.canonicalDescription(),
+  //   //   optionsSig: this.optionsSig(),
+  //   // }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+  //   //   next: (data) => {
+  //   //     this.chartData.set(data);
+  //   //     console.log('Chart data ready:', data);
+  //   //
+  //   //     // Emit the complete result
+  //   //     this.chatComplete.emit({
+  //   //       canonicalNl: this.canonicalNl()!,
+  //   //       querySig: this.querySig()!,
+  //   //       profile: this.profile(),
+  //   //       queryDescription: this.queryDescription(),
+  //   //       canonicalDescription: this.canonicalDescription(),
+  //   //       optionsSig: this.optionsSig(),
+  //   //       library: this.library(),
+  //   //       chartData: data
+  //   //     });
+  //   //   },
+  //   //   error: (err) => {
+  //   //     console.error('Chart fetch error', err);
+  //   //     this.error.set('Failed to load chart data. Please try again.');
+  //   //   },
+  //   // });
+  // }
 
   reset(): void {
     this.queryMessages.set([]);

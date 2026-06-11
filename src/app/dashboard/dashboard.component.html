@@ -99,9 +99,9 @@
                     <div class="uk-container uk-container-expand uk-padding-remove uk-margin-medium-left">
                       <div class="uk-padding-small uk-padding-remove-vertical uk-padding-remove-right">
                         <div class="modeswitch-wrap">
-                          <div class="segmented" uk-switcher="toggle: > *; connect: .switcher-container; animation: uk-animation-fade;">
+                          <div class="segmented">
 <!--                            <div class="seg-thumb" style="left: 4px; width: 98px;"></div>-->
-                            <button data-seg="builder" class="seg-btn">
+                            <button class="seg-btn" [class.uk-active]="activeTab() === 'builder'" (click)="setActiveTab('builder')">
                               <span class="seg-icon">
                                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                      stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="icon">
@@ -125,7 +125,7 @@
 <!--                          </svg>-->
 <!--                        </span>SQL-->
 <!--                            </button>-->
-                            <button data-seg="chat" class="seg-btn">
+                            <button class="seg-btn" [class.uk-active]="activeTab() === 'chat'" (click)="setActiveTab('chat')">
                               <span class="seg-icon">
                                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                      stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="icon">
@@ -141,10 +141,12 @@
                           </div>
                         </div>
 
-                        <div class="uk-switcher switcher-container uk-margin">
-                          <app-dataseries-selector [selectedProfile]="profile"></app-dataseries-selector>
-                          <app-nl-chat (chatComplete)="onChatComplete($event)"></app-nl-chat>
-                        </div>
+                        @if (activeTab() === 'builder') {
+                          <app-dataseries-selector [selectedProfile]="profile" class="uk-animation-fade"></app-dataseries-selector>
+                        }
+                        @if (activeTab() === 'chat') {
+                          <app-nl-chat (chatComplete)="onChatComplete($event)" class="uk-animation-fade"></app-nl-chat>
+                        }
                       </div>
                     </div>
                   </div>
@@ -178,7 +180,7 @@
             <div class="uk-section uk-section-small uk-section-primary uk-preserve-color">
               <div class="uk-container uk-container-expand uk-padding-remove uk-margin-medium-right">
 
-                <!--                <pre>{{ diagramSettings.value | json }}</pre>-->
+                                <pre>{{ diagramSettings.value | json }}</pre>
 
                 <div class="iframe-container">
 

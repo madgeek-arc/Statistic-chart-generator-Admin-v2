@@ -13,26 +13,47 @@
     }
     <div class="messages-container uk-margin-top" #queryMessagesContainer>
       @for (msg of queryMessages(); track msg) {
-        <div [class]="'nl-message message-' + msg.role">
-          <div class="message-header">
-            @if (msg.role === 'user') {
-              <mat-icon>person</mat-icon><strong>You</strong>
-            } @else if (msg.role === 'assistant') {
-              <div class="msg-avatar">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
-                     stroke-linecap="round" stroke-linejoin="round"
-                     style="color: rgb(255, 255, 255); inset: 0; margin: auto;" class="icon">
-                  <g>
-                    <path d="M5 3v4M3 5h4M19 14v6M16 17h6M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8L12 3z"></path>
-                  </g>
-                </svg>
+        @if (msg.role === 'sql') {
+          <div class="nl-message">
+            <div class="sql-block">
+              <div class="sql-block-head">
+                <span>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+                       stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -2px;" class="icon ">
+                    <g>
+                      <path d="M4 6v12M4 6c0-1.5 3.6-3 8-3s8 1.5 8 3M4 18c0 1.5 3.6 3 8 3s8-1.5 8-3"></path>
+                      <path d="M20 6v12M4 12c0 1.5 3.6 3 8 3s8-1.5 8-3"></path>
+                    </g>
+                  </svg> generated.sql
+                </span>
               </div>
-              <strong>AI Assistant</strong>
-            }
-
+              <div class="uk-padding-small">
+                <markdown class="message-text" [data]="msg.text"></markdown>
+              </div>
+            </div>
           </div>
-          <markdown class="message-text" [data]="msg.text"></markdown>
-        </div>
+        } @else {
+          <div [class]="'nl-message message-' + msg.role">
+            <div class="message-header">
+              @if (msg.role === 'user') {
+                <mat-icon>person</mat-icon><strong>You</strong>
+              } @else if (msg.role === 'assistant') {
+                <div class="msg-avatar">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+                       stroke-linecap="round" stroke-linejoin="round"
+                       style="color: rgb(255, 255, 255); inset: 0; margin: auto;" class="icon">
+                    <g>
+                      <path d="M5 3v4M3 5h4M19 14v6M16 17h6M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8L12 3z"></path>
+                    </g>
+                  </svg>
+                </div>
+                <strong>AI Assistant</strong>
+              }
+
+            </div>
+            <markdown class="message-text" [data]="msg.text"></markdown>
+          </div>
+        }
       }
       @if (loading()) {
         <div class="nl-message message-assistant">
@@ -47,8 +68,6 @@
               </svg>
             </div>
             <strong>AI Assistant</strong>
-<!--            <mat-icon>smart_toy</mat-icon>-->
-<!--            <strong>AI Assistant</strong>-->
           </div>
           <div class="message-text uk-flex uk-flex-middle">
             <div data-uk-spinner="ratio: 0.5" class="uk-margin-xsmall-right"></div>
@@ -134,8 +153,7 @@
       <textarea matInput cdkTextareaAutosize cdkAutosizeMinRows="2" cdkAutosizeMaxRows="6"
                 [(ngModel)]="inputText" [disabled]="loading()" (keydown.enter)="send()"
                 placeholder="e.g., Show me publications per year">
-
-          </textarea>
+      </textarea>
       <mat-hint>Press <b>Enter</b> to send &middot; <b>Shift+Enter</b> for new line</mat-hint>
       <div class="uk-flex uk-flex-right">
         <button class="send-btn" (click)="send()" [disabled]="loading() || !inputText().trim()">
@@ -147,10 +165,6 @@
             </g>
           </svg>
         </button>
-        <!--            <button matButton="elevated" color="primary" class="send-button"-->
-        <!--                    (click)="send()" [disabled]="loading() || !inputText().trim()">-->
-        <!--              <span class="material-symbols-outlined">send</span>-->
-        <!--            </button>-->
       </div>
     </mat-form-field>
   </div>

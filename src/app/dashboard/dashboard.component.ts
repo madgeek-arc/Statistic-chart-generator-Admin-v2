@@ -38,6 +38,7 @@ export class DashboardComponent implements OnInit {
   hasChanges: boolean = false;
 
   chartInfo: ChartInfo[] | null = null;
+  activeTab = signal('builder');
 
 	ngOnInit(): void {
 
@@ -76,6 +77,7 @@ export class DashboardComponent implements OnInit {
     });
 
     this.diagramSettings.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(value => {
+      console.log(this.diagramSettings.get('dataseries.0.data.yaxisData.entity').valid);
       this.dynamicFormHandlingService.formSchemaObject = value;
       this.hasChanges = true;
     });
@@ -192,6 +194,10 @@ export class DashboardComponent implements OnInit {
     // Reset the form to its initial state.
     this.diagramSettings = this.formFactory.createForm();
     this.setFormObservers();
+    this.diagramSettings.get('dataseries.0.data.yaxisData.entity').markAsUntouched;
+    console.log(this.diagramSettings.get('dataseries.0.data.yaxisData.entity').touched);;
+    this.diagramSettings.markAsUntouched();
+    this.diagramSettings.markAsPristine();
     this.nlQuery.set(false);
     this.chartInfo = null;
 
@@ -229,5 +235,9 @@ export class DashboardComponent implements OnInit {
       this.chartInfo = result;
       this.nlQuery.set(true);
     }
+  }
+
+  setActiveTab(tab: string) {
+    this.activeTab.set(tab);
   }
 }
