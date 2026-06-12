@@ -5,7 +5,7 @@ import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { ChartExportingService } from '../services/chart-exporting-service/chart-exporting.service';
 import { FormFactoryService } from "../services/form-factory-service/form-factory-service";
 import { MappingProfilesService } from "../services/mapping-profiles-service/mapping-profiles.service";
-import { ChartInfo } from "../services/nl-chat-service/nl-chat.service";
+import { ChartInfo, OptionsElement } from "../services/nl-chat-service/nl-chat.service";
 import UIkit from 'uikit';
 
 @Component({
@@ -39,6 +39,7 @@ export class DashboardComponent implements OnInit {
 
   chartInfo: ChartInfo[] | null = null;
   activeTab = signal('builder');
+  activeAppearanceTab = signal('builder');
 
 	ngOnInit(): void {
 
@@ -229,15 +230,26 @@ export class DashboardComponent implements OnInit {
 	 * Handles the completion of the AI chat session.
 	 * @param result - The result of the chat session.
 	 */
-  onChatComplete(result: ChartInfo[]): void {
+  onQueryComplete(result: ChartInfo[]): void {
     if (result) {
-      console.log('AI Chat completed with result:', result);
+      console.log('AI Chat completed with result: ', result);
       this.chartInfo = result;
       this.nlQuery.set(true);
     }
   }
 
-  setActiveTab(tab: string) {
+  onOptionsComplete(result: OptionsElement) {
+    if (result) {
+      console.log('AI Chat completed with options: ', result);
+
+    }
+  }
+
+  setActiveTab(tab: string, step?: string) {
+    if (step === 'appearance') {
+      this.activeAppearanceTab.set(tab)
+      return;
+    }
     this.activeTab.set(tab);
   }
 }

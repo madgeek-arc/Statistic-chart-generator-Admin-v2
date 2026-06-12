@@ -9,7 +9,7 @@
           <ul id="navTab" uk-nav="duration: 400" class="uk-list uk-nav uk-nav-default" data-uk-switcher="connect: #selection; animation: 'fade'">
 
             <li class="uk-parent">
-              <a class="uk-flex uk-flex-middle" title="Overview" role="button">
+              <a class="uk-flex uk-flex-middle" role="button">
                 <div class="uk-width-auto">
                   <span class="material-symbols-outlined">group</span>
                 </div>
@@ -28,7 +28,7 @@
             </li>
 
             <li class="uk-parent">
-              <a class="uk-flex uk-flex-middle" title="Technologies" role="button">
+              <a class="uk-flex uk-flex-middle" role="button">
                 <div class="uk-width-auto">
                   <span class="material-symbols-outlined">bar_chart</span>
                 </div>
@@ -47,7 +47,8 @@
             </li>
 
             <li class="uk-parent">
-              <a [class]="hasDataAndDiagramType ? 'uk-flex uk-flex-middle' : 'uk-flex uk-flex-middle uk-disabled uk-text-muted'" title="Organisations" role="button">
+              <a [class]="hasDataAndDiagramType ? 'uk-flex uk-flex-middle' : 'uk-flex uk-flex-middle uk-disabled uk-text-muted'"
+                 role="button">
                 <div class="uk-width-auto">
                   <span class="material-symbols-outlined">database</span>
                 </div>
@@ -61,7 +62,8 @@
             </li>
 
             <li class="uk-parent">
-              <a [class]="this.hasDataAndDiagramType ? 'uk-flex uk-flex-middle' : 'uk-flex uk-flex-middle uk-disabled uk-text-muted'" title="Patents" role="button" aria-controls="uk-nav-60-content-0" aria-expanded="false" aria-disabled="false">
+              <a [class]="this.hasDataAndDiagramType ? 'uk-flex uk-flex-middle' : 'uk-flex uk-flex-middle uk-disabled uk-text-muted'"
+                 role="button">
                 <div class="uk-width-auto">
                   <span class="material-symbols-outlined">tune</span>
                 </div>
@@ -145,7 +147,7 @@
                           <app-dataseries-selector [selectedProfile]="profile" class="uk-animation-fade"></app-dataseries-selector>
                         }
                         @if (activeTab() === 'chat') {
-                          <app-nl-chat (chatComplete)="onChatComplete($event)" class="uk-animation-fade"></app-nl-chat>
+                          <app-nl-chat (queryChatComplete)="onQueryComplete($event)" class="uk-animation-fade"></app-nl-chat>
                         }
                       </div>
                     </div>
@@ -155,22 +157,61 @@
               </li>
               <li class="" style="animation-duration: 200ms;">
                 @if (this.hasDataAndDiagramType) {
-                  <app-customise-appearance></app-customise-appearance>
+                  <div class="uk-section uk-section-xsmall uk-section-primary uk-preserve-color">
+                    <div class="uk-container uk-container-expand uk-padding-remove uk-margin-medium-left">
+                      <div class="uk-padding-small uk-padding-remove-vertical uk-padding-remove-right">
+                        <div class="modeswitch-wrap">
+                          <div class="segmented">
+                            <!--                            <div class="seg-thumb" style="left: 4px; width: 98px;"></div>-->
+                            <button class="seg-btn" [class.uk-active]="activeAppearanceTab() === 'builder'"
+                                    (click)="setActiveTab('builder', 'appearance')">
+                              <span class="seg-icon">
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                     stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="icon">
+                                  <g>
+                                    <rect x="3" y="3" width="7" height="7" rx="1.2"></rect>
+                                    <rect x="14" y="3" width="7" height="7" rx="1.2"></rect>
+                                    <rect x="3" y="14" width="7" height="7" rx="1.2"></rect>
+                                    <rect x="14" y="14" width="7" height="7" rx="1.2"></rect>
+                                  </g>
+                                </svg>
+                              </span>Builder
+                            </button>
+                            <button class="seg-btn" [class.uk-active]="activeAppearanceTab() === 'chat'"
+                                    (click)="setActiveTab('chat', 'appearance')">
+                              <span class="seg-icon">
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                     stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="icon">
+                                  <g>
+                                    <path d="M5 3v4M3 5h4M19 14v6M16 17h6M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8L12 3z"></path>
+                                  </g>
+                                </svg>
+                              </span>Ask agent
+                            </button>
+                          </div>
+                          <div class="modeswitch-right">
+                            <!--                      <div class="sync-pill"><span class="dot"></span> Synced query</div>-->
+                          </div>
+                        </div>
+
+                        @if (activeAppearanceTab() === 'builder') {
+                          <app-customise-appearance class="uk-animation-fade"></app-customise-appearance>
+                        }
+                        @if (activeAppearanceTab() === 'chat') {
+                          <app-nl-chat [phase]="'options'" (queryChatComplete)="onQueryComplete($event)" class="uk-animation-fade"></app-nl-chat>
+                        }
+                      </div>
+                    </div>
+                  </div>
                 }
               </li>
             </ul>
-            <!-- <div class="actionButtons"> -->
             <div class="uk-width-1-1">
               <div class="uk-flex uk-flex-center actionButtons uk-padding-small">
                 <button class="uk-button uk-button-primary" (click)="submitData()"
                   [disabled]="!(view.valid && category.valid && dataseries.valid) && !nlQuery()">Create Chart
                 </button>
                 <button class="uk-button uk-button-default uk-margin-small-left" (click)="clearData()">Clear</button>
-<!--                <button class="uk-button uk-button-secondary uk-margin-small-left" (click)="openAiChat()"-->
-<!--                  title="Use AI to generate your chart with natural language">-->
-<!--                  <span class="material-symbols-outlined uk-margin-small-right" style="vertical-align: middle;">smart_toy</span>-->
-<!--                  AI Chat-->
-<!--                </button>-->
               </div>
             </div>
           </div>
