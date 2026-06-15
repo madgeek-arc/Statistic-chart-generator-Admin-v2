@@ -198,7 +198,7 @@
                           <app-customise-appearance class="uk-animation-fade"></app-customise-appearance>
                         }
                         @if (activeAppearanceTab() === 'chat') {
-                          <app-nl-chat [phase]="'options'" (queryChatComplete)="onQueryComplete($event)" class="uk-animation-fade"></app-nl-chat>
+                          <app-nl-chat [phase]="'options'" (optionChatComplete)="onOptionsComplete($event)" class="uk-animation-fade"></app-nl-chat>
                         }
                       </div>
                     </div>

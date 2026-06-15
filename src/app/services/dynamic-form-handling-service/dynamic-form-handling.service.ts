@@ -17,7 +17,7 @@ import { RawChartDataModel } from "../supported-libraries-service/models/chart-d
 import { RawDataModel } from "../supported-libraries-service/models/description-rawData.model";
 import { AbstractControl, FormArray, FormControl, FormGroup } from "@angular/forms";
 import { FormFactoryService } from "../form-factory-service/form-factory-service";
-import { ChartInfo } from "../nl-chat-service/nl-chat.service";
+import { ChartInfo, OptionsElement } from "../nl-chat-service/nl-chat.service";
 
 @Injectable({
 	providedIn: 'root'
@@ -282,12 +282,13 @@ export class DynamicFormHandlingService {
 			this.createDataObjectsFromSchemaObject(this.formSchemaObject);
 	}
 
-  public submitNLQuery(chartInfo: ChartInfo[]) {
+  public submitNLQuery(chartInfo: ChartInfo[], options?: OptionsElement) {
     console.log('Submitted this nlQuery', chartInfo);
-    this.createDataObjectsFromSchemaObject(this.formSchemaObject, chartInfo);
+    console.log('With options: ', options);
+    this.createDataObjectsFromSchemaObject(this.formSchemaObject, chartInfo, options);
   }
 
-	private createDataObjectsFromSchemaObject(value: SCGAFormSchema, chartInfo: ChartInfo[] | null = null) {
+	private createDataObjectsFromSchemaObject(value: SCGAFormSchema, chartInfo: ChartInfo[] | null = null, options?: OptionsElement) {
 
     if (this.diagramcategoryService.selectedDiagramCategory$.value?.type === "numbers") {
 			this._diagramCreator.createRawData(value).pipe(first()).subscribe(rawDataObject => this.changeDataObjects(null, null, null, rawDataObject))

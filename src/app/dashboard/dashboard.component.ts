@@ -22,7 +22,10 @@ export class DashboardComponent implements OnInit {
   private dynamicFormHandlingService = inject(DynamicFormHandlingService);
   protected chartExportingService = inject(ChartExportingService);
 
+  activeTab = signal('builder');
+  activeAppearanceTab = signal('builder');
   nlQuery = signal<boolean>(false);
+  nlAppearance = signal<boolean>(false);
 
 	diagramSettings: FormGroup;
 
@@ -38,8 +41,7 @@ export class DashboardComponent implements OnInit {
   hasChanges: boolean = false;
 
   chartInfo: ChartInfo[] | null = null;
-  activeTab = signal('builder');
-  activeAppearanceTab = signal('builder');
+  appearanceFromChat: OptionsElement | null = null;
 
 	ngOnInit(): void {
 
@@ -78,7 +80,6 @@ export class DashboardComponent implements OnInit {
     });
 
     this.diagramSettings.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(value => {
-      console.log(this.diagramSettings.get('dataseries.0.data.yaxisData.entity').valid);
       this.dynamicFormHandlingService.formSchemaObject = value;
       this.hasChanges = true;
     });
@@ -183,7 +184,7 @@ export class DashboardComponent implements OnInit {
 
     this.hasChanges = false;
     if (this.nlQuery()) {
-      this.dynamicFormHandlingService.submitNLQuery(this.chartInfo);
+      this.dynamicFormHandlingService.submitNLQuery(this.chartInfo, this.appearanceFromChat);
       return;
     }
 
@@ -196,7 +197,7 @@ export class DashboardComponent implements OnInit {
     this.diagramSettings = this.formFactory.createForm();
     this.setFormObservers();
     this.diagramSettings.get('dataseries.0.data.yaxisData.entity').markAsUntouched;
-    console.log(this.diagramSettings.get('dataseries.0.data.yaxisData.entity').touched);;
+
     this.diagramSettings.markAsUntouched();
     this.diagramSettings.markAsPristine();
     this.nlQuery.set(false);
@@ -241,7 +242,8 @@ export class DashboardComponent implements OnInit {
   onOptionsComplete(result: OptionsElement) {
     if (result) {
       console.log('AI Chat completed with options: ', result);
-
+      this.appearanceFromChat = result;
+      this.nlAppearance.set(true);
     }
   }
 
