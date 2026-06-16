@@ -5,7 +5,7 @@ import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { ChartExportingService } from '../services/chart-exporting-service/chart-exporting.service';
 import { FormFactoryService } from "../services/form-factory-service/form-factory-service";
 import { MappingProfilesService } from "../services/mapping-profiles-service/mapping-profiles.service";
-import { ChartInfo, OptionsElement } from "../services/nl-chat-service/nl-chat.service";
+import { ChartInfo, OptionsData } from "../services/nl-chat-service/nl-chat.service";
 import UIkit from 'uikit';
 
 @Component({
@@ -41,7 +41,7 @@ export class DashboardComponent implements OnInit {
   hasChanges: boolean = false;
 
   chartInfo: ChartInfo[] | null = null;
-  appearanceFromChat: OptionsElement | null = null;
+  appearanceFromChat: OptionsData | null = null;
 
 	ngOnInit(): void {
 
@@ -75,7 +75,7 @@ export class DashboardComponent implements OnInit {
       this.profileService.changeSelectedProfile(profile);
     });
 
-    this.diagramSettings.get('category')?.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((diagram: any) => {
+    this.diagramSettings.get('category')?.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
       this.checkDisabledTabs();
     });
 
@@ -95,10 +95,6 @@ export class DashboardComponent implements OnInit {
 
 	get category() {
 		return this.diagramSettings.get('category') as FormGroup;
-	}
-
-	get categoryName() {
-		return this.diagramSettings.get('category')?.get('diagram')?.get('name') as FormControl;
 	}
 
 	get dataseries() {
@@ -196,12 +192,11 @@ export class DashboardComponent implements OnInit {
     // Reset the form to its initial state.
     this.diagramSettings = this.formFactory.createForm();
     this.setFormObservers();
-    this.diagramSettings.get('dataseries.0.data.yaxisData.entity').markAsUntouched;
 
-    this.diagramSettings.markAsUntouched();
-    this.diagramSettings.markAsPristine();
     this.nlQuery.set(false);
     this.chartInfo = null;
+    this.nlAppearance.set(false);
+    this.appearanceFromChat = null;
 
     // Reset chart, table, rawChartData, rawData objects.
     this.chartExportingService.clearChartUrls();
@@ -239,7 +234,7 @@ export class DashboardComponent implements OnInit {
     }
   }
 
-  onOptionsComplete(result: OptionsElement) {
+  onOptionsComplete(result: OptionsData) {
     if (result) {
       console.log('AI Chat completed with options: ', result);
       this.appearanceFromChat = result;

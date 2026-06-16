@@ -17,7 +17,7 @@ import { RawChartDataModel } from "../supported-libraries-service/models/chart-d
 import { RawDataModel } from "../supported-libraries-service/models/description-rawData.model";
 import { AbstractControl, FormArray, FormControl, FormGroup } from "@angular/forms";
 import { FormFactoryService } from "../form-factory-service/form-factory-service";
-import { ChartInfo, OptionsElement } from "../nl-chat-service/nl-chat.service";
+import { ChartInfo, OptionsData, OptionsElement } from "../nl-chat-service/nl-chat.service";
 
 @Injectable({
 	providedIn: 'root'
@@ -282,13 +282,13 @@ export class DynamicFormHandlingService {
 			this.createDataObjectsFromSchemaObject(this.formSchemaObject);
 	}
 
-  public submitNLQuery(chartInfo: ChartInfo[], options?: OptionsElement) {
+  public submitNLQuery(chartInfo: ChartInfo[], options?: OptionsData) {
     console.log('Submitted this nlQuery', chartInfo);
     console.log('With options: ', options);
     this.createDataObjectsFromSchemaObject(this.formSchemaObject, chartInfo, options);
   }
 
-	private createDataObjectsFromSchemaObject(value: SCGAFormSchema, chartInfo: ChartInfo[] | null = null, options?: OptionsElement) {
+	private createDataObjectsFromSchemaObject(value: SCGAFormSchema, chartInfo: ChartInfo[] | null = null, options?: OptionsData) {
 
     if (this.diagramcategoryService.selectedDiagramCategory$.value?.type === "numbers") {
 			this._diagramCreator.createRawData(value).pipe(first()).subscribe(rawDataObject => this.changeDataObjects(null, null, null, rawDataObject))
@@ -302,7 +302,14 @@ export class DynamicFormHandlingService {
         if (chartInfo) {
           if (chartObject) {
             if (this.formFactoryService.getFormRoot().get('appearance.chartAppearance.generalOptions.visualisationLibrary').value === 'HighCharts') {
+              if (options) {
+                (chartObject as HighChartsChart).chartDescription = this.mergeObjects((chartObject as HighChartsChart).chartDescription, JSON.parse(options.optionsJson));
+                (chartObject as HighChartsChart).nlOptions = options.nlOptions;
+                (chartObject as HighChartsChart).optionsSig = options.optionsSig;
+              }
+
               (chartObject as HighChartsChart).chartDescription.queries = chartInfo as any; // Fixme use proper type
+              console.log(chartObject);
             }
           }
           if (tableObject) {
@@ -319,6 +326,25 @@ export class DynamicFormHandlingService {
         return this.changeDataObjects(chartObject, tableObject, rawChartDataObject, rawDataObject);
       });
 	}
+
+  mergeObjects(obj1: any, obj2: any): any {
+    const merged = { ...obj1 };
+
+    for (const key in obj2) {
+      if (Object.prototype.hasOwnProperty.call(obj2, key)) {
+        const value1 = merged[key];
+        const value2 = obj2[key];
+
+        if (value2 !== null && typeof value2 === 'object' && !Array.isArray(value2) && value1 !== null && typeof value1 === 'object' && !Array.isArray(value1)) {
+          merged[key] = this.mergeObjects(value1, value2);
+        } else {
+          merged[key] = value2;
+        }
+      }
+    }
+
+    return merged;
+  }
 
 	public publishURLS() {
 		console.log('Publish this form', this.formSchemaObject);

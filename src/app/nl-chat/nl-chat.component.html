@@ -111,9 +111,14 @@
               </g>
             </svg>
           </div>
-          <h2>Describe the data you want</h2>
-          <p>Ask in plain language — the agent reads the schema, drafts SQL, and runs it for you. You can review, tweak,
-            or hand it off to the SQL editor.</p>
+          @if (phase() === 'options') {
+            <h2>Describe the appearance of the chart</h2>
+            <p>Ask in plain language — the agent will create the chart object.</p>
+          } @else {
+            <h2>Describe the data you want</h2>
+            <p>Ask in plain language — the agent reads the schema, drafts SQL, and runs it for you. You can review,
+              tweak, or hand it off to the SQL editor.</p>
+          }
           <div class="prompt-grid">
             <div class="prompt-card">
               <div class="pc-ico">
@@ -174,7 +179,7 @@
       <mat-label>Your message</mat-label>
       <textarea matInput cdkTextareaAutosize cdkAutosizeMinRows="2" cdkAutosizeMaxRows="6"
                 [(ngModel)]="inputText" [disabled]="loading()" (keydown.enter)="send()"
-                placeholder="e.g., Show me publications per year">
+                [placeholder]="phase() === 'options' ? 'e.g., Blue bars with dark background': 'e.g., Show me publications per year'">
       </textarea>
       <mat-hint>Press <b>Enter</b> to send &middot; <b>Shift+Enter</b> for new line</mat-hint>
       <div class="uk-flex uk-flex-right">

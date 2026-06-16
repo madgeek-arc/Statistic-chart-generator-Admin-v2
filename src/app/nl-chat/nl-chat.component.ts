@@ -15,8 +15,8 @@ import {
   ChartInfo,
   ChatResponse,
   NlChatService,
-  NlQuery,
-  OptionsElement,
+  NlQuery, OptionsData,
+  OptionsElement, OptionsRequest,
   OptionsResponse
 } from '../services/nl-chat-service/nl-chat.service';
 import { MappingProfilesService } from '../services/mapping-profiles-service/mapping-profiles.service';
@@ -57,7 +57,7 @@ export class NlChatComponent implements AfterViewChecked {
 
   // Output event when chat is complete
   queryChatComplete = output<ChartInfo[]>();
-  optionChatComplete = output<OptionsElement>();
+  optionChatComplete = output<OptionsData>();
 
   // Reactive state using signals
   profile = signal<string>('');
@@ -202,7 +202,7 @@ export class NlChatComponent implements AfterViewChecked {
           this.optionsJson.set(res.optionsJson);
           this.canonicalDescription.set(res.canonicalDescription);
           this.optionsSig.set(res.sig);
-          this.optionChatComplete.emit({nlOptions: this.canonicalDescription(), optionsSig: this.optionsSig()});
+          this.optionChatComplete.emit({nlOptions: this.canonicalDescription(), optionsSig: this.optionsSig(), optionsJson: res.optionsJson});
         }
       },
       error: (err) => {

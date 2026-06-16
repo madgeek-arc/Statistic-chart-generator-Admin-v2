@@ -45,6 +45,10 @@ export interface OptionsElement {
   optionsSig: string;
 }
 
+export interface OptionsData extends OptionsElement {
+  optionsJson: string;
+}
+
 // --- Chart request ---
 
 export interface ChartRequest {
