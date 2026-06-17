@@ -5,7 +5,7 @@
       <mat-card class="error-card">
         <mat-card-content>
           <div class="error-message">
-            <mat-icon>error</mat-icon>
+            <span class="material-icons">error</span>
             <span>{{ error() }}</span>
           </div>
         </mat-card-content>
@@ -36,7 +36,7 @@
           <div [class]="'nl-message message-' + msg.role">
             <div class="message-header">
               @if (msg.role === 'user') {
-                <mat-icon>person</mat-icon><strong>You</strong>
+                <span class="material-icons">person</span><strong>You</strong>
               } @else if (msg.role === 'assistant') {
                 <div class="msg-avatar">
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
@@ -59,7 +59,7 @@
         <div [class]="'nl-message message-' + msg.role">
           <div class="message-header">
             @if (msg.role === 'user') {
-              <mat-icon>person</mat-icon><strong>You</strong>
+              <span class="material-icons">person</span><strong>You</strong>
             } @else if (msg.role === 'assistant') {
               <div class="msg-avatar">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
@@ -174,18 +174,17 @@
     </div>
   }
 
-  <div class="uk-margin-top">
-    <mat-form-field class="uk-width-expand " appearance="outline">
-      <mat-label>Your message</mat-label>
-      <textarea matInput cdkTextareaAutosize cdkAutosizeMinRows="2" cdkAutosizeMaxRows="6"
-                [(ngModel)]="inputText" [disabled]="loading()" (keydown.enter)="send()"
-                [placeholder]="phase() === 'options' ? 'e.g., Blue bars with dark background': 'e.g., Show me publications per year'">
+  <div class="chat-composer uk-padding-small">
+    <div class="composer-shell" [class.focus]="isFocused()">
+      <textarea [(ngModel)]="inputText" [disabled]="loading()"
+                [placeholder]="phase() === 'options' ? 'e.g., Blue bars with dark background': 'e.g., Show me publications per year'"
+                (keydown.enter)="send()" (focus)="isFocused.set(true)" (blur)="isFocused.set(false)"
+                cdkTextareaAutosize cdkAutosizeMinRows="1" cdkAutosizeMaxRows="5">
       </textarea>
-      <mat-hint>Press <b>Enter</b> to send &middot; <b>Shift+Enter</b> for new line</mat-hint>
       <div class="uk-flex uk-flex-right">
         <button class="send-btn" (click)="send()" [disabled]="loading() || !inputText().trim()">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
-               stroke-linecap="round" stroke-linejoin="round" class="icon">
+               stroke-linecap="round" stroke-linejoin="round" class="icon ">
             <g>
               <line x1="22" y1="2" x2="11" y2="13"></line>
               <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
@@ -193,7 +192,32 @@
           </svg>
         </button>
       </div>
-    </mat-form-field>
+    </div>
+    <div class="composer-hint">
+      <span class="composer-hint">Press <b class="bold"> Enter </b> to send · <b class="bold">Shift+Enter</b> for new line</span>
+    </div>
   </div>
+
+<!--  <div class="uk-margin-top">-->
+<!--    <mat-form-field class="uk-width-expand " appearance="outline">-->
+<!--      <mat-label>Your message</mat-label>-->
+<!--      <textarea matInput cdkTextareaAutosize cdkAutosizeMinRows="2" cdkAutosizeMaxRows="6"-->
+<!--                [(ngModel)]="inputText" [disabled]="loading()" (keydown.enter)="send()"-->
+<!--                [placeholder]="phase() === 'options' ? 'e.g., Blue bars with dark background': 'e.g., Show me publications per year'">-->
+<!--      </textarea>-->
+<!--      <mat-hint>Press <b>Enter</b> to send &middot; <b>Shift+Enter</b> for new line</mat-hint>-->
+<!--      <div class="uk-flex uk-flex-right">-->
+<!--        <button class="send-btn" (click)="send()" [disabled]="loading() || !inputText().trim()">-->
+<!--          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"-->
+<!--               stroke-linecap="round" stroke-linejoin="round" class="icon">-->
+<!--            <g>-->
+<!--              <line x1="22" y1="2" x2="11" y2="13"></line>-->
+<!--              <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>-->
+<!--            </g>-->
+<!--          </svg>-->
+<!--        </button>-->
+<!--      </div>-->
+<!--    </mat-form-field>-->
+<!--  </div>-->
 
 </div>

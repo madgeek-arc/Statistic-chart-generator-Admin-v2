@@ -179,7 +179,7 @@ export class DashboardComponent implements OnInit {
 		console.log("SUBMIT this form:", this.diagramSettings.value);
 
     this.hasChanges = false;
-    if (this.nlQuery()) {
+    if (this.nlQuery() || this.nlAppearance()) {
       this.dynamicFormHandlingService.submitNLQuery(this.chartInfo, this.appearanceFromChat);
       return;
     }

@@ -15,18 +15,17 @@ import {
   ChartInfo,
   ChatResponse,
   NlChatService,
-  NlQuery, OptionsData,
-  OptionsElement, OptionsRequest,
+  NlQuery,
+  OptionsData,
   OptionsResponse
 } from '../services/nl-chat-service/nl-chat.service';
 import { MappingProfilesService } from '../services/mapping-profiles-service/mapping-profiles.service';
 import { DiagramCategoryService } from "../services/diagram-category-service/diagram-category.service";
 import { MarkdownModule } from "ngx-markdown";
 import { MaterialModule } from "../material/material.module";
-import { DiagramCreator } from "../services/dynamic-form-handling-service/dynamic-form-handling-diagram-creator";
-import { FormFactoryService } from "../services/form-factory-service/form-factory-service";
-import { DynamicFormHandlingService } from "../services/dynamic-form-handling-service/dynamic-form-handling.service";
 import { format } from 'sql-formatter';
+import { MatCard, MatCardContent } from "@angular/material/card";
+import { TextFieldModule } from "@angular/cdk/text-field";
 
 interface Message {
   role: 'user' | 'assistant' | 'sql';
@@ -38,8 +37,10 @@ interface Message {
   standalone: true,
   imports: [
     FormsModule,
-    MaterialModule,
-    MarkdownModule
+    TextFieldModule,
+    MarkdownModule,
+    MatCard,
+    MatCardContent
   ],
   templateUrl: './nl-chat.component.html',
   styleUrl: './nl-chat.component.less'
@@ -81,6 +82,7 @@ export class NlChatComponent implements AfterViewChecked {
 
   inputText = signal<string>('');
   loading = signal<boolean>(false);
+  isFocused = signal(false);
   // phase = signal<'query' | 'options' | 'done'>('query');
   chartData = signal<unknown | null>(null);
   error = signal<string | null>(null);

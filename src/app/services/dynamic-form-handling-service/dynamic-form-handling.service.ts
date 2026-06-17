@@ -299,25 +299,33 @@ export class DynamicFormHandlingService {
 		this._diagramCreator.createRawChartData(value), this._diagramCreator.createRawData(value)])
 			.pipe(first())
 			.subscribe(([chartObject, tableObject, rawChartDataObject, rawDataObject]) => {
-        if (chartInfo) {
-          if (chartObject) {
-            if (this.formFactoryService.getFormRoot().get('appearance.chartAppearance.generalOptions.visualisationLibrary').value === 'HighCharts') {
-              if (options) {
-                (chartObject as HighChartsChart).chartDescription = this.mergeObjects((chartObject as HighChartsChart).chartDescription, JSON.parse(options.optionsJson));
-                (chartObject as HighChartsChart).nlOptions = options.nlOptions;
-                (chartObject as HighChartsChart).optionsSig = options.optionsSig;
-              }
 
-              (chartObject as HighChartsChart).chartDescription.queries = chartInfo as any; // Fixme use proper type
-              console.log(chartObject);
-            }
+        const isHighCharts = this.formFactoryService.getFormRoot().get('appearance.chartAppearance.generalOptions.visualisationLibrary').value === 'HighCharts';
+
+        if (options && chartObject && isHighCharts) {
+          const chart = chartObject as HighChartsChart;
+
+          chart.chartDescription = this.mergeObjects(chart.chartDescription, JSON.parse(options.optionsJson));
+          chart.nlOptions = options.nlOptions;
+          chart.optionsSig = options.optionsSig;
+          console.log(chart);
+        }
+
+        if (chartInfo) {
+          if (chartObject && isHighCharts) {
+            const chart = chartObject as HighChartsChart;
+            chart.chartDescription.queries = chartInfo as any; // FIXME: use proper type
+            console.log(chart);
           }
+
           if (tableObject) {
             (tableObject as GoogleChartsTable).tableDescription.queriesInfo = chartInfo as any;
           }
+
           if (rawChartDataObject) {
             (rawChartDataObject as RawChartDataModel).chartsInfo = chartInfo as any;
           }
+
           if (rawDataObject) {
             (rawDataObject as RawDataModel).series = chartInfo as any;
           }
