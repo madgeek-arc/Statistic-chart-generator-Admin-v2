@@ -1,7 +1,8 @@
 import {
-  AfterViewChecked,
+  afterNextRender, afterRenderEffect,
   Component,
   DestroyRef,
+  effect,
   ElementRef,
   inject,
   input,
@@ -22,7 +23,6 @@ import {
 import { MappingProfilesService } from '../services/mapping-profiles-service/mapping-profiles.service';
 import { DiagramCategoryService } from "../services/diagram-category-service/diagram-category.service";
 import { MarkdownModule } from "ngx-markdown";
-import { MaterialModule } from "../material/material.module";
 import { format } from 'sql-formatter';
 import { MatCard, MatCardContent } from "@angular/material/card";
 import { TextFieldModule } from "@angular/cdk/text-field";
@@ -45,14 +45,14 @@ interface Message {
   templateUrl: './nl-chat.component.html',
   styleUrl: './nl-chat.component.less'
 })
-export class NlChatComponent implements AfterViewChecked {
+export class NlChatComponent {
   private destroyRef = inject(DestroyRef);
   private nlChatService = inject(NlChatService);
   private profileService = inject(MappingProfilesService);
   private diagramCategoryService = inject(DiagramCategoryService);
 
   // ViewChild references for message containers
-  @ViewChild('queryMessagesContainer') queryMessagesContainer?: ElementRef;
+  @ViewChild('messagesContainer') messagesContainer?: ElementRef;
 
   phase = input<'query' | 'options'>('query');
 
@@ -87,6 +87,13 @@ export class NlChatComponent implements AfterViewChecked {
   chartData = signal<unknown | null>(null);
   error = signal<string | null>(null);
 
+  constructor() {
+    afterRenderEffect(() => {
+      this.queryMessages(); // track the signal
+      this.scrollToBottom();
+    });
+  }
+
   ngOnInit(): void {
     // Subscribe to the current profile
     this.profileService.selectedProfile$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
@@ -106,16 +113,13 @@ export class NlChatComponent implements AfterViewChecked {
     });
   }
 
-  ngAfterViewChecked(): void {
-    // Auto-scroll to the bottom when messages change
-    this.scrollToBottom();
-  }
-
   private scrollToBottom(): void {
     try {
-      if (this.queryMessagesContainer) {
-        const element = this.queryMessagesContainer.nativeElement;
-        element.scrollTop = element.scrollHeight;
+      if (this.messagesContainer) {
+        const element = this.messagesContainer.nativeElement;
+        setTimeout(() => {
+          element.scrollTop = element.scrollHeight;
+        });
       }
     } catch (err) {
       // Silently handle any scrolling errors
@@ -139,7 +143,6 @@ export class NlChatComponent implements AfterViewChecked {
 
   private sendQueryMessage(text: string): void {
     this.queryMessages.update(messages => [...messages, { role: 'user', text }]);
-
 
     this.nlChatService.chat({
       sessionId: this.querySessionId(),
@@ -172,7 +175,6 @@ export class NlChatComponent implements AfterViewChecked {
             query: this.queryJson()
           }];
           this.queryChatComplete.emit(chartInfo);
-          // this.phase.set('options');
         }
       },
       error: (err) => {

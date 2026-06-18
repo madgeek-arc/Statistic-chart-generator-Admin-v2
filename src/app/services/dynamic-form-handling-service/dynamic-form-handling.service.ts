@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, forkJoin } from 'rxjs';
+import { BehaviorSubject, forkJoin, of } from 'rxjs';
 import { DiagramCreator } from './dynamic-form-handling-diagram-creator';
 import { ChartExportingService } from '../chart-exporting-service/chart-exporting.service';
 import { ChartLoadingService } from '../chart-loading-service/chart-loading.service';
@@ -300,9 +300,9 @@ export class DynamicFormHandlingService {
 			.pipe(first())
 			.subscribe(([chartObject, tableObject, rawChartDataObject, rawDataObject]) => {
 
-        const isHighCharts = this.formFactoryService.getFormRoot().get('appearance.chartAppearance.generalOptions.visualisationLibrary').value === 'HighCharts';
+        const library: string = this.formFactoryService.getFormRoot().get('appearance.chartAppearance.generalOptions.visualisationLibrary').value;
 
-        if (options && chartObject && isHighCharts) {
+        if (options && chartObject && library) {
           const chart = chartObject as HighChartsChart;
 
           chart.chartDescription = this.mergeObjects(chart.chartDescription, JSON.parse(options.optionsJson));
@@ -312,10 +312,28 @@ export class DynamicFormHandlingService {
         }
 
         if (chartInfo) {
-          if (chartObject && isHighCharts) {
-            const chart = chartObject as HighChartsChart;
-            chart.chartDescription.queries = chartInfo as any; // FIXME: use proper type
-            console.log(chart);
+          if (chartObject ) {
+            switch (library) {
+
+              case ('GoogleCharts'): {
+                (chartObject as GoogleChartsChart).chartDescription.queriesInfo = chartInfo as any;
+                break;
+              }
+              case ('HighCharts'): {
+                (chartObject as HighChartsChart).chartDescription.queries = chartInfo as any; // FIXME: use proper type
+                break;
+              }
+              case ('HighMaps'): {
+                (chartObject as HighMapsMap).mapDescription.queries = chartInfo as any;
+                break;
+              }
+              case ('eCharts'): {
+                (chartObject as EChartsChart).chartDescription.queries = chartInfo as any;
+                break;
+              }
+            }
+
+            console.log(chartObject);
           }
 
           if (tableObject) {
