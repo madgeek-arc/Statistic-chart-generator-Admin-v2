@@ -6,6 +6,8 @@ import { ChartExportingService } from '../services/chart-exporting-service/chart
 import { FormFactoryService } from "../services/form-factory-service/form-factory-service";
 import { MappingProfilesService } from "../services/mapping-profiles-service/mapping-profiles.service";
 import { ChartInfo, OptionsData } from "../services/nl-chat-service/nl-chat.service";
+import { Profile } from '../services/profile-provider/profile-provider.service';
+import { ISupportedCategory } from '../services/supported-chart-types-service/supported-chart-types.service';
 import UIkit from 'uikit';
 
 @Component({
@@ -26,6 +28,9 @@ export class DashboardComponent implements OnInit {
   activeAppearanceTab = signal('builder');
   nlQuery = signal<boolean>(false);
   nlAppearance = signal<boolean>(false);
+  currentStep = 0;
+  selectedProfileDetails: Profile | null = null;
+  selectedChartDetails: ISupportedCategory | null = null;
 
 	diagramSettings: FormGroup;
 
@@ -105,28 +110,35 @@ export class DashboardComponent implements OnInit {
 		return this.diagramSettings.get('appearance') as FormGroup;
 	}
 
+  private scrollLeftColumnToTop(): void {
+    const el = document.querySelector('.left-column .scrollable') as HTMLElement | null;
+    if (el) el.scrollTop = 0;
+  }
+
 	updateStepper(event: any): void {
 		// this.diagramSettings.updateValueAndValidity();
     this.checkDisabledTabs();
 
 		if (event) {
       if (event.step === 'view') {
+        this.currentStep = 0;
         setTimeout(() => {
           UIkit.switcher('#navTab').show(0);
-          window.scrollTo({top: 0, left: 0, behavior: "smooth"});
+          this.scrollLeftColumnToTop();
         }, 0);
       } else if (event.step === 'profile') {
+        this.currentStep = 1;
         setTimeout(() => {
           UIkit.switcher('#navTab').show(1);
-          window.scrollTo({top: 0, left: 0, behavior: "smooth"});
+          this.scrollLeftColumnToTop();
         }, 0);
-			} else if (event.step === 'category') {
-				// this.selectedCategory = event.name;
+      } else if (event.step === 'category') {
+        this.currentStep = 2;
         setTimeout(() => {
           UIkit.switcher('#navTab').show(2);
-          window.scrollTo({top: 0, left: 0, behavior: "smooth"});
+          this.scrollLeftColumnToTop();
         }, 0);
-			}
+      }
 		}
 
 	}
@@ -197,6 +209,7 @@ export class DashboardComponent implements OnInit {
     this.chartInfo = null;
     this.nlAppearance.set(false);
     this.appearanceFromChat = null;
+    this.selectedChartDetails = null;
 
     // Reset chart, table, rawChartData, rawData objects.
     this.chartExportingService.clearChartUrls();
@@ -206,6 +219,62 @@ export class DashboardComponent implements OnInit {
       step: 'view'
     });
 	}
+
+  onNavClick(event: Event, step: number): void {
+    this.checkDisabledTabs();
+    if ((step === 2 || step === 3) && !this.hasDataAndDiagramType) {
+      event.preventDefault();
+      event.stopPropagation();
+      return;
+    }
+    this.currentStep = step;
+    setTimeout(() => this.scrollLeftColumnToTop(), 0);
+  }
+
+  backToView(): void {
+    this.selectedChartDetails = null;
+    this.updateStepper({ step: 'view' });
+  }
+
+  continueFromChartType(): void {
+    if (!this.selectedChartDetails) return;
+    this.updateStepper({ name: this.selectedChartDetails.name, step: 'category' });
+  }
+
+  continueFromView(): void {
+    if (!this.selectedProfileDetails) return;
+    this.profile.setValue(this.selectedProfileDetails.name);
+    this.updateStepper({ name: this.selectedProfileDetails.name, step: 'profile' });
+  }
+
+  private readonly chartMetaMap: Record<string, { bestFor: string; tags: string[]; tips: { type: 'check' | 'info'; text: string }[] }> = {
+    column:  { bestFor: 'Compare values across a few categories', tags: ['categorical', 'comparison'], tips: [{ type: 'check', text: 'Works well with 3 series' }, { type: 'info', text: 'Group by a categorical or time field on the X axis' }] },
+    bar:     { bestFor: 'Horizontal comparison across categories', tags: ['categorical', 'comparison'], tips: [{ type: 'check', text: 'Great for long category labels' }, { type: 'info', text: 'Sort by value for easier reading' }] },
+    line:    { bestFor: 'Show trends over time', tags: ['time-series', 'trend'], tips: [{ type: 'check', text: 'Works well with continuous data' }, { type: 'info', text: 'Use a date/time field on the X axis' }] },
+    area:    { bestFor: 'Emphasise totals and trends over time', tags: ['time-series', 'trend'], tips: [{ type: 'check', text: 'Good for showing cumulative values' }, { type: 'info', text: 'Stack multiple series to show composition' }] },
+    pie:     { bestFor: 'Show parts of a whole', tags: ['proportion', 'composition'], tips: [{ type: 'check', text: 'Best with fewer than 6 slices' }, { type: 'info', text: 'Values must sum to a meaningful total' }] },
+    donut:   { bestFor: 'Parts of a whole with a central label', tags: ['proportion', 'composition'], tips: [{ type: 'check', text: 'Use the centre to highlight the total' }, { type: 'info', text: 'Keep slice count low for clarity' }] },
+    scatter: { bestFor: 'Explore relationships between two numeric values', tags: ['correlation', 'distribution'], tips: [{ type: 'check', text: 'Works best with many data points' }, { type: 'info', text: 'Add a size dimension for bubble charts' }] },
+    table:   { bestFor: 'Display raw sortable rows of data', tags: ['tabular', 'detail'], tips: [{ type: 'check', text: 'Supports sorting and filtering' }, { type: 'info', text: 'Best when exact values matter' }] },
+    kpi:     { bestFor: 'Highlight a single important number', tags: ['metric', 'summary'], tips: [{ type: 'check', text: 'Ideal for dashboards and overviews' }, { type: 'info', text: 'Pair with a trend indicator for context' }] },
+    map:     { bestFor: 'Show geographic distribution across regions', tags: ['geographic', 'spatial'], tips: [{ type: 'check', text: 'Requires a region or country dimension' }, { type: 'info', text: 'Use colour intensity to encode values' }] },
+  };
+
+  protected getChartMeta(type: string | undefined) {
+    if (!type) return null;
+    return this.chartMetaMap[type.toLowerCase()] ?? null;
+  }
+
+  protected getAvatarText(name: string): string {
+    return name.split(/[\s_-]+/).map(w => w[0]).join('').substring(0, 2).toUpperCase();
+  }
+
+  protected getAvatarColor(name: string): string {
+    const colors = ['#3B82F6','#10B981','#F59E0B','#EF4444','#8B5CF6','#EC4899','#06B6D4','#84CC16'];
+    let hash = 0;
+    for (let i = 0; i < name.length; i++) hash = name.charCodeAt(i) + ((hash << 5) - hash);
+    return colors[Math.abs(hash) % colors.length];
+  }
 
 	toggleSidebar() {
 

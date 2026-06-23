@@ -14,140 +14,79 @@ import { FormFactoryService } from "../../services/form-factory-service/form-fac
 import { DiagramCategoryService } from "../../services/diagram-category-service/diagram-category.service";
 
 @Component({
-    selector: 'app-category-selector',
-    templateUrl: './category-selector.component.html',
-    standalone: false
+  selector: 'app-category-selector',
+  templateUrl: './category-selector.component.html',
+  styleUrls: ['./category-selector.component.less'],
+  standalone: false
 })
 export class CategorySelectorComponent implements OnInit {
   private formFactoryService = inject(FormFactoryService);
   private diagramCategoryService = inject(DiagramCategoryService);
 
-	@Input('categoryForm') categoryForm: FormGroup;
-	@Output() showCategorySelection = new EventEmitter<any>;
+  @Input('categoryForm') categoryForm: FormGroup;
+  @Output() showCategorySelection = new EventEmitter<any>();
+  @Output() selectedChartChange = new EventEmitter<ISupportedCategory | null>();
 
-	supportedChartTypes: Array<ISupportedChart> = [];
-	supportedPolarTypes: Array<ISupportedPolar> = [];
-	supportedMaps: Array<ISupportedMap> = [];
-	supportedSpecialisedDiagrams: Array<ISupportedSpecialChartType> = [];
-	supportedMiscTypes: Array<ISupportedMiscType> = [];
+  supportedChartTypes: ISupportedChart[] = [];
+  supportedPolarTypes: ISupportedPolar[] = [];
+  supportedMaps: ISupportedMap[] = [];
+  supportedSpecialisedDiagrams: ISupportedSpecialChartType[] = [];
+  supportedMiscTypes: ISupportedMiscType[] = [];
 
-	availableDiagrams: Array<ISupportedCategory> = [];
+  selectedChart: ISupportedCategory | null = null;
 
-	hideChartFilter = (chart: ISupportedChart) => !chart.isHidden;
+  private hideHidden = (c: ISupportedCategory) => !c.isHidden;
 
+  constructor(private chartProvider: SupportedChartTypesService) {}
 
-	constructor(
-		private chartProvider: SupportedChartTypesService
-	) { }
+  ngOnInit(): void {
+    this.chartProvider.getSupportedChartTypes().pipe(first()).subscribe({
+      next: (data) => this.supportedChartTypes = data.filter(this.hideHidden),
+      error: (e) => console.error(e)
+    });
+    this.chartProvider.getSupportedPolarTypes().pipe(first()).subscribe({
+      next: (data) => this.supportedPolarTypes = data.filter(this.hideHidden),
+      error: (e) => console.error(e)
+    });
+    this.chartProvider.getSupportedMaps().pipe(first()).subscribe({
+      next: (data) => this.supportedMaps = data.filter(this.hideHidden),
+      error: (e) => console.error(e)
+    });
+    this.chartProvider.getSupportedSpecialChartTypes().pipe(first()).subscribe({
+      next: (data) => this.supportedSpecialisedDiagrams = data.filter(this.hideHidden),
+      error: (e) => console.error(e)
+    });
+    this.chartProvider.getSupportedMiscTypes().pipe(first()).subscribe({
+      next: (data) => this.supportedMiscTypes = data.filter(this.hideHidden),
+      error: (e) => console.error(e)
+    });
+  }
 
-	ngOnInit(): void {
-		this.chartProvider.getSupportedChartTypes().pipe(first()).subscribe({
-			next: (data: Array<ISupportedChart>) => {
-				this.supportedChartTypes = data.filter(this.hideChartFilter);
-			},
-			error: (err) => {
-				console.log("ERROR getSupportedChartTypes:", err);
-			},
-			complete: () => {
-				this.supportedChartTypes.map((elem: ISupportedChart) => {
-					this.availableDiagrams.push(elem);
-				});
-			}
-		});
+  selectChart(chart: ISupportedCategory): void {
+    this.selectedChart = chart;
 
-		this.chartProvider.getSupportedPolarTypes().pipe(first()).subscribe(
-			(data: Array<ISupportedPolar>) => {
-				this.supportedPolarTypes = data.filter(this.hideChartFilter);
-			},
-			error => {
-				console.log("ERROR getSupportedPolarTypes:", error);
-			},
-			() => {
-				this.supportedPolarTypes.map((elem: ISupportedPolar) => {
-					this.availableDiagrams.push(elem);
-				});
-			}
-		);
+    (this.categoryForm.get('diagram.supportedLibraries') as FormArray)?.clear();
+    for (let i = 0; i < chart.supportedLibraries.length; i++) {
+      (this.categoryForm.get('diagram.supportedLibraries') as FormArray)?.push(new FormControl<string | null>(null));
+    }
+    this.categoryForm.get('diagram')?.patchValue(chart);
+    this.diagramCategoryService.changeDiagramCategory(chart);
 
+    if (chart.name !== 'combo') {
+      (this.formFactoryService.getFormRoot().get('dataseries') as FormArray).controls.forEach((control: any) => {
+        control.get('chartProperties.chartType').setValue(null);
+      });
+    }
 
-		this.chartProvider.getSupportedMaps().pipe(first()).subscribe(
-			(data: Array<ISupportedMap>) => {
-				this.supportedMaps = data.filter(this.hideChartFilter);
-			},
-			error => {
-				console.log("ERROR getSupportedPolarTypes:", error);
-			},
-			() => {
-				this.supportedMaps.map((elem: ISupportedMap) => {
-					this.availableDiagrams.push(elem);
-				});
-			}
-		);
+    this.selectedChartChange.emit(chart);
+  }
 
-		this.chartProvider.getSupportedSpecialChartTypes().pipe(first()).subscribe(
-			(data: Array<ISupportedSpecialChartType>) => {
-				this.supportedSpecialisedDiagrams = data.filter(this.hideChartFilter);
-			},
-			error => {
-				console.log("ERROR getSupportedPolarTypes:", error);
-			},
-			() => {
-				this.supportedSpecialisedDiagrams.map((elem: ISupportedSpecialChartType) => {
-					this.availableDiagrams.push(elem);
-				});
-			}
-		);
+  continueToData(): void {
+    if (!this.selectedChart) return;
+    this.showCategorySelection.emit({ name: this.selectedChart.name, step: 'category' });
+  }
 
-
-		this.chartProvider.getSupportedMiscTypes().pipe(first()).subscribe(
-			(data: Array<ISupportedMiscType>) => {
-				this.supportedMiscTypes = data.filter(this.hideChartFilter);
-			},
-			error => {
-				console.log("ERROR getSupportedPolarTypes:", error);
-			},
-			() => {
-				this.supportedMiscTypes.map((elem: ISupportedMiscType) => {
-					this.availableDiagrams.push(elem);
-				});
-			}
-		);
-
-
-	}
-
-	moveToNextStep(event: ISupportedCategory): void {
-		if (event.name) {
-			// console.log("moveToNextStep EVENT:", event);
-
-			(this.categoryForm.get('diagram.supportedLibraries') as FormArray)?.clear();
-
-			for (let i = 0; i < event.supportedLibraries.length; i++) {
-				(this.categoryForm.get('diagram.supportedLibraries') as FormArray)?.push(new FormControl<string | null>(null));
-			}
-			this.categoryForm.get('diagram')?.patchValue(event);
-      this.diagramCategoryService.changeDiagramCategory(event);
-
-      // Reset the chartType of all dataseries to null. So chart type change can take place.
-      // The above issue occurs when loading a chart from url.
-      if (event.name != 'combo') {
-        (this.formFactoryService.getFormRoot().get('dataseries') as FormArray).controls.forEach((control: FormGroup) => {
-          control.get('chartProperties.chartType').setValue(null);
-        });
-      }
-
-			this.showCategorySelection.emit({
-				name: event.name,
-				step: "category"
-			});
-
-		} else {
-			this.showCategorySelection.emit({
-				name: "PlaceHolder Category",
-				step: "category"
-			})
-		}
-	}
-
+  back(): void {
+    this.showCategorySelection.emit({ step: 'view' });
+  }
 }
-

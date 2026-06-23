@@ -8,13 +8,11 @@ import { ISupportedCategory } from "../../../services/supported-chart-types-serv
     standalone: false
 })
 export class DiagramCardComponentComponent {
+  @Input() diagram: ISupportedCategory;
+  @Input() isSelected = false;
+  @Output() outputEvent = new EventEmitter<any>();
 
-	@Input() diagram: ISupportedCategory;
-	@Output() outputEvent = new EventEmitter<any>;
-
-	constructor() { }
-
-	categorySelect(): void {
-		this.outputEvent.emit(this.diagram);
-	}
+  categorySelect(): void {
+    this.outputEvent.emit(this.diagram);
+  }
 }
