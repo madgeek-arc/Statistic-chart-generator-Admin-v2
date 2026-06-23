@@ -236,6 +236,75 @@
   cursor: not-allowed;
 }
 
+// Input container
+.chat-composer {
+  border-top: 1px solid @line-2;
+  //padding: 14px 40px 20px;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.composer-shell {
+  border: 1px solid @line;
+  border-radius: 12px;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  transition: border-color .14s,box-shadow .14s;
+  background: #fff;
+}
+
+.composer-shell.focus {
+  border-color: @teal;
+  box-shadow: 0 0 0 3px rgba(31,201,176,.16);
+}
+
+.composer-shell textarea {
+  border: 0;
+  outline: 0;
+  resize: none;
+  font: inherit;
+  font-size: 14px;
+  color: var(--ink);
+  width: 100%;
+  min-height: 24px;
+  max-height: 140px;
+  background: transparent;
+  line-height: 1.45;
+}
+
+.composer-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.composer-context {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 8px;
+  background: @bg-soft;
+  border-radius: 6px;
+  font-size: 11.5px;
+  color: @ink-3;
+  font-weight: 500;
+}
+
+.composer-hint {
+  justify-content: space-between;
+  font-size: 11px;
+  color: @muted;
+  padding: 0 2px;
+}
+
+.bold {
+  color: @ink-3;
+}
+
 // Success card
 .success-card {
   background-color: #e8f5e9;

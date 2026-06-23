@@ -37,6 +37,16 @@ export interface OptionsResponse {
   canonicalDescription?: string; // populated when done — concise appearance description
   sig?: string;                  // populated when done — HMAC signature
   optionsJson?: string;          // populated when done — chart options JSON string
+  optionsElement?: OptionsElement;
+}
+
+export interface OptionsElement {
+  nlOptions: string;
+  optionsSig: string;
+}
+
+export interface OptionsData extends OptionsElement {
+  optionsJson: string;
 }
 
 // --- Chart request ---

@@ -5,7 +5,7 @@ import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { ChartExportingService } from '../services/chart-exporting-service/chart-exporting.service';
 import { FormFactoryService } from "../services/form-factory-service/form-factory-service";
 import { MappingProfilesService } from "../services/mapping-profiles-service/mapping-profiles.service";
-import { ChartInfo } from "../services/nl-chat-service/nl-chat.service";
+import { ChartInfo, OptionsData } from "../services/nl-chat-service/nl-chat.service";
 import UIkit from 'uikit';
 
 @Component({
@@ -22,7 +22,10 @@ export class DashboardComponent implements OnInit {
   private dynamicFormHandlingService = inject(DynamicFormHandlingService);
   protected chartExportingService = inject(ChartExportingService);
 
+  activeTab = signal('builder');
+  activeAppearanceTab = signal('builder');
   nlQuery = signal<boolean>(false);
+  nlAppearance = signal<boolean>(false);
 
 	diagramSettings: FormGroup;
 
@@ -38,7 +41,7 @@ export class DashboardComponent implements OnInit {
   hasChanges: boolean = false;
 
   chartInfo: ChartInfo[] | null = null;
-  activeTab = signal('builder');
+  appearanceFromChat: OptionsData | null = null;
 
 	ngOnInit(): void {
 
@@ -72,12 +75,11 @@ export class DashboardComponent implements OnInit {
       this.profileService.changeSelectedProfile(profile);
     });
 
-    this.diagramSettings.get('category')?.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((diagram: any) => {
+    this.diagramSettings.get('category')?.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
       this.checkDisabledTabs();
     });
 
     this.diagramSettings.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(value => {
-      console.log(this.diagramSettings.get('dataseries.0.data.yaxisData.entity').valid);
       this.dynamicFormHandlingService.formSchemaObject = value;
       this.hasChanges = true;
     });
@@ -93,10 +95,6 @@ export class DashboardComponent implements OnInit {
 
 	get category() {
 		return this.diagramSettings.get('category') as FormGroup;
-	}
-
-	get categoryName() {
-		return this.diagramSettings.get('category')?.get('diagram')?.get('name') as FormControl;
 	}
 
 	get dataseries() {
@@ -181,8 +179,8 @@ export class DashboardComponent implements OnInit {
 		console.log("SUBMIT this form:", this.diagramSettings.value);
 
     this.hasChanges = false;
-    if (this.nlQuery()) {
-      this.dynamicFormHandlingService.submitNLQuery(this.chartInfo);
+    if (this.nlQuery() || this.nlAppearance()) {
+      this.dynamicFormHandlingService.submitNLQuery(this.chartInfo, this.appearanceFromChat);
       return;
     }
 
@@ -194,12 +192,11 @@ export class DashboardComponent implements OnInit {
     // Reset the form to its initial state.
     this.diagramSettings = this.formFactory.createForm();
     this.setFormObservers();
-    this.diagramSettings.get('dataseries.0.data.yaxisData.entity').markAsUntouched;
-    console.log(this.diagramSettings.get('dataseries.0.data.yaxisData.entity').touched);;
-    this.diagramSettings.markAsUntouched();
-    this.diagramSettings.markAsPristine();
+
     this.nlQuery.set(false);
     this.chartInfo = null;
+    this.nlAppearance.set(false);
+    this.appearanceFromChat = null;
 
     // Reset chart, table, rawChartData, rawData objects.
     this.chartExportingService.clearChartUrls();
@@ -229,15 +226,27 @@ export class DashboardComponent implements OnInit {
 	 * Handles the completion of the AI chat session.
 	 * @param result - The result of the chat session.
 	 */
-  onChatComplete(result: ChartInfo[]): void {
+  onQueryComplete(result: ChartInfo[]): void {
     if (result) {
-      console.log('AI Chat completed with result:', result);
+      console.log('AI Chat completed with result: ', result);
       this.chartInfo = result;
       this.nlQuery.set(true);
     }
   }
 
-  setActiveTab(tab: string) {
+  onOptionsComplete(result: OptionsData) {
+    if (result) {
+      console.log('AI Chat completed with options: ', result);
+      this.appearanceFromChat = result;
+      this.nlAppearance.set(true);
+    }
+  }
+
+  setActiveTab(tab: string, step?: string) {
+    if (step === 'appearance') {
+      this.activeAppearanceTab.set(tab)
+      return;
+    }
     this.activeTab.set(tab);
   }
 }
