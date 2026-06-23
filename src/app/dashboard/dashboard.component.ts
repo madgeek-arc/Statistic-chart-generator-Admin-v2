@@ -209,7 +209,10 @@ export class DashboardComponent implements OnInit {
     this.chartInfo = null;
     this.nlAppearance.set(false);
     this.appearanceFromChat = null;
+
+    this.selectedProfileDetails = null;
     this.selectedChartDetails = null;
+    this.currentStep = 0;
 
     // Reset chart, table, rawChartData, rawData objects.
     this.chartExportingService.clearChartUrls();

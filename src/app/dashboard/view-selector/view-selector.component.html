@@ -20,31 +20,21 @@
       <div class="vs-toolbar">
         <div class="vs-search">
           <span class="material-symbols-outlined vs-search-icon">search</span>
-          <input
-            class="vs-search-input"
-            type="text"
-            placeholder="Search views, descriptions..."
-            [(ngModel)]="searchQuery"
-          />
+          <input class="vs-search-input" type="text" placeholder="Search views, descriptions..." [(ngModel)]="searchQuery"/>
         </div>
         <div class="vs-filters">
           @for (tab of filterTabs; track tab) {
-            <button
-              class="vs-filter-btn"
-              [class.vs-filter-btn--active]="activeFilter === tab"
-              (click)="activeFilter = tab"
-            >{{ tab }}</button>
+            <button class="vs-filter-btn" [class.vs-filter-btn--active]="activeFilter === tab"
+                    (click)="activeFilter = tab">{{ tab }}
+            </button>
           }
         </div>
       </div>
 
       <div class="vs-grid">
         @for (profile of filteredProfiles; track profile.name) {
-          <div
-            class="vs-card"
-            [class.vs-card--selected]="selectedProfile?.name === profile.name"
-            (click)="selectProfile(profile)"
-          >
+          <div class="vs-card" [class.vs-card--selected]="selectedProfile?.name === profile.name"
+            (click)="selectProfile(profile)">
             <div class="vs-card-top">
               <div class="vs-avatar" [style.background]="getAvatarColor(profile.name)">
                 {{ getAvatarText(profile.name) }}

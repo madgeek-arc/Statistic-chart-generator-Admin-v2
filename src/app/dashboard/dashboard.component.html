@@ -113,10 +113,14 @@
           <div class="scrollable">
             <ul id="selection" class="uk-switcher uk-margin">
               <li class="" style="animation-duration: 200ms;">
-                <app-view-selector (showViewSelection)="updateStepper($event)" [profileControl]="profile" (profileDetailsChange)="selectedProfileDetails = $event"></app-view-selector>
+                <app-view-selector (showViewSelection)="updateStepper($event)" [profileControl]="profile"
+                                   (profileDetailsChange)="clearData(); selectedProfileDetails = $event">
+                </app-view-selector>
               </li>
               <li class="" style="animation-duration: 200ms;">
-                <app-category-selector (showCategorySelection)="updateStepper($event)" [categoryForm]="category" (selectedChartChange)="selectedChartDetails = $event"></app-category-selector>
+                <app-category-selector (showCategorySelection)="updateStepper($event)" [categoryForm]="category"
+                                       (selectedChartChange)="selectedChartDetails = $event">
+                </app-category-selector>
               </li>
               <li class="" style="animation-duration: 200ms;">
                 @if (hasDataAndDiagramType) {
@@ -188,7 +192,6 @@
                       </div>
                     </div>
                   </div>
-
 
                 }
               </li>
