@@ -23,7 +23,7 @@
           <input class="vs-search-input" type="text" placeholder="Search views, descriptions..." [(ngModel)]="searchQuery"/>
         </div>
         <div class="vs-filters">
-          @for (tab of filterTabs; track tab) {
+          @for (tab of filterTabs; track tab + $index) {
             <button class="vs-filter-btn" [class.vs-filter-btn--active]="activeFilter === tab"
                     (click)="activeFilter = tab">{{ tab }}
             </button>
@@ -32,7 +32,7 @@
       </div>
 
       <div class="vs-grid">
-        @for (profile of filteredProfiles; track profile.name) {
+        @for (profile of filteredProfiles; track profile.name + $index) {
           <div class="vs-card" [class.vs-card--selected]="selectedProfile?.name === profile.name"
             (click)="selectProfile(profile)">
             <div class="vs-card-top">
@@ -50,8 +50,8 @@
             <p class="vs-card-desc">{{ profile.description }}</p>
             <div class="vs-card-footer">
               <div class="vs-tags">
-                @for (tag of profile.shareholders; track tag; let i = $index) {
-                  <span class="vs-tag" [ngClass]="getTagClass(tag, i)">{{ tag }}</span>
+                @for (tag of profile.shareholders; track tag + $index; let i = $index) {
+                  <span class="vs-tag" [className]="getTagClass(tag, i)">{{ tag }}</span>
                 }
               </div>
               @if (profile.complexity >= 0) {

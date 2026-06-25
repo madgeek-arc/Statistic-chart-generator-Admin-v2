@@ -1,18 +1,24 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormControl } from '@angular/forms';
-import { Profile, ProfileProviderService } from 'src/app/services/profile-provider/profile-provider.service';
+import { Component, DestroyRef, inject, OnInit, output } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { MappingProfilesService, Profile } from "../../services/mapping-profiles-service/mapping-profiles.service";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 
 type FilterTab = 'All' | string;
 
 @Component({
-    selector: 'app-view-selector',
-    templateUrl: './view-selector.component.html',
-    styleUrls: ['./view-selector.component.less'],
-    standalone: false
+  selector: 'app-view-selector',
+  templateUrl: './view-selector.component.html',
+  styleUrls: ['./view-selector.component.less'],
+  imports: [
+    FormsModule
+  ],
+  standalone: true
 })
 export class ViewSelectorComponent implements OnInit {
-  @Input() profileControl?: FormControl;
-  @Output() showViewSelection = new EventEmitter<any>();
+  private destroyRef = inject(DestroyRef);
+  private profileService = inject(MappingProfilesService);
+
+  profileDetailsChange = output<Profile | null>();
 
   searchQuery = '';
   activeFilter: FilterTab = 'All';
@@ -21,12 +27,15 @@ export class ViewSelectorComponent implements OnInit {
 
   readonly filterTabs: FilterTab[] = ['All'];
 
-  constructor(protected profileProvide: ProfileProviderService) {}
-
   ngOnInit(): void {
-    this.profileProvide.mappingProfiles$.subscribe(profiles => {
+
+    this.profileService.mappingProfiles$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(profiles => {
       this.allProfiles = profiles;
       this.buildFilterTabs(profiles);
+    });
+
+    this.profileService.selectedProfile$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(profile => {
+      this.selectedProfile = profile;
     });
   }
 
@@ -48,8 +57,6 @@ export class ViewSelectorComponent implements OnInit {
       return matchesSearch && matchesFilter;
     });
   }
-
-  @Output() profileDetailsChange = new EventEmitter<Profile | null>();
 
   selectProfile(profile: Profile): void {
     this.selectedProfile = profile;
@@ -77,15 +84,5 @@ export class ViewSelectorComponent implements OnInit {
     let hash = 0;
     for (let i = 0; i < name.length; i++) hash = name.charCodeAt(i) + ((hash << 5) - hash);
     return colors[Math.abs(hash) % colors.length];
-  }
-
-  continue(): void {
-    if (!this.selectedProfile) return;
-    this.profileControl?.setValue(this.selectedProfile.name);
-    this.showViewSelection.emit({ name: this.selectedProfile.name, step: 'profile' });
-  }
-
-  back(): void {
-    this.showViewSelection.emit({ step: 'back' });
   }
 }

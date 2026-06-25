@@ -290,7 +290,7 @@ export class DynamicFormHandlingService {
 
 	private createDataObjectsFromSchemaObject(value: SCGAFormSchema, chartInfo: ChartInfo[] | null = null, options?: OptionsData) {
 
-    if (this.diagramcategoryService.selectedDiagramCategory$.value?.type === "numbers") {
+    if (this.diagramcategoryService.selectedDiagramCategory?.type === "numbers") {
 			this._diagramCreator.createRawData(value).pipe(first()).subscribe(rawDataObject => this.changeDataObjects(null, null, null, rawDataObject))
 			return;
 		}

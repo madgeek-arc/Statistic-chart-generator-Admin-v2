@@ -14,15 +14,15 @@
   <p class="cs-hint">Pick the shape that fits your story. You can change it any time from the chart preview.</p>
 
   <div class="cs-sections">
-
+    @let supportedChartTypes = diagramCategoryService.supportedChartTypes$ | async;
     @if (supportedChartTypes.length) {
       <div class="cs-section">
         <div class="cs-section-label">Basic Types</div>
         <div class="cs-grid">
-          @for (chart of supportedChartTypes; track chart.type) {
+          @for (chart of supportedChartTypes; track chart.diagramId) {
             <app-diagram-card-component
               [diagram]="chart"
-              [isSelected]="selectedChart?.type === chart.type && !!selectedChart?.isPolar === !!chart.isPolar"
+              [isSelected]="selectedChart?.diagramId === chart.diagramId"
               (outputEvent)="selectChart($event)">
             </app-diagram-card-component>
           }
@@ -30,14 +30,15 @@
       </div>
     }
 
+    @let supportedPolarTypes = diagramCategoryService.supportedPolarTypes$ | async;
     @if (supportedPolarTypes.length) {
       <div class="cs-section">
         <div class="cs-section-label">Polar Types</div>
         <div class="cs-grid">
-          @for (chart of supportedPolarTypes; track chart.type) {
+          @for (chart of supportedPolarTypes; track chart.diagramId) {
             <app-diagram-card-component
               [diagram]="chart"
-              [isSelected]="selectedChart?.type === chart.type && !!selectedChart?.isPolar === !!chart.isPolar"
+              [isSelected]="selectedChart?.diagramId === chart.diagramId"
               (outputEvent)="selectChart($event)">
             </app-diagram-card-component>
           }
@@ -45,14 +46,15 @@
       </div>
     }
 
+    @let supportedMaps = diagramCategoryService.supportedMaps$ | async;
     @if (supportedMaps.length) {
       <div class="cs-section">
         <div class="cs-section-label">Map Types</div>
         <div class="cs-grid">
-          @for (chart of supportedMaps; track chart.type) {
+          @for (chart of supportedMaps; track chart.diagramId) {
             <app-diagram-card-component
               [diagram]="chart"
-              [isSelected]="selectedChart?.type === chart.type && !!selectedChart?.isPolar === !!chart.isPolar"
+              [isSelected]="selectedChart?.diagramId === chart.diagramId"
               (outputEvent)="selectChart($event)">
             </app-diagram-card-component>
           }
@@ -60,14 +62,15 @@
       </div>
     }
 
+    @let supportedSpecialisedDiagrams = diagramCategoryService.supportedSpecialisedDiagrams$ | async;
     @if (supportedSpecialisedDiagrams.length) {
       <div class="cs-section">
         <div class="cs-section-label">Special Types</div>
         <div class="cs-grid">
-          @for (chart of supportedSpecialisedDiagrams; track chart.type) {
+          @for (chart of supportedSpecialisedDiagrams; track chart.diagramId) {
             <app-diagram-card-component
               [diagram]="chart"
-              [isSelected]="selectedChart?.type === chart.type && !!selectedChart?.isPolar === !!chart.isPolar"
+              [isSelected]="selectedChart?.diagramId === chart.diagramId"
               (outputEvent)="selectChart($event)">
             </app-diagram-card-component>
           }
@@ -75,14 +78,15 @@
       </div>
     }
 
+    @let supportedMiscTypes = diagramCategoryService.supportedMiscTypes$ | async;
     @if (supportedMiscTypes.length) {
       <div class="cs-section">
         <div class="cs-section-label">Other Types</div>
         <div class="cs-grid">
-          @for (chart of supportedMiscTypes; track chart.type) {
+          @for (chart of supportedMiscTypes; track chart.diagramId) {
             <app-diagram-card-component
               [diagram]="chart"
-              [isSelected]="selectedChart?.type === chart.type && !!selectedChart?.isPolar === !!chart.isPolar"
+              [isSelected]="selectedChart?.diagramId === chart.diagramId"
               (outputEvent)="selectChart($event)">
             </app-diagram-card-component>
           }

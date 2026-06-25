@@ -4,10 +4,11 @@ import { DynamicFormHandlingService } from "../services/dynamic-form-handling-se
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { ChartExportingService } from '../services/chart-exporting-service/chart-exporting.service';
 import { FormFactoryService } from "../services/form-factory-service/form-factory-service";
-import { MappingProfilesService } from "../services/mapping-profiles-service/mapping-profiles.service";
+import { MappingProfilesService, Profile } from "../services/mapping-profiles-service/mapping-profiles.service";
 import { ChartInfo, OptionsData } from "../services/nl-chat-service/nl-chat.service";
-import { Profile } from '../services/profile-provider/profile-provider.service';
 import { ISupportedCategory } from '../services/supported-chart-types-service/supported-chart-types.service';
+import { DiagramCategoryService } from "../services/diagram-category-service/diagram-category.service";
+import { distinctUntilChanged } from "rxjs/operators";
 import UIkit from 'uikit';
 
 @Component({
@@ -22,7 +23,10 @@ export class DashboardComponent implements OnInit {
   private profileService = inject(MappingProfilesService);
   private formFactory = inject(FormFactoryService);
   private dynamicFormHandlingService = inject(DynamicFormHandlingService);
+  private diagramCategoryService = inject(DiagramCategoryService);
   protected chartExportingService = inject(ChartExportingService);
+
+  diagramSettings: FormGroup;
 
   activeTab = signal('builder');
   activeAppearanceTab = signal('builder');
@@ -31,22 +35,28 @@ export class DashboardComponent implements OnInit {
   currentStep = 0;
   selectedProfileDetails: Profile | null = null;
   selectedChartDetails: ISupportedCategory | null = null;
-
-	diagramSettings: FormGroup;
-
-	viewSelectionLabel: string = "View";
-	categorySelectionLabel: string = "Chart type";
-	configureDatasieriesLabel: string = "Data";
-	customiseAppearanceLabel: string = "Appearance";
-
-	open = true;
-	hasDataAndDiagramType: boolean = false;
-
-  frameHeight: number;
   hasChanges: boolean = false;
+
+  open = true;
+  hasDataAndDiagramType: boolean = false;
 
   chartInfo: ChartInfo[] | null = null;
   appearanceFromChat: OptionsData | null = null;
+
+  frameHeight: number;
+
+  private readonly chartMetaMap: Record<string, { bestFor: string; tags: string[]; tips: { type: 'check' | 'info'; text: string }[] }> = {
+    column:  { bestFor: 'Compare values across a few categories', tags: ['categorical', 'comparison'], tips: [{ type: 'check', text: 'Works well with 3 series' }, { type: 'info', text: 'Group by a categorical or time field on the X axis' }] },
+    bar:     { bestFor: 'Horizontal comparison across categories', tags: ['categorical', 'comparison'], tips: [{ type: 'check', text: 'Great for long category labels' }, { type: 'info', text: 'Sort by value for easier reading' }] },
+    line:    { bestFor: 'Show trends over time', tags: ['time-series', 'trend'], tips: [{ type: 'check', text: 'Works well with continuous data' }, { type: 'info', text: 'Use a date/time field on the X axis' }] },
+    area:    { bestFor: 'Emphasise totals and trends over time', tags: ['time-series', 'trend'], tips: [{ type: 'check', text: 'Good for showing cumulative values' }, { type: 'info', text: 'Stack multiple series to show composition' }] },
+    pie:     { bestFor: 'Show parts of a whole', tags: ['proportion', 'composition'], tips: [{ type: 'check', text: 'Best with fewer than 6 slices' }, { type: 'info', text: 'Values must sum to a meaningful total' }] },
+    donut:   { bestFor: 'Parts of a whole with a central label', tags: ['proportion', 'composition'], tips: [{ type: 'check', text: 'Use the centre to highlight the total' }, { type: 'info', text: 'Keep slice count low for clarity' }] },
+    scatter: { bestFor: 'Explore relationships between two numeric values', tags: ['correlation', 'distribution'], tips: [{ type: 'check', text: 'Works best with many data points' }, { type: 'info', text: 'Add a size dimension for bubble charts' }] },
+    table:   { bestFor: 'Display raw sortable rows of data', tags: ['tabular', 'detail'], tips: [{ type: 'check', text: 'Supports sorting and filtering' }, { type: 'info', text: 'Best when exact values matter' }] },
+    kpi:     { bestFor: 'Highlight a single important number', tags: ['metric', 'summary'], tips: [{ type: 'check', text: 'Ideal for dashboards and overviews' }, { type: 'info', text: 'Pair with a trend indicator for context' }] },
+    map:     { bestFor: 'Show geographic distribution across regions', tags: ['geographic', 'spatial'], tips: [{ type: 'check', text: 'Requires a region or country dimension' }, { type: 'info', text: 'Use colour intensity to encode values' }] },
+  };
 
 	ngOnInit(): void {
 
@@ -65,8 +75,8 @@ export class DashboardComponent implements OnInit {
 
   setFormObservers() {
 
-    this.diagramSettings.get('view.profile')?.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((profile: string) => {
-
+    this.diagramSettings.get('view.profile')?.valueChanges
+      .pipe(distinctUntilChanged(), takeUntilDestroyed(this.destroyRef)).subscribe((profile: string) => {
       console.log("New View Selected.");
       if (profile) {
         console.log("resetting diagramSettings");
@@ -115,33 +125,17 @@ export class DashboardComponent implements OnInit {
     if (el) el.scrollTop = 0;
   }
 
-	updateStepper(event: any): void {
-		// this.diagramSettings.updateValueAndValidity();
+	updateStepper(step: number): void {
+
     this.checkDisabledTabs();
 
-		if (event) {
-      if (event.step === 'view') {
-        this.currentStep = 0;
-        setTimeout(() => {
-          UIkit.switcher('#navTab').show(0);
-          this.scrollLeftColumnToTop();
-        }, 0);
-      } else if (event.step === 'profile') {
-        this.currentStep = 1;
-        setTimeout(() => {
-          UIkit.switcher('#navTab').show(1);
-          this.scrollLeftColumnToTop();
-        }, 0);
-      } else if (event.step === 'category') {
-        this.currentStep = 2;
-        setTimeout(() => {
-          UIkit.switcher('#navTab').show(2);
-          this.scrollLeftColumnToTop();
-        }, 0);
-      }
-		}
+    this.currentStep = step;
+    setTimeout(() => {
+      UIkit.switcher('#navTab').show(step);
+      this.scrollLeftColumnToTop();
+    }, 0);
 
-	}
+  }
 
 	checkDisabledTabs() {
     this.hasDataAndDiagramType = !!(this.view.get('profile')?.value && this.category.get('diagram')?.get('type')?.value);
@@ -177,10 +171,7 @@ export class DashboardComponent implements OnInit {
         this.checkDisabledTabs(); // Ensure check happens after value is patched in form.
       }, 0);
 
-      this.updateStepper({
-        name: this.diagramSettings?.get('category')?.get('diagram')?.get('type')?.value,
-        step: "category"
-      });
+      this.updateStepper(1);
 
     } catch (error) {
       console.error('❌ Error processing loaded JSON form data:', error);
@@ -210,22 +201,31 @@ export class DashboardComponent implements OnInit {
     this.nlAppearance.set(false);
     this.appearanceFromChat = null;
 
-    this.selectedProfileDetails = null;
-    this.selectedChartDetails = null;
+    // this.selectedProfileDetails = null;
+    // this.selectedChartDetails = null;
     this.currentStep = 0;
 
     // Reset chart, table, rawChartData, rawData objects.
     this.chartExportingService.clearChartUrls();
 
-    this.updateStepper({
-      name: null,
-      step: 'view'
-    });
+    this.updateStepper(0);
 	}
 
   onNavClick(event: Event, step: number): void {
+
+    if (step === 1 && this.selectedProfileDetails) {
+      this.continueFromView();
+      return;
+    }
+
+    if ((step === 2 || step === 3) && this.selectedProfileDetails && this.selectedChartDetails) {
+      this.continueFromChartType(step);
+      return;
+    }
+
     this.checkDisabledTabs();
-    if ((step === 2 || step === 3) && !this.hasDataAndDiagramType) {
+    if (((step === 2 || step === 3) && !this.hasDataAndDiagramType)
+      || ((step === 1) && !this.profile.value)) {
       event.preventDefault();
       event.stopPropagation();
       return;
@@ -235,33 +235,37 @@ export class DashboardComponent implements OnInit {
   }
 
   backToView(): void {
-    this.selectedChartDetails = null;
-    this.updateStepper({ step: 'view' });
+    // this.selectedChartDetails = null;
+    this.updateStepper(0);
   }
 
-  continueFromChartType(): void {
+  continueFromChartType(step: number): void {
     if (!this.selectedChartDetails) return;
-    this.updateStepper({ name: this.selectedChartDetails.name, step: 'category' });
+
+    (this.category.get('diagram.supportedLibraries') as FormArray).clear();
+    this.selectedChartDetails.supportedLibraries.forEach(lib => {
+      (this.category.get('diagram.supportedLibraries') as FormArray).push(new FormControl<string | null>(lib));
+    });
+    this.category.get('diagram').setValue(this.selectedChartDetails);
+    this.diagramCategoryService.changeDiagramCategory(this.selectedChartDetails);
+
+
+    // Reset the chartType of all dataseries to null. So chart type change can take place.
+    // The above issue occurs when loading a chart from url.
+    if (this.selectedChartDetails.name !== 'combo') {
+      this.dataseries.controls.forEach((control: any) => {
+        control.get('chartProperties.chartType').setValue(null);
+      });
+    }
+
+    this.updateStepper(step);
   }
 
   continueFromView(): void {
     if (!this.selectedProfileDetails) return;
     this.profile.setValue(this.selectedProfileDetails.name);
-    this.updateStepper({ name: this.selectedProfileDetails.name, step: 'profile' });
+    this.updateStepper(1);
   }
-
-  private readonly chartMetaMap: Record<string, { bestFor: string; tags: string[]; tips: { type: 'check' | 'info'; text: string }[] }> = {
-    column:  { bestFor: 'Compare values across a few categories', tags: ['categorical', 'comparison'], tips: [{ type: 'check', text: 'Works well with 3 series' }, { type: 'info', text: 'Group by a categorical or time field on the X axis' }] },
-    bar:     { bestFor: 'Horizontal comparison across categories', tags: ['categorical', 'comparison'], tips: [{ type: 'check', text: 'Great for long category labels' }, { type: 'info', text: 'Sort by value for easier reading' }] },
-    line:    { bestFor: 'Show trends over time', tags: ['time-series', 'trend'], tips: [{ type: 'check', text: 'Works well with continuous data' }, { type: 'info', text: 'Use a date/time field on the X axis' }] },
-    area:    { bestFor: 'Emphasise totals and trends over time', tags: ['time-series', 'trend'], tips: [{ type: 'check', text: 'Good for showing cumulative values' }, { type: 'info', text: 'Stack multiple series to show composition' }] },
-    pie:     { bestFor: 'Show parts of a whole', tags: ['proportion', 'composition'], tips: [{ type: 'check', text: 'Best with fewer than 6 slices' }, { type: 'info', text: 'Values must sum to a meaningful total' }] },
-    donut:   { bestFor: 'Parts of a whole with a central label', tags: ['proportion', 'composition'], tips: [{ type: 'check', text: 'Use the centre to highlight the total' }, { type: 'info', text: 'Keep slice count low for clarity' }] },
-    scatter: { bestFor: 'Explore relationships between two numeric values', tags: ['correlation', 'distribution'], tips: [{ type: 'check', text: 'Works best with many data points' }, { type: 'info', text: 'Add a size dimension for bubble charts' }] },
-    table:   { bestFor: 'Display raw sortable rows of data', tags: ['tabular', 'detail'], tips: [{ type: 'check', text: 'Supports sorting and filtering' }, { type: 'info', text: 'Best when exact values matter' }] },
-    kpi:     { bestFor: 'Highlight a single important number', tags: ['metric', 'summary'], tips: [{ type: 'check', text: 'Ideal for dashboards and overviews' }, { type: 'info', text: 'Pair with a trend indicator for context' }] },
-    map:     { bestFor: 'Show geographic distribution across regions', tags: ['geographic', 'spatial'], tips: [{ type: 'check', text: 'Requires a region or country dimension' }, { type: 'info', text: 'Use colour intensity to encode values' }] },
-  };
 
   protected getChartMeta(type: string | undefined) {
     if (!type) return null;

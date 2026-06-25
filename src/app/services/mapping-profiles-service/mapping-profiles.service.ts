@@ -37,6 +37,7 @@ export class MappingProfilesService {
 	}
 
 	changeSelectedProfile(profile: string) {
+    console.log('set profile to: ', profile)
 
     const selectedProfile = this.mappingProfiles$.value.find((e: Profile) => e.name === profile);
 

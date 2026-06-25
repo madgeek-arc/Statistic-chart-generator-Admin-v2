@@ -1,14 +1,14 @@
-<div class="dc-card" [class.dc-card--selected]="isSelected" (click)="categorySelect()">
+<div class="dc-card" [class.dc-card--selected]="isSelected()" (click)="categorySelect()">
   <div class="dc-card-preview">
-    <img [src]="'/assets/' + diagram.imageURL" [alt]="diagram.name" />
-    @if (isSelected) {
+    <img [src]="'/assets/' + diagram().imageURL" [alt]="diagram().name" />
+    @if (isSelected()) {
       <span class="material-symbols-outlined dc-check">check_circle</span>
     }
   </div>
   <div class="dc-card-body">
-    <div class="dc-card-name">{{ diagram.name }}</div>
-    @if (diagram.description) {
-      <div class="dc-card-desc">{{ diagram.description }}</div>
+    <div class="dc-card-name">{{ diagram().name }}</div>
+    @if (diagram().description) {
+      <div class="dc-card-desc">{{ diagram().description }}</div>
     }
   </div>
 </div>
