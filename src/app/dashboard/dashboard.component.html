@@ -115,7 +115,7 @@
           <div class="scrollable">
             <ul id="selection" class="uk-switcher uk-margin">
               <li class="">
-                <app-view-selector (profileDetailsChange)="clearData(); selectedProfileDetails = $event">
+                <app-view-selector (profileDetailsChange)="profileChange($event)">
                 </app-view-selector>
               </li>
               <li class="" style="animation-duration: 200ms;">
@@ -397,7 +397,7 @@
 
               <div class="uk-container uk-container-expand uk-margin-medium-top">
 
-<!--            <pre>{{ diagramSettings.value | json }}</pre>-->
+            <pre>{{ diagramSettings.value | json }}</pre>
 
                 <div class="iframe-container" [style.display]="currentStep === 0 || currentStep === 1 ? 'none' : 'block'">
 

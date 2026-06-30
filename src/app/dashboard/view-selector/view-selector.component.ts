@@ -18,7 +18,7 @@ export class ViewSelectorComponent implements OnInit {
   private destroyRef = inject(DestroyRef);
   private profileService = inject(MappingProfilesService);
 
-  profileDetailsChange = output<Profile | null>();
+  profileDetailsChange = output<{ profile: Profile, manualChange: boolean } | null>();
 
   searchQuery = '';
   activeFilter: FilterTab = 'All';
@@ -35,7 +35,7 @@ export class ViewSelectorComponent implements OnInit {
     });
 
     this.profileService.selectedProfile$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(profile => {
-      this.selectedProfile = profile;
+      this.selectProfile(profile, false);
     });
   }
 
@@ -58,9 +58,9 @@ export class ViewSelectorComponent implements OnInit {
     });
   }
 
-  selectProfile(profile: Profile): void {
+  selectProfile(profile: Profile, manualChange = true): void {
     this.selectedProfile = profile;
-    this.profileDetailsChange.emit(profile);
+    this.profileDetailsChange.emit({profile, manualChange});
   }
 
   getAvatarText(name: string): string {

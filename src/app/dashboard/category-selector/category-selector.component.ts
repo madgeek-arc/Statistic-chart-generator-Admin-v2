@@ -5,6 +5,7 @@ import { AsyncPipe } from "@angular/common";
 import {
   DiagramCardComponentComponent
 } from "../helper-components/diagram-card-component/diagram-card-component.component";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 
 @Component({
   selector: 'app-category-selector',
@@ -21,6 +22,13 @@ export class CategorySelectorComponent {
   selectedChartChange = output<ISupportedCategory>();
 
   selectedChart: ISupportedCategory | null = null;
+
+  constructor() {
+    this.diagramCategoryService.selectedDiagramCategory$.pipe(takeUntilDestroyed()).subscribe(diagram => {
+      this.selectChart(diagram);
+    })
+  }
+
 
   selectChart(chart: ISupportedCategory): void {
     this.selectedChart = chart;

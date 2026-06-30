@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, forkJoin, of } from 'rxjs';
+import { BehaviorSubject, forkJoin } from 'rxjs';
 import { DiagramCreator } from './dynamic-form-handling-diagram-creator';
 import { ChartExportingService } from '../chart-exporting-service/chart-exporting.service';
 import { ChartLoadingService } from '../chart-loading-service/chart-loading.service';
@@ -17,7 +17,7 @@ import { RawChartDataModel } from "../supported-libraries-service/models/chart-d
 import { RawDataModel } from "../supported-libraries-service/models/description-rawData.model";
 import { AbstractControl, FormArray, FormControl, FormGroup } from "@angular/forms";
 import { FormFactoryService } from "../form-factory-service/form-factory-service";
-import { ChartInfo, OptionsData, OptionsElement } from "../nl-chat-service/nl-chat.service";
+import { ChartInfo, OptionsData } from "../nl-chat-service/nl-chat.service";
 
 @Injectable({
 	providedIn: 'root'

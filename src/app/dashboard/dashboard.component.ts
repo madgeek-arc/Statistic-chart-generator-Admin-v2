@@ -171,7 +171,7 @@ export class DashboardComponent implements OnInit {
         this.checkDisabledTabs(); // Ensure check happens after value is patched in form.
       }, 0);
 
-      this.updateStepper(1);
+      this.updateStepper(2);
 
     } catch (error) {
       console.error('❌ Error processing loaded JSON form data:', error);
@@ -265,6 +265,13 @@ export class DashboardComponent implements OnInit {
     if (!this.selectedProfileDetails) return;
     this.profile.setValue(this.selectedProfileDetails.name);
     this.updateStepper(1);
+  }
+
+  profileChange(event: {profile: Profile, manualChange: boolean}) {
+    this.selectedProfileDetails = event.profile;
+    if (event.manualChange) {
+      this.clearData();
+    }
   }
 
   protected getChartMeta(type: string | undefined) {
