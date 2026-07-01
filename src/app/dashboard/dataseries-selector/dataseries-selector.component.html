@@ -9,7 +9,7 @@
                 <div tabindex="0">
                   <div input type="text" placeholder="Dataseries name" #editDataseriesName
                        [formInput]="form.controls[i].get('chartProperties.dataseriesName')"
-                       (focusout)="selectedTitleIndex = -1">
+                       (blur)="selectedTitleIndex = -1" (keydown)="$event.stopPropagation()" >
                   </div>
                 </div>
               } @else {
