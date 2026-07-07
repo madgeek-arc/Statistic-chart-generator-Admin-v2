@@ -113,7 +113,7 @@
                           <div class="uk-margin-top uk-margin-xsmall-bottom">Entity Field</div>
                           <div>
                             <select-attribute [chosenEntity]="ctrl.get('data.yaxisData.entity')?.value"
-                                              [formControl]="$any(ctrl.get('data.yaxisData.yaxisEntityField'))" [disabled]="true">
+                                              [formControl]="$any(ctrl.get('data.yaxisData.yaxisEntityField'))">
                             </select-attribute>
                           </div>
                         </div>
@@ -162,7 +162,7 @@
                       @for (filter of getFilters(ctrl); track filter; let j = $index) {
                         <ng-container [formGroup]="filter">
                           <div class="uk-margin-bottom uk-flex uk-flex-middle">
-                            <div class="groupFiltersClass">
+                            <div class="groupFiltersClass uk-width-expand">
                               <div class="uk-margin-bottom">
                                 <mat-radio-group color="primary" labelPosition="after" formControlName="op">
                                   <mat-radio-button value="AND" class="uk-margin-right">Match all of the values</mat-radio-button>
