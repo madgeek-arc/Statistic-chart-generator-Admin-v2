@@ -1,3 +1,455 @@
+// View details panel (right column, step 0)
+@font-family: 'Roboto', sans-serif;
+@vd-border: #EAEAEA;
+@vd-text: #2C2C2C;
+@vd-muted: #B3B3B3;
+@vd-muted-dark: #7a7a7a;
+@vd-teal: #3ADDBF;
+@vd-teal-dark: #3BC4BB;
+@primary-color: #3ADDBF;
+
+.vd-panel {
+  padding: 20px 24px;
+  font-family: @font-family;
+}
+
+.vd-panel-header {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 12px 10px;
+  border-bottom: 1px solid @vd-border;
+  // Cancel the uk-grid-divider 32px left padding so the border goes edge-to-edge
+  //margin-left: -39px;
+  //padding-left: 39px;
+}
+
+.vd-panel-icon {
+  font-size: 16px;
+  color: @primary-color;
+}
+
+.vd-panel-title {
+  font-size: 13px;
+  font-weight: 600;
+  font-family: @font-family;
+  letter-spacing: 0.01em;
+}
+
+.vd-title-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 12px;
+}
+
+.vd-avatar {
+  width: 46px;
+  height: 46px;
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-weight: 700;
+  font-size: 15px;
+  font-family: @font-family;
+  flex-shrink: 0;
+  letter-spacing: 0.02em;
+}
+
+.vd-name {
+  font-size: 16px;
+  font-weight: 600;
+  color: @vd-text;
+  font-family: @font-family;
+  margin-bottom: 3px;
+}
+
+.vd-handle {
+  font-size: 11px;
+  color: @vd-muted;
+  font-family: 'Courier New', monospace;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.vd-handle-icon {
+  font-size: 12px;
+}
+
+.vd-desc {
+  font-size: 13px;
+  color: @vd-muted-dark;
+  font-family: @font-family;
+  line-height: 1.6;
+  margin: 0 0 14px;
+}
+
+.vd-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-bottom: 18px;
+}
+
+.vd-tag {
+  font-size: 11px;
+  font-weight: 500;
+  font-family: @font-family;
+  padding: 3px 9px;
+  border-radius: 4px;
+  background: #F3F3F3;
+  color: @vd-muted-dark;
+  border: 1px solid @vd-border;
+}
+
+.vd-stats {
+  display: flex;
+  gap: 10px;
+}
+
+.vd-stat {
+  flex: 1;
+  max-width: 150px;
+  background: #FAFAFA;
+  border: 1px solid @vd-border;
+  border-radius: 7px;
+  padding: 11px 14px;
+}
+
+.vd-stat-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: @vd-muted;
+  font-family: @font-family;
+  margin-bottom: 4px;
+}
+
+.vd-stat-value {
+  font-size: 20px;
+  font-weight: 700;
+  color: @vd-text;
+  font-family: @font-family;
+}
+
+.vd-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 24px 24px;
+  text-align: center;
+  gap: 8px;
+}
+
+.vd-empty-icon {
+  font-size: 38px;
+  color: @vd-muted;
+  margin-bottom: 4px;
+}
+
+.vd-empty-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: @vd-text;
+  font-family: @font-family;
+  margin: 0;
+}
+
+.vd-empty-sub {
+  font-size: 13px;
+  color: @vd-muted-dark;
+  font-family: @font-family;
+  line-height: 1.6;
+  margin: 0;
+  max-width: 280px;
+}
+
+// Both columns: fixed height = viewport minus header, each scrolls independently
+.uk-grid-divider > [class*='uk-width'] {
+  &.column {
+    height: calc(100vh - 80px);
+    display: flex !important;
+    flex-direction: column;
+
+    .scrollable {
+      flex: 1;
+      overflow-y: auto;
+    }
+  }
+}
+
+.action-bar-view {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 20px;
+  width: 100%;
+  box-sizing: border-box;
+  border-top: 1px solid @vd-border;
+  background: #fff;
+  position: sticky;
+  bottom: 0;
+  z-index: 10;
+}
+
+.action-selection-label {
+  font-size: 13px;
+  color: @vd-muted-dark;
+  font-family: @font-family;
+
+  strong { color: @vd-text; font-weight: 600; }
+}
+
+.action-btn-continue {
+  padding: 9px 18px;
+  border-radius: 6px;
+  border: none;
+  background: @vd-teal;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: @font-family;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: background 0.15s, opacity 0.15s;
+  white-space: nowrap;
+
+  &:hover:not(:disabled) { background: @vd-teal-dark; }
+  &:disabled { opacity: 0.4; cursor: default; }
+}
+
+// Chart type details panel (step 1)
+.ct-panel {
+  //padding: 20px 24px;
+  font-family: @font-family;
+}
+
+.ct-preview {
+  //background: #F7F8FA;
+  //border: 1px solid @vd-border;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  //padding: 32px;
+  margin-bottom: 20px;
+  height: 240px;
+  padding: 20px 24px;
+}
+
+.ct-preview-img {
+  //width: 80px;
+  height: 200px;
+  object-fit: contain;
+}
+
+.ct-about {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.ct-about-header {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 12px 10px;
+  border-bottom: 1px solid @vd-border;
+  border-top: 1px solid @vd-border;
+}
+
+.ct-about-icon {
+  font-size: 16px;
+  color: @vd-teal;
+}
+
+.ct-about-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: @vd-text;
+  font-family: @font-family;
+}
+
+.ct-about-panel {
+  padding: 20px 24px;
+}
+
+.ct-best-for {
+  font-size: 13px;
+  color: @vd-muted-dark;
+  font-family: @font-family;
+  margin: 0;
+  line-height: 1.5;
+
+  strong { color: @vd-text; }
+}
+
+.ct-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.ct-tag {
+  font-size: 11px;
+  font-weight: 500;
+  font-family: @font-family;
+  padding: 3px 9px;
+  border-radius: 4px;
+  background: #F3F3F3;
+  color: @vd-muted-dark;
+  border: 1px solid @vd-border;
+}
+
+.ct-tip {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 13px;
+  color: @vd-muted-dark;
+  font-family: @font-family;
+  line-height: 1.5;
+}
+
+.ct-tip-icon {
+  font-size: 16px;
+  color: @vd-muted;
+  flex-shrink: 0;
+  margin-top: 1px;
+
+  &--check { color: @vd-teal; }
+}
+
+.ct-tip-text { flex: 1; }
+
+// Sidebar nav redesign
+@nav-font: 'Roboto', sans-serif;
+@nav-teal: #3ADDBF;
+@nav-teal-bg: #f0fdfb;
+@nav-text: #2C2C2C;
+@nav-muted: #B3B3B3;
+
+.nav-section-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: @nav-muted;
+  font-family: @nav-font;
+  padding: 14px 16px 4px;
+}
+
+// "DESIGN" label before the Data step via ::before
+.nav-design-first::before {
+  content: 'DESIGN';
+  display: block;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: @nav-muted;
+  font-family: @nav-font;
+  padding: 14px 16px 4px;
+  pointer-events: none;
+}
+
+.sidebar_mini .nav-design-first::before {
+  display: none;
+}
+
+.nav-step {
+  list-style: none;
+  margin: 0;
+
+  &--active .nav-step-link {
+    background: @nav-teal-bg;
+    border-radius: 8px;
+    .nav-step-title { color: @nav-teal; font-weight: 600; }
+    .nav-icon { color: @nav-teal; }
+  }
+
+  &--done {
+    .nav-step-title { color: @nav-text; font-weight: 500; }
+    .nav-icon-check { color: @nav-teal; }
+  }
+
+  &--locked {
+    .nav-step-title { color: @nav-muted; }
+    .nav-icon { color: @nav-muted; }
+    .nav-step-subtitle { color: @nav-muted; }
+  }
+}
+
+.nav-step-link {
+  padding: 8px 12px;
+  border-radius: 8px;
+  transition: background 0.15s;
+  text-decoration: none !important;
+  color: inherit !important;
+
+  &:hover { background: #f5f5f5; }
+}
+
+.nav-step-icon {
+  width: 28px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nav-icon { font-size: 20px; color: @nav-muted; }
+.nav-icon-check { font-size: 20px; color: @nav-teal; }
+
+.nav-lock-icon {
+  font-size: 14px;
+  color: @nav-muted;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.nav-step-title {
+  font-size: 13px;
+  font-weight: 500;
+  color: @nav-text;
+  font-family: @nav-font;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.nav-step-subtitle {
+  font-size: 11px;
+  color: @nav-muted;
+  font-family: @nav-font;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-top: 1px;
+}
+
+.action-btn-back {
+  padding: 9px 14px;
+  border-radius: 6px;
+  border: 1px solid @vd-border;
+  background: transparent;
+  color: @vd-muted-dark;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: @nav-font;
+  cursor: pointer;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  transition: background 0.15s;
+
+  &:hover { background: #f5f5f5; }
+}
+
 @ink: #1B1F23;
 @ink-3: #697079;
 

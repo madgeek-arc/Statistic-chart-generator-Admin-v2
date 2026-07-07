@@ -1,7 +1,81 @@
-.custom-bottom-button {
-	position: absolute;
-	right: 0;
-	bottom: 0;
-	background-color: #222080;
-	color: #fff;
+@font-family: 'Roboto', sans-serif;
+@teal: #3ADDBF;
+@teal-dark: #3BC4BB;
+@teal-light: #f0fdfb;
+@border: #EAEAEA;
+@text: #2C2C2C;
+@muted: #7a7a7a;
+
+.dc-card {
+  //border: 1px solid @border;
+  //border-radius: 8px;
+  //background: #fff;
+  //cursor: pointer;
+  //transition: border-color 0.15s, box-shadow 0.15s;
+  //overflow: hidden;
+  position: relative;
+  background: #fff;
+  border: 1px solid #E4E7EB;
+  border-radius: 12px;
+  padding: 14px;
+  cursor: pointer;
+  transition: all .14s;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  &:hover {
+    //border-color: #ccc;
+    //box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    border-color: #b9c0c8;
+    box-shadow: var(--shadow-sm);
+  }
+
+  &--selected {
+    border-color: @teal;
+    box-shadow: 0 0 0 2px fade(@teal, 20%);
+  }
+}
+
+.dc-card-preview {
+  position: relative;
+  background: #F7F8FA;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0px 12px 12px;
+  min-height: 65px;
+
+  img {
+    width: 56px;
+    height: 56px;
+    object-fit: contain;
+  }
+}
+
+.dc-check {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  font-size: 18px;
+  color: @teal;
+}
+
+.dc-card-body {
+  padding: 10px 12px 12px;
+}
+
+.dc-card-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: @text;
+  font-family: @font-family;
+  margin-bottom: 3px;
+}
+
+.dc-card-desc {
+  font-size: 11px;
+  color: @muted;
+  font-family: @font-family;
+  line-height: 1.4;
 }

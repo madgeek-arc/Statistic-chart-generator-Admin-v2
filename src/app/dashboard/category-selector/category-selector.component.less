@@ -1,0 +1,92 @@
+@font-family: 'Roboto', sans-serif;
+@border: #EAEAEA;
+@text: #2C2C2C;
+@muted: #B3B3B3;
+@teal: #3ADDBF;
+@teal-dark: #3BC4BB;
+@teal-light: #f0fdfb;
+
+.cs-wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  font-family: @font-family;
+}
+
+.cs-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 22px 24px 0;
+}
+
+.cs-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: @text;
+  font-family: @font-family;
+  margin: 0 0 4px;
+}
+
+.cs-subtitle {
+  font-size: 13px;
+  color: @muted;
+  font-family: @font-family;
+  margin: 0;
+}
+
+.cs-step-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: @teal-dark;
+  font-weight: 600;
+  background: @teal-light;
+  padding: 4px 12px;
+  border-radius: 20px;
+  white-space: nowrap;
+  font-family: @font-family;
+}
+
+.cs-step-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: @teal;
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+.cs-hint {
+  font-size: 13px;
+  color: #7a7a7a;
+  font-family: @font-family;
+  padding: 10px 24px 0;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.cs-sections {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px 24px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.cs-section-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: @text;
+  font-family: @font-family;
+  letter-spacing: 0.01em;
+  margin-bottom: 10px;
+}
+
+.cs-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 10px;
+}

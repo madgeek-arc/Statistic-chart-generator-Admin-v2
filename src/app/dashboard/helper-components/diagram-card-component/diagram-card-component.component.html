@@ -1,14 +1,14 @@
-<a (click)="categorySelect()" class="uk-text-decoration-none uk-link-reset">
-	<div class="uk-card card-plain uk-card-small">
-		<div class="uk-card-body">
-<!--      <div class="uk-card-media-top">-->
-			<img src="/assets/{{diagram.imageURL}}" width="30px" height="30px" alt="Diagram Placeholder">
-		</div>
-<!--		<div class="uk-card-footer">-->
-<!--			<p>{{diagram.type | capitalize}}</p>-->
-<!--		</div>-->
-	</div>
-  <div class="uk-margin-small-top">
-    {{diagram.type | capitalize}}
+<div class="dc-card" [class.dc-card--selected]="isSelected()" (click)="categorySelect()">
+  <div class="dc-card-preview">
+    <img [src]="'/assets/' + diagram().imageURL" [alt]="diagram().name" />
+    @if (isSelected()) {
+      <span class="material-symbols-outlined dc-check">check_circle</span>
+    }
   </div>
-</a>
+  <div class="dc-card-body">
+    <div class="dc-card-name">{{ diagram().name }}</div>
+    @if (diagram().description) {
+      <div class="dc-card-desc">{{ diagram().description }}</div>
+    }
+  </div>
+</div>

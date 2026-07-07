@@ -1,3 +1,7 @@
+import { inject, Injectable } from '@angular/core';
+import { BehaviorSubject, catchError, forkJoin, of } from 'rxjs';
+import { take } from 'rxjs/operators';
+
 import {
   ISupportedCategory,
   ISupportedChart,
@@ -6,85 +10,118 @@ import {
   ISupportedPolar,
   ISupportedSpecialChartType,
   SupportedChartTypesService
-} from "../supported-chart-types-service/supported-chart-types.service";
-import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
-import { first } from 'rxjs/operators';
+} from '../supported-chart-types-service/supported-chart-types.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DiagramCategoryService {
+  private chartTypesService = inject(SupportedChartTypesService);
 
-  public selectedDiagramCategory$: BehaviorSubject<ISupportedCategory>;
+  private readonly supportedChartTypesSubject = new BehaviorSubject<ISupportedChart[]>([]);
+  public readonly supportedChartTypes$ = this.supportedChartTypesSubject.asObservable();
 
-  supportedChartTypes: Array<ISupportedChart> = [];
-  supportedPolarTypes: Array<ISupportedPolar> = [];
-  supportedMaps: Array<ISupportedMap> = [];
-  supportedSpecialisedDiagrams: Array<ISupportedSpecialChartType> = [];
-  supportedMiscTypes: Array<ISupportedMiscType> = [];
+  private readonly supportedPolarTypesSubject = new BehaviorSubject<ISupportedPolar[]>([]);
+  public readonly supportedPolarTypes$ = this.supportedPolarTypesSubject.asObservable();
 
-  availableDiagrams: Array<ISupportedCategory> = [];
+  private readonly supportedMapsSubject = new BehaviorSubject<ISupportedMap[]>([]);
+  public readonly supportedMaps$ = this.supportedMapsSubject.asObservable();
 
-  hideChartFilter = (chart: ISupportedChart)=> !chart.isHidden;
+  private readonly supportedSpecialisedDiagramsSubject = new BehaviorSubject<ISupportedSpecialChartType[]>([]);
+  public readonly supportedSpecialisedDiagrams$ = this.supportedSpecialisedDiagramsSubject.asObservable();
 
-  constructor(private chartTypesService: SupportedChartTypesService) {
+  private readonly supportedMiscTypesSubject = new BehaviorSubject<ISupportedMiscType[]>([]);
+  public readonly supportedMiscTypes$ = this.supportedMiscTypesSubject.asObservable();
 
-    this.chartTypesService.getSupportedChartTypes().pipe(first()).subscribe(
-      (data: Array<ISupportedChart>) => this.supportedChartTypes = data.filter(this.hideChartFilter), // success path
-      error => {}, // error path
-      () => {
-        this.supportedChartTypes
-        .map((elem: ISupportedChart) => this.availableDiagrams.push(elem));
-      }
-    );
-    this.chartTypesService.getSupportedPolarTypes().pipe(first()).subscribe(
-      (data: Array<ISupportedPolar>) => this.supportedPolarTypes = data.filter(this.hideChartFilter), // success path
-      error => {}, // error path
-      () => {
-        this.supportedPolarTypes
-        .map((elem: ISupportedPolar) => this.availableDiagrams.push(elem));
-      }
-    );
-    this.chartTypesService.getSupportedMaps().subscribe(
-      (data: Array<ISupportedMap>) => this.supportedMaps = data.filter(this.hideChartFilter), // success path
-      error => {}, // error path
-      () => {
-        this.supportedMaps
-        .map((elem: ISupportedMap) => this.availableDiagrams.push(elem));
-      }
-    );
-    this.chartTypesService.getSupportedSpecialChartTypes().subscribe(
-      (data: Array<ISupportedSpecialChartType>) => this.supportedSpecialisedDiagrams = data.filter(this.hideChartFilter), // success path
-      error => {}, // error path
-      () => {
-        this.supportedSpecialisedDiagrams
-        .map((elem: ISupportedSpecialChartType) => this.availableDiagrams.push(elem) );
-      }
-    );
-    this.chartTypesService.getSupportedMiscTypes().subscribe(
-      (data: Array<ISupportedMiscType>) => this.supportedMiscTypes = data.filter(this.hideChartFilter), // success path
-      error => {}, // error path
-      () => {
-        this.supportedMiscTypes
-          .map((elem: ISupportedMiscType) => this.availableDiagrams.push(elem));
-      }
-    );
+  private readonly availableDiagramsSubject = new BehaviorSubject<ISupportedCategory[]>([]);
+  public readonly availableDiagrams$ = this.availableDiagramsSubject.asObservable();
 
-    this.selectedDiagramCategory$ = new BehaviorSubject(null as any);
+  private readonly selectedDiagramCategorySubject = new BehaviorSubject<ISupportedCategory | null>(null);
+  public readonly selectedDiagramCategory$ = this.selectedDiagramCategorySubject.asObservable();
+
+  constructor() {
+    this.loadSupportedDiagrams();
   }
 
-  public changeDiagramCategory(diagramCategory: ISupportedCategory) {
+  private loadSupportedDiagrams(): void {
+    forkJoin({
+      charts: this.chartTypesService.getSupportedChartTypes().pipe(take(1), catchError(() => of([] as ISupportedChart[]))),
+      polars: this.chartTypesService.getSupportedPolarTypes().pipe(take(1), catchError(() => of([] as ISupportedPolar[]))),
+      maps: this.chartTypesService.getSupportedMaps().pipe(take(1), catchError(() => of([] as ISupportedMap[]))),
+      special: this.chartTypesService.getSupportedSpecialChartTypes().pipe(take(1), catchError(() => of([] as ISupportedSpecialChartType[]))),
+      misc: this.chartTypesService.getSupportedMiscTypes().pipe(take(1), catchError(() => of([] as ISupportedMiscType[])))
+    }).subscribe({
+      next: ({charts, polars, maps, special, misc}) => {
+        const visibleCharts = this.filterHidden(charts);
+        const visiblePolars = this.filterHidden(polars);
+        const visibleMaps = this.filterHidden(maps);
+        const visibleSpecial = this.filterHidden(special);
+        const visibleMisc = this.filterHidden(misc);
 
-    const found = this.availableDiagrams.find(
-        (availableDiagram: ISupportedCategory) => availableDiagram.type === diagramCategory.type);
+        this.supportedChartTypesSubject.next(visibleCharts);
+        this.supportedPolarTypesSubject.next(visiblePolars);
+        this.supportedMapsSubject.next(visibleMaps);
+        this.supportedSpecialisedDiagramsSubject.next(visibleSpecial);
+        this.supportedMiscTypesSubject.next(visibleMisc);
 
-      this.selectedDiagramCategory$.next((found === null || found === undefined) ? null as any : found);
-
-      if (found) {
-        console.log('Changed to:', diagramCategory.type);
-      } else {
-        console.log(diagramCategory.type + 'diagram not found among:', this.availableDiagrams );
+        this.availableDiagramsSubject.next([
+          ...visibleCharts,
+          ...visiblePolars,
+          ...visibleMaps,
+          ...visibleSpecial,
+          ...visibleMisc
+        ]);
+      },
+      error: err => {
+        console.error('Failed to load supported diagram types:', err);
+        this.availableDiagramsSubject.next([]);
       }
+    });
+  }
+
+  private filterHidden<T extends { isHidden?: boolean }>(items: T[]): T[] {
+    return items.filter(item => !item.isHidden);
+  }
+
+  public changeDiagramCategory(diagramCategory: ISupportedCategory): void {
+    const found = this.availableDiagramsSubject.value.find(
+      (availableDiagram: ISupportedCategory) => availableDiagram.diagramId === diagramCategory.diagramId
+    );
+
+    this.selectedDiagramCategorySubject.next(found ?? null);
+
+    if (found) {
+      console.log('Changed to:', diagramCategory.type);
+    } else {
+      console.log(`${diagramCategory.type} diagram not found among:`, this.availableDiagramsSubject.value);
+    }
+  }
+
+  public get selectedDiagramCategory(): ISupportedCategory | null {
+    return this.selectedDiagramCategorySubject.value;
+  }
+
+  public get availableDiagrams(): ISupportedCategory[] {
+    return this.availableDiagramsSubject.value;
+  }
+
+  public get supportedChartTypes(): ISupportedChart[] {
+    return this.supportedChartTypesSubject.value;
+  }
+
+  public get supportedPolarTypes(): ISupportedPolar[] {
+    return this.supportedPolarTypesSubject.value;
+  }
+
+  public get supportedMaps(): ISupportedMap[] {
+    return this.supportedMapsSubject.value;
+  }
+
+  public get supportedSpecialisedDiagrams(): ISupportedSpecialChartType[] {
+    return this.supportedSpecialisedDiagramsSubject.value;
+  }
+
+  public get supportedMiscTypes(): ISupportedMiscType[] {
+    return this.supportedMiscTypesSubject.value;
   }
 }

@@ -1,9 +1,72 @@
-<div class="uk-section uk-section-small uk-section-primary uk-preserve-color">
-  <div class="uk-container uk-container-expand uk-padding-remove uk-margin-medium-left">
-    <div class="uk-grid-match uk-child-width-1-1@s uk-child-width-1-2@m uk-child-width-1-2@l uk-flex-center uk-text-center" uk-grid>
-      @for (item of (this.profileProvide.mappingProfiles$ | async); track item) {
-        <app-card-component [data]="item" (outputEvent)="moveToNextStep($event)" class=""></app-card-component>
-      }
+<div class="vs-wrapper uk-padding-small">
+
+  <!-- Header -->
+  <div class="vs-header">
+    <div class="vs-header-left">
+      <h2 class="vs-title">View</h2>
+      <p class="vs-subtitle">Choose what type of data interests you</p>
+    </div>
+    <div class="vs-step-badge">
+      <span class="vs-step-dot"></span>
+      Setup &middot; step 1 of 2
     </div>
   </div>
+
+  <!-- Content row: card grid only -->
+  <div class="vs-content">
+
+    <!-- Search + filter + grid -->
+    <div class="vs-grid-panel">
+      <div class="vs-toolbar">
+        <div class="vs-search">
+          <span class="material-symbols-outlined vs-search-icon">search</span>
+          <input class="vs-search-input" type="text" placeholder="Search views, descriptions..." [(ngModel)]="searchQuery"/>
+        </div>
+        <div class="vs-filters">
+          @for (tab of filterTabs; track tab + $index) {
+            <button class="vs-filter-btn" [class.vs-filter-btn--active]="activeFilter === tab"
+                    (click)="activeFilter = tab">{{ tab }}
+            </button>
+          }
+        </div>
+      </div>
+
+      <div class="vs-grid">
+        @for (profile of filteredProfiles; track profile.name + $index) {
+          <div class="vs-card" [class.vs-card--selected]="selectedProfile?.name === profile.name"
+            (click)="selectProfile(profile)">
+            <div class="vs-card-top">
+              <div class="vs-avatar" [style.background]="getAvatarColor(profile.name)">
+                {{ getAvatarText(profile.name) }}
+              </div>
+              <div class="vs-card-meta">
+                <span class="vs-card-name">{{ profile.name }}</span>
+                <span class="vs-card-handle">{{ profile.usage }}</span>
+              </div>
+              @if (selectedProfile?.name === profile.name) {
+                <span class="material-symbols-outlined vs-check-icon">check_circle</span>
+              }
+            </div>
+            <p class="vs-card-desc">{{ profile.description }}</p>
+            <div class="vs-card-footer">
+              <div class="vs-tags">
+                @for (tag of profile.shareholders; track tag + $index; let i = $index) {
+                  <span class="vs-tag" [className]="getTagClass(tag, i)">{{ tag }}</span>
+                }
+              </div>
+              @if (profile.complexity >= 0) {
+                <span class="vs-row-count">{{ profile.complexity }}M</span>
+              }
+            </div>
+          </div>
+        }
+        @if (filteredProfiles.length === 0) {
+          <div class="vs-empty">No views match your search.</div>
+        }
+      </div>
+    </div>
+
+  </div>
+
+
 </div>

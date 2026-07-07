@@ -4,8 +4,11 @@ import { DynamicFormHandlingService } from "../services/dynamic-form-handling-se
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { ChartExportingService } from '../services/chart-exporting-service/chart-exporting.service';
 import { FormFactoryService } from "../services/form-factory-service/form-factory-service";
-import { MappingProfilesService } from "../services/mapping-profiles-service/mapping-profiles.service";
-import { ChartInfo } from "../services/nl-chat-service/nl-chat.service";
+import { MappingProfilesService, Profile } from "../services/mapping-profiles-service/mapping-profiles.service";
+import { ChartInfo, OptionsData } from "../services/nl-chat-service/nl-chat.service";
+import { ISupportedCategory } from '../services/supported-chart-types-service/supported-chart-types.service';
+import { DiagramCategoryService } from "../services/diagram-category-service/diagram-category.service";
+import { distinctUntilChanged } from "rxjs/operators";
 import UIkit from 'uikit';
 
 @Component({
@@ -20,25 +23,40 @@ export class DashboardComponent implements OnInit {
   private profileService = inject(MappingProfilesService);
   private formFactory = inject(FormFactoryService);
   private dynamicFormHandlingService = inject(DynamicFormHandlingService);
+  private diagramCategoryService = inject(DiagramCategoryService);
   protected chartExportingService = inject(ChartExportingService);
 
+  diagramSettings: FormGroup;
+
+  activeTab = signal('builder');
+  activeAppearanceTab = signal('builder');
   nlQuery = signal<boolean>(false);
-
-	diagramSettings: FormGroup;
-
-	viewSelectionLabel: string = "View";
-	categorySelectionLabel: string = "Chart type";
-	configureDatasieriesLabel: string = "Data";
-	customiseAppearanceLabel: string = "Appearance";
-
-	open = true;
-	hasDataAndDiagramType: boolean = false;
-
-  frameHeight: number;
+  nlAppearance = signal<boolean>(false);
+  currentStep = 0;
+  selectedProfileDetails: Profile | null = null;
+  selectedChartDetails: ISupportedCategory | null = null;
   hasChanges: boolean = false;
 
+  open = true;
+  hasDataAndDiagramType: boolean = false;
+
   chartInfo: ChartInfo[] | null = null;
-  activeTab = signal('builder');
+  appearanceFromChat: OptionsData | null = null;
+
+  frameHeight: number;
+
+  private readonly chartMetaMap: Record<string, { bestFor: string; tags: string[]; tips: { type: 'check' | 'info'; text: string }[] }> = {
+    column:  { bestFor: 'Compare values across a few categories', tags: ['categorical', 'comparison'], tips: [{ type: 'check', text: 'Works well with 3 series' }, { type: 'info', text: 'Group by a categorical or time field on the X axis' }] },
+    bar:     { bestFor: 'Horizontal comparison across categories', tags: ['categorical', 'comparison'], tips: [{ type: 'check', text: 'Great for long category labels' }, { type: 'info', text: 'Sort by value for easier reading' }] },
+    line:    { bestFor: 'Show trends over time', tags: ['time-series', 'trend'], tips: [{ type: 'check', text: 'Works well with continuous data' }, { type: 'info', text: 'Use a date/time field on the X axis' }] },
+    area:    { bestFor: 'Emphasise totals and trends over time', tags: ['time-series', 'trend'], tips: [{ type: 'check', text: 'Good for showing cumulative values' }, { type: 'info', text: 'Stack multiple series to show composition' }] },
+    pie:     { bestFor: 'Show parts of a whole', tags: ['proportion', 'composition'], tips: [{ type: 'check', text: 'Best with fewer than 6 slices' }, { type: 'info', text: 'Values must sum to a meaningful total' }] },
+    donut:   { bestFor: 'Parts of a whole with a central label', tags: ['proportion', 'composition'], tips: [{ type: 'check', text: 'Use the centre to highlight the total' }, { type: 'info', text: 'Keep slice count low for clarity' }] },
+    scatter: { bestFor: 'Explore relationships between two numeric values', tags: ['correlation', 'distribution'], tips: [{ type: 'check', text: 'Works best with many data points' }, { type: 'info', text: 'Add a size dimension for bubble charts' }] },
+    table:   { bestFor: 'Display raw sortable rows of data', tags: ['tabular', 'detail'], tips: [{ type: 'check', text: 'Supports sorting and filtering' }, { type: 'info', text: 'Best when exact values matter' }] },
+    kpi:     { bestFor: 'Highlight a single important number', tags: ['metric', 'summary'], tips: [{ type: 'check', text: 'Ideal for dashboards and overviews' }, { type: 'info', text: 'Pair with a trend indicator for context' }] },
+    map:     { bestFor: 'Show geographic distribution across regions', tags: ['geographic', 'spatial'], tips: [{ type: 'check', text: 'Requires a region or country dimension' }, { type: 'info', text: 'Use colour intensity to encode values' }] },
+  };
 
 	ngOnInit(): void {
 
@@ -57,8 +75,8 @@ export class DashboardComponent implements OnInit {
 
   setFormObservers() {
 
-    this.diagramSettings.get('view.profile')?.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((profile: string) => {
-
+    this.diagramSettings.get('view.profile')?.valueChanges
+      .pipe(distinctUntilChanged(), takeUntilDestroyed(this.destroyRef)).subscribe((profile: string) => {
       console.log("New View Selected.");
       if (profile) {
         console.log("resetting diagramSettings");
@@ -72,12 +90,11 @@ export class DashboardComponent implements OnInit {
       this.profileService.changeSelectedProfile(profile);
     });
 
-    this.diagramSettings.get('category')?.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((diagram: any) => {
+    this.diagramSettings.get('category')?.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
       this.checkDisabledTabs();
     });
 
     this.diagramSettings.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(value => {
-      console.log(this.diagramSettings.get('dataseries.0.data.yaxisData.entity').valid);
       this.dynamicFormHandlingService.formSchemaObject = value;
       this.hasChanges = true;
     });
@@ -95,10 +112,6 @@ export class DashboardComponent implements OnInit {
 		return this.diagramSettings.get('category') as FormGroup;
 	}
 
-	get categoryName() {
-		return this.diagramSettings.get('category')?.get('diagram')?.get('name') as FormControl;
-	}
-
 	get dataseries() {
 		return this.diagramSettings.get('dataseries') as FormArray;
 	}
@@ -107,31 +120,22 @@ export class DashboardComponent implements OnInit {
 		return this.diagramSettings.get('appearance') as FormGroup;
 	}
 
-	updateStepper(event: any): void {
-		// this.diagramSettings.updateValueAndValidity();
+  private scrollLeftColumnToTop(): void {
+    const el = document.querySelector('.left-column .scrollable') as HTMLElement | null;
+    if (el) el.scrollTop = 0;
+  }
+
+	updateStepper(step: number): void {
+
     this.checkDisabledTabs();
 
-		if (event) {
-      if (event.step === 'view') {
-        setTimeout(() => {
-          UIkit.switcher('#navTab').show(0);
-          window.scrollTo({top: 0, left: 0, behavior: "smooth"});
-        }, 0);
-      } else if (event.step === 'profile') {
-        setTimeout(() => {
-          UIkit.switcher('#navTab').show(1);
-          window.scrollTo({top: 0, left: 0, behavior: "smooth"});
-        }, 0);
-			} else if (event.step === 'category') {
-				// this.selectedCategory = event.name;
-        setTimeout(() => {
-          UIkit.switcher('#navTab').show(2);
-          window.scrollTo({top: 0, left: 0, behavior: "smooth"});
-        }, 0);
-			}
-		}
+    this.currentStep = step;
+    setTimeout(() => {
+      UIkit.switcher('#navTab').show(step);
+      this.scrollLeftColumnToTop();
+    }, 0);
 
-	}
+  }
 
 	checkDisabledTabs() {
     this.hasDataAndDiagramType = !!(this.view.get('profile')?.value && this.category.get('diagram')?.get('type')?.value);
@@ -167,10 +171,7 @@ export class DashboardComponent implements OnInit {
         this.checkDisabledTabs(); // Ensure check happens after value is patched in form.
       }, 0);
 
-      this.updateStepper({
-        name: this.diagramSettings?.get('category')?.get('diagram')?.get('type')?.value,
-        step: "category"
-      });
+      this.updateStepper(2);
 
     } catch (error) {
       console.error('❌ Error processing loaded JSON form data:', error);
@@ -181,8 +182,8 @@ export class DashboardComponent implements OnInit {
 		console.log("SUBMIT this form:", this.diagramSettings.value);
 
     this.hasChanges = false;
-    if (this.nlQuery()) {
-      this.dynamicFormHandlingService.submitNLQuery(this.chartInfo);
+    if (this.nlQuery() || this.nlAppearance()) {
+      this.dynamicFormHandlingService.submitNLQuery(this.chartInfo, this.appearanceFromChat);
       return;
     }
 
@@ -194,21 +195,100 @@ export class DashboardComponent implements OnInit {
     // Reset the form to its initial state.
     this.diagramSettings = this.formFactory.createForm();
     this.setFormObservers();
-    this.diagramSettings.get('dataseries.0.data.yaxisData.entity').markAsUntouched;
-    console.log(this.diagramSettings.get('dataseries.0.data.yaxisData.entity').touched);;
-    this.diagramSettings.markAsUntouched();
-    this.diagramSettings.markAsPristine();
+
     this.nlQuery.set(false);
     this.chartInfo = null;
+    this.nlAppearance.set(false);
+    this.appearanceFromChat = null;
+
+    // this.selectedProfileDetails = null;
+    // this.selectedChartDetails = null;
+    this.currentStep = 0;
 
     // Reset chart, table, rawChartData, rawData objects.
     this.chartExportingService.clearChartUrls();
 
-    this.updateStepper({
-      name: null,
-      step: 'view'
-    });
+    this.updateStepper(0);
 	}
+
+  onNavClick(event: Event, step: number): void {
+
+    if (step === 1 && this.selectedProfileDetails) {
+      this.continueFromView();
+      return;
+    }
+
+    if ((step === 2 || step === 3) && this.selectedProfileDetails && this.selectedChartDetails) {
+      this.continueFromChartType(step);
+      return;
+    }
+
+    this.checkDisabledTabs();
+    if (((step === 2 || step === 3) && !this.hasDataAndDiagramType)
+      || ((step === 1) && !this.profile.value)) {
+      event.preventDefault();
+      event.stopPropagation();
+      return;
+    }
+    this.currentStep = step;
+    setTimeout(() => this.scrollLeftColumnToTop(), 0);
+  }
+
+  backToView(): void {
+    // this.selectedChartDetails = null;
+    this.updateStepper(0);
+  }
+
+  continueFromChartType(step: number): void {
+    if (!this.selectedChartDetails) return;
+
+    (this.category.get('diagram.supportedLibraries') as FormArray).clear();
+    this.selectedChartDetails.supportedLibraries.forEach(lib => {
+      (this.category.get('diagram.supportedLibraries') as FormArray).push(new FormControl<string | null>(lib));
+    });
+    this.category.get('diagram').setValue(this.selectedChartDetails);
+    this.diagramCategoryService.changeDiagramCategory(this.selectedChartDetails);
+
+
+    // Reset the chartType of all dataseries to null. So chart type change can take place.
+    // The above issue occurs when loading a chart from url.
+    if (this.selectedChartDetails.name !== 'combo') {
+      this.dataseries.controls.forEach((control: any) => {
+        control.get('chartProperties.chartType').setValue(null);
+      });
+    }
+
+    this.updateStepper(step);
+  }
+
+  continueFromView(): void {
+    if (!this.selectedProfileDetails) return;
+    this.profile.setValue(this.selectedProfileDetails.name);
+    this.updateStepper(1);
+  }
+
+  profileChange(event: {profile: Profile, manualChange: boolean}) {
+    this.selectedProfileDetails = event.profile;
+    if (event.manualChange) {
+      this.clearData();
+    }
+  }
+
+  protected getChartMeta(type: string | undefined) {
+    if (!type) return null;
+    return this.chartMetaMap[type.toLowerCase()] ?? null;
+  }
+
+  protected getAvatarText(name: string): string {
+    return name.split(/[\s_-]+/).map(w => w[0]).join('').substring(0, 2).toUpperCase();
+  }
+
+  protected getAvatarColor(name: string): string {
+    const colors = ['#3B82F6','#10B981','#F59E0B','#EF4444','#8B5CF6','#EC4899','#06B6D4','#84CC16'];
+    let hash = 0;
+    for (let i = 0; i < name.length; i++) hash = name.charCodeAt(i) + ((hash << 5) - hash);
+    return colors[Math.abs(hash) % colors.length];
+  }
 
 	toggleSidebar() {
 
@@ -229,15 +309,27 @@ export class DashboardComponent implements OnInit {
 	 * Handles the completion of the AI chat session.
 	 * @param result - The result of the chat session.
 	 */
-  onChatComplete(result: ChartInfo[]): void {
+  onQueryComplete(result: ChartInfo[]): void {
     if (result) {
-      console.log('AI Chat completed with result:', result);
+      console.log('AI Chat completed with result: ', result);
       this.chartInfo = result;
       this.nlQuery.set(true);
     }
   }
 
-  setActiveTab(tab: string) {
+  onOptionsComplete(result: OptionsData) {
+    if (result) {
+      console.log('AI Chat completed with options: ', result);
+      this.appearanceFromChat = result;
+      this.nlAppearance.set(true);
+    }
+  }
+
+  setActiveTab(tab: string, step?: string) {
+    if (step === 'appearance') {
+      this.activeAppearanceTab.set(tab)
+      return;
+    }
     this.activeTab.set(tab);
   }
 }

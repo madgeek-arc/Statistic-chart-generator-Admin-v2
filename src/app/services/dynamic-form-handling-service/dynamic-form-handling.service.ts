@@ -17,7 +17,7 @@ import { RawChartDataModel } from "../supported-libraries-service/models/chart-d
 import { RawDataModel } from "../supported-libraries-service/models/description-rawData.model";
 import { AbstractControl, FormArray, FormControl, FormGroup } from "@angular/forms";
 import { FormFactoryService } from "../form-factory-service/form-factory-service";
-import { ChartInfo } from "../nl-chat-service/nl-chat.service";
+import { ChartInfo, OptionsData } from "../nl-chat-service/nl-chat.service";
 
 @Injectable({
 	providedIn: 'root'
@@ -282,14 +282,15 @@ export class DynamicFormHandlingService {
 			this.createDataObjectsFromSchemaObject(this.formSchemaObject);
 	}
 
-  public submitNLQuery(chartInfo: ChartInfo[]) {
+  public submitNLQuery(chartInfo: ChartInfo[], options?: OptionsData) {
     console.log('Submitted this nlQuery', chartInfo);
-    this.createDataObjectsFromSchemaObject(this.formSchemaObject, chartInfo);
+    console.log('With options: ', options);
+    this.createDataObjectsFromSchemaObject(this.formSchemaObject, chartInfo, options);
   }
 
-	private createDataObjectsFromSchemaObject(value: SCGAFormSchema, chartInfo: ChartInfo[] | null = null) {
+	private createDataObjectsFromSchemaObject(value: SCGAFormSchema, chartInfo: ChartInfo[] | null = null, options?: OptionsData) {
 
-    if (this.diagramcategoryService.selectedDiagramCategory$.value?.type === "numbers") {
+    if (this.diagramcategoryService.selectedDiagramCategory?.type === "numbers") {
 			this._diagramCreator.createRawData(value).pipe(first()).subscribe(rawDataObject => this.changeDataObjects(null, null, null, rawDataObject))
 			return;
 		}
@@ -298,18 +299,51 @@ export class DynamicFormHandlingService {
 		this._diagramCreator.createRawChartData(value), this._diagramCreator.createRawData(value)])
 			.pipe(first())
 			.subscribe(([chartObject, tableObject, rawChartDataObject, rawDataObject]) => {
+
+        const library: string = this.formFactoryService.getFormRoot().get('appearance.chartAppearance.generalOptions.visualisationLibrary').value;
+
+        if (options && chartObject && library) {
+          const chart = chartObject as HighChartsChart;
+
+          chart.chartDescription = this.mergeObjects(chart.chartDescription, JSON.parse(options.optionsJson));
+          chart.nlOptions = options.nlOptions;
+          chart.optionsSig = options.optionsSig;
+          console.log(chart);
+        }
+
         if (chartInfo) {
-          if (chartObject) {
-            if (this.formFactoryService.getFormRoot().get('appearance.chartAppearance.generalOptions.visualisationLibrary').value === 'HighCharts') {
-              (chartObject as HighChartsChart).chartDescription.queries = chartInfo as any; // Fixme use proper type
+          if (chartObject ) {
+            switch (library) {
+
+              case ('GoogleCharts'): {
+                (chartObject as GoogleChartsChart).chartDescription.queriesInfo = chartInfo as any;
+                break;
+              }
+              case ('HighCharts'): {
+                (chartObject as HighChartsChart).chartDescription.queries = chartInfo as any; // FIXME: use proper type
+                break;
+              }
+              case ('HighMaps'): {
+                (chartObject as HighMapsMap).mapDescription.queries = chartInfo as any;
+                break;
+              }
+              case ('eCharts'): {
+                (chartObject as EChartsChart).chartDescription.queries = chartInfo as any;
+                break;
+              }
             }
+
+            console.log(chartObject);
           }
+
           if (tableObject) {
             (tableObject as GoogleChartsTable).tableDescription.queriesInfo = chartInfo as any;
           }
+
           if (rawChartDataObject) {
             (rawChartDataObject as RawChartDataModel).chartsInfo = chartInfo as any;
           }
+
           if (rawDataObject) {
             (rawDataObject as RawDataModel).series = chartInfo as any;
           }
@@ -318,6 +352,25 @@ export class DynamicFormHandlingService {
         return this.changeDataObjects(chartObject, tableObject, rawChartDataObject, rawDataObject);
       });
 	}
+
+  mergeObjects(obj1: any, obj2: any): any {
+    const merged = { ...obj1 };
+
+    for (const key in obj2) {
+      if (Object.prototype.hasOwnProperty.call(obj2, key)) {
+        const value1 = merged[key];
+        const value2 = obj2[key];
+
+        if (value2 !== null && typeof value2 === 'object' && !Array.isArray(value2) && value1 !== null && typeof value1 === 'object' && !Array.isArray(value1)) {
+          merged[key] = this.mergeObjects(value1, value2);
+        } else {
+          merged[key] = value2;
+        }
+      }
+    }
+
+    return merged;
+  }
 
 	public publishURLS() {
 		console.log('Publish this form', this.formSchemaObject);
