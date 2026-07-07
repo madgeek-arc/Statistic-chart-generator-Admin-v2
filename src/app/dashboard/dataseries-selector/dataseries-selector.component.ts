@@ -1,11 +1,11 @@
 import { AfterViewInit, Component, DestroyRef, inject, Input, OnInit, ViewChild } from '@angular/core';
 import { FormArray, FormControl, FormGroup, FormGroupDirective } from '@angular/forms';
-import { Profile } from 'src/app/services/profile-provider/profile-provider.service';
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
+import { distinctUntilChanged } from "rxjs/operators";
 import { DbSchemaService } from "../../services/db-schema-service/db-schema.service";
 import { FormFactoryService } from "../../services/form-factory-service/form-factory-service";
-import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { DynamicTreeDatabase } from "../../services/dynamic-tree-database/dynamic-tree-database.service";
-import { distinctUntilChanged } from "rxjs/operators";
+import { Profile } from "../../services/mapping-profiles-service/mapping-profiles.service";
 import UIkit from "uikit";
 
 export enum FieldType { text, int, float, date};

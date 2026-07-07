@@ -5,8 +5,10 @@ export class HighChartsChart {
 	library: string;
 	orderBy: string;
 	chartDescription: HighChartsDescription;
+  nlOptions: string | null = null;
+  optionsSig: string | null = null;
 
-	constructor(type: string, polar: boolean) {
+  constructor(type: string, polar: boolean) {
 		this.library = 'HighCharts';
 		this.orderBy = 'xaxis';
 		this.chartDescription = new HighChartsDescription(type, polar);

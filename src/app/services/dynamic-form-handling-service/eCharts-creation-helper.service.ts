@@ -68,7 +68,7 @@ export class EChartsCreationHelperService {
     };
   }
 
-  buildSeries(type: ChartType, config: BaseSeriesConfig): SeriesOption {
+  buildSeries(type: string, config: BaseSeriesConfig): SeriesOption {
     switch (type) {
       case 'area':
         return this.buildLineSeries({ ...config, isArea: true });
@@ -77,6 +77,9 @@ export class EChartsCreationHelperService {
         return this.buildLineSeries({ ...config, isArea: false });
 
       case 'bar':
+        return this.buildBarSeries(config);
+
+      case 'column': // Column not supported use bar
         return this.buildBarSeries(config);
 
       case 'pie':

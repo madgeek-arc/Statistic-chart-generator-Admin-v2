@@ -6,72 +6,99 @@
       <div id="sidebar_toggle" (click)="toggleSidebar()"></div>
       <div id="sidebar_content">
         <div class="menu_section uk-margin-top" style="min-height: 30vh;">
-          <ul id="navTab" uk-nav="duration: 400" class="uk-list uk-nav uk-nav-default" data-uk-switcher="connect: #selection; animation: 'fade'">
 
-            <li class="uk-parent">
-              <a class="uk-flex uk-flex-middle" title="Overview" role="button">
-                <div class="uk-width-auto">
-                  <span class="material-symbols-outlined">group</span>
+          <div class="nav-section-label hide-on-close">SETUP</div>
+
+          <ul id="navTab" uk-nav="duration: 400" class="uk-list uk-nav uk-nav-default uk-margin-small-right" data-uk-switcher="connect: #selection; animation: 'fade'">
+
+            <!-- Step 0: View -->
+            <li class="uk-parent nav-step"
+                [class.nav-step--active]="currentStep === 0"
+                [class.nav-step--done]="currentStep > 0">
+              <a class="uk-flex uk-flex-middle nav-step-link" role="button" (click)="onNavClick($event, 0)">
+                <div class="nav-step-icon uk-width-auto">
+                  @if (currentStep > 0) {
+                    <span class="material-symbols-outlined nav-icon-check">check_circle</span>
+                  } @else {
+                    <span class="material-symbols-outlined nav-icon">group</span>
+                  }
                 </div>
                 <div class="uk-width-expand@l uk-margin-small-left hide-on-close">
-                  <div class="uk-text-truncate">{{ viewSelectionLabel }}</div>
-                  <div class="uk-text-xsmall uk-text-wrap">
-                    @if (this.view.get('profile')?.value === null || this.view.get('profile')?.value === undefined) {
-                      Choose what type of data interest you
-                    }
-                    @if (this.view.get('profile')?.value !== null && this.view.get('profile')?.value !== undefined) {
-                      {{ this.view.get('profile')?.value }}
-                    }
+                  <div class="nav-step-title">View</div>
+                  <div class="nav-step-subtitle">
+                    @if (selectedProfileDetails) {
+                      {{selectedProfileDetails.name}}
+                    } @else { Choose the data source }
                   </div>
                 </div>
               </a>
             </li>
 
-            <li class="uk-parent">
-              <a class="uk-flex uk-flex-middle" title="Technologies" role="button">
-                <div class="uk-width-auto">
-                  <span class="material-symbols-outlined">bar_chart</span>
+            <!-- Step 1: Chart type -->
+            <li class="uk-parent nav-step"
+                [class.nav-step--active]="currentStep === 1"
+                [class.nav-step--done]="currentStep > 1"
+                [class.nav-step--locked]="!view.get('profile')?.value">
+              <a class="uk-flex uk-flex-middle nav-step-link" role="button" (click)="onNavClick($event, 1)">
+                <div class="nav-step-icon uk-width-auto">
+                  @if (currentStep > 1) {
+                    <span class="material-symbols-outlined nav-icon-check">check_circle</span>
+                  } @else {
+                    <span class="material-symbols-outlined nav-icon">bar_chart</span>
+                  }
                 </div>
                 <div class="uk-width-expand@l uk-margin-small-left hide-on-close">
-                  <div class="uk-text-truncate">{{ categorySelectionLabel }}</div>
-                  <div class="uk-text-xsmall uk-text-wrap">
-                    @if (category.get('diagram')?.get('type')?.value == null) {
-                      Choose the type of diagram you want to make
-                    }
-                    @if (category.get('diagram')?.get('type')?.value != null) {
-                      {{ category.get('diagram')?.get('name')?.value }}
-                    }
+                  <div class="nav-step-title">Chart type</div>
+                  <div class="nav-step-subtitle">
+                    @if (selectedChartDetails) {
+                      {{ selectedChartDetails.name }}
+                    } @else { Pick a visualization }
                   </div>
                 </div>
+                @if (!view.get('profile')?.value) {
+                  <span class="material-symbols-outlined nav-lock-icon hide-on-close">edit</span>
+                }
               </a>
             </li>
 
-            <li class="uk-parent">
-              <a [class]="hasDataAndDiagramType ? 'uk-flex uk-flex-middle' : 'uk-flex uk-flex-middle uk-disabled uk-text-muted'" title="Organisations" role="button">
-                <div class="uk-width-auto">
-                  <span class="material-symbols-outlined">database</span>
+            <!-- Step 2: Data — has DESIGN label injected via CSS ::before -->
+            <li class="uk-parent nav-step nav-design-first"
+                [class.nav-step--active]="currentStep === 2"
+                [class.nav-step--done]="currentStep > 2"
+                [class.nav-step--locked]="!hasDataAndDiagramType">
+              <a class="uk-flex uk-flex-middle nav-step-link" role="button" (click)="onNavClick($event, 2)">
+                <div class="nav-step-icon uk-width-auto">
+                  @if (currentStep > 2) {
+                    <span class="material-symbols-outlined nav-icon-check">check_circle</span>
+                  } @else {
+                    <span class="material-symbols-outlined nav-icon">database</span>
+                  }
                 </div>
                 <div class="uk-width-expand@l uk-margin-small-left hide-on-close">
-                  <div class="uk-text-truncate">{{ configureDatasieriesLabel }}</div>
-                  <div class="uk-text-xsmall uk-text-wrap">
-                    Describe the data you want to see
-                  </div>
+                  <div class="nav-step-title">Data</div>
+                  <div class="nav-step-subtitle">Describe the data you want</div>
                 </div>
+                @if (!hasDataAndDiagramType) {
+                  <span class="material-symbols-outlined nav-lock-icon hide-on-close">edit</span>
+                }
               </a>
             </li>
 
-            <li class="uk-parent">
-              <a [class]="this.hasDataAndDiagramType ? 'uk-flex uk-flex-middle' : 'uk-flex uk-flex-middle uk-disabled uk-text-muted'" title="Patents" role="button" aria-controls="uk-nav-60-content-0" aria-expanded="false" aria-disabled="false">
-                <div class="uk-width-auto">
-                  <span class="material-symbols-outlined">tune</span>
+            <!-- Step 3: Appearance -->
+            <li class="uk-parent nav-step"
+                [class.nav-step--active]="currentStep === 3"
+                [class.nav-step--locked]="!hasDataAndDiagramType">
+              <a class="uk-flex uk-flex-middle nav-step-link" role="button" (click)="onNavClick($event, 3)">
+                <div class="nav-step-icon uk-width-auto">
+                  <span class="material-symbols-outlined nav-icon">tune</span>
                 </div>
                 <div class="uk-width-expand@l uk-margin-small-left hide-on-close">
-                  <div class="uk-text-truncate">{{ customiseAppearanceLabel }}</div>
-                  <div class="uk-text-xsmall uk-text-wrap">
-                    Change the way your diagram looks
-                  </div>
+                  <div class="nav-step-title">Appearance</div>
+                  <div class="nav-step-subtitle">Style the chart</div>
                 </div>
-                <!--                      <span class="uk-width-expand@l uk-text-truncate uk-margin-small-left hide-on-close">{{ customiseAppearanceLabel }}</span>-->
+                @if (!hasDataAndDiagramType) {
+                  <span class="material-symbols-outlined nav-lock-icon hide-on-close">edit</span>
+                }
               </a>
             </li>
 
@@ -84,24 +111,37 @@
   <main class="uk-width-1-1">
     <div id="page_content">
       <div class="uk-grid-divider" uk-grid>
-        <div class="uk-width-1-2 column">
+        <div class="uk-width-1-2 column left-column">
           <div class="scrollable">
             <ul id="selection" class="uk-switcher uk-margin">
-              <li class="" style="animation-duration: 200ms;">
-                <app-view-selector (showViewSelection)="updateStepper($event)" [profileControl]="profile"></app-view-selector>
+              <li class="">
+                <app-view-selector (profileDetailsChange)="profileChange($event)">
+                </app-view-selector>
               </li>
               <li class="" style="animation-duration: 200ms;">
-                <app-category-selector (showCategorySelection)="updateStepper($event)" [categoryForm]="category"></app-category-selector>
+                <app-category-selector (selectedChartChange)="selectedChartDetails = $event"></app-category-selector>
               </li>
               <li class="" style="animation-duration: 200ms;">
                 @if (hasDataAndDiagramType) {
-                  <div class="uk-section uk-section-xsmall uk-section-primary uk-preserve-color">
-                    <div class="uk-container uk-container-expand uk-padding-remove uk-margin-medium-left">
-                      <div class="uk-padding-small uk-padding-remove-vertical uk-padding-remove-right">
-                        <div class="modeswitch-wrap">
-                          <div class="segmented">
-<!--                            <div class="seg-thumb" style="left: 4px; width: 98px;"></div>-->
-                            <button class="seg-btn" [class.uk-active]="activeTab() === 'builder'" (click)="setActiveTab('builder')">
+
+                  <div class="step-wrapper uk-padding-small">
+                    <div class="step-header">
+                      <div class="step-header-left">
+                        <h2 class="step-title">Data</h2>
+                        <p class="step-subtitle">Describe the data you want to see</p>
+                      </div>
+                      <div class="step-badge">
+                        <span class="step-dot"></span>
+                        Design &middot; edit freely
+                      </div>
+                    </div>
+                    <div class="uk-section uk-section-xsmall uk-padding-remove uk-section-primary uk-preserve-color">
+                      <div class="step-sections uk-padding-remove-top">
+                        <div class="">
+                          <div class="modeswitch-wrap">
+                            <div class="segmented">
+                              <!--                            <div class="seg-thumb" style="left: 4px; width: 98px;"></div>-->
+                              <button class="seg-btn" [class.uk-active]="activeTab() === 'builder'" (click)="setActiveTab('builder')">
                               <span class="seg-icon">
                                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                      stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="icon">
@@ -113,19 +153,19 @@
                                   </g>
                                 </svg>
                               </span>Builder
-                            </button>
-<!--                            <button data-seg="sql" class="seg-btn ">-->
-<!--                        <span class="seg-icon">-->
-<!--                          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"-->
-<!--                               stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="icon ">-->
-<!--                            <g>-->
-<!--                              <path d="M4 6v12M4 6c0-1.5 3.6-3 8-3s8 1.5 8 3M4 18c0 1.5 3.6 3 8 3s8-1.5 8-3"></path>-->
-<!--                              <path d="M20 6v12M4 12c0 1.5 3.6 3 8 3s8-1.5 8-3"></path>-->
-<!--                            </g>-->
-<!--                          </svg>-->
-<!--                        </span>SQL-->
-<!--                            </button>-->
-                            <button class="seg-btn" [class.uk-active]="activeTab() === 'chat'" (click)="setActiveTab('chat')">
+                              </button>
+                              <!--                            <button data-seg="sql" class="seg-btn ">-->
+                              <!--                        <span class="seg-icon">-->
+                              <!--                          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"-->
+                              <!--                               stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="icon ">-->
+                              <!--                            <g>-->
+                              <!--                              <path d="M4 6v12M4 6c0-1.5 3.6-3 8-3s8 1.5 8 3M4 18c0 1.5 3.6 3 8 3s8-1.5 8-3"></path>-->
+                              <!--                              <path d="M20 6v12M4 12c0 1.5 3.6 3 8 3s8-1.5 8-3"></path>-->
+                              <!--                            </g>-->
+                              <!--                          </svg>-->
+                              <!--                        </span>SQL-->
+                              <!--                            </button>-->
+                              <button class="seg-btn" [class.uk-active]="activeTab() === 'chat'" (click)="setActiveTab('chat')">
                               <span class="seg-icon">
                                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                      stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="icon">
@@ -134,55 +174,232 @@
                                   </g>
                                 </svg>
                               </span>Ask agent
-                            </button>
+                              </button>
+                            </div>
+                            <div class="modeswitch-right">
+                              <!--                      <div class="sync-pill"><span class="dot"></span> Synced query</div>-->
+                            </div>
                           </div>
-                          <div class="modeswitch-right">
-                            <!--                      <div class="sync-pill"><span class="dot"></span> Synced query</div>-->
-                          </div>
-                        </div>
 
-                        @if (activeTab() === 'builder') {
-                          <app-dataseries-selector [selectedProfile]="profile" class="uk-animation-fade"></app-dataseries-selector>
-                        }
-                        @if (activeTab() === 'chat') {
-                          <app-nl-chat (chatComplete)="onChatComplete($event)" class="uk-animation-fade"></app-nl-chat>
-                        }
+                          @if (activeTab() === 'builder') {
+                            <app-dataseries-selector [selectedProfile]="profile" class="uk-animation-fade"></app-dataseries-selector>
+                          }
+                          @if (activeTab() === 'chat') {
+                            <app-nl-chat (queryChatComplete)="onQueryComplete($event)" class="uk-animation-fade"></app-nl-chat>
+                          }
+                        </div>
                       </div>
                     </div>
                   </div>
 
                 }
               </li>
-              <li class="" style="animation-duration: 200ms;">
+              <li class="" >
                 @if (this.hasDataAndDiagramType) {
-                  <app-customise-appearance></app-customise-appearance>
+
+                  <div class="step-wrapper uk-padding-small">
+                    <div class="step-header">
+                      <div class="step-header-left">
+                        <h2 class="step-title">Appearance</h2>
+                        <p class="step-subtitle">Style the chart for your audience</p>
+                      </div>
+                      <div class="step-badge">
+                        <span class="step-dot"></span>
+                        Design &middot; edit freely
+                      </div>
+                    </div>
+                    <div class="uk-section uk-section-xsmall uk-padding-remove uk-section-primary uk-preserve-color">
+                      <div class="step-sections uk-padding-remove-top">
+                        <div class="">
+                          <div class="modeswitch-wrap">
+                            <div class="segmented">
+                              <!--                            <div class="seg-thumb" style="left: 4px; width: 98px;"></div>-->
+                              <button class="seg-btn" [class.uk-active]="activeAppearanceTab() === 'builder'"
+                                      (click)="setActiveTab('builder', 'appearance')">
+                              <span class="seg-icon">
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                     stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="icon">
+                                  <g>
+                                    <rect x="3" y="3" width="7" height="7" rx="1.2"></rect>
+                                    <rect x="14" y="3" width="7" height="7" rx="1.2"></rect>
+                                    <rect x="3" y="14" width="7" height="7" rx="1.2"></rect>
+                                    <rect x="14" y="14" width="7" height="7" rx="1.2"></rect>
+                                  </g>
+                                </svg>
+                              </span>Builder
+                              </button>
+                              <button class="seg-btn" [class.uk-active]="activeAppearanceTab() === 'chat'"
+                                      (click)="setActiveTab('chat', 'appearance')">
+                              <span class="seg-icon">
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                     stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="icon">
+                                  <g>
+                                    <path d="M5 3v4M3 5h4M19 14v6M16 17h6M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8L12 3z"></path>
+                                  </g>
+                                </svg>
+                              </span>Ask agent
+                              </button>
+                            </div>
+                            <div class="modeswitch-right">
+                              <!--                      <div class="sync-pill"><span class="dot"></span> Synced query</div>-->
+                            </div>
+                          </div>
+
+                          @if (activeAppearanceTab() === 'builder') {
+                            <app-customise-appearance class="uk-animation-fade"></app-customise-appearance>
+                          }
+                          @if (activeAppearanceTab() === 'chat') {
+                            <app-nl-chat [phase]="'options'" (optionChatComplete)="onOptionsComplete($event)" class="uk-animation-fade"></app-nl-chat>
+                          }
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 }
               </li>
             </ul>
-            <!-- <div class="actionButtons"> -->
-            <div class="uk-width-1-1">
-              <div class="uk-flex uk-flex-center actionButtons uk-padding-small">
-                <button class="uk-button uk-button-primary" (click)="submitData()"
-                  [disabled]="!(view.valid && category.valid && dataseries.valid) && !nlQuery()">Create Chart
-                </button>
-                <button class="uk-button uk-button-default uk-margin-small-left" (click)="clearData()">Clear</button>
-<!--                <button class="uk-button uk-button-secondary uk-margin-small-left" (click)="openAiChat()"-->
-<!--                  title="Use AI to generate your chart with natural language">-->
-<!--                  <span class="material-symbols-outlined uk-margin-small-right" style="vertical-align: middle;">smart_toy</span>-->
-<!--                  AI Chat-->
-<!--                </button>-->
-              </div>
-            </div>
           </div>
+          <!-- Action bar — outside scrollable so it's always visible -->
+          @if (currentStep === 0) {
+            <div class="action-bar-view">
+              <span class="action-selection-label">
+                @if (selectedProfileDetails) {
+                  Selected: <strong>{{ selectedProfileDetails.name }}</strong>
+                } @else {
+                  Pick a view to begin
+                }
+              </span>
+              <button class="action-btn-continue" [disabled]="!selectedProfileDetails" (click)="continueFromView()">
+                CONTINUE TO CHART TYPE →
+              </button>
+            </div>
+          } @else if (currentStep === 1) {
+            <div class="action-bar-view">
+              <button class="action-btn-back" (click)="backToView()">← BACK</button>
+              <span class="action-selection-label">
+                @if (selectedChartDetails) {
+                  Chart type: <strong>{{ selectedChartDetails.name }}</strong>
+                } @else {
+                  Pick a chart type to continue
+                }
+              </span>
+              <button class="action-btn-continue" [disabled]="!selectedChartDetails" (click)="continueFromChartType(2)">
+                CONTINUE TO DATA →
+              </button>
+            </div>
+          } @else {
+            <div class="uk-flex uk-flex-center actionButtons uk-padding-small">
+              <button class="uk-button uk-button-primary" (click)="submitData()"
+                [disabled]="!(view.valid && category.valid && dataseries.valid) && !nlQuery()">Create Chart
+              </button>
+              <button class="uk-button uk-button-default uk-margin-small-left" (click)="clearData()">Clear</button>
+            </div>
+          }
         </div>
-        <div class="uk-width-1-2 column">
+        <div class="uk-width-1-2 column uk-padding-remove">
           <div class="scrollable">
-            <div class="uk-section uk-section-small uk-section-primary uk-preserve-color">
-              <div class="uk-container uk-container-expand uk-padding-remove uk-margin-medium-right">
+            <div class="uk-section uk-padding-remove uk-section-primary uk-preserve-color">
 
-<!--                                <pre>{{ diagramSettings.value | json }}</pre>-->
+              @if (currentStep === 0) {
+                <div class="vd-panel-header">
+                  <span class="material-symbols-outlined vd-panel-icon">info</span>
+                  <span class="vd-panel-title">View details</span>
+                </div>
+                <div class="vd-panel">
+                  @if (selectedProfileDetails) {
+                    <div class="vd-title-row">
+                      <div class="vd-avatar" [style.background]="getAvatarColor(selectedProfileDetails.name)">
+                        {{ getAvatarText(selectedProfileDetails.name) }}
+                      </div>
+                      <div>
+                        <div class="vd-name">{{ selectedProfileDetails.name }}</div>
+                        <div class="vd-handle">
+                          <span class="material-symbols-outlined vd-handle-icon">database</span>
+                          {{ selectedProfileDetails.usage }}
+                        </div>
+                      </div>
+                    </div>
+                    <p class="vd-desc">{{ selectedProfileDetails.description }}</p>
+                    <div class="vd-tags">
+                      @for (tag of selectedProfileDetails.shareholders; track tag) {
+                        <span class="vd-tag">{{ tag }}</span>
+                      }
+                    </div>
+                    @if (selectedProfileDetails.complexity >= 0) {
+                      <div class="vd-stats">
+                        <div class="vd-stat">
+                          <div class="vd-stat-label">ROWS</div>
+                          <div class="vd-stat-value">{{ selectedProfileDetails.complexity }}M</div>
+                        </div>
+                      </div>
+                    }
+                  } @else {
+                    <div class="vd-empty">
+                      <span class="material-symbols-outlined vd-empty-icon">database</span>
+                      <p class="vd-empty-title">No view selected</p>
+                      <p class="vd-empty-sub">Pick a view from the list to see its schema and a sample of the data here.</p>
+                    </div>
+                  }
+                </div>
+              }
+              @if (currentStep === 1) {
+                <div class="vd-panel-header">
+                  <span class="material-symbols-outlined vd-panel-icon">visibility</span>
+                  <span class="vd-panel-title">
+                    @if (selectedChartDetails) { {{ selectedChartDetails.name }} preview }
+                    @else { Chart preview }
+                  </span>
+                </div>
+                <div class="ct-panel">
+                  @if (selectedChartDetails) {
+                    <div class="ct-preview">
+                      <img [src]="'/assets/' + selectedChartDetails.imageURL" [alt]="selectedChartDetails.name" class="ct-preview-img" />
+                    </div>
+                    <div class="ct-about">
+                      <div class="ct-about-header">
+                        <span class="material-symbols-outlined ct-about-icon">info</span>
+                        <span class="ct-about-title">About this chart</span>
+                      </div>
+                      <div class="ct-about-panel">
+                        @if (getChartMeta(selectedChartDetails.type)?.bestFor) {
+                          <p class="ct-best-for"><strong>Best for:</strong> {{ getChartMeta(selectedChartDetails.type)?.bestFor }}</p>
+                        }
+                        @if (getChartMeta(selectedChartDetails.type)?.tags?.length) {
+                          <div class="ct-tags uk-margin-top">
+                            @for (tag of getChartMeta(selectedChartDetails.type)!.tags; track tag) {
+                              <span class="ct-tag">{{ tag }}</span>
+                            }
+                          </div>
+                        }
+                        @if (getChartMeta(selectedChartDetails.type)?.tips?.length) {
+                          <div class="uk-margin-top">
+                            @for (tip of getChartMeta(selectedChartDetails.type)?.tips ?? []; track tip.text) {
+                              <div class="ct-tip">
+                                <span class="material-symbols-outlined ct-tip-icon" [class.ct-tip-icon--check]="tip.type === 'check'">
+                                  {{ tip.type === 'check' ? 'check_circle' : 'info' }}
+                                </span>
+                                <span class="ct-tip-text">{{ tip.text }}</span>
+                              </div>
+                            }
+                          </div>
+                        }
+                      </div>
+                    </div>
+                  } @else {
+                    <div class="vd-empty">
+                      <span class="material-symbols-outlined vd-empty-icon">bar_chart</span>
+                      <p class="vd-empty-title">No chart type selected</p>
+                      <p class="vd-empty-sub">Pick a chart type from the list to see a preview and details here.</p>
+                    </div>
+                  }
+                </div>
+              }
 
-                <div class="iframe-container">
+              <div class="uk-container uk-container-expand uk-margin-medium-top">
+
+<!--            <pre>{{ diagramSettings.value | json }}</pre>-->
+
+                <div class="iframe-container" [style.display]="currentStep === 0 || currentStep === 1 ? 'none' : 'block'">
 
                   <div>
                     @if ((chartExportingService.chartUrl$ | async) != null) {
@@ -195,7 +412,7 @@
                           </div>
                         }
                         @if ((chartExportingService.chartUrl$ | async) != null) {
-                          <div class="container">
+                          <div class="container uk-margin-medium-top">
                             <chart-frame [chartUrl]="chartExportingService.chartUrl$ | async"></chart-frame>
                           </div>
                           <div class="actions">

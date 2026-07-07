@@ -1,0 +1,156 @@
+<svg viewBox="0 0 800 640" xmlns="http://www.w3.org/2000/svg" width="800" height="640" font-family="Roboto, Helvetica, Arial, sans-serif">
+<rect width="100%" height="100%" fill="#fff"></rect>
+<g transform="translate(20,20)">
+  <rect x="-6" y="-6" width="172" height="92" rx="10" fill="#fff" stroke="#E4E7EB"></rect>
+  <svg x="36" y="6" width="88" height="56" viewBox="0 0 88 56"><rect x="12" y="34" width="10" height="14" fill="#1FC9B0"></rect>
+  <rect x="28" y="22" width="10" height="26" fill="#1FC9B0"></rect>
+  <rect x="44" y="16" width="10" height="32" fill="#1FC9B0"></rect>
+  <rect x="60" y="28" width="10" height="20" fill="#1FC9B0"></rect>
+  <line x1="6" y1="48" x2="82" y2="48" stroke="#E4E7EB"></line></svg>
+  <text x="80" y="108" text-anchor="middle" font-size="13" fill="#1B1F23">column</text>
+  <text x="80" y="124" text-anchor="middle" font-size="9" fill="#9BA1A8" letter-spacing="1">BASIC</text>
+</g>
+<g transform="translate(220,20)">
+  <rect x="-6" y="-6" width="172" height="92" rx="10" fill="#fff" stroke="#E4E7EB"></rect>
+  <svg x="36" y="6" width="88" height="56" viewBox="0 0 88 56"><path d="M10 40 L25 28 L40 32 L55 18 L70 22 L82 12 L82 48 L10 48 Z" fill="#1FC9B0" opacity=".25"></path>
+  <polyline points="10,40 25,28 40,32 55,18 70,22 82,12" fill="none" stroke="#1FC9B0" stroke-width="2"></polyline>
+  <line x1="6" y1="48" x2="82" y2="48" stroke="#E4E7EB"></line></svg>
+  <text x="80" y="108" text-anchor="middle" font-size="13" fill="#1B1F23">area</text>
+  <text x="80" y="124" text-anchor="middle" font-size="9" fill="#9BA1A8" letter-spacing="1">BASIC</text>
+</g>
+<g transform="translate(420,20)">
+  <rect x="-6" y="-6" width="172" height="92" rx="10" fill="#fff" stroke="#E4E7EB"></rect>
+  <svg x="36" y="6" width="88" height="56" viewBox="0 0 88 56"><rect x="14" y="10" width="50" height="8" fill="#1FC9B0"></rect>
+  <rect x="14" y="22" width="68" height="8" fill="#1FC9B0"></rect>
+  <rect x="14" y="34" width="32" height="8" fill="#1FC9B0"></rect>
+  <line x1="14" y1="6" x2="14" y2="48" stroke="#E4E7EB"></line></svg>
+  <text x="80" y="108" text-anchor="middle" font-size="13" fill="#1B1F23">bar</text>
+  <text x="80" y="124" text-anchor="middle" font-size="9" fill="#9BA1A8" letter-spacing="1">BASIC</text>
+</g>
+<g transform="translate(620,20)">
+  <rect x="-6" y="-6" width="172" height="92" rx="10" fill="#fff" stroke="#E4E7EB"></rect>
+  <svg x="36" y="6" width="88" height="56" viewBox="0 0 88 56"><polyline points="10,40 25,28 40,32 55,18 70,22 82,12" fill="none" stroke="#1FC9B0" stroke-width="2"></polyline>
+  <circle cx="10" cy="40" r="2" fill="#1FC9B0"></circle>
+  <circle cx="25" cy="28" r="2" fill="#1FC9B0"></circle>
+  <circle cx="40" cy="32" r="2" fill="#1FC9B0"></circle>
+  <circle cx="55" cy="18" r="2" fill="#1FC9B0"></circle>
+  <circle cx="70" cy="22" r="2" fill="#1FC9B0"></circle>
+  <circle cx="82" cy="12" r="2" fill="#1FC9B0"></circle>
+  <line x1="6" y1="48" x2="82" y2="48" stroke="#E4E7EB"></line></svg>
+  <text x="80" y="108" text-anchor="middle" font-size="13" fill="#1B1F23">line</text>
+  <text x="80" y="124" text-anchor="middle" font-size="9" fill="#9BA1A8" letter-spacing="1">BASIC</text>
+</g>
+<g transform="translate(20,170)">
+  <rect x="-6" y="-6" width="172" height="92" rx="10" fill="#fff" stroke="#E4E7EB"></rect>
+  <svg x="36" y="6" width="88" height="56" viewBox="0 0 88 56"><g transform="translate(44 28)">
+    <circle r="20" fill="#1FC9B0"></circle>
+    <path d="M0 0 L20 0 A20 20 0 0 1 6 19 Z" fill="#2A6FDB"></path>
+    <path d="M0 0 L6 19 A20 20 0 0 1 -14 14 Z" fill="#7A5AE0"></path>
+  </g></svg>
+  <text x="80" y="108" text-anchor="middle" font-size="13" fill="#1B1F23">pie</text>
+  <text x="80" y="124" text-anchor="middle" font-size="9" fill="#9BA1A8" letter-spacing="1">BASIC</text>
+</g>
+<g transform="translate(220,170)">
+  <rect x="-6" y="-6" width="172" height="92" rx="10" fill="#fff" stroke="#E4E7EB"></rect>
+  <svg x="36" y="6" width="88" height="56" viewBox="0 0 88 56"><rect x="12" y="10" width="40" height="26" rx="1.5" fill="#1FC9B0"></rect>
+  <rect x="54" y="10" width="22" height="15" rx="1.5" fill="#2A6FDB"></rect>
+  <rect x="54" y="27" width="22" height="9" rx="1.5" fill="#7A5AE0" opacity=".85"></rect>
+  <rect x="12" y="38" width="25" height="10" rx="1.5" fill="#2A6FDB" opacity=".6"></rect>
+  <rect x="39" y="38" width="37" height="10" rx="1.5" fill="#1FC9B0" opacity=".45"></rect></svg>
+  <text x="80" y="108" text-anchor="middle" font-size="13" fill="#1B1F23">treemap</text>
+  <text x="80" y="124" text-anchor="middle" font-size="9" fill="#9BA1A8" letter-spacing="1">BASIC</text>
+</g>
+<g transform="translate(420,170)">
+  <rect x="-6" y="-6" width="172" height="92" rx="10" fill="#fff" stroke="#E4E7EB"></rect>
+  <svg x="36" y="6" width="88" height="56" viewBox="0 0 88 56"><circle cx="44" cy="28" r="22" fill="none" stroke="#EFF1F4"></circle>
+  <circle cx="44" cy="28" r="11" fill="none" stroke="#F4F6F8"></circle>
+  <path d="M44.00 8.00 L53.19 18.81 L62.00 28.00 L51.78 35.78 L44.00 50.00 L33.39 38.61 L25.00 28.00 L35.51 19.51 Z" fill="#1FC9B0" opacity=".28"></path>
+  <path d="M44.00 8.00 L53.19 18.81 L62.00 28.00 L51.78 35.78 L44.00 50.00 L33.39 38.61 L25.00 28.00 L35.51 19.51 Z" fill="none" stroke="#1FC9B0" stroke-width="2" stroke-linejoin="round"></path>
+  <circle cx="44.00" cy="8.00" r="1.8" fill="#1FC9B0"></circle>
+  <circle cx="53.19" cy="18.81" r="1.8" fill="#1FC9B0"></circle>
+  <circle cx="62.00" cy="28.00" r="1.8" fill="#1FC9B0"></circle>
+  <circle cx="51.78" cy="35.78" r="1.8" fill="#1FC9B0"></circle>
+  <circle cx="44.00" cy="50.00" r="1.8" fill="#1FC9B0"></circle>
+  <circle cx="33.39" cy="38.61" r="1.8" fill="#1FC9B0"></circle>
+  <circle cx="25.00" cy="28.00" r="1.8" fill="#1FC9B0"></circle>
+  <circle cx="35.51" cy="19.51" r="1.8" fill="#1FC9B0"></circle></svg>
+  <text x="80" y="108" text-anchor="middle" font-size="13" fill="#1B1F23">area</text>
+  <text x="80" y="124" text-anchor="middle" font-size="9" fill="#9BA1A8" letter-spacing="1">POLAR</text>
+</g>
+<g transform="translate(620,170)">
+  <rect x="-6" y="-6" width="172" height="92" rx="10" fill="#fff" stroke="#E4E7EB"></rect>
+  <svg x="36" y="6" width="88" height="56" viewBox="0 0 88 56"><circle cx="44" cy="28" r="22" fill="none" stroke="#EFF1F4"></circle>
+  <path d="M 44 28 L 44.00 8.00 A 20 20 0 0 1 56.01 12.01 Z" fill="#1FC9B0" opacity="0.95"></path>
+  <path d="M 44 28 L 53.19 18.81 A 13 13 0 0 1 56.87 26.17 Z" fill="#2A6FDB" opacity="0.80"></path>
+  <path d="M 44 28 L 62.00 28.00 A 18 18 0 0 1 58.39 38.81 Z" fill="#1FC9B0" opacity="0.91"></path>
+  <path d="M 44 28 L 51.78 35.78 A 11 11 0 0 1 45.55 38.89 Z" fill="#2A6FDB" opacity="0.75"></path>
+  <path d="M 44 28 L 44.00 50.00 A 22 22 0 0 1 30.79 45.59 Z" fill="#1FC9B0" opacity="1.00"></path>
+  <path d="M 44 28 L 33.39 38.61 A 15 15 0 0 1 29.15 30.11 Z" fill="#2A6FDB" opacity="0.84"></path>
+  <path d="M 44 28 L 25.00 28.00 A 19 19 0 0 1 28.81 16.59 Z" fill="#1FC9B0" opacity="0.93"></path>
+  <path d="M 44 28 L 35.51 19.51 A 12 12 0 0 1 42.31 16.12 Z" fill="#2A6FDB" opacity="0.77"></path></svg>
+  <text x="80" y="108" text-anchor="middle" font-size="13" fill="#1B1F23">bar</text>
+  <text x="80" y="124" text-anchor="middle" font-size="9" fill="#9BA1A8" letter-spacing="1">POLAR</text>
+</g>
+<g transform="translate(20,320)">
+  <rect x="-6" y="-6" width="172" height="92" rx="10" fill="#fff" stroke="#E4E7EB"></rect>
+  <svg x="36" y="6" width="88" height="56" viewBox="0 0 88 56"><circle cx="44" cy="28" r="22" fill="none" stroke="#EFF1F4"></circle>
+  <path d="M 44 28 L 44.00 8.00 A 20 20 0 0 1 56.01 12.01 Z" fill="#1FC9B0" opacity="0.95"></path>
+  <path d="M 44 28 L 53.19 18.81 A 13 13 0 0 1 56.87 26.17 Z" fill="#2A6FDB" opacity="0.80"></path>
+  <path d="M 44 28 L 62.00 28.00 A 18 18 0 0 1 58.39 38.81 Z" fill="#1FC9B0" opacity="0.91"></path>
+  <path d="M 44 28 L 51.78 35.78 A 11 11 0 0 1 45.55 38.89 Z" fill="#2A6FDB" opacity="0.75"></path>
+  <path d="M 44 28 L 44.00 50.00 A 22 22 0 0 1 30.79 45.59 Z" fill="#1FC9B0" opacity="1.00"></path>
+  <path d="M 44 28 L 33.39 38.61 A 15 15 0 0 1 29.15 30.11 Z" fill="#2A6FDB" opacity="0.84"></path>
+  <path d="M 44 28 L 25.00 28.00 A 19 19 0 0 1 28.81 16.59 Z" fill="#1FC9B0" opacity="0.93"></path>
+  <path d="M 44 28 L 35.51 19.51 A 12 12 0 0 1 42.31 16.12 Z" fill="#2A6FDB" opacity="0.77"></path></svg>
+  <text x="80" y="108" text-anchor="middle" font-size="13" fill="#1B1F23">column</text>
+  <text x="80" y="124" text-anchor="middle" font-size="9" fill="#9BA1A8" letter-spacing="1">POLAR</text>
+</g>
+<g transform="translate(220,320)">
+  <rect x="-6" y="-6" width="172" height="92" rx="10" fill="#fff" stroke="#E4E7EB"></rect>
+  <svg x="36" y="6" width="88" height="56" viewBox="0 0 88 56"><circle cx="44" cy="28" r="22" fill="none" stroke="#EFF1F4"></circle>
+  <circle cx="44" cy="28" r="11" fill="none" stroke="#F4F6F8"></circle>
+  <path d="M44.00 8.00 L53.19 18.81 L62.00 28.00 L51.78 35.78 L44.00 50.00 L33.39 38.61 L25.00 28.00 L35.51 19.51 Z" fill="none" stroke="#1FC9B0" stroke-width="2" stroke-linejoin="round"></path>
+  <circle cx="44.00" cy="8.00" r="1.8" fill="#1FC9B0"></circle>
+  <circle cx="53.19" cy="18.81" r="1.8" fill="#1FC9B0"></circle>
+  <circle cx="62.00" cy="28.00" r="1.8" fill="#1FC9B0"></circle>
+  <circle cx="51.78" cy="35.78" r="1.8" fill="#1FC9B0"></circle>
+  <circle cx="44.00" cy="50.00" r="1.8" fill="#1FC9B0"></circle>
+  <circle cx="33.39" cy="38.61" r="1.8" fill="#1FC9B0"></circle>
+  <circle cx="25.00" cy="28.00" r="1.8" fill="#1FC9B0"></circle>
+  <circle cx="35.51" cy="19.51" r="1.8" fill="#1FC9B0"></circle></svg>
+  <text x="80" y="108" text-anchor="middle" font-size="13" fill="#1B1F23">line</text>
+  <text x="80" y="124" text-anchor="middle" font-size="9" fill="#9BA1A8" letter-spacing="1">POLAR</text>
+</g>
+<g transform="translate(420,320)">
+  <rect x="-6" y="-6" width="172" height="92" rx="10" fill="#fff" stroke="#E4E7EB"></rect>
+  <svg x="36" y="6" width="88" height="56" viewBox="0 0 88 56"><rect x="12" y="14" width="18" height="14" fill="#1FC9B0" opacity=".4"></rect>
+  <rect x="32" y="10" width="20" height="18" fill="#1FC9B0"></rect>
+  <rect x="54" y="16" width="14" height="12" fill="#1FC9B0" opacity=".6"></rect>
+  <rect x="20" y="30" width="22" height="14" fill="#1FC9B0" opacity=".8"></rect>
+  <rect x="44" y="30" width="18" height="14" fill="#1FC9B0" opacity=".25"></rect></svg>
+  <text x="80" y="108" text-anchor="middle" font-size="13" fill="#1B1F23">world</text>
+  <text x="80" y="124" text-anchor="middle" font-size="9" fill="#9BA1A8" letter-spacing="1">MAP</text>
+</g>
+<g transform="translate(620,320)">
+  <rect x="-6" y="-6" width="172" height="92" rx="10" fill="#fff" stroke="#E4E7EB"></rect>
+  <svg x="36" y="6" width="88" height="56" viewBox="0 0 88 56"><rect x="14" y="30" width="9" height="18" fill="#1FC9B0"></rect>
+  <rect x="30" y="22" width="9" height="26" fill="#1FC9B0"></rect>
+  <rect x="46" y="27" width="9" height="21" fill="#1FC9B0"></rect>
+  <rect x="62" y="18" width="9" height="30" fill="#1FC9B0"></rect>
+  <polyline points="18,22 34,28 50,15 66,20" fill="none" stroke="#2A6FDB" stroke-width="2"></polyline>
+  <circle cx="18" cy="22" r="2" fill="#2A6FDB"></circle>
+  <circle cx="34" cy="28" r="2" fill="#2A6FDB"></circle>
+  <circle cx="50" cy="15" r="2" fill="#2A6FDB"></circle>
+  <circle cx="66" cy="20" r="2" fill="#2A6FDB"></circle>
+  <line x1="8" y1="48" x2="78" y2="48" stroke="#E4E7EB"></line></svg>
+  <text x="80" y="108" text-anchor="middle" font-size="13" fill="#1B1F23">combo</text>
+  <text x="80" y="124" text-anchor="middle" font-size="9" fill="#9BA1A8" letter-spacing="1">SPECIAL</text>
+</g>
+<g transform="translate(20,470)">
+  <rect x="-6" y="-6" width="172" height="92" rx="10" fill="#fff" stroke="#E4E7EB"></rect>
+  <svg x="36" y="6" width="88" height="56" viewBox="0 0 88 56"><text x="44" y="32" font-size="22" font-weight="700" font-family="Roboto, sans-serif" fill="#1FC9B0" text-anchor="middle">284M</text>
+  <text x="44" y="44" font-size="6.5" font-family="Roboto, sans-serif" fill="#9BA1A8" text-anchor="middle" letter-spacing="1">TOTAL RECORDS</text></svg>
+  <text x="80" y="108" text-anchor="middle" font-size="13" fill="#1B1F23">numbers</text>
+  <text x="80" y="124" text-anchor="middle" font-size="9" fill="#9BA1A8" letter-spacing="1">OTHER</text>
+</g>
+</svg>
