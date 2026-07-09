@@ -183,12 +183,14 @@
                                         </ng-container>
                                       </div>
                                       <div class="uk-child-width-1-2" data-uk-grid>
-                                        <div input placeholder="Filter Operator" type="select"
-                                             [formInput]="group.get('type')" [options]="filterOperators | filterOperators: group.get('field.type').value">
+                                        <div input placeholder="Filter Operator" type="select" [formInput]="group.get('type')"
+                                             [options]="filterOperators | filterOperators: group.get('field.type').value">
                                         </div>
                                         @if ((group.get('type').value === '=') || (group.get('type').value === '!=')) {
                                           <div>
-                                            <autocomplete-input-field [inputFormGroup]="group.get('values.0')" [filterfield]="group.get('field.name').value"></autocomplete-input-field>
+                                            <autocomplete-input-field [inputFormGroup]="group.get('values.0')"
+                                                                      [filterfield]="group.get('field.name').value">
+                                            </autocomplete-input-field>
                                           </div>
                                         } @else {
                                           <div input placeholder="Value" type="text"  [formInput]="group.get('values.0')"></div>
