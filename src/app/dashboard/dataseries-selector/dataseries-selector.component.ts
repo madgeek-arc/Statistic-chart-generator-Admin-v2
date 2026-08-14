@@ -76,7 +76,9 @@ export class DataseriesSelectorComponent implements OnInit, AfterViewInit {
 		{ filterOperator: '<=', filterName: 'Less / Equal than', filterType: [FieldType.int, FieldType.float, FieldType.date] },
 		{ filterOperator: 'contains', filterName: 'Contains', filterType: [FieldType.text] },
 		{ filterOperator: 'starts_with', filterName: 'Starts with', filterType: [FieldType.text] },
-		{ filterOperator: 'ends_with', filterName: 'Ends with', filterType: [FieldType.text] }
+		{ filterOperator: 'ends_with', filterName: 'Ends with', filterType: [FieldType.text] },
+		{ filterOperator: 'is_null', filterName: 'Is null', filterType: [FieldType.text, FieldType.int, FieldType.float, FieldType.date] },
+		{ filterOperator: 'is_not_null', filterName: 'Is not null', filterType: [FieldType.text, FieldType.int, FieldType.float, FieldType.date] }
 	];
 
 	constructor(

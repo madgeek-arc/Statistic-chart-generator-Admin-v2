@@ -186,7 +186,9 @@
                                         <div input placeholder="Filter Operator" type="select" [formInput]="group.get('type')"
                                              [options]="filterOperators | filterOperators: group.get('field.type').value">
                                         </div>
-                                        @if ((group.get('type').value === '=') || (group.get('type').value === '!=')) {
+                                        @if ((group.get('type').value === 'is_null') || (group.get('type').value === 'is_not_null')) {
+                                          <div class="uk-text-meta">No value required</div>
+                                        } @else if ((group.get('type').value === '=') || (group.get('type').value === '!=')) {
                                           <div>
                                             <autocomplete-input-field [inputFormGroup]="group.get('values.0')"
                                                                       [filterfield]="group.get('field.name').value">
