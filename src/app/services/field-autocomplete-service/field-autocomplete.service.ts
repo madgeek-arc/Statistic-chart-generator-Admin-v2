@@ -19,7 +19,7 @@ export class FieldAutocompleteService {
   constructor(private http: HttpClient, private urlProvider: UrlProviderService,
      private errorHandler: ErrorHandlerService, private profileMappingService: MappingProfilesService) {}
 
-  getAutocompleteFields(field: string, text: string): Observable<AutocompleteResponse> {
+  getAutocompleteFields(field: string, text: string | null): Observable<AutocompleteResponse> {
 
     const profile: Profile = this.profileMappingService.selectedProfile$.value;
 
@@ -28,7 +28,6 @@ export class FieldAutocompleteService {
 
     autocompleteFieldTextUrl = encodeURI(autocompleteFieldTextUrl);
 
-    console.log('Calling: ' + autocompleteFieldTextUrl);
     return this.http.get<AutocompleteResponse>(autocompleteFieldTextUrl)
     .pipe(
       retry(3), // retry a failed request up to 3 times

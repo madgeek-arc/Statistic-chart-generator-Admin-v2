@@ -1,6 +1,7 @@
 import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
 import { DestroyRef, inject, Injectable } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
+import { distinctUntilChanged } from "rxjs/operators";
 
 interface InvalidControl {
   path: string;
@@ -40,6 +41,16 @@ export class FormFactoryService {
     if (disabled)
       ctrl.disable();
     return ctrl;
+  }
+
+  /** Trim a filter-rule `values` FormArray to at most `max` controls, keeping at least one. */
+  private clampValuesArray(values: FormArray, max: number): void {
+    while (values.length > max) {
+      values.removeAt(values.length - 1);
+    }
+    if (values.length === 0) {
+      values.push(this.fb.control(null));
+    }
   }
 
   /**
@@ -208,20 +219,29 @@ export class FormFactoryService {
       }
     });
 
+    // Changing the filter field invalidates any value(s) already picked for the
+    // old field: clear them so the autocomplete re-fetches fresh values on the
+    // next focus. `distinctUntilChanged` ignores re-selecting the same field and
+    // the no-op reset emitted when the y-axis entity changes; the initial value
+    // is set via the FormControl constructor and does not emit, so loading a
+    // saved chart is unaffected.
+    group.get('field.name').valueChanges
+      .pipe(distinctUntilChanged(), takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () => {
+          const values = group.get('values') as FormArray;
+          this.clampValuesArray(values, 1);
+          values.at(0).reset(null);
+        }
+      });
+
     // Keep the `values` FormArray shape in sync with the operator: multi-value for
     // in/not_in, single-value for everything else.
     group.get('type').valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (type: string | null) => {
         const values = group.get('values') as FormArray;
         const multi = type === 'in' || type === 'not_in';
-        if (!multi) {
-          while (values.length > 1) {
-            values.removeAt(values.length - 1);
-          }
-        }
-        if (values.length === 0) {
-          values.push(this.fb.control(null));
-        }
+        this.clampValuesArray(values, multi ? values.length : 1);
       }
     });
 
