@@ -45,7 +45,7 @@ export class Query {
         filter.type = groupFilter.type;
         filter.values = (groupFilter.type === 'is_null' || groupFilter.type === 'is_not_null')
           ? []
-          : groupFilter.values;
+          : (groupFilter.values ?? []).filter(v => v !== null && v !== '');
         filterGroup.groupFilters.push(filter);
       });
       this.filters.push(filterGroup);

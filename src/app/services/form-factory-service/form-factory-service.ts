@@ -208,6 +208,23 @@ export class FormFactoryService {
       }
     });
 
+    // Keep the `values` FormArray shape in sync with the operator: multi-value for
+    // in/not_in, single-value for everything else.
+    group.get('type').valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+      next: (type: string | null) => {
+        const values = group.get('values') as FormArray;
+        const multi = type === 'in' || type === 'not_in';
+        if (!multi) {
+          while (values.length > 1) {
+            values.removeAt(values.length - 1);
+          }
+        }
+        if (values.length === 0) {
+          values.push(this.fb.control(null));
+        }
+      }
+    });
+
     return group;
   }
 
