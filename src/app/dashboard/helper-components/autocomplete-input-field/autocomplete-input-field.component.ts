@@ -16,7 +16,7 @@ import {
 } from "../../../services/field-autocomplete-service/field-autocomplete.service";
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MaterialModule } from "../../../material/material.module";
-import { AsyncPipe, NgClass } from "@angular/common";
+import { AsyncPipe } from "@angular/common";
 
 @Component({
     selector: 'autocomplete-input-field',
@@ -24,7 +24,6 @@ import { AsyncPipe, NgClass } from "@angular/common";
     styleUrls: ['./autocomplete-input-field.component.scss'],
     imports: [
     MaterialModule,
-    NgClass,
     ReactiveFormsModule,
     AsyncPipe
 ]
@@ -44,6 +43,7 @@ export class AutocompleteInputFieldComponent implements AfterViewInit, OnDestroy
   possibleFieldValues: Observable<Array<string>>;
   numberOfpossibleFieldValues: number;
   loading: boolean;
+  focused = false;
   typeToSearchDelay: number;
   autocompleteSubscription: Subscription;
 
