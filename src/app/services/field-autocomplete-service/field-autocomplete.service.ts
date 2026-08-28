@@ -8,7 +8,9 @@ import { MappingProfilesService, Profile } from '../mapping-profiles-service/map
 
 export class AutocompleteResponse {
   count: number | null =  null;
-  values: Array<string> = [];
+  // null when the field has more distinct values than the server will inline
+  // (the caller should prompt the user to type a narrowing term)
+  values: Array<string> | null = [];
 }
 
 @Injectable({

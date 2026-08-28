@@ -45,7 +45,7 @@ export class AutocompleteInputFieldComponent implements AfterViewInit, OnChanges
   // Trigger directive on the input, used to open / reposition the panel once async options load
   @ViewChild(MatAutocompleteTrigger) private autoTrigger?: MatAutocompleteTrigger;
 
-  possibleFieldValues: Observable<Array<string>>;
+  possibleFieldValues: Observable<Array<string> | null>;
   numberOfpossibleFieldValues: number;
   loading: boolean;
   focused = false;
@@ -111,7 +111,10 @@ export class AutocompleteInputFieldComponent implements AfterViewInit, OnChanges
       switchAll()).subscribe({
         next: (result: AutocompleteResponse) => {
           const firstOpen = !this.panelReady;
-          this.possibleFieldValues = of(result.values);
+          // `values` is absent/null when the field has too many distinct values;
+          // normalise so the template's `=== null` branch ("type to narrow down")
+          // catches it instead of dereferencing undefined.
+          this.possibleFieldValues = of(result.values ?? null);
           this.numberOfpossibleFieldValues = result.count;
           this.loading = false;
           this.searched = true;
