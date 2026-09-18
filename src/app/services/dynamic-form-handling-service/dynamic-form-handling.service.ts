@@ -312,6 +312,12 @@ export class DynamicFormHandlingService {
         }
 
         if (chartInfo) {
+          // `chartInfo` here is the NL-chat ChartInfo (nl-chat.service.ts: no `color`,
+          // `query: NlQuery | DslQuery`), while every field below expects the unrelated
+          // form-builder ChartInfo (chart-query.model.ts: `color` + `query: Query`). The
+          // `as any` casts are bridging two intentionally different domain models, not a
+          // typing oversight — a real fix needs a defined mapping from NL/DSL query results
+          // to `color`/`Query`, which isn't established yet.
           if (chartObject ) {
             switch (library) {
 
@@ -320,7 +326,7 @@ export class DynamicFormHandlingService {
                 break;
               }
               case ('HighCharts'): {
-                (chartObject as HighChartsChart).chartDescription.queries = chartInfo as any; // FIXME: use proper type
+                (chartObject as HighChartsChart).chartDescription.queries = chartInfo as any;
                 break;
               }
               case ('HighMaps'): {

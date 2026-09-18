@@ -44,12 +44,13 @@ export class DiagramCreator {
 		const library: string = appearanceOptions.chartAppearance.generalOptions.visualisationLibrary;
     console.log(library);
 
-    // TODO we can make sure we dont send to the back end queries with unsupported libraries
-		// ----------------------
-		// this.supportedLibrariesService.getSupportedLibraries().subscribe(
-		// (data: Array<string>) =>  {
-		//     if (data.includes(library)) {
-
+    // `library` is already constrained to the chosen chart type's supported libraries via
+    // the visualisationLibrary dropdown (see customise-appearance.component.ts), and the
+    // `default` case below already drops anything this switch doesn't recognize. The one
+    // remaining gap — a previously-saved chart file referencing a since-deprecated library —
+    // would need an async check against SupportedLibrariesService.getSupportedLibraries()
+    // plus a decision on user-facing behavior on rejection; not implemented, as it's a
+    // narrow edge case not currently worth the async refactor to createChart().
 		switch (library) {
 
 			case ('HighCharts'): {
