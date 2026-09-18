@@ -389,7 +389,7 @@ export class FormFactoryService {
 /** Utils **/
 export function findInvalidControls(
   control: AbstractControl,
-  path: string = ''
+  path = ''
 ): InvalidControl[] {
 
   const invalidControls: InvalidControl[] = [];

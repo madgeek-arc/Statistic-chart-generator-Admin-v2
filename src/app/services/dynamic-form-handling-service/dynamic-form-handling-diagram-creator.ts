@@ -363,11 +363,9 @@ export class DiagramCreator {
 			chartObj.orderBy = appearanceOptions.chartAppearance.generalOptions.orderByAxis as string;
 		}
 
-		// tslint:disable-next-line:max-line-length
-		if (appearanceOptions.chartAppearance.echartsAppearanceOptions !== undefined && appearanceOptions.chartAppearance.echartsAppearanceOptions !== null) {
+			if (appearanceOptions.chartAppearance.echartsAppearanceOptions !== undefined && appearanceOptions.chartAppearance.echartsAppearanceOptions !== null) {
 			// Exporting
-			// tslint:disable-next-line:max-line-length
-			chartObj.chartDescription.toolbox.show = appearanceOptions.chartAppearance.echartsAppearanceOptions.ecMiscOptions?.exporting as boolean;
+					chartObj.chartDescription.toolbox.show = appearanceOptions.chartAppearance.echartsAppearanceOptions.ecMiscOptions?.exporting as boolean;
 			if (chartObj.chartDescription.toolbox.show) {
 				chartObj.chartDescription.toolbox.right = '10';
 				chartObj.chartDescription.toolbox.feature = new ECToolboxFeature();
@@ -375,10 +373,8 @@ export class DiagramCreator {
 			// Legend Options
 			chartObj.chartDescription.legend.show = appearanceOptions.chartAppearance.echartsAppearanceOptions.ecLegend?.ecEnableLegend as boolean;
 			chartObj.chartDescription.legend.orient = appearanceOptions.chartAppearance.echartsAppearanceOptions.ecLegend?.ecLegendLayout as "horizontal" | "vertical";
-			// tslint:disable-next-line:max-line-length
-			chartObj.chartDescription.legend.left = appearanceOptions.chartAppearance.echartsAppearanceOptions.ecLegend?.ecLegendHorizontalAlignment as string | number;
-			// tslint:disable-next-line:max-line-length
-			chartObj.chartDescription.legend.top = appearanceOptions.chartAppearance.echartsAppearanceOptions.ecLegend?.ecLegendVerticalAlignment as string | number;
+					chartObj.chartDescription.legend.left = appearanceOptions.chartAppearance.echartsAppearanceOptions.ecLegend?.ecLegendHorizontalAlignment as string | number;
+					chartObj.chartDescription.legend.top = appearanceOptions.chartAppearance.echartsAppearanceOptions.ecLegend?.ecLegendVerticalAlignment as string | number;
 
 			if (appearanceOptions.chartAppearance.echartsAppearanceOptions.titles) {
 				if (chartObj.chartDescription.title !== undefined) {
@@ -388,8 +384,7 @@ export class DiagramCreator {
 			}
 
 			// Chart Area Options
-			// tslint:disable-next-line:max-line-length
-			chartObj.chartDescription.backgroundColor = appearanceOptions.chartAppearance.echartsAppearanceOptions.ecChartArea?.ecCABackGroundColor;
+					chartObj.chartDescription.backgroundColor = appearanceOptions.chartAppearance.echartsAppearanceOptions.ecChartArea?.ecCABackGroundColor;
 
 			if (appearanceOptions.chartAppearance.echartsAppearanceOptions.axisNames) {
 				if (chartObj.chartDescription.xAxis !== undefined) {
@@ -416,8 +411,7 @@ export class DiagramCreator {
 			(appearanceOptions.chartAppearance.echartsAppearanceOptions !== undefined &&
 				appearanceOptions.chartAppearance.echartsAppearanceOptions.dataSeriesColorArray !== undefined &&
 				appearanceOptions.chartAppearance.echartsAppearanceOptions.dataSeriesColorArray[0] !== '#00000000')) {
-			// tslint:disable-next-line:max-line-length
-			chartObj.chartDescription.color = appearanceOptions.chartAppearance.echartsAppearanceOptions.dataSeriesColorArray.concat(this.ecColorTheme);
+					chartObj.chartDescription.color = appearanceOptions.chartAppearance.echartsAppearanceOptions.dataSeriesColorArray.concat(this.ecColorTheme);
 		}
 		else
 			chartObj.chartDescription.color = this.ecColorTheme;
@@ -442,11 +436,11 @@ export class DiagramCreator {
 		chartObj.chartDescription.queries = queries;
 
 		// Initialize the echarts series
-		dataseries.forEach(dataElement => {
+		dataseries.forEach(_dataElement => {
 
       const seriesItem = this.eChartsHelperService.buildSeries(category.diagram.type as ChartType, {
         // IMPORTANT: Data were omitted in the previous implementation. Uncomment to add if needed.
-        // data: dataElement,
+        // data: _dataElement,
         stack: appearanceOptions.chartAppearance.echartsAppearanceOptions?.ecMiscOptions?.stackedChart,
         showLabels: appearanceOptions.chartAppearance.echartsAppearanceOptions?.ecMiscOptions?.ecEnableDataLabels
       });
@@ -500,8 +494,7 @@ export class DiagramCreator {
 		const mapObj = new HighMapsMap();
 		mapObj.library = appearanceOptions.chartAppearance.generalOptions.visualisationLibrary;
 
-		// tslint:disable-next-line:max-line-length
-		if (appearanceOptions.chartAppearance.highmapsAppearanceOptions !== undefined && appearanceOptions.chartAppearance.highmapsAppearanceOptions !== null) {
+			if (appearanceOptions.chartAppearance.highmapsAppearanceOptions !== undefined && appearanceOptions.chartAppearance.highmapsAppearanceOptions !== null) {
 			// Color Axis
 			mapObj.mapDescription.colorAxis.max = appearanceOptions.chartAppearance.highmapsAppearanceOptions.hmColorAxis?.hmColorAxisMax === undefined ?
 				null as any : appearanceOptions.chartAppearance.highmapsAppearanceOptions.hmColorAxis.hmColorAxisMax;

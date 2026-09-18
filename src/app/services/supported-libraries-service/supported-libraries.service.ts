@@ -14,10 +14,10 @@ export class SupportedLibrariesService {
   constructor(private http: HttpClient,
      private urlProvider: UrlProviderService, private errorHandler: ErrorHandlerService) {}
 
-  getSupportedLibraries(): Observable<Array<string>> {
+  getSupportedLibraries(): Observable<string[]> {
 
     const supportedLibrariesUrl = this.urlProvider.serviceURL + '/chart/libraries';
-    return this.http.get<Array<string>>(supportedLibrariesUrl)
+    return this.http.get<string[]>(supportedLibrariesUrl)
     .pipe(
       retry(3), // retry a failed request up to 3 times
       catchError(this.errorHandler.handleError) // then handle the error

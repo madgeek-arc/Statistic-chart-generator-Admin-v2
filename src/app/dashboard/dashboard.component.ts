@@ -35,10 +35,10 @@ export class DashboardComponent implements OnInit {
   currentStep = 0;
   selectedProfileDetails: Profile | null = null;
   selectedChartDetails: ISupportedCategory | null = null;
-  hasChanges: boolean = false;
+  hasChanges = false;
 
   open = true;
-  hasDataAndDiagramType: boolean = false;
+  hasDataAndDiagramType = false;
 
   chartInfo: ChartInfo[] | null = null;
   appearanceFromChat: OptionsData | null = null;

@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 
 @Component({
@@ -6,9 +6,9 @@ import { FormGroup } from '@angular/forms';
     templateUrl: './google-charts.component.html',
     standalone: false
 })
-export class GoogleChartsComponent {
+export class GoogleChartsComponent implements OnInit {
 
-	@Input('googleChartsForm') googleChartsForm: FormGroup;
+	@Input() googleChartsForm: FormGroup;
 
 	protected stackedGraphList = [
 		{ label: 'Disabled', value: 'disabled' },

@@ -22,18 +22,6 @@ export class GoogleChartsTable {
     }
 }
 
-class GoogleChartsTableDescription {
-
-    queriesInfo: ChartInfo[];
-    columns: string[];
-    options: GoogleChartsOptions;
-    constructor() {
-        this.queriesInfo = [];
-        this.columns = new Array<string>();
-        this.options = new GoogleChartsOptions();
-    }
-}
-
 class GoogleChartsDescription {
     chartType: 'AreaChart'|'BarChart'|'ColumnChart'|'LineChart'|'PieChart'|'ComboChart'|'TreeMap' = 'ComboChart';
     columns: string[];

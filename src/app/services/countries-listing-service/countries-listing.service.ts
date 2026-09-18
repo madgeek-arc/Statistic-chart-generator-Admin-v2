@@ -9,7 +9,7 @@ export interface Country {
 export interface Name {
   common:     string;
   official:   string;
-  nativeName: { [key: string]: NativeName };
+  nativeName: Record<string, NativeName>;
 }
 
 export interface NativeName {

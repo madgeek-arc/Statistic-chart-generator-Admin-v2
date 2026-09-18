@@ -67,7 +67,7 @@ export class HeaderComponent {
     }
 
     // Magic starts here
-    let raw = tmpData[0].endsWith('/raw');
+    const raw = tmpData[0].endsWith('/raw');
     console.log('Is raw data: ', raw);
     this.urlMappingService.updateFormObjet(JSON.parse(decodeURIComponent(tmpData[1])), raw);
   }
@@ -77,7 +77,7 @@ export class HeaderComponent {
       const parsed = JSON.parse(str);
       // Optionally: check if the result is an object or array
       return typeof parsed === 'object' && parsed !== null;
-    } catch (e) {
+    } catch (_e) {
       return false;
     }
   }

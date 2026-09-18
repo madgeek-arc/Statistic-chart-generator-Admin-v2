@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, of } from 'rxjs';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { catchError, distinctUntilChanged, first } from 'rxjs/operators';
 import { UrlProviderService } from '../url-provider-service/url-provider.service';
 import { ErrorHandlerService } from "../error-handler-service/error-handler.service";
@@ -13,8 +13,6 @@ import { HighMapsMap } from "../supported-libraries-service/models/chart-descrip
 import { EChartsChart } from "../supported-libraries-service/models/chart-description-eCharts.model";
 import { RawChartDataModel } from "../supported-libraries-service/models/chart-description-rawChartData.model";
 import { RawDataModel } from "../supported-libraries-service/models/description-rawData.model";
-
-type PostTinyUrlCallback = (shortUrl: string) => void;
 
 export class ShortenUrlResponse {
 	constructor(shortUrl: string) { this.shortUrl = shortUrl; }
@@ -92,7 +90,11 @@ export class ChartExportingService {
   }
 
 	private handleStringURL(stringURL: string | null, urlState: UrlState) {
-    stringURL ? this.postTinyUrl(stringURL, urlState) : urlState.setTinyUrl(null);
+    if (stringURL) {
+      this.postTinyUrl(stringURL, urlState);
+    } else {
+      urlState.setTinyUrl(null);
+    }
   }
 
 	private postTinyUrl(chartUrl: string, state: UrlState) {

@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 
 @Component({
@@ -7,7 +7,7 @@ import { FormControl, FormGroup } from '@angular/forms';
     standalone: false
 })
 
-export class EChartsComponent {
+export class EChartsComponent implements OnInit {
 
 	@Input() eChartsForm: FormGroup;
 

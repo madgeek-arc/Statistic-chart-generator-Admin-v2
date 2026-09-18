@@ -8,10 +8,11 @@ describe('CardComponentComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [DiagramCardComponentComponent]
+      imports: [DiagramCardComponentComponent]
     });
     fixture = TestBed.createComponent(DiagramCardComponentComponent);
     component = fixture.componentInstance;
+    fixture.componentRef.setInput('diagram', { type: 'bar', supportedLibraries: [] });
     fixture.detectChanges();
   });
 

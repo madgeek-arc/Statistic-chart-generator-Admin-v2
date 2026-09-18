@@ -3,8 +3,8 @@ import { Query } from "./chart-query.model";
 
 export class RawDataModel {
     orderBy: string | null = null;
-    verbose: boolean = false;
-    series: Array<QueryInfo> = [];
+    verbose = false;
+    series: QueryInfo[] = [];
 
     constructor() {}
 }

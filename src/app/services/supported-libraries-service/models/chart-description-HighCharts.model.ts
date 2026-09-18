@@ -21,7 +21,7 @@ class HighChartsDescription {
 	subtitle: Highcharts.SubtitleOptions;
 	yAxis: Highcharts.YAxisOptions;
 	xAxis: Highcharts.XAxisOptions;
-	queries: Array<ChartInfo> = [];
+	queries: ChartInfo[] = [];
 	lang: HCLang;
 	exporting: HCExporting;
 	plotOptions: HCPlotOptions;
@@ -30,7 +30,7 @@ class HighChartsDescription {
 	credits: HCCredits;
 	colors: Highcharts.ColorType[] = [];
 	colorAxis: { minColor: Highcharts.ColorType, maxColor: Highcharts.ColorType };
-	series: Array<{ stacking?: undefined | 'normal' | 'percent' | 'stream' | 'overlap' }> = [];
+	series: { stacking?: undefined | 'normal' | 'percent' | 'stream' | 'overlap' }[] = [];
 
 	constructor(type: string, polar: boolean) {
 		this.chart = {
@@ -63,34 +63,11 @@ class HighChartsDescription {
 	}
 }
 
-class HCchart {
-	/* In TypeScript this option has no effect in sense of typing and instead the type option must always be set in the series.
-	 https://api.highcharts.com/highcharts/chart.type */
-	type: string = 'line';
-	polar: boolean = false;
-
-	backgroundColor: string = '#ffffff';
-	borderColor: string = '#335cad';
-	borderRadius: number = 0;
-	borderWidth: number = 0;
-
-	plotBackgroundImage: string | undefined;
-	plotBackgroundColor: string | undefined;
-	plotBorderColor: string = '#cccccc';
-	plotBorderWidth: number = 0;
-}
 export class HCsubtitle {
 	text: string | undefined;
 }
 export class HCtitle {
 	text: string | undefined;
-}
-class HCaxis {
-	title: HCtitle;
-
-	constructor() {
-		this.title = new HCtitle();
-	}
 }
 class HCLang {
 	noData = 'No Data available for the Query';
@@ -127,7 +104,7 @@ class HCPlotOptionsSeries {
 }
 
 export class HCDataLabels implements Highcharts.DataLabelsOptions {
-	enabled: boolean = false;
+	enabled = false;
 	format: string | undefined = undefined;
 	style: Highcharts.CSSObject =
 		{
@@ -142,7 +119,7 @@ export class HCZoomOptionsFormSchema {
 }
 
 export class HCCredits {
-	enabled: boolean = true;
+	enabled = true;
 	text: string | null = null;
 	href: string | null = null;
 }

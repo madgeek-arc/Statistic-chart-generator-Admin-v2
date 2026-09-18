@@ -8,7 +8,7 @@ import { MappingProfilesService, Profile } from '../mapping-profiles-service/map
 
 export class AutocompleteResponse {
   count: number | null =  null;
-  values: Array<string> = [];
+  values: string[] = [];
 }
 
 @Injectable({

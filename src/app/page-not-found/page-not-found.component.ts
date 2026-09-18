@@ -8,5 +8,5 @@ import { Component } from '@angular/core';
 })
 export class PageNotFoundComponent {
 
-	errorMessage: string = 'Page Not Found';
+	errorMessage = 'Page Not Found';
 }

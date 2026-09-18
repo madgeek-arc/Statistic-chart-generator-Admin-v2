@@ -8,7 +8,8 @@
     "analyze:stats": "ng build --stats-json && npx webpack-bundle-analyzer dist/$(node -p \"require('./package.json').name\")/stats.json",
     "analyze:source-maps": "ng build --source-map && npx source-map-explorer dist/$(node -p \"require('./package.json').name\")/*.js",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "lint": "ng lint"
   },
   "private": true,
   "dependencies": {
@@ -36,8 +37,20 @@
     "@angular/build": "^21.2.12",
     "@angular/cli": "^21.2.12",
     "@angular/compiler-cli": "^21.2.14",
+    "@eslint/js": "^10.0.1",
+    "@types/jasmine": "~4.6.6",
     "@types/uikit": "^3.23.0",
+    "angular-eslint": "21.4.0",
+    "eslint": "^10.3.0",
+    "jasmine-core": "~4.6.1",
+    "karma": "~6.4.4",
+    "karma-chrome-launcher": "~3.2.0",
+    "karma-coverage": "~2.2.1",
+    "karma-jasmine": "~5.1.0",
+    "karma-jasmine-html-reporter": "~2.3.0",
     "less": "^4.2.0",
-    "typescript": "~5.9.3"
+    "puppeteer": "~24.43.1",
+    "typescript": "~5.9.3",
+    "typescript-eslint": "8.59.2"
   }
 }

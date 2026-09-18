@@ -14,7 +14,7 @@ export class UrlProviderService {
     return environment.apiUrl + environment.apiFolder;
   }
 
-  public createChartURL(chartObject: Object): string
+  public createChartURL(chartObject: object): string
   {
     let stringObj = JSON.stringify(chartObject);
     stringObj = stringObj.replaceAll('%', '%25');
@@ -22,7 +22,7 @@ export class UrlProviderService {
     return this.serviceURL + '/chart?json=' + encodeURIComponent(stringObj);
   }
 
-  public createTableURL(tableObject: Object): string
+  public createTableURL(tableObject: object): string
   {
     let stringObj = JSON.stringify(tableObject);
     stringObj = stringObj.replaceAll('%', '%25');
@@ -30,7 +30,7 @@ export class UrlProviderService {
     return this.serviceURL + '/table?json=' + encodeURIComponent(stringObj);
   }
 
-  public createRawChartDataUrl(rawChartDataObject: Object) : string
+  public createRawChartDataUrl(rawChartDataObject: object) : string
   {
     let stringObj = JSON.stringify(rawChartDataObject);
     stringObj = stringObj.replaceAll('%', '%25');
@@ -38,7 +38,7 @@ export class UrlProviderService {
     return this.serviceURL + '/chart/json?json=' + encodeURIComponent(stringObj);
   }
 
-  public createRawDataUrl(rawDataObject: Object): string
+  public createRawDataUrl(rawDataObject: object): string
   {
     let stringObj = JSON.stringify(rawDataObject);
     stringObj = stringObj.replaceAll('%', '%25');

@@ -21,7 +21,7 @@ export class UrlMappingService {
               private dynamicTreeDatabase: DynamicTreeDatabase,
               private profileService: MappingProfilesService) {}
 
-  updateFormObjet(urlJson: any, rawData: boolean = false) {
+  updateFormObjet(urlJson: any, rawData = false) {
     let profile = urlJson.library === 'HighMaps'
       ? urlJson.mapDescription?.queries?.[0]?.query?.profile
       : urlJson.chartDescription?.queries?.[0]?.query?.profile;
@@ -114,7 +114,7 @@ export class UrlMappingService {
 
       // 3) Build `dataseries`
 
-      type NumberSeries = {
+      interface NumberSeries {
         query: Query;
       }
       const dataseries = urlJson.series.map((s: NumberSeries, index: number) => {
@@ -158,8 +158,8 @@ export class UrlMappingService {
 
         // 3d) chartProperties
         const chartProperties = {
-          chartType: null,
-          dataseriesColor: null,
+          chartType: null as any,
+          dataseriesColor: null as any,
           dataseriesName: 'Data (' + index + ')',
           stacking: 'null',
         };
@@ -196,7 +196,7 @@ export class UrlMappingService {
 
       // pick a diagram: try to match query.type or fallback to a map-like diagram
       const firstQueryType = mapDesc.queries?.[0]?.type ?? 'world';
-      let diagram: ISupportedCategory | undefined =
+      const diagram: ISupportedCategory | undefined =
         this.diagramService.availableDiagrams.find(d => d.type === firstQueryType) ||
         this.diagramService.availableDiagrams.find(d => d.type?.toLowerCase().includes('map')) ||
         this.diagramService.availableDiagrams[0];
@@ -491,7 +491,7 @@ export class UrlMappingService {
       },
       hcDataLabels: {
         enabled: hcaOpts.plotOptions.series.dataLabels.enabled,
-        format: undefined,
+        format: undefined as any,
         style: {'textOutline': '2px contrast', 'stroke-width': 0} // Further inspect this!
       },
       hcZoomOptions: {

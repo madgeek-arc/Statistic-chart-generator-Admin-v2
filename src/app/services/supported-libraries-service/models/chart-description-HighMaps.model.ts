@@ -19,8 +19,8 @@ class HighMapsDescription {
     exporting: HCExporting;
     legend: HCLegend;
     mapNavigation: HMNavigation;
-    queries: Array<ChartInfo>;
-    series: Array<HMSeriesInfo>;
+    queries: ChartInfo[];
+    series: HMSeriesInfo[];
     subtitle: Highcharts.SubtitleOptions;
     title: Highcharts.TitleOptions;
     zoomTo: {destination: string | undefined, zoomValue: number};
@@ -43,7 +43,7 @@ class HighMapsDescription {
 
 class HMChart {
 	// TBD check if this is correct
-    map: string = '';
+    map = '';
     // map = undefined;
 }
 
@@ -60,7 +60,7 @@ class HMColorAxis {
 }
 
 export class HMSeriesInfo {
-    data = [];
+    data: any[] = [];
     name: string;
     keys = ['iso-a2', 'value'];
     joinBy = 'iso-a2';

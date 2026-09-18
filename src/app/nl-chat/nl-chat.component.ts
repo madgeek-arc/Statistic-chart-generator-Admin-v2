@@ -1,14 +1,13 @@
 import {
-  afterNextRender, afterRenderEffect,
+  afterRenderEffect,
   Component,
   DestroyRef,
-  effect,
   ElementRef,
   inject,
   input,
   output,
   signal,
-  ViewChild
+  ViewChild, OnInit
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -45,7 +44,7 @@ interface Message {
   templateUrl: './nl-chat.component.html',
   styleUrl: './nl-chat.component.less'
 })
-export class NlChatComponent {
+export class NlChatComponent implements OnInit {
   private destroyRef = inject(DestroyRef);
   private nlChatService = inject(NlChatService);
   private profileService = inject(MappingProfilesService);
@@ -121,7 +120,7 @@ export class NlChatComponent {
           element.scrollTop = element.scrollHeight;
         });
       }
-    } catch (err) {
+    } catch (_err) {
       // Silently handle any scrolling errors
     }
   }

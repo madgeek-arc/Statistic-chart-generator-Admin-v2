@@ -4,24 +4,24 @@ import { Observable, BehaviorSubject } from 'rxjs';
 import { UrlProviderService } from '../url-provider-service/url-provider.service';
 
 export class Profile {
-	name: string = '';
-	description: string = '';
-	usage: string = '';
+	name = '';
+	description = '';
+	usage = '';
 	shareholders: string[] = [];
-	complexity: number = -1;
+	complexity = -1;
 }
 
 @Injectable({
 	providedIn: 'root'
 })
 export class MappingProfilesService {
-	mappingProfiles$: BehaviorSubject<Array<Profile>>;
+	mappingProfiles$: BehaviorSubject<Profile[]>;
 	selectedProfile$: BehaviorSubject<Profile | null>;
 
 	constructor(private http: HttpClient, private urlProvider: UrlProviderService) {
 
 		this.selectedProfile$ = new BehaviorSubject<Profile | null>(null);
-		this.mappingProfiles$ = new BehaviorSubject<Array<Profile>>([]);
+		this.mappingProfiles$ = new BehaviorSubject<Profile[]>([]);
 
 		const sub = this.getProfileMappings().subscribe({
       next: (result: Profile[]) => {
@@ -47,11 +47,11 @@ export class MappingProfilesService {
 			this.selectedProfile$.next(null);
 	}
 
-	private getProfileMappings(): Observable<Array<Profile>> {
+	private getProfileMappings(): Observable<Profile[]> {
 
 		const profileMappingsUrl = this.urlProvider.serviceURL + '/schema/profiles';
 
-		return this.http.get<Array<Profile>>(profileMappingsUrl);
+		return this.http.get<Profile[]>(profileMappingsUrl);
 	}
 
 	get activeProfile() {

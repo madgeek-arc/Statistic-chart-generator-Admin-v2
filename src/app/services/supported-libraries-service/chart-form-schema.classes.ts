@@ -86,7 +86,7 @@ export interface HighchartsOptionsFormSchema {
   subtitle?: SubtitleOptionsFormSchema;
   xAxis?: XAxisOptionsFormSchema;
   yAxis?: YAxisOptionsFormSchema;
-  dataSeriesColorArray?: Array<string>;
+  dataSeriesColorArray?: string[];
   hcChartArea?: HCChartAreaOptionsFormSchema;
   hcPlotArea?: HCPlotAreaOptionsFormSchema;
   hcCredits?: HCCreditsOptionsFormSchema;
@@ -99,7 +99,7 @@ export interface HighchartsOptionsFormSchema {
 export interface EchartsOptionsFormSchema {
   titles?: TitlesOptionsFormSchema;
   axisNames?: AxisNamesFormSchema;
-  dataSeriesColorArray?: Array<string>;
+  dataSeriesColorArray?: string[];
   ecChartArea?: ECChartAreaOptionsFormSchema;
   ecLegend?: ECLegendOptionsFormSchema;
   ecMiscOptions?: ECMiscOptionsFormSchema;

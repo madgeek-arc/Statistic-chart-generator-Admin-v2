@@ -1,17 +1,16 @@
 import { Filter, FilterGroup } from './query-filter.model';
 import { DataFormSchema, DataseriesFormSchema } from "../chart-form-schema.classes";
-import { DslQuery, NlQuery } from "../../nl-chat-service/nl-chat.service";
 
 export class Query {
 
   name: string;
-  parameters: Array<any> = [];
+  parameters: any[] = [];
 
   limit: string;
   profile: string;
   entity: string;
-  select: Array<Select> = [];
-  filters: Array<FilterGroup> = [];
+  select: Select[] = [];
+  filters: FilterGroup[] = [];
 
   constructor(dataseriesData: DataFormSchema, profile: string, limit: string) {
     this.entity = dataseriesData.yaxisData.entity;

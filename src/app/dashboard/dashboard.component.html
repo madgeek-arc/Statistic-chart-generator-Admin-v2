@@ -402,7 +402,7 @@
                 <div class="iframe-container" [style.display]="currentStep === 0 || currentStep === 1 ? 'none' : 'block'">
 
                   <div>
-                    @if ((chartExportingService.chartUrl$ | async) != null) {
+                    @if ((chartExportingService.chartUrl$ | async) !== null) {
                       <div>
                         @if (hasChanges) {
                           <div class="uk-alert-warning" uk-alert>
@@ -411,7 +411,7 @@
                             <p>You updated the values in the control panel, but the chart was not updated automatically. Run the query by clicking on the "Create Chart" button.</p>
                           </div>
                         }
-                        @if ((chartExportingService.chartUrl$ | async) != null) {
+                        @if ((chartExportingService.chartUrl$ | async) !== null) {
                           <div class="container uk-margin-medium-top">
                             <chart-frame [chartUrl]="chartExportingService.chartUrl$ | async"></chart-frame>
                           </div>
@@ -435,7 +435,7 @@
 
                   <div class="uk-margin-medium-top">
                     <mat-tab-group mat-stretch-tabs="true" mat-align-tabs="start" animationDuration="250ms">
-                      @if ((chartExportingService.tableUrl$ | async) != null) {
+                      @if ((chartExportingService.tableUrl$ | async) !== null) {
                         <mat-tab label="Table">
                           <div class="container">
                             <chart-frame [chartUrl]="chartExportingService.tableUrl$ | async"></chart-frame>
@@ -448,7 +448,7 @@
                           </div>
                         </mat-tab>
                       }
-                      @if ((chartExportingService.rawChartDataUrl$ | async) != null) {
+                      @if ((chartExportingService.rawChartDataUrl$ | async) !== null) {
                         <mat-tab label="Raw Chart Data">
                           <div class="container">
                             <chart-frame [chartUrl]="chartExportingService.rawChartDataUrl$ | async"></chart-frame>
@@ -461,7 +461,7 @@
                           </div>
                         </mat-tab>
                       }
-                      @if ((chartExportingService.rawDataUrl$ | async) != null) {
+                      @if ((chartExportingService.rawDataUrl$ | async) !== null) {
                         <mat-tab label="Raw Data">
                           <div class="container">
                             <chart-frame [chartUrl]="chartExportingService.rawDataUrl$ | async"></chart-frame>

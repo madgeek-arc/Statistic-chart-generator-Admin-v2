@@ -36,7 +36,7 @@ class EChartsDescription {
   legend: ECLegend;
 
 
-  queries: Array<ChartInfo> = [];
+  queries: ChartInfo[] = [];
 
   constructor() {
 
@@ -89,7 +89,7 @@ export class ECToolboxFeatureItem {
 }
 
 export class ECLegend {
-  show: boolean = true;
+  show = true;
   orient: 'horizontal' | 'vertical' = 'horizontal';
   right: string | number = 'auto';
   left: string | number = 'auto';

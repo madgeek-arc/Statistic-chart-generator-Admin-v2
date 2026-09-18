@@ -72,7 +72,7 @@ export class DynamicDataSource implements DataSource<DynamicEntityNode> {
 		this.dataChange.next(this.data);
 	}
 
-	disconnect(collectionViewer: CollectionViewer): void {
+	disconnect(_collectionViewer: CollectionViewer): void {
 		this._connected$.complete();
 		this._treeControl.expansionModel.changed.complete();
 	}

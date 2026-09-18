@@ -6,6 +6,7 @@ import { environment } from './environments/environment';
 if (environment.production) {
 	enableProdMode();
 	if (window) {
+		// eslint-disable-next-line @typescript-eslint/no-empty-function -- deliberate no-op to silence console.log in production
 		window.console.log = function () { };
 	}
 }

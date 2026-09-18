@@ -6,6 +6,7 @@ import { DbSchemaService } from "../../services/db-schema-service/db-schema.serv
 import { FormFactoryService } from "../../services/form-factory-service/form-factory-service";
 import { DynamicTreeDatabase } from "../../services/dynamic-tree-database/dynamic-tree-database.service";
 import { Profile } from "../../services/mapping-profiles-service/mapping-profiles.service";
+import { InputComponent } from "../../shared/input.component";
 import UIkit from "uikit";
 
 export enum FieldType { text, int, float, date};
@@ -27,17 +28,17 @@ export class FilterType {
 export class DataseriesSelectorComponent implements OnInit, AfterViewInit {
   private destroyRef = inject(DestroyRef);
 
-	@Input('selectedProfile') selectedProfile: FormControl = new FormControl();
-	@ViewChild('editDataseriesName') editDataseriesName;
+	@Input() selectedProfile: FormControl = new FormControl();
+	@ViewChild('editDataseriesName') editDataseriesName: InputComponent;
 
   form: FormArray<FormGroup> | null = null;
 
-  entities: Array<string> = [];
+  entities: string[] = [];
   selectedTitleIndex = -1;
   selectedCategoryId: number | null = null;
 
-	hasTwoEntityFields: boolean = false;
-	dataseriesIncremment: number = 0;
+	hasTwoEntityFields = false;
+	dataseriesIncremment = 0;
 
 
   protected aggregates = [
@@ -132,7 +133,7 @@ export class DataseriesSelectorComponent implements OnInit, AfterViewInit {
     this.dynamicTreeDB.changeEntityMap(profile);
 
     this.dbService.getAvailableEntities(profile).pipe(distinctUntilChanged()).subscribe({
-      next: (entities: Array<string>) => {
+      next: (entities: string[]) => {
         this.entities = entities;
       }
     });
@@ -221,7 +222,7 @@ export class DataseriesSelectorComponent implements OnInit, AfterViewInit {
 	}
 
 	move(step: number, index: number) {
-		let items = this.form as FormArray;
+		const items = this.form as FormArray;
     const newIndex = index + step;
     if (newIndex >= 0 && newIndex < items.length) {
       const control = items.at(index);
@@ -231,9 +232,9 @@ export class DataseriesSelectorComponent implements OnInit, AfterViewInit {
 	}
 
 	checkYAxisAggregate(form: FormGroup): boolean {
-		let data = form.controls['data'] as FormGroup;
-		let yAxisData = data.controls['yaxisData'] as FormGroup;
-		let yaxisAggregate = yAxisData.controls['yaxisAggregate'] as FormControl;
+		const data = form.controls['data'] as FormGroup;
+		const yAxisData = data.controls['yaxisData'] as FormGroup;
+		const yaxisAggregate = yAxisData.controls['yaxisAggregate'] as FormControl;
 
 		if (yaxisAggregate && yaxisAggregate.value !== null) {
 			return yaxisAggregate.value !== 'total';

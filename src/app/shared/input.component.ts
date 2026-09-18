@@ -71,7 +71,7 @@ export interface ControlConfiguration {
   placeholder: string;
 }
 
-declare var UIkit;
+declare let UIkit: any;
 
 /**
  * Autocomplete soft allows values that are not listed in options list. In order to work as expected
@@ -362,7 +362,7 @@ export class InputComponent implements OnInit, OnDestroy, AfterViewInit, OnChang
   private static INPUT_COUNTER = 0;
   /** Basic information */
   @Input('formInput') formControl: AbstractControl;
-  @Input('type') type: InputType = 'text';
+  @Input() type: InputType = 'text';
   @Input() password = false;
   @Input() validators: ValidatorFn[] | ValidatorFn;
   @Input() disabled = false;
@@ -376,7 +376,7 @@ export class InputComponent implements OnInit, OnDestroy, AfterViewInit, OnChang
   @ViewChildren('input') input: QueryList<ElementRef>;
   /** Textarea options */
   @ViewChild('textArea') textArea: ElementRef;
-  @Input('rows') rows = 3;
+  @Input() rows = 3;
   /** Select | Autocomplete | chips available options */
   @Input() selectArrow = 'arrow_drop_down';
   @Input() selectedIndex = 0;
@@ -559,7 +559,7 @@ export class InputComponent implements OnInit, OnDestroy, AfterViewInit, OnChang
   }
 
   @HostListener('window:keydown.escape', ['$event'])
-  esc(event: Event) {
+  esc(_event: Event) {
     this.focus(false);
   }
 
@@ -617,7 +617,7 @@ export class InputComponent implements OnInit, OnDestroy, AfterViewInit, OnChang
 
   getFormByName(name: string): UntypedFormControl {
     if (this.formControl instanceof UntypedFormGroup) {
-      return <UntypedFormControl>this.formControl.get(name);
+      return this.formControl.get(name) as UntypedFormControl;
     } else {
       return null;
     }
@@ -785,7 +785,7 @@ export class InputComponent implements OnInit, OnDestroy, AfterViewInit, OnChang
     }
   }
 
-  remove(index: number, event) {
+  remove(index: number, event: any) {
     if (this.focused) {
       this.formAsArray.removeAt(index);
       this.formAsArray.markAsDirty();
@@ -798,7 +798,7 @@ export class InputComponent implements OnInit, OnDestroy, AfterViewInit, OnChang
   private filter(value: string): Option[] {
     let options = this.optionsArray.filter(option => !option.hidden);
     if (this.type === 'chips') {
-      options = options.filter(option => !this.formAsArray.value.find(value => this.equals(option.value, value)));
+      options = options.filter(option => !this.formAsArray.value.find((value: any) => this.equals(option.value, value)));
     }
     if ((!value || value.length == 0)) {
       this.selectedIndex = 0;
@@ -813,7 +813,7 @@ export class InputComponent implements OnInit, OnDestroy, AfterViewInit, OnChang
     return options;
   }
 
-  add(event, addChips = false) {
+  add(event: any, addChips = false) {
     if (addChips && this.searchControl.value) {
       this.splitSearchControl();
     } else if (!this.focused) {
@@ -855,7 +855,7 @@ export class InputComponent implements OnInit, OnDestroy, AfterViewInit, OnChang
     return (option) ? (option.tooltip ? option.tooltip : option.label) : (value);
   }
 
-  focus(value: boolean, event = null) {
+  focus(value: boolean, event: any = null) {
     if (!this.activeIndex) {
       this.activeIndex = 0;
     }
@@ -935,7 +935,7 @@ export class InputComponent implements OnInit, OnDestroy, AfterViewInit, OnChang
     this.focus(true, event);
   }
 
-  selectOption(option: Option, event) {
+  selectOption(option: Option, event: any) {
     if (this.formControl.enabled) {
       if (this.formAsControl) {
         this.formAsControl.setValue(option.value);

@@ -30,7 +30,7 @@ export class DynamicFormHandlingService {
 	private _rawDataObject: RawDataModel | null = null;
 	private _formSchemaObject: BehaviorSubject<SCGAFormSchema | null> = new BehaviorSubject<SCGAFormSchema | null>(null);
 	private _formErrorObject: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
-	private _loadFormObject: Object;
+	private _loadFormObject: object;
 	private _loadFormObjectFile: File | null = null;
 	private updateFormFromFile = new BehaviorSubject(false);
 	jsonLoaded = this.updateFormFromFile.asObservable();
@@ -38,7 +38,7 @@ export class DynamicFormHandlingService {
 	private _diagramCreator: DiagramCreator;
 
 	// fixme when find another solution
-	private _xAxisRequired: boolean = false;
+	private _xAxisRequired = false;
 
 	constructor(
     private diagramcategoryService: DiagramCategoryService,
@@ -66,11 +66,11 @@ export class DynamicFormHandlingService {
 
 	set formSchemaObject(value: SCGAFormSchema) { this._formSchemaObject.next(value); }
 
-  set updateFromFile(value: boolean) { this.updateFormFromFile.next(value); }
-
 	get formSchemaObject(): SCGAFormSchema | null { return this._formSchemaObject.getValue(); }
 
-	get $formErrorObject(): BehaviorSubject<Array<any>> { return this._formErrorObject; }
+  set updateFromFile(value: boolean) { this.updateFormFromFile.next(value); }
+
+	get $formErrorObject(): BehaviorSubject<any[]> { return this._formErrorObject; }
 
 	get ChartObject(): HighChartsChart | GoogleChartsChart | HighMapsMap | EChartsChart | null { return this._chartObject; }
 
@@ -80,9 +80,9 @@ export class DynamicFormHandlingService {
 
 	get RawDataObject(): RawDataModel | null { return this._rawDataObject; }
 
-	get loadFormObject(): Object { return this._loadFormObject; }
+	get loadFormObject(): object { return this._loadFormObject; }
 
-  set loadFormObject(value: Object) {
+  set loadFormObject(value: object) {
     this._loadFormObject = value;
     this.updateFormFromFile.next(true);
   }
@@ -99,7 +99,7 @@ export class DynamicFormHandlingService {
 			const fr: FileReader = new FileReader();
 
 			fr.onload = () => {
-				this._loadFormObject = JSON.parse(<string>fr.result);
+				this._loadFormObject = JSON.parse((fr.result as string));
 				this.updateFormFromFile.next(true);
 			}
 			fr.onloadstart = () => this.chartLoadingService.chartLoadingStatus = true;

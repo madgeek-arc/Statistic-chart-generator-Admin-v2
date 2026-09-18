@@ -22,7 +22,7 @@ export class FilterOperatorsPipe implements PipeTransform {
 			return items.map(item => this.mapFilterToOption(item));
 		}
 
-    return items.filter(item => item.filterType?.indexOf(FieldType[filter]) !== -1).map(item => this.mapFilterToOption(item));
+    return items.filter(item => item.filterType?.indexOf(FieldType[filter as keyof typeof FieldType]) !== -1).map(item => this.mapFilterToOption(item));
 	}
 
   mapFilterToOption(filter: FilterType): Option {

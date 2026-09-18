@@ -5,7 +5,6 @@ import {
   ElementRef,
   Input,
   OnDestroy,
-  OnInit,
   ViewChild
 } from '@angular/core';
 import { fromEvent, Observable, of, Subscription } from 'rxjs';
@@ -41,7 +40,7 @@ export class AutocompleteInputFieldComponent implements AfterViewInit, OnDestroy
   // Dom element for the autocomplete
   @ViewChild('autoInputField', {static: false}) valueInput: ElementRef;
 
-  possibleFieldValues: Observable<Array<string>>;
+  possibleFieldValues: Observable<string[]>;
   numberOfpossibleFieldValues: number;
   loading: boolean;
   typeToSearchDelay: number;

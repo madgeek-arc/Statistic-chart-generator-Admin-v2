@@ -24,7 +24,6 @@ export class TableFrameComponent implements OnInit, OnChanges {
   ngOnInit() {
     this.frameHeight = (3 * window.outerHeight) / 5;
 
-    const iframe = <HTMLIFrameElement>document.getElementById('tableIframe');
     if ( this.iframe.nativeElement ) {
       window.addEventListener('message',
       (event: any) => {

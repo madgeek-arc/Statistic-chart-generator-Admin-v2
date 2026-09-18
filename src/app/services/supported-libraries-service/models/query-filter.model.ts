@@ -2,7 +2,7 @@ export class Filter {
 
     field: string;
     type: string;
-    values: Array<string>;
+    values: string[];
 
     constructor() {
         this.field = '';
@@ -13,7 +13,7 @@ export class Filter {
 
 export class FilterGroup {
 
-    groupFilters: Array<Filter>;
+    groupFilters: Filter[];
     op: string;
 
     constructor() {

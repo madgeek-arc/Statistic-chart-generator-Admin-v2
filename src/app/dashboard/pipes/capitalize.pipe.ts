@@ -6,7 +6,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 })
 export class CapitalizePipe implements PipeTransform {
 
-	transform(value: string | undefined, ...args: unknown[]): string {
+	transform(value: string | undefined, ..._args: unknown[]): string {
 		if (value) {
 			const splitString = value.split(' ').map((s: string) => {
 				return `${s[0].toUpperCase()}${s.slice(1)}`;

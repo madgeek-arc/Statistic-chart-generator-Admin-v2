@@ -70,7 +70,7 @@ export class DynamicTreeDatabase {
     const root = new BehaviorSubject<DynamicEntityNode | null>(null);
 
     // We only care for the first map that has entries to get the root node.
-		this._entityMap$.pipe(filter(map => map?.size! > 0), first()).subscribe(map => {
+		this._entityMap$.pipe(filter(map => (map?.size ?? 0) > 0), first()).subscribe(map => {
 
 			if (map == null)
 				return;
@@ -93,7 +93,7 @@ export class DynamicTreeDatabase {
 			return children$;
 
 		// Get the cached version of the given Entity Node out of the first map that has entries.
-		this._entityMap$.pipe(filter(map => map?.size! > 0), first()).subscribe(map => {
+		this._entityMap$.pipe(filter(map => (map?.size ?? 0) > 0), first()).subscribe(map => {
 
 			if (map == null)
         return;

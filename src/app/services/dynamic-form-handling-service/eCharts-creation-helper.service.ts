@@ -61,10 +61,10 @@ export class EChartsCreationHelperService {
     };
   }
 
-  buildPieSeries(config: BaseSeriesConfig): PieSeriesOption {
+  buildPieSeries(_config: BaseSeriesConfig): PieSeriesOption {
     return {
       type: 'pie',
-      // data: config.data
+      // data: _config.data
     };
   }
 

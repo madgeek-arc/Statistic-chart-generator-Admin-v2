@@ -129,7 +129,7 @@ export class SelectAttributeComponent implements ControlValueAccessor, OnChanges
     this.nestedEntityDataSource.connected$.subscribe(
       connected => {
         if (connected) {
-          this.populateRootNode(entity, resetSelectField);
+          this.populateRootNode(entity);
         }
       }
     );
@@ -139,7 +139,7 @@ export class SelectAttributeComponent implements ControlValueAccessor, OnChanges
       this.selectedFieldChanged(null);
   }
 
-  private populateRootNode(entity: string, resetSelectField: boolean | undefined) {
+  private populateRootNode(entity: string) {
     this.dynamicTreeDB.getRootNode(entity)?.pipe(takeWhile(() => this.chosenEntity == entity))
       .subscribe((rootNode: DynamicEntityNode | null) => {
         console.log('🌳 Root node received for entity:', entity, rootNode);
@@ -220,7 +220,7 @@ export class SelectAttributeComponent implements ControlValueAccessor, OnChanges
     }
   }
 
-  nodeSelected(field: FieldNode, node: DynamicEntityNode, pathOnly?: boolean) {
+  nodeSelected(field: FieldNode, node: DynamicEntityNode, _pathOnly?: boolean) {
 
     const selectedFieldNode = new FieldNode();
 
@@ -295,8 +295,10 @@ export class SelectAttributeComponent implements ControlValueAccessor, OnChanges
    * Value Accessor related calls
    */
 
-  _onChange = (arg: any) => { };
-  _onTouched = (arg: boolean) => { };
+  // eslint-disable-next-line @typescript-eslint/no-empty-function -- ControlValueAccessor stub, replaced by registerOnChange
+  _onChange = (_arg: any) => { };
+  // eslint-disable-next-line @typescript-eslint/no-empty-function -- ControlValueAccessor stub, replaced by registerOnTouched
+  _onTouched = (_arg: boolean) => { };
 
   handleChange(arg: FieldNode) {
     if (this.checkValidFieldNode(arg) !== null) {

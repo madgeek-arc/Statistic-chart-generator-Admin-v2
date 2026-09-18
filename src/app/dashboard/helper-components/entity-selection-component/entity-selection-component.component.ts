@@ -1,5 +1,4 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { MatSelectChange } from '@angular/material/select';
 import { CachedEntityNode } from '../select-attribute/dynamic-entity-tree/entity-tree-nodes.types';
 
 @Component({
@@ -14,8 +13,8 @@ export class EntitySelectionComponentComponent implements OnInit {
 
 	@Output() outputEvent = new EventEmitter<any>;
 
-	protected selectedEntityMap: Array<CachedEntityNode> = [];
-	panelOpenState: boolean = false;
+	protected selectedEntityMap: CachedEntityNode[] = [];
+	panelOpenState = false;
 	namePath: any = {};
 
 	constructor() { }
