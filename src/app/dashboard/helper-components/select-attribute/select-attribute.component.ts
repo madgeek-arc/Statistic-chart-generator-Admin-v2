@@ -46,7 +46,7 @@ export class SelectAttributeComponent implements ControlValueAccessor, OnChanges
   nestedEntityDataSource: DynamicDataSource;
 
   @Input() isDisabled = false;
-  @Input() formControl: AbstractControl | null;
+  @Input('formInput') formControl: AbstractControl | null;
   @Input() chosenEntity: string | null = null;
   @Output() fieldChanged = new EventEmitter<FieldNode>();
 

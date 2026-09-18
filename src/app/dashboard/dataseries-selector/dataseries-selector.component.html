@@ -107,13 +107,12 @@
                           </div>
                         </div>
                       </div>
-                      <!-- Issue with TypeError registerOnChange -->
                       @if (checkYAxisAggregate(ctrl)) {
                         <div>
                           <div class="uk-margin-top uk-margin-xsmall-bottom">Entity Field</div>
                           <div>
                             <select-attribute [chosenEntity]="ctrl.get('data.yaxisData.entity')?.value"
-                                              [formControl]="$any(ctrl.get('data.yaxisData.yaxisEntityField'))">
+                                              [formInput]="$any(ctrl.get('data.yaxisData.yaxisEntityField'))">
                             </select-attribute>
                           </div>
                         </div>
@@ -131,7 +130,7 @@
                             <div formGroupName="xaxisEntityField" style="width: 100%;">
                               <div style="display: inline-block; width: 90%; vertical-align: middle;">
                                 <select-attribute [chosenEntity]="ctrl.get('data.yaxisData.entity')?.value"
-                                                  [formControl]="data.get('xaxisEntityField')">
+                                                  [formInput]="data.get('xaxisEntityField')">
                                 </select-attribute>
                               </div>
                               <div style="display: inline-block; width: 10%; vertical-align: middle;">
@@ -177,7 +176,7 @@
                                         <ng-container formGroupName="field">
                                           <div>
                                             <select-attribute [chosenEntity]="ctrl.get('data.yaxisData.entity')?.value"
-                                                              [formControl]="group.get('field')">
+                                                              [formInput]="group.get('field')">
                                             </select-attribute>
                                           </div>
                                         </ng-container>
