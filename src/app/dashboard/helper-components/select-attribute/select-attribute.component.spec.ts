@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl } from '@angular/forms';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
 import { SelectAttributeComponent } from './select-attribute.component';
 import { DynamicEntityNode, FieldNode } from './dynamic-entity-tree/entity-tree-nodes.types';
@@ -20,7 +19,7 @@ describe('SelectAttributeComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HostComponent, NoopAnimationsModule]
+      imports: [HostComponent]
     });
     fixture = TestBed.createComponent(HostComponent);
     host = fixture.componentInstance;
