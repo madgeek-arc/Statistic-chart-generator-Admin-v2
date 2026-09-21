@@ -22,7 +22,7 @@
           @for (chart of supportedChartTypes; track chart.diagramId) {
             <app-diagram-card-component
               [diagram]="chart"
-              [isSelected]="selectedChart?.diagramId === chart.diagramId"
+              [isSelected]="selectedChart()?.diagramId === chart.diagramId"
               (outputEvent)="selectChart($event)">
             </app-diagram-card-component>
           }
@@ -38,7 +38,7 @@
           @for (chart of supportedPolarTypes; track chart.diagramId) {
             <app-diagram-card-component
               [diagram]="chart"
-              [isSelected]="selectedChart?.diagramId === chart.diagramId"
+              [isSelected]="selectedChart()?.diagramId === chart.diagramId"
               (outputEvent)="selectChart($event)">
             </app-diagram-card-component>
           }
@@ -54,7 +54,7 @@
           @for (chart of supportedMaps; track chart.diagramId) {
             <app-diagram-card-component
               [diagram]="chart"
-              [isSelected]="selectedChart?.diagramId === chart.diagramId"
+              [isSelected]="selectedChart()?.diagramId === chart.diagramId"
               (outputEvent)="selectChart($event)">
             </app-diagram-card-component>
           }
@@ -70,7 +70,7 @@
           @for (chart of supportedSpecialisedDiagrams; track chart.diagramId) {
             <app-diagram-card-component
               [diagram]="chart"
-              [isSelected]="selectedChart?.diagramId === chart.diagramId"
+              [isSelected]="selectedChart()?.diagramId === chart.diagramId"
               (outputEvent)="selectChart($event)">
             </app-diagram-card-component>
           }
@@ -86,7 +86,7 @@
           @for (chart of supportedMiscTypes; track chart.diagramId) {
             <app-diagram-card-component
               [diagram]="chart"
-              [isSelected]="selectedChart?.diagramId === chart.diagramId"
+              [isSelected]="selectedChart()?.diagramId === chart.diagramId"
               (outputEvent)="selectChart($event)">
             </app-diagram-card-component>
           }

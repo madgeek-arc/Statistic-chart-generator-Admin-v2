@@ -1,4 +1,4 @@
-import { Component, inject, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, output, signal } from '@angular/core';
 import { ISupportedCategory } from "../../services/supported-chart-types-service/supported-chart-types.service";
 import { DiagramCategoryService } from "../../services/diagram-category-service/diagram-category.service";
 import { AsyncPipe } from "@angular/common";
@@ -11,6 +11,7 @@ import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
   selector: 'app-category-selector',
   templateUrl: './category-selector.component.html',
   styleUrls: ['./category-selector.component.less'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     AsyncPipe,
     DiagramCardComponentComponent
@@ -21,7 +22,8 @@ export class CategorySelectorComponent {
 
   selectedChartChange = output<ISupportedCategory>();
 
-  selectedChart: ISupportedCategory | null = null;
+  // A signal, so the view refreshes when the service reports a selection (OnPush).
+  selectedChart = signal<ISupportedCategory | null>(null);
 
   constructor() {
     this.diagramCategoryService.selectedDiagramCategory$.pipe(takeUntilDestroyed()).subscribe(diagram => {
@@ -31,7 +33,7 @@ export class CategorySelectorComponent {
 
 
   selectChart(chart: ISupportedCategory): void {
-    this.selectedChart = chart;
+    this.selectedChart.set(chart);
 
     this.selectedChartChange.emit(chart);
   }
