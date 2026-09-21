@@ -1,4 +1,4 @@
-import { Component, DestroyRef, inject, OnInit, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, DestroyRef, inject, OnInit, output, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MappingProfilesService, Profile } from "../../services/mapping-profiles-service/mapping-profiles.service";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
@@ -9,6 +9,7 @@ type FilterTab = 'All' | string;
   selector: 'app-view-selector',
   templateUrl: './view-selector.component.html',
   styleUrls: ['./view-selector.component.less'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     FormsModule
   ],
@@ -20,17 +21,31 @@ export class ViewSelectorComponent implements OnInit {
 
   profileDetailsChange = output<{ profile: Profile, manualChange: boolean } | null>();
 
-  searchQuery = '';
-  activeFilter: FilterTab = 'All';
-  selectedProfile: Profile | null = null;
-  allProfiles: Profile[] = [];
+  // Signals: the profiles and the selection arrive from the service, and the component is OnPush.
+  searchQuery = signal('');
+  activeFilter = signal<FilterTab>('All');
+  selectedProfile = signal<Profile | null>(null);
+  allProfiles = signal<Profile[]>([]);
 
-  readonly filterTabs: FilterTab[] = ['All'];
+  readonly filterTabs = signal<FilterTab[]>(['All']);
+
+  readonly filteredProfiles = computed<Profile[]>(() => {
+    const query = this.searchQuery().toLowerCase();
+    const filter = this.activeFilter();
+    return this.allProfiles().filter(p => {
+      const matchesSearch = !query ||
+        p.name.toLowerCase().includes(query) ||
+        p.description?.toLowerCase().includes(query);
+      const matchesFilter = filter === 'All' ||
+        p.shareholders?.includes(filter);
+      return matchesSearch && matchesFilter;
+    });
+  });
 
   ngOnInit(): void {
 
     this.profileService.mappingProfiles$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(profiles => {
-      this.allProfiles = profiles;
+      this.allProfiles.set(profiles);
       this.buildFilterTabs(profiles);
     });
 
@@ -43,23 +58,11 @@ export class ViewSelectorComponent implements OnInit {
     const seen = new Set<string>();
     profiles.forEach(p => p.shareholders?.forEach(s => { if (s && s !== 'All') seen.add(s); }));
     const dynamic = Array.from(seen).slice(0, 3);
-    (this.filterTabs as string[]).length = 0;
-    (this.filterTabs as string[]).push('All', ...dynamic);
-  }
-
-  get filteredProfiles(): Profile[] {
-    return this.allProfiles.filter(p => {
-      const matchesSearch = !this.searchQuery ||
-        p.name.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
-        p.description?.toLowerCase().includes(this.searchQuery.toLowerCase());
-      const matchesFilter = this.activeFilter === 'All' ||
-        p.shareholders?.includes(this.activeFilter);
-      return matchesSearch && matchesFilter;
-    });
+    this.filterTabs.set(['All', ...dynamic]);
   }
 
   selectProfile(profile: Profile, manualChange = true): void {
-    this.selectedProfile = profile;
+    this.selectedProfile.set(profile);
     this.profileDetailsChange.emit({profile, manualChange});
   }
 

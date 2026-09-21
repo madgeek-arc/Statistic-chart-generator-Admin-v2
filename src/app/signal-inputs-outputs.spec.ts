@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { of } from 'rxjs';
+import { BehaviorSubject, Observable, of } from 'rxjs';
 
 import { ChartFrameComponent } from './data-frames/chart-frame/chart-frame.component';
 import { GeneratedShortUrlFieldComponent } from './data-frames/generated-short-url-field/generated-short-url-field.component';
@@ -23,8 +23,8 @@ class ChartFrameHostComponent {
   imports: [GeneratedShortUrlFieldComponent]
 })
 class ShortUrlHostComponent {
-  url$ = of('https://tinyurl.com/abc');
-  loading$ = of(false);
+  url$: Observable<string> = of('https://tinyurl.com/abc');
+  loading$: Observable<boolean> = of(false);
 }
 
 @Component({
@@ -74,6 +74,26 @@ describe('generated-short-url-field with aliased signal inputs', () => {
 
     expect(fixture.nativeElement.querySelector('a.url-holder')).toBeNull();
     expect(fixture.nativeElement.textContent).toContain('Loading...');
+  });
+
+  // The URL is produced by a request, so both streams emit after the field has rendered.
+  it('follows the URL and loading streams as they emit', () => {
+    const url$ = new BehaviorSubject('https://tinyurl.com/one');
+    const loading$ = new BehaviorSubject(true);
+    const fixture = TestBed.createComponent(ShortUrlHostComponent);
+    fixture.componentInstance.url$ = url$;
+    fixture.componentInstance.loading$ = loading$;
+    const link = () => fixture.nativeElement.querySelector('a.url-holder');
+    fixture.detectChanges();
+    expect(link()).toBeNull();
+
+    loading$.next(false);
+    fixture.detectChanges();
+    expect(link().textContent.trim()).toBe('https://tinyurl.com/one');
+
+    url$.next('https://tinyurl.com/two');
+    fixture.detectChanges();
+    expect(link().textContent.trim()).toBe('https://tinyurl.com/two');
   });
 
   it('copies the bound URL to the clipboard', () => {

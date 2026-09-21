@@ -1,18 +1,21 @@
 import {
   AfterViewInit,
+  ChangeDetectionStrategy,
   Component,
   OnChanges,
   OnInit,
   SimpleChanges,
   inject,
-  input
+  input,
+  signal
 } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { UrlProviderService } from '../../services/url-provider-service/url-provider.service';
 
 @Component({
     selector: 'chart-frame',
-    templateUrl: './chart-frame.component.html'
+    templateUrl: './chart-frame.component.html',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 
 export class ChartFrameComponent implements OnChanges, AfterViewInit, OnInit {
@@ -21,12 +24,13 @@ export class ChartFrameComponent implements OnChanges, AfterViewInit, OnInit {
 
   readonly chartUrl = input<string | null>(null);
 	frameHeight: number;
-	frameUrl: SafeResourceUrl | null = null;
+	// A signal: the URL is set from a timeout, and the component is OnPush.
+	frameUrl = signal<SafeResourceUrl | null>(null);
 
 	constructor() {
     this.frameHeight = (3 * window.outerHeight) / 5;
-		this.frameUrl = this.getSanitizedFrameUrl(this.urlProvider.serviceURL + '/chart?json');
-		console.log("CHART URL:", this.frameUrl);
+		this.frameUrl.set(this.getSanitizedFrameUrl(this.urlProvider.serviceURL + '/chart?json'));
+		console.log("CHART URL:", this.frameUrl());
 	}
 
   ngOnInit() {
@@ -41,12 +45,12 @@ export class ChartFrameComponent implements OnChanges, AfterViewInit, OnInit {
 		console.log('[chart-frame.component] On changes: ' + changes['chartUrl']?.currentValue);
 
     if (changes['chartUrl'] && changes['chartUrl'].currentValue) {
-      this.frameUrl = null;
+      this.frameUrl.set(null);
       setTimeout(() => { // Ahh, the magic of setTimeout... even claude shat the bed on this one.
-        this.frameUrl = this.getSanitizedFrameUrl(this.chartUrl());
+        this.frameUrl.set(this.getSanitizedFrameUrl(this.chartUrl()));
       }, 0);
     } else {
-			this.frameUrl = this.getSanitizedFrameUrl(this.urlProvider.serviceURL + '/chart');
+			this.frameUrl.set(this.getSanitizedFrameUrl(this.urlProvider.serviceURL + '/chart'));
 		}
 	}
 

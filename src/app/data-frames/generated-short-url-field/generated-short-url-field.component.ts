@@ -1,5 +1,5 @@
 import { first } from 'rxjs/operators';
-import { Component, Input, OnChanges, SimpleChanges, ViewChild, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnChanges, SimpleChanges, ViewChild, input } from '@angular/core';
 import { Observable } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 
@@ -7,6 +7,7 @@ import { AsyncPipe } from '@angular/common';
     selector: 'generated-short-url-field',
     templateUrl: './generated-short-url-field.component.html',
     styleUrls: ['./generated-short-url-field.component.less'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [AsyncPipe]
 })
 export class GeneratedShortUrlFieldComponent implements OnChanges {

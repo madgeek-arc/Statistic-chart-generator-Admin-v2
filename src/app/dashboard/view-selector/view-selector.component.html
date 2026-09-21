@@ -23,17 +23,17 @@
           <input class="vs-search-input" type="text" placeholder="Search views, descriptions..." [(ngModel)]="searchQuery"/>
         </div>
         <div class="vs-filters">
-          @for (tab of filterTabs; track tab + $index) {
-            <button class="vs-filter-btn" [class.vs-filter-btn--active]="activeFilter === tab"
-                    (click)="activeFilter = tab">{{ tab }}
+          @for (tab of filterTabs(); track tab + $index) {
+            <button class="vs-filter-btn" [class.vs-filter-btn--active]="activeFilter() === tab"
+                    (click)="activeFilter.set(tab)">{{ tab }}
             </button>
           }
         </div>
       </div>
 
       <div class="vs-grid">
-        @for (profile of filteredProfiles; track profile.name + $index) {
-          <div class="vs-card" [class.vs-card--selected]="selectedProfile?.name === profile.name"
+        @for (profile of filteredProfiles(); track profile.name + $index) {
+          <div class="vs-card" [class.vs-card--selected]="selectedProfile()?.name === profile.name"
             (click)="selectProfile(profile)">
             <div class="vs-card-top">
               <div class="vs-avatar" [style.background]="getAvatarColor(profile.name)">
@@ -43,7 +43,7 @@
                 <span class="vs-card-name">{{ profile.name }}</span>
                 <span class="vs-card-handle">{{ profile.usage }}</span>
               </div>
-              @if (selectedProfile?.name === profile.name) {
+              @if (selectedProfile()?.name === profile.name) {
                 <span class="material-symbols-outlined vs-check-icon">check_circle</span>
               }
             </div>
@@ -60,7 +60,7 @@
             </div>
           </div>
         }
-        @if (filteredProfiles.length === 0) {
+        @if (filteredProfiles().length === 0) {
           <div class="vs-empty">No views match your search.</div>
         }
       </div>
