@@ -10,7 +10,7 @@ import { ViewSelectorComponent } from './dashboard/view-selector/view-selector.c
 import { CategorySelectorComponent } from './dashboard/category-selector/category-selector.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 import { CardComponentComponent } from './dashboard/helper-components/card-component/card-component.component';
-import { MaterialModule } from './material/material.module';
+
 import { CommonModule, NgOptimizedImage } from '@angular/common';
 import {
   DiagramCardComponentComponent
@@ -36,7 +36,7 @@ import { EChartsComponent } from './dashboard/customise-appearance/visualisation
 import { SupportedChartTypesService } from "./services/supported-chart-types-service/supported-chart-types.service";
 import { ChartExportingService } from './services/chart-exporting-service/chart-exporting.service';
 import { FilterOperatorsPipe } from './dashboard/pipes/filter-operators.pipe';
-import { FrameModule } from './data-frames/frame.module';
+
 import { InputComponent } from "./shared/input.component";
 import {
   AutocompleteInputFieldComponent
@@ -51,38 +51,36 @@ import { markedOptionsFactory } from "./services/marked-option-factory/marked-op
 @NgModule({
     declarations: [AppComponent],
     imports: [
-        BrowserModule,
-        ReactiveFormsModule,
-        FormsModule,
-        // BrowserAnimationsModule,
-        AppRoutingModule,
-        MaterialModule,
-        CommonModule,
-        FrameModule,
-        InputComponent,
-        AutocompleteInputFieldComponent,
-        HighMapsComponent,
-        NgOptimizedImage,
-        NlChatComponent,
-        ViewSelectorComponent,
-        CategorySelectorComponent,
-        DiagramCardComponentComponent,
-        DashboardComponent,
-        HeaderComponent,
-        FooterComponent,
-        PageNotFoundComponent,
-        CardComponentComponent,
-        DataseriesSelectorComponent,
-        EntitySelectionComponentComponent,
-        SelectAttributeComponent,
-        CustomiseAppearanceComponent,
-        // Pipes
-        CapitalizePipe,
-        FilterOperatorsPipe,
-        HighChartsComponent,
-        GoogleChartsComponent,
-        EChartsComponent,
-    ],
+    BrowserModule,
+    ReactiveFormsModule,
+    FormsModule,
+    // BrowserAnimationsModule,
+    AppRoutingModule,
+    CommonModule,
+    InputComponent,
+    AutocompleteInputFieldComponent,
+    HighMapsComponent,
+    NgOptimizedImage,
+    NlChatComponent,
+    ViewSelectorComponent,
+    CategorySelectorComponent,
+    DiagramCardComponentComponent,
+    DashboardComponent,
+    HeaderComponent,
+    FooterComponent,
+    PageNotFoundComponent,
+    CardComponentComponent,
+    DataseriesSelectorComponent,
+    EntitySelectionComponentComponent,
+    SelectAttributeComponent,
+    CustomiseAppearanceComponent,
+    // Pipes
+    CapitalizePipe,
+    FilterOperatorsPipe,
+    HighChartsComponent,
+    GoogleChartsComponent,
+    EChartsComponent,
+],
     providers: [
         ChartLoadingService,
         DynamicTreeDatabase,
