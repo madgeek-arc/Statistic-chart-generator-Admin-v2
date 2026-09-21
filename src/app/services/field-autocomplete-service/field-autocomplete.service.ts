@@ -8,7 +8,9 @@ import { MappingProfilesService, Profile } from '../mapping-profiles-service/map
 
 export class AutocompleteResponse {
   count: number | null =  null;
-  values: string[] = [];
+  // null when the field has more distinct values than the server will inline
+  // (the caller should prompt the user to type a narrowing term)
+  values: string[] | null = [];
 }
 
 @Injectable({
@@ -19,7 +21,7 @@ export class FieldAutocompleteService {
   constructor(private http: HttpClient, private urlProvider: UrlProviderService,
      private errorHandler: ErrorHandlerService, private profileMappingService: MappingProfilesService) {}
 
-  getAutocompleteFields(field: string, text: string): Observable<AutocompleteResponse> {
+  getAutocompleteFields(field: string, text: string | null): Observable<AutocompleteResponse> {
 
     const profile: Profile = this.profileMappingService.selectedProfile$.value;
 
@@ -28,7 +30,6 @@ export class FieldAutocompleteService {
 
     autocompleteFieldTextUrl = encodeURI(autocompleteFieldTextUrl);
 
-    console.log('Calling: ' + autocompleteFieldTextUrl);
     return this.http.get<AutocompleteResponse>(autocompleteFieldTextUrl)
     .pipe(
       retry(3), // retry a failed request up to 3 times

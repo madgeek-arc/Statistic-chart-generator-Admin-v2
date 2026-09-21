@@ -1,30 +1,33 @@
-<div [ngClass]="loading ? 'ui right icon input loading' : 'ui right icon input gone'">
-  <i class="icon"></i>
-  <input #autoInputField [formControl]="inputFormGroup" [matAutocomplete]="auto"
-    type="text" name="filterValue" placeholder="Value" style="width: 100% !important">
+<div class="input-wrapper flat" [class.focused]="focused" [class.disabled]="inputFormGroup?.disabled">
+  <div class="input-box static">
+    <input #autoInputField class="input" [formControl]="inputFormGroup" [matAutocomplete]="auto"
+      [matAutocompleteDisabled]="!panelReady"
+      type="text" name="filterValue" placeholder="Value"
+      (focus)="focused = true" (blur)="focused = false">
+  </div>
 
   <mat-autocomplete [panelWidth]="'auto'" #auto="matAutocomplete" >
-    @if ((possibleFieldValues | async) === null) {
-      <mat-option [value]=null>
-        <span class="autocomplete field">Give a more verbose input !</span>
+    @if (loading) {
+      <mat-option [value]=null disabled>
+        <span class="autocomplete field">Loading…</span>
+      </mat-option>
+    } @else if ((possibleFieldValues | async) === null) {
+      <mat-option [value]=null disabled>
+        <span class="autocomplete field">Too many values — type to narrow down</span>
+      </mat-option>
+    } @else if (numberOfpossibleFieldValues < 0) {
+      <mat-option [value]=null disabled>
+        <span class="autocomplete field">Could not fetch values</span>
+      </mat-option>
+    } @else if (searched && (possibleFieldValues | async).length === 0) {
+      <mat-option [value]=null disabled>
+        <span class="autocomplete field">No results</span>
       </mat-option>
     } @else {
-      @if ((possibleFieldValues | async).length === 0 && numberOfpossibleFieldValues >= 0 && !loading) {
-        <mat-option [value]=null>
-          <span class="autocomplete field">No results</span>
+      @for (value of possibleFieldValues | async; track value) {
+        <mat-option [value]="value">
+          <span class="autocomplete field">{{ value }}</span>
         </mat-option>
-      } @else {
-        @if (numberOfpossibleFieldValues < 0) {
-          <mat-option [value]=null>
-            <span class="autocomplete field">Could not fetch values</span>
-          </mat-option>
-        } @else {
-          @for (value of possibleFieldValues | async; track value) {
-            <mat-option [value]="value">
-              <span class="autocomplete field">{{ value }}</span>
-            </mat-option>
-          }
-        }
       }
     }
   </mat-autocomplete>

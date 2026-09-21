@@ -77,13 +77,17 @@ export class DataseriesSelectorComponent implements OnInit, AfterViewInit {
 	protected filterOperators: FilterType[] = [
 		{ filterOperator: '=', filterName: 'Equals', filterType: [FieldType.text, FieldType.int, FieldType.float, FieldType.date] },
 		{ filterOperator: '!=', filterName: 'Not equals', filterType: [FieldType.text, FieldType.int, FieldType.float, FieldType.date] },
+		{ filterOperator: 'in', filterName: 'In (any of)', filterType: [FieldType.text, FieldType.int, FieldType.float, FieldType.date] },
+		{ filterOperator: 'not_in', filterName: 'Not in (none of)', filterType: [FieldType.text, FieldType.int, FieldType.float, FieldType.date] },
 		{ filterOperator: '>', filterName: 'Greater than', filterType: [FieldType.int, FieldType.float, FieldType.date] },
 		{ filterOperator: '>=', filterName: 'Greater / Equal than', filterType: [FieldType.int, FieldType.float, FieldType.date] },
 		{ filterOperator: '<', filterName: 'Less than', filterType: [FieldType.int, FieldType.float, FieldType.date] },
 		{ filterOperator: '<=', filterName: 'Less / Equal than', filterType: [FieldType.int, FieldType.float, FieldType.date] },
 		{ filterOperator: 'contains', filterName: 'Contains', filterType: [FieldType.text] },
 		{ filterOperator: 'starts_with', filterName: 'Starts with', filterType: [FieldType.text] },
-		{ filterOperator: 'ends_with', filterName: 'Ends with', filterType: [FieldType.text] }
+		{ filterOperator: 'ends_with', filterName: 'Ends with', filterType: [FieldType.text] },
+		{ filterOperator: 'is_null', filterName: 'Is null', filterType: [FieldType.text, FieldType.int, FieldType.float, FieldType.date] },
+		{ filterOperator: 'is_not_null', filterName: 'Is not null', filterType: [FieldType.text, FieldType.int, FieldType.float, FieldType.date] }
 	];
 
 	constructor(
@@ -175,6 +179,22 @@ export class DataseriesSelectorComponent implements OnInit, AfterViewInit {
 
 	removeFilterRule(form: any, index: number) {
 		form.controls.groupFilters.removeAt(index);
+	}
+
+	getFilterValues(group: any) {
+		return group.get('values').controls;
+	}
+
+	addFilterValue(group: any) {
+		group.get('values').push(new FormControl(null));
+	}
+
+	removeFilterValue(group: any, index: number) {
+		const values = group.get('values');
+		values.removeAt(index);
+		if (values.length === 0) {
+			values.push(new FormControl(null));
+		}
 	}
 
 	addEntityField(form: any) {

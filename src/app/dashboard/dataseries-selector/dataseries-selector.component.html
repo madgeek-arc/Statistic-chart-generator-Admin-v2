@@ -185,11 +185,32 @@
                                         <div input placeholder="Filter Operator" type="select" [formInput]="group.get('type')"
                                              [options]="filterOperators | filterOperators: group.get('field.type').value">
                                         </div>
-                                        @if ((group.get('type').value === '=') || (group.get('type').value === '!=')) {
+                                        @if ((group.get('type').value === 'is_null') || (group.get('type').value === 'is_not_null')) {
+                                          <div class="uk-text-meta">No value required</div>
+                                        } @else if ((group.get('type').value === '=') || (group.get('type').value === '!=')) {
                                           <div>
                                             <autocomplete-input-field [inputFormGroup]="group.get('values.0')"
                                                                       [filterfield]="group.get('field.name').value">
                                             </autocomplete-input-field>
+                                          </div>
+                                        } @else if ((group.get('type').value === 'in') || (group.get('type').value === 'not_in')) {
+                                          <div>
+                                            @for (val of getFilterValues(group); track val; let vi = $index) {
+                                              <div class="uk-flex uk-flex-middle uk-margin-small-bottom">
+                                                <div class="uk-width-expand">
+                                                  <autocomplete-input-field [inputFormGroup]="group.get('values.' + vi)"
+                                                                            [filterfield]="group.get('field.name').value">
+                                                  </autocomplete-input-field>
+                                                </div>
+                                                <button mat-icon-button style="color: red;" (click)="removeFilterValue(group, vi)">
+                                                  <mat-icon>highlight_off</mat-icon>
+                                                </button>
+                                              </div>
+                                            }
+                                            <a class="uk-link uk-flex uk-flex-middle" (click)="addFilterValue(group)">
+                                              <span class="material-symbols-outlined">add</span>
+                                              <span>Add value</span>
+                                            </a>
                                           </div>
                                         } @else {
                                           <div input placeholder="Value" type="text"  [formInput]="group.get('values.0')"></div>
