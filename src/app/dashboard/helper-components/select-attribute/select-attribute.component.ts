@@ -1,8 +1,6 @@
 import { DynamicDataSource } from './dynamic-entity-tree/dynamic-entity-tree';
 import {
   DynamicEntityNode,
-  EntityNode,
-  EntityTreeNode,
   FieldNode
 } from './dynamic-entity-tree/entity-tree-nodes.types';
 import {
@@ -232,7 +230,6 @@ export class SelectAttributeComponent implements ControlValueAccessor, OnChanges
 
     // Set the field to full path
     selectedFieldNode.name = this.takeFieldName(field, node);
-    // selectedFieldNode.name = this.traverseParentPath(node) + '.' + field.name;
     selectedFieldNode.type = field.type;
 
     // Change the control into the updated value
@@ -269,34 +266,6 @@ export class SelectAttributeComponent implements ControlValueAccessor, OnChanges
     return null;
   }
 
-  traverseParentPath(node: EntityTreeNode): string {
-    if (node.parent === null)
-      return node.name;
-
-    return this.traverseParentPath(node.parent) + '.' + node.name;
-  }
-
-  // Method checking if two Nodes are the same
-  compareEntityNodes(prev: EntityNode, curr: EntityNode): boolean {
-    if (prev == null && curr == null) return true;
-
-    if (prev.name !== curr.name) return false;
-    if (prev.relations.length != curr.relations.length) return false;
-
-    for (let index = 0; index < prev.relations.length; index++) {
-      if (prev.relations[index].name !== curr.relations[index].name)
-        return false;
-    }
-
-    if (prev.fields.length != curr.fields.length) return false;
-
-    for (let index = 0; index < prev.fields.length; index++) {
-      if (prev.fields[index].name !== curr.fields[index].name)
-        return false;
-    }
-
-    return true;
-  }
   /**
    * Value Accessor related calls
    */
@@ -382,11 +351,6 @@ export class SelectAttributeComponent implements ControlValueAccessor, OnChanges
     if (this.cdr && !(this.cdr as ViewRef).destroyed) {
       this.cdr.detectChanges();
     }
-  }
-
-  formatView() {
-    const arr = this.selectedNode?.name.split('.');
-    return arr?.join(' > ') || null;
   }
 
 }

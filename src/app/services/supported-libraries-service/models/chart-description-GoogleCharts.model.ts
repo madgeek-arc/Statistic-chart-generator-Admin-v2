@@ -93,24 +93,4 @@ class GoogleChartsAxis {
 
 class GoogleChartSeries {
     type: 'area' | 'bars' | 'line' = 'line';
-
-    setGoogleChartType(type: string) {
-        switch (type) {
-            case 'area':
-                this.type = 'area';
-                break;
-            case 'bar':
-                this.type = 'bars';
-                break;
-            case 'column':
-                this.type = 'bars';
-                break;
-            case 'line':
-                this.type = 'line';
-                break;
-            default :
-                this.type = 'line';
-                break;
-        }
-    }
 }

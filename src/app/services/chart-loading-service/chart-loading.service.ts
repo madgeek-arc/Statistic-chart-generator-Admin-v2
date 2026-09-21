@@ -7,8 +7,6 @@ import { BehaviorSubject } from 'rxjs';
 export class ChartLoadingService {
 
   private $chartIsLoading: BehaviorSubject<boolean>;
-  // Some kind of semaphore
-  private _loadingObservables = 0;
 
   private _hasLoadedAChart = false;
 
@@ -33,26 +31,5 @@ export class ChartLoadingService {
   get isChartLoaded(): boolean{
     return this._hasLoadedAChart;
   }
-
-  increaseLoadingObs() {
-    if (this.chartLoadingStatus) {
-      this._loadingObservables++ ;
-      // console.log('Obs: ' + this._loadingObservables);
-  }}
-
-  decreaseLoadingObs() {
-    if (this.chartLoadingStatus) {
-      this._loadingObservables-- ;
-      // console.log('Obs: ' + this._loadingObservables);
-
-      if (this._loadingObservables === 0) {
-        this.chartLoadingStatus = false;
-        this._hasLoadedAChart = true;
-        console.log('Loading Done');
-      }
-      if (this._loadingObservables < 0) {
-        console.error('Loadin observables is: ' + this._loadingObservables);
-      }
-  }}
 
 }

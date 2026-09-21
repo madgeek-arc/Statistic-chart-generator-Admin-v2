@@ -17,7 +17,6 @@ export class GeneratedShortUrlFieldComponent implements OnChanges {
   @Input('shortUrl') url$: Observable<string>;
   @Input('isUrlLoading') isUrlLoading$: Observable<boolean>;
 
-  public clipboardCopyMessage = "Copied to clipboard !";
   public copiedUrl = false;
 
 
@@ -50,11 +49,5 @@ export class GeneratedShortUrlFieldComponent implements OnChanges {
             // this.toastService.show("Cannot copy to clipboard !",{ classname: 'bg-danger text-light', delay: 15000 })
           });
       });
-  }
-
-  public closedAlert() {
-    console.log("Close");
-
-    this.copiedUrl = false;
   }
 }

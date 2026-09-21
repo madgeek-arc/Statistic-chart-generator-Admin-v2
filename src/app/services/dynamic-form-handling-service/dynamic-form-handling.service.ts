@@ -29,7 +29,6 @@ export class DynamicFormHandlingService {
 	private _rawChartDataObject: RawChartDataModel | null = null;
 	private _rawDataObject: RawDataModel | null = null;
 	private _formSchemaObject: BehaviorSubject<SCGAFormSchema | null> = new BehaviorSubject<SCGAFormSchema | null>(null);
-	private _formErrorObject: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
 	private _loadFormObject: object;
 	private _loadFormObjectFile: File | null = null;
 	private updateFormFromFile = new BehaviorSubject(false);
@@ -69,8 +68,6 @@ export class DynamicFormHandlingService {
 	get formSchemaObject(): SCGAFormSchema | null { return this._formSchemaObject.getValue(); }
 
   set updateFromFile(value: boolean) { this.updateFormFromFile.next(value); }
-
-	get $formErrorObject(): BehaviorSubject<any[]> { return this._formErrorObject; }
 
 	get ChartObject(): HighChartsChart | GoogleChartsChart | HighMapsMap | EChartsChart | null { return this._chartObject; }
 
@@ -431,15 +428,6 @@ export class DynamicFormHandlingService {
 	//   console.log('this._formSchema --> ', this._formSchema);
 	//   console.log('this._formErrorObject -->', this._formErrorObject);
 	// }
-
-	isOnlyxAxisRequirementError() {
-
-		for (const value of this._formErrorObject.getValue())
-			if (value.code !== 'ARRAY_LENGTH_SHORT' || !value.path.endsWith('/data/xaxisData'))
-				return false;
-
-		return true;
-	}
 
   public changeDataObjects(chartObject: HighChartsChart | GoogleChartsChart | HighMapsMap | EChartsChart | null,
                             tableObject: GoogleChartsTable | null,

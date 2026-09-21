@@ -63,12 +63,6 @@ class HighChartsDescription {
 	}
 }
 
-export class HCsubtitle {
-	text: string | undefined;
-}
-export class HCtitle {
-	text: string | undefined;
-}
 class HCLang {
 	noData = 'No Data available for the Query';
 }

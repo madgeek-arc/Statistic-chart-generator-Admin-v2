@@ -1,12 +1,10 @@
 import {
   AfterViewInit,
   Component,
-  ElementRef,
   Input,
   OnChanges,
   OnInit,
-  SimpleChanges,
-  ViewChild
+  SimpleChanges
 } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { UrlProviderService } from '../../services/url-provider-service/url-provider.service';
@@ -18,13 +16,9 @@ import { UrlProviderService } from '../../services/url-provider-service/url-prov
 
 export class ChartFrameComponent implements OnChanges, AfterViewInit, OnInit {
 
-	@ViewChild('chartFrame', { static: false })
-	private chartFrameRef: ElementRef;
-
 	// @Input() chart: HighChartsChart | GoogleChartsChart | HighMapsMap | EChartsChart | null;
   @Input() chartUrl: string | null = null;
 	frameHeight: number;
-	frameWidth: number;
 	frameUrl: SafeResourceUrl | null = null;
 
 	constructor(private sanitizer: DomSanitizer, private urlProvider: UrlProviderService) {
