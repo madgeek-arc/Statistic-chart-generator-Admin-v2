@@ -49,7 +49,6 @@ export class HeaderComponent {
   }
 
   loadFormFromUrl() {
-    // console.log(this.urlJson);
     setTimeout(() => {
       this.errorMsg = null;
     }, 4000);

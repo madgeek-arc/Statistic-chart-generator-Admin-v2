@@ -51,15 +51,6 @@ export class DynamicFormHandlingService {
 
 	get isFormValid(): boolean {
 
-    // if (this.formFactoryService.getFormRoot()?.invalid) {
-
-      // this.formFactoryService.getFormRoot().markAllAsTouched();
-
-      // log invalid form inputs
-      // console.log(findInvalidControls(this.formFactoryService.getFormRoot()));
-
-    // }
-
 		return this.formFactoryService.getFormRoot()?.valid || false;
 	}
 
@@ -89,7 +80,6 @@ export class DynamicFormHandlingService {
 	get isxAxisRequired(): boolean { return this._xAxisRequired; }
 
 	loadForm(event: any) {
-		// console.log('Load Event', event);
 		this._loadFormObjectFile = null;
 
 		if (!(event === null || event === undefined)) {
@@ -255,18 +245,15 @@ export class DynamicFormHandlingService {
 
 	createControl(value: any): AbstractControl {
 		if (value && typeof value === 'object' && !Array.isArray(value)) {
-      // console.log("value:", value);
 			const group = new FormGroup({});
 			Object.keys(value).forEach(key => group.addControl(key, this.createControl(value[key])));
 			return group;
 		} else if (Array.isArray(value)) {
 			const array = new FormArray<any>([]);
-			// console.log("value:", value);
 
 			value.forEach(item => array.push(this.createControl(item)));
 			return array;
 		} else {
-      // console.log("value:", value);
 			return new FormControl(value);
 		}
 	}
@@ -401,33 +388,6 @@ export class DynamicFormHandlingService {
 		element.click();
 		document.body.removeChild(element);
 	}
-
-	// changeRequirementOfXAxis(required: boolean) {
-	//
-	//   this._xAxisRequired = required;
-	//
-	//   if (this._xAxisRequired) {
-	//     this._formSchema.dataseriesFormSchema.items.properties.data.fieldsets[0].fields = ['yaxisData', 'xaxisData'];
-	//     this._formSchema.dataseriesFormSchema.items.properties.data.required = ['yAxisData', 'xAxisData', 'filters'];
-	//     this._formSchema.dataseriesFormSchema.items.properties.data.properties.xaxisData.items.required = ['xaxisEntityField'];
-	//     this._formSchema.dataseriesFormSchema.items.properties.data.properties.xaxisData.minItems = 1;
-	//     this._formSchema.dataseriesFormSchema.items.properties.data.properties.xaxisData
-	//       .items.properties.xaxisEntityField.requiredField = true;
-	//   } else {
-	//     // this._formSchema.dataseriesFormSchema.items.properties.data.properties.xaxisData.widget = 'hidden';
-	//     this._formSchema.dataseriesFormSchema.items.properties.data.fieldsets[0].fields = ['yaxisData'];
-	//     this._formSchema.dataseriesFormSchema.items.properties.data.required = ['yAxisData', 'filters'];
-	//     this._formSchema.dataseriesFormSchema.items.properties.data.properties.xaxisData.items.required = [];
-	//     this._formSchema.dataseriesFormSchema.items.properties.data.properties.xaxisData.minItems = 0;
-	//     this._formSchema.dataseriesFormSchema.items.properties.data.properties.xaxisData
-	//       .items.properties.xaxisEntityField.requiredField = false;
-	//   }
-	// }
-
-	// printLogs() {
-	//   console.log('this._formSchema --> ', this._formSchema);
-	//   console.log('this._formErrorObject -->', this._formErrorObject);
-	// }
 
   public changeDataObjects(chartObject: HighChartsChart | GoogleChartsChart | HighMapsMap | EChartsChart | null,
                             tableObject: GoogleChartsTable | null,

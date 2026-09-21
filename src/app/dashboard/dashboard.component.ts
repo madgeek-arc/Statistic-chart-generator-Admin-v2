@@ -74,7 +74,6 @@ export class DashboardComponent implements OnInit {
 
     this.dynamicFormHandlingService.jsonLoaded.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: data => {
-        // this.jsonLoad = data;
         if (data) {
           this.updateFormFile();
         }
@@ -91,8 +90,6 @@ export class DashboardComponent implements OnInit {
         console.log("resetting diagramSettings");
         this.resetForm();
       }
-
-      // this.checkDisabledTabs();
     });
 
     this.diagramSettings.get('view.profile')?.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((profile: string) => {
@@ -210,8 +207,6 @@ export class DashboardComponent implements OnInit {
     this.nlAppearance.set(false);
     this.appearanceFromChat = null;
 
-    // this.selectedProfileDetails = null;
-    // this.selectedChartDetails = null;
     this.currentStep = 0;
 
     // Reset chart, table, rawChartData, rawData objects.
@@ -244,7 +239,6 @@ export class DashboardComponent implements OnInit {
   }
 
   backToView(): void {
-    // this.selectedChartDetails = null;
     this.updateStepper(0);
   }
 

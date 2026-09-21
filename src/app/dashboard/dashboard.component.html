@@ -397,8 +397,6 @@
 
               <div class="uk-container uk-container-expand uk-margin-medium-top">
 
-<!--            <pre>{{ diagramSettings.value | json }}</pre>-->
-
                 <div class="iframe-container" [style.display]="currentStep === 0 || currentStep === 1 ? 'none' : 'block'">
 
                   <div>
@@ -406,7 +404,6 @@
                       <div>
                         @if (hasChanges) {
                           <div class="uk-alert-warning" uk-alert>
-                            <!--                      <a href class="uk-alert-close" uk-close></a>-->
                             <p class="uk-text-bold">Your chart is not up to date</p>
                             <p>You updated the values in the control panel, but the chart was not updated automatically. Run the query by clicking on the "Create Chart" button.</p>
                           </div>

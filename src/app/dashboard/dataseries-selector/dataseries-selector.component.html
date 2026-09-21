@@ -98,7 +98,6 @@
                         <div>
                           <div input placeholder="Entity" type="select"
                                [formInput]="ctrl.get('data.yaxisData.entity')" [options]="entities">
-                            <!--                               (valueChange)="selectEntity($event)">-->
                           </div>
                         </div>
                         <div>
@@ -143,7 +142,6 @@
                         }
                         @if (!hasTwoEntityFields) {
                           <div>
-                            <!--                  <button mat-button class="addEntityButtonClass" (click)="addEntityField(ctrl)"><mat-icon>add</mat-icon>Add Group By</button>-->
                             <a class="uk-link uk-flex uk-flex-middle" (click)="addEntityField(ctrl)">
                               <span class="material-symbols-outlined">add</span>
                               <span>Add Group By</span>

@@ -80,7 +80,6 @@ export class DiagramCreator {
 				return of(null);
 			}
 		}
-		// }});
 	}
 
 	public createTable(formObj: SCGAFormSchema): Observable<GoogleChartsTable> {
@@ -125,7 +124,6 @@ export class DiagramCreator {
 	public createRawData(formObj: SCGAFormSchema): Observable<RawDataModel> {
 
 		const view: ViewFormSchema = formObj.view;
-		// const category: CategoryFormSchema = formObj.category;
 		const dataseries: DataseriesFormSchema[] = formObj.dataseries;
 		const appearanceOptions: AppearanceFormSchema = formObj.appearance;
 

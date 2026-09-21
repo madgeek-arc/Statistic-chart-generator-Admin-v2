@@ -148,7 +148,6 @@ export class UrlMappingService {
             field: {
               name: f.field,
               type: this.getFieldType(s.query.entity, f.field), // Look up type dynamically
-              // type: typeof f.values[0] === "string" && /^\d+$/.test(f.values[0]) ? "int" : "text",
             },
             type: f.type,
             values: f.values,
@@ -408,7 +407,6 @@ export class UrlMappingService {
           field: {
             name: f.field,
             type: this.getFieldType(q.query.entity, f.field), // Look up type dynamically
-            // type: typeof f.values[0] === "string" && /^\d+$/.test(f.values[0]) ? "int" : "text",
           },
           type: f.type,
           values: f.values,

@@ -44,7 +44,6 @@ class HighMapsDescription {
 class HMChart {
 	// TBD check if this is correct
     map = '';
-    // map = undefined;
 }
 
 class HMNavigation {

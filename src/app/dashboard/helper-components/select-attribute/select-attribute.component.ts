@@ -340,10 +340,6 @@ export class SelectAttributeComponent implements ControlValueAccessor, OnChanges
     this.selectedNode = value;
     this._onChange(value);
 
-    // console.log('Field changed to: %s from: %s',
-    //  (value === null ? null : '{' + value.name + ' , ' + value.type + '}'),
-    //  (this.selectedNode === null ? null : '{' + this.selectedNode.name + ' , ' + this.selectedNode.type + '}'));
-
   }
 
   setDisabledState?(isDisabled: boolean): void {

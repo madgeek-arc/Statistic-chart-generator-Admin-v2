@@ -103,9 +103,6 @@ export class ChartExportingService {
 
 		const postUrl = this.urlProvider.serviceURL + '/chart/shorten';
 
-		// const postHeaders = new HttpHeaders();
-		// postHeaders.append('Content-Type', 'application/json');
-
     this.http.post<ShortenUrlResponse>(postUrl, { url: encodeURIComponent(chartUrl) })
       .pipe(
         first(),

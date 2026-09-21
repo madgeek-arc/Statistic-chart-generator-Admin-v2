@@ -16,7 +16,6 @@ import { UrlProviderService } from '../../services/url-provider-service/url-prov
 
 export class ChartFrameComponent implements OnChanges, AfterViewInit, OnInit {
 
-	// @Input() chart: HighChartsChart | GoogleChartsChart | HighMapsMap | EChartsChart | null;
   @Input() chartUrl: string | null = null;
 	frameHeight: number;
 	frameUrl: SafeResourceUrl | null = null;

@@ -150,17 +150,14 @@ export class DataseriesSelectorComponent implements OnInit, AfterViewInit {
   }
 
 	getXAxisData(form: any) {
-		// console.log(form.controls.data.controls.xaxisData.controls[0].controls.xaxisEntityField);
 		return form.controls.data.controls.xaxisData.controls;
 	}
 
 	getFilters(form: any) {
-		// console.log(form.controls.data.controls.filters.controls);
 		return form.controls.data.controls.filters.controls;
 	}
 
 	getGroups(form: any) {
-		// console.log(form.controls.data.controls.filters.controls);
 		return form.controls.groupFilters.controls;
 	}
 

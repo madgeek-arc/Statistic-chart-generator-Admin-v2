@@ -27,7 +27,6 @@ export class GeneratedShortUrlFieldComponent implements OnChanges {
 
   public copyURLToClipboard() {
     if (!navigator.clipboard) {
-      // this.toastService.show("Cannot copy to clipboard!",{ classname: 'bg-danger text-light', delay: 15000 });
       this.copiedUrl = false;
       return;
     }
@@ -39,14 +38,10 @@ export class GeneratedShortUrlFieldComponent implements OnChanges {
             this.copiedUrl = true;
             // Close the clipboard alert after 5 seconds
             setTimeout(() => this.clipboardAlert?.close(), 5000);
-
-            // this.toastService.show("Copied to clipboard !",{ classname: 'bg-success text-light', delay: 10000 });
           },
           (err) => {
             console.error(err);
             this.copiedUrl = false;
-
-            // this.toastService.show("Cannot copy to clipboard !",{ classname: 'bg-danger text-light', delay: 15000 })
           });
       });
   }

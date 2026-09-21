@@ -13,8 +13,6 @@ export class FilterOperatorsPipe implements PipeTransform {
 
 	transform(items: FilterType[], filter: string): Option[] {
 
-		// console.log("items:", items)
-		// console.log("filter:", filter)
 		if (!items || !filter) {
 			return items.map(item => this.mapFilterToOption(item));
 		}
