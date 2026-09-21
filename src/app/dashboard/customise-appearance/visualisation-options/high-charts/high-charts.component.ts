@@ -1,16 +1,22 @@
-import { Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { FormArray, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { InputComponent } from '../../../../shared/input.component';
 import { MatSlideToggle } from '@angular/material/slide-toggle';
+import { refreshOnFormChanges } from '../refresh-on-form-changes';
 
 @Component({
     selector: 'app-high-charts',
     templateUrl: './high-charts.component.html',
+    changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [ReactiveFormsModule, InputComponent, MatSlideToggle]
 })
 export class HighChartsComponent {
 
-	@Input() highChartsForm: FormGroup;
+	readonly highChartsForm = input<FormGroup>(undefined);
+
+	constructor() {
+		refreshOnFormChanges(this.highChartsForm);
+	}
 
 	protected horizontalAlignmentList = [
 		{ label: 'Left', value: 'left' },

@@ -1,17 +1,23 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, input } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { InputComponent } from '../../../../shared/input.component';
 import { MatSlideToggle } from '@angular/material/slide-toggle';
+import { refreshOnFormChanges } from '../refresh-on-form-changes';
 
 @Component({
     selector: 'app-e-charts',
     templateUrl: './e-charts.component.html',
+    changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [ReactiveFormsModule, InputComponent, MatSlideToggle]
 })
 
 export class EChartsComponent implements OnInit {
 
-	@Input() eChartsForm: FormGroup;
+	readonly eChartsForm = input<FormGroup>(undefined);
+
+	constructor() {
+		refreshOnFormChanges(this.eChartsForm);
+	}
 
 	protected horizontalAlignmentList = [
 		{ label: 'Left', value: 'left' },
@@ -31,8 +37,9 @@ export class EChartsComponent implements OnInit {
 	];
 
   ngOnInit(): void {
-    if (this.eChartsForm && this.eChartsForm.value) {
-      console.log("this.eChartsForm:", this.eChartsForm.value);
+    const eChartsForm = this.eChartsForm();
+    if (eChartsForm && eChartsForm.value) {
+      console.log("this.eChartsForm:", eChartsForm.value);
     }
   }
 

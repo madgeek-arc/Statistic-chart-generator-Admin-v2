@@ -1,4 +1,4 @@
-<div style="width: 100%;" [formGroup]="this.eChartsForm">
+<div style="width: 100%;" [formGroup]="this.eChartsForm()">
 
   <div>
     <ul data-uk-accordion="multiple: true">
@@ -9,10 +9,10 @@
 
           <div class="uk-child-width-1-2" uk-grid>
             <div class="">
-              <div input placeholder="Title Text" [formInput]="eChartsForm.get('titles.title')"></div>
+              <div input placeholder="Title Text" [formInput]="eChartsForm().get('titles.title')"></div>
             </div>
             <div class="">
-              <div input placeholder="Subtitle Text" [formInput]="eChartsForm.get('titles.subtitle')"></div>
+              <div input placeholder="Subtitle Text" [formInput]="eChartsForm().get('titles.subtitle')"></div>
             </div>
           </div>
 
@@ -25,10 +25,10 @@
 
           <div class="uk-child-width-1-2" uk-grid>
             <div class="">
-              <div input placeholder="Y Axis" [formInput]="eChartsForm.get('axisNames.yaxisName')"></div>
+              <div input placeholder="Y Axis" [formInput]="eChartsForm().get('axisNames.yaxisName')"></div>
             </div>
             <div class="">
-              <div input placeholder="X Axis" [formInput]="eChartsForm.get('axisNames.xaxisName')"></div>
+              <div input placeholder="X Axis" [formInput]="eChartsForm().get('axisNames.xaxisName')"></div>
             </div>
           </div>
 
@@ -66,18 +66,18 @@
             <mat-slide-toggle formControlName="ecEnableLegend">Enable Legend</mat-slide-toggle>
           </div>
 
-          @if (eChartsForm.get('ecLegend.ecEnableLegend').value) {
+          @if (eChartsForm().get('ecLegend.ecEnableLegend').value) {
             <div class="uk-child-width-1-3 uk-margin-medium-top" uk-grid>
               <div class="">
-                <div input placeholder="Item Layout" type="select" [formInput]="eChartsForm.get('ecLegend.ecLegendLayout')"
+                <div input placeholder="Item Layout" type="select" [formInput]="eChartsForm().get('ecLegend.ecLegendLayout')"
                 [options]="itemLayoutList"></div>
               </div>
               <div class="">
-                <div input placeholder="Horizontal Alignment" type="select" [formInput]="eChartsForm.get('ecLegend.ecLegendHorizontalAlignment')"
+                <div input placeholder="Horizontal Alignment" type="select" [formInput]="eChartsForm().get('ecLegend.ecLegendHorizontalAlignment')"
                 [options]="horizontalAlignmentList"></div>
               </div>
               <div class="">
-                <div input placeholder="Vertical Alignment" type="select" [formInput]="eChartsForm.get('ecLegend.ecLegendVerticalAlignment')"
+                <div input placeholder="Vertical Alignment" type="select" [formInput]="eChartsForm().get('ecLegend.ecLegendVerticalAlignment')"
                 [options]="verticalAlignmentList"></div>
               </div>
             </div>
@@ -112,7 +112,7 @@
 
           <div class="" uk-grid>
             <div class="uk-width-1-1">
-              <div input placeholder="Background Color" type="color" [formInput]="eChartsForm.get('ecChartArea.ecCABackGroundColor')"></div>
+              <div input placeholder="Background Color" type="color" [formInput]="eChartsForm().get('ecChartArea.ecCABackGroundColor')"></div>
             </div>
           </div>
 
@@ -124,15 +124,15 @@
 
         <div class="uk-accordion-content" formArrayName="dataSeriesColorArray">
 
-          @for (dataSeriesColor of getSeriesColors(eChartsForm); track dataSeriesColor; let i = $index) {
+          @for (dataSeriesColor of getSeriesColors(eChartsForm()); track dataSeriesColor; let i = $index) {
             <div class="uk-flex uk-flex-middle uk-grid-small" uk-grid>
-              <div class="uk-width-expand" input type="color" [formInput]="eChartsForm.get('dataSeriesColorArray').get(i.toString())"></div>
-              <a (click)="removeSeriesColor(eChartsForm, i)" class="uk-link-reset"><span class="material-symbols-outlined uk-margin-small-left">close</span></a>
+              <div class="uk-width-expand" input type="color" [formInput]="eChartsForm().get('dataSeriesColorArray').get(i.toString())"></div>
+              <a (click)="removeSeriesColor(eChartsForm(), i)" class="uk-link-reset"><span class="material-symbols-outlined uk-margin-small-left">close</span></a>
             </div>
           }
 
           <div class="uk-margin-top">
-            <a class="uk-link uk-flex uk-flex-middle" (click)="addSeriesColor(eChartsForm)">
+            <a class="uk-link uk-flex uk-flex-middle" (click)="addSeriesColor(eChartsForm())">
               <span class="material-symbols-outlined">add</span>
               <span>Add Series Color</span>
             </a>

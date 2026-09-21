@@ -1,12 +1,14 @@
-import { Component, OnInit, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, input } from '@angular/core';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { InputComponent } from '../../../../shared/input.component';
 import { MatSlideToggle } from '@angular/material/slide-toggle';
 import { MatIcon } from '@angular/material/icon';
+import { refreshOnFormChanges } from '../refresh-on-form-changes';
 
 @Component({
     selector: 'app-google-charts',
     templateUrl: './google-charts.component.html',
+    changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [ReactiveFormsModule, InputComponent, MatSlideToggle, MatIcon]
 })
 export class GoogleChartsComponent implements OnInit {
@@ -19,7 +21,9 @@ export class GoogleChartsComponent implements OnInit {
 		{ label: 'Stacked by Percentage', value: 'stackedByPercentage' }
 	];
 
-	constructor() { }
+	constructor() {
+		refreshOnFormChanges(this.googleChartsForm);
+	}
 
 	ngOnInit(): void {
 		const googleChartsForm = this.googleChartsForm();
