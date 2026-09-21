@@ -73,10 +73,13 @@ export class AutocompleteInputFieldComponent implements AfterViewInit, OnDestroy
       tap(() => {this.possibleFieldValues = of([]); this.loading = true; this.cdr.markForCheck(); } ),
       map((queryText: string) => this.fieldAutocompleteService.getAutocompleteFields(this.filterfield, queryText)),
       switchAll()).subscribe({
-        next: (result: AutocompleteResponse) => {
-          console.log('Returned ' + result.count + ' possible values');
-          this.possibleFieldValues = of(result.values);
-          this.numberOfpossibleFieldValues = result.count;
+        next: (result: AutocompleteResponse | null) => {
+          // HttpClient yields `null` for an empty response body; treat it as no matches.
+          const values = result?.values ?? [];
+          const count = result?.count ?? 0;
+          console.log('Returned ' + count + ' possible values');
+          this.possibleFieldValues = of(values);
+          this.numberOfpossibleFieldValues = count;
           this.loading = false;
           this.cdr.markForCheck();
         },
