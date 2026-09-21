@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { FormFactoryService } from "../../services/form-factory-service/form-factory-service";
 import { InputComponent } from '../../shared/input.component';
@@ -14,6 +14,7 @@ import { HighMapsComponent } from './visualisation-options/high-maps/high-maps.c
 })
 
 export class CustomiseAppearanceComponent implements OnInit {
+	private formFactoryService = inject(FormFactoryService);
 
 	appearanceForm: FormGroup | null = null;
 
@@ -22,8 +23,6 @@ export class CustomiseAppearanceComponent implements OnInit {
 		{ label: 'X Axis', value: 'xaxis' },
 		{ label: 'Y Axis', value: 'yaxis' }
 	];
-
-  constructor(private formFactoryService: FormFactoryService) { }
 
   ngOnInit() {
     this.appearanceForm = this.formFactoryService.getFormRoot().get('appearance') as FormGroup;

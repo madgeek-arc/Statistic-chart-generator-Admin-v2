@@ -13,7 +13,8 @@ import {
   QueryList,
   SimpleChanges,
   ViewChild,
-  ViewChildren
+  ViewChildren,
+  inject
 } from '@angular/core';
 import {
   AbstractControl,
@@ -359,6 +360,8 @@ declare let UIkit: any;
 })
 
 export class InputComponent implements OnInit, OnDestroy, AfterViewInit, OnChanges {
+  private cdr = inject(ChangeDetectorRef);
+
   private static INPUT_COUNTER = 0;
   /** Basic information */
   @Input('formInput') formControl: AbstractControl;
@@ -473,8 +476,6 @@ export class InputComponent implements OnInit, OnDestroy, AfterViewInit, OnChang
       this.selectable = true;
     }
   }
-
-  constructor(private cdr: ChangeDetectorRef) {}
 
   @HostListener('window:keydown.arrowUp', ['$event'])
   arrowUp(event: Event) {

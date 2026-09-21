@@ -4,7 +4,8 @@ import {
   Input,
   OnChanges,
   OnInit,
-  SimpleChanges
+  SimpleChanges,
+  inject
 } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { UrlProviderService } from '../../services/url-provider-service/url-provider.service';
@@ -15,14 +16,16 @@ import { UrlProviderService } from '../../services/url-provider-service/url-prov
 })
 
 export class ChartFrameComponent implements OnChanges, AfterViewInit, OnInit {
+  private sanitizer = inject(DomSanitizer);
+  private urlProvider = inject(UrlProviderService);
 
   @Input() chartUrl: string | null = null;
 	frameHeight: number;
 	frameUrl: SafeResourceUrl | null = null;
 
-	constructor(private sanitizer: DomSanitizer, private urlProvider: UrlProviderService) {
+	constructor() {
     this.frameHeight = (3 * window.outerHeight) / 5;
-		this.frameUrl = this.getSanitizedFrameUrl(urlProvider.serviceURL + '/chart?json');
+		this.frameUrl = this.getSanitizedFrameUrl(this.urlProvider.serviceURL + '/chart?json');
 		console.log("CHART URL:", this.frameUrl);
 	}
 

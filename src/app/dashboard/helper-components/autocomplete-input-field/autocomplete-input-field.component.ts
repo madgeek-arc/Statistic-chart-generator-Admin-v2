@@ -7,7 +7,8 @@ import {
   OnChanges,
   OnDestroy,
   SimpleChanges,
-  ViewChild
+  ViewChild,
+  inject
 } from '@angular/core';
 import { fromEvent, merge, Observable, of, Subscription } from 'rxjs';
 import { debounceTime, distinctUntilChanged, map, switchAll, tap } from 'rxjs/operators';
@@ -34,6 +35,8 @@ import { AsyncPipe } from "@angular/common";
 })
 
 export class AutocompleteInputFieldComponent implements AfterViewInit, OnChanges, OnDestroy {
+  private fieldAutocompleteService = inject(FieldAutocompleteService);
+  private cdr = inject(ChangeDetectorRef);
 
   // The FormGroup of the current filter
   @Input() inputFormGroup: FormControl;
@@ -60,7 +63,7 @@ export class AutocompleteInputFieldComponent implements AfterViewInit, OnChanges
   typeToSearchDelay: number;
   autocompleteSubscription: Subscription;
 
-  constructor(private fieldAutocompleteService: FieldAutocompleteService, private cdr: ChangeDetectorRef) {
+  constructor() {
     this.possibleFieldValues = of([]);
     this.typeToSearchDelay = 250;
     this.loading = false;

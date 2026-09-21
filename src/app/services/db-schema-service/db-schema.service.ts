@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { retry } from 'rxjs/operators';
@@ -9,11 +9,8 @@ import { Profile } from '../mapping-profiles-service/mapping-profiles.service';
 	providedIn: 'root'
 })
 export class DbSchemaService {
-
-	constructor(
-		private http: HttpClient,
-		private urlProvider: UrlProviderService,
-	) { }
+	private http = inject(HttpClient);
+	private urlProvider = inject(UrlProviderService);
 
 	getAvailableEntities(profile: Profile | null | undefined): Observable<string[]> {
     if (profile === undefined || profile === null) {

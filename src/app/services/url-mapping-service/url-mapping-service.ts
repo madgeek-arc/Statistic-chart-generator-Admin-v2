@@ -15,11 +15,11 @@ import {
 
 @Injectable({ providedIn: 'root' })
 export class UrlMappingService {
-  private diagramService = inject(DiagramCategoryService);
+  private formHandlingService = inject(DynamicFormHandlingService);
+  private dynamicTreeDatabase = inject(DynamicTreeDatabase);
+  private profileService = inject(MappingProfilesService);
 
-  constructor(private formHandlingService: DynamicFormHandlingService,
-              private dynamicTreeDatabase: DynamicTreeDatabase,
-              private profileService: MappingProfilesService) {}
+  private diagramService = inject(DiagramCategoryService);
 
   updateFormObjet(urlJson: any, rawData = false) {
     let profile = urlJson.library === 'HighMaps'

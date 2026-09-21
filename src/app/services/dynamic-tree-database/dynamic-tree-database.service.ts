@@ -2,7 +2,7 @@ import { distinctUntilChanged, filter, first } from 'rxjs/operators';
 import { UrlProviderService } from '../url-provider-service/url-provider.service';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, forkJoin } from 'rxjs';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { DbSchemaService } from '../db-schema-service/db-schema.service';
 import { MappingProfilesService, Profile } from '../mapping-profiles-service/mapping-profiles.service';
 import { CachedEntityNode, DynamicEntityNode } from 'src/app/dashboard/helper-components/select-attribute/dynamic-entity-tree/entity-tree-nodes.types';
@@ -15,6 +15,10 @@ import { CachedEntityNode, DynamicEntityNode } from 'src/app/dashboard/helper-co
 	providedIn: 'root'
 })
 export class DynamicTreeDatabase {
+	private http = inject(HttpClient);
+	private urlProvider = inject(UrlProviderService);
+	private profileMappingService = inject(MappingProfilesService);
+	private dbService = inject(DbSchemaService);
 
 	public loading = false;
 
@@ -23,8 +27,7 @@ export class DynamicTreeDatabase {
 	public get entityMap$() { return this._entityMap$.asObservable(); }
 	private _entityMap$ = new BehaviorSubject<Map<string, CachedEntityNode> | null>(null);
 
-	constructor(private http: HttpClient, private urlProvider: UrlProviderService,
-		private profileMappingService: MappingProfilesService, private dbService: DbSchemaService) {
+	constructor() {
 
     // This code segment introduced issues with JSON loading (perhaps because subjects in profileMappingService are not updated).
 		this.profileMappingService.selectedProfile$.pipe(distinctUntilChanged()).subscribe(

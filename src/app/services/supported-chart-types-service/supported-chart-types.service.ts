@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { catchError, retry } from 'rxjs/operators';
@@ -9,8 +9,9 @@ import { ErrorHandlerService } from "../error-handler-service/error-handler.serv
   providedIn: 'root'
 })
 export class SupportedChartTypesService {
-
-constructor(private http: HttpClient, private urlProvider: UrlProviderService, private errorHandler: ErrorHandlerService) {}
+  private http = inject(HttpClient);
+  private urlProvider = inject(UrlProviderService);
+  private errorHandler = inject(ErrorHandlerService);
 
   getSupportedChartTypes(): Observable<ISupportedChart[]> {
 

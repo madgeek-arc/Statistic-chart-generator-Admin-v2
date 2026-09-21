@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { UrlProviderService } from '../url-provider-service/url-provider.service';
@@ -15,10 +15,13 @@ export class Profile {
 	providedIn: 'root'
 })
 export class MappingProfilesService {
+	private http = inject(HttpClient);
+	private urlProvider = inject(UrlProviderService);
+
 	mappingProfiles$: BehaviorSubject<Profile[]>;
 	selectedProfile$: BehaviorSubject<Profile | null>;
 
-	constructor(private http: HttpClient, private urlProvider: UrlProviderService) {
+	constructor() {
 
 		this.selectedProfile$ = new BehaviorSubject<Profile | null>(null);
 		this.mappingProfiles$ = new BehaviorSubject<Profile[]>([]);

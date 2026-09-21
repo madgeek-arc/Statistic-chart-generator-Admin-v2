@@ -1,4 +1,12 @@
-import { AfterViewInit, Component, DestroyRef, inject, Input, OnInit, ViewChild } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  DestroyRef,
+  inject,
+  Input,
+  OnInit,
+  ViewChild
+} from '@angular/core';
 import { FormArray, FormControl, FormGroup, FormGroupDirective, ReactiveFormsModule } from '@angular/forms';
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { distinctUntilChanged } from "rxjs/operators";
@@ -32,6 +40,10 @@ export class FilterType {
 })
 
 export class DataseriesSelectorComponent implements OnInit, AfterViewInit {
+  private dynamicTreeDB = inject(DynamicTreeDatabase);
+  private dbService = inject(DbSchemaService);
+  private formFactory = inject(FormFactoryService);
+
   private destroyRef = inject(DestroyRef);
 
 	@Input() selectedProfile: FormControl = new FormControl();
@@ -89,12 +101,6 @@ export class DataseriesSelectorComponent implements OnInit, AfterViewInit {
 		{ filterOperator: 'is_null', filterName: 'Is null', filterType: [FieldType.text, FieldType.int, FieldType.float, FieldType.date] },
 		{ filterOperator: 'is_not_null', filterName: 'Is not null', filterType: [FieldType.text, FieldType.int, FieldType.float, FieldType.date] }
 	];
-
-	constructor(
-    private dynamicTreeDB: DynamicTreeDatabase,
-		private dbService: DbSchemaService,
-    private formFactory: FormFactoryService,
-	) { }
 
 	ngOnInit(): void {
 		// With the change in stepper, the data is not created in the beginning, so it'll have to be initialized and not wait for "value changes"

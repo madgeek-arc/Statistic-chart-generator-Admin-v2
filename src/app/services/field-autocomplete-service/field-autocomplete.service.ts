@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { catchError, retry } from 'rxjs/operators';
@@ -17,9 +17,10 @@ export class AutocompleteResponse {
   providedIn: 'root'
 })
 export class FieldAutocompleteService {
-
-  constructor(private http: HttpClient, private urlProvider: UrlProviderService,
-     private errorHandler: ErrorHandlerService, private profileMappingService: MappingProfilesService) {}
+  private http = inject(HttpClient);
+  private urlProvider = inject(UrlProviderService);
+  private errorHandler = inject(ErrorHandlerService);
+  private profileMappingService = inject(MappingProfilesService);
 
   getAutocompleteFields(field: string, text: string | null): Observable<AutocompleteResponse> {
 

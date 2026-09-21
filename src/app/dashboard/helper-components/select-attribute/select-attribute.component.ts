@@ -13,7 +13,8 @@ import {
   OnChanges,
   Output,
   SimpleChanges,
-  ViewRef
+  ViewRef,
+  inject
 } from '@angular/core';
 import {
   AbstractControl,
@@ -45,6 +46,9 @@ import { TitleCasePipe } from '@angular/common';
 })
 
 export class SelectAttributeComponent implements ControlValueAccessor, OnChanges, AfterViewInit {
+  private chartLoadingService = inject(ChartLoadingService);
+  private cdr = inject(ChangeDetectorRef);
+  private dynamicTreeDB = inject(DynamicTreeDatabase);
 
   nestedEntityTreeControl: NestedTreeControl<DynamicEntityNode>;
   nestedEntityDataSource: DynamicDataSource;
@@ -57,10 +61,7 @@ export class SelectAttributeComponent implements ControlValueAccessor, OnChanges
   selectedNode: FieldNode | null = null;
   private pendingValue: FieldNode | null = null; // Store value to set later
 
-  constructor(private chartLoadingService: ChartLoadingService,
-              private cdr: ChangeDetectorRef,
-              private dynamicTreeDB: DynamicTreeDatabase
-  ) {
+  constructor() {
 
     this.nestedEntityTreeControl = new NestedTreeControl<DynamicEntityNode>(node => node.relations);
     this.nestedEntityDataSource = new DynamicDataSource(this.nestedEntityTreeControl, this.dynamicTreeDB);

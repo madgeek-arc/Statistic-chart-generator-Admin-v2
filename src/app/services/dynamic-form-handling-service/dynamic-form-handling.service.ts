@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { BehaviorSubject, forkJoin } from 'rxjs';
 import { DiagramCreator } from './dynamic-form-handling-diagram-creator';
 import { ChartExportingService } from '../chart-exporting-service/chart-exporting.service';
@@ -23,6 +23,10 @@ import { ChartInfo, OptionsData } from "../nl-chat-service/nl-chat.service";
 	providedIn: 'root'
 })
 export class DynamicFormHandlingService {
+	private diagramcategoryService = inject(DiagramCategoryService);
+	private chartExportingService = inject(ChartExportingService);
+	private chartLoadingService = inject(ChartLoadingService);
+	private formFactoryService = inject(FormFactoryService);
 
 	private _chartObject: HighChartsChart | GoogleChartsChart | HighMapsMap | EChartsChart | null = null;
 	private _tableObject: GoogleChartsTable | null = null;
@@ -39,13 +43,9 @@ export class DynamicFormHandlingService {
 	// fixme when find another solution
 	private _xAxisRequired = false;
 
-	constructor(
-    private diagramcategoryService: DiagramCategoryService,
-		private chartExportingService: ChartExportingService,
-		private chartLoadingService: ChartLoadingService,
-    private formFactoryService: FormFactoryService) {
+	constructor() {
 
-		this._diagramCreator = new DiagramCreator(diagramcategoryService);
+		this._diagramCreator = new DiagramCreator(this.diagramcategoryService);
 
 	}
 

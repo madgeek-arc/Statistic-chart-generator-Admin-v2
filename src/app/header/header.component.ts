@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { DynamicFormHandlingService } from "../services/dynamic-form-handling-service/dynamic-form-handling.service";
 import { ChartLoadingService } from "../services/chart-loading-service/chart-loading.service";
 import { ChartExportingService } from "../services/chart-exporting-service/chart-exporting.service";
@@ -15,14 +15,13 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
     imports: [RouterLink, NgOptimizedImage, NgClass, GeneratedShortUrlFieldComponent, ReactiveFormsModule, FormsModule, SlicePipe]
 })
 export class HeaderComponent {
+  dynamicFormHandlingService = inject(DynamicFormHandlingService);
+  private urlMappingService = inject(UrlMappingService);
+  chartLoadingService = inject(ChartLoadingService);
+  chartExportingService = inject(ChartExportingService);
 
   urlJson: string | null = null;
   errorMsg: string | null = null;
-
-  constructor(public dynamicFormHandlingService: DynamicFormHandlingService,
-              private urlMappingService: UrlMappingService,
-              public chartLoadingService: ChartLoadingService,
-              public chartExportingService: ChartExportingService) {}
 
   saveChart(): void {
     this.dynamicFormHandlingService.exportForm();

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 export interface Country {
@@ -21,8 +21,7 @@ export interface NativeName {
 @Injectable({providedIn: 'root'})
 
 export class CountriesListingService {
-
-  constructor(private http: HttpClient){}
+  private http = inject(HttpClient);
 
   countriesListing() {
     //   You must specify the fields you need (up to 10 fields) when calling the all endpoints.

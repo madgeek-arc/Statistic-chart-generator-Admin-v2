@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { catchError, distinctUntilChanged, first } from 'rxjs/operators';
@@ -35,6 +35,9 @@ interface UrlState {
 	providedIn: 'root'
 })
 export class ChartExportingService {
+  private http = inject(HttpClient);
+  private errorHandler = inject(ErrorHandlerService);
+  private urlProvider = inject(UrlProviderService);
 
   private readonly chartState = this.createUrlState();
   private readonly tableState = this.createUrlState();
@@ -57,7 +60,7 @@ export class ChartExportingService {
   get rawDataTinyUrl$() { return this.rawDataState.tinyUrl$; }
   get loadingRawDataTinyUrl$() { return this.rawDataState.loadingTinyUrl$; }
 
-	constructor(private http: HttpClient, private errorHandler: ErrorHandlerService, private urlProvider: UrlProviderService) {
+	constructor() {
     // Update Tiny Urls when Urls change
     [this.chartState, this.tableState, this.rawChartDataState, this.rawDataState].forEach(state => {
       state.url$.pipe(distinctUntilChanged()).subscribe({
