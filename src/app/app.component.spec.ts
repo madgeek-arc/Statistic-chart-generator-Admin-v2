@@ -8,7 +8,7 @@ describe('AppComponent', () => {
     declarations: [AppComponent],
     schemas: [NO_ERRORS_SCHEMA],
     providers: [provideRouter([])],
-  }));
+}));
 
   it('should create the app', () => {
     const fixture = TestBed.createComponent(AppComponent);

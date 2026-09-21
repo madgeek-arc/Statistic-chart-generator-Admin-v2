@@ -1,16 +1,14 @@
 import { Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common';
+import { FormControl } from '@angular/forms';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
 import { SelectAttributeComponent } from './select-attribute.component';
 import { DynamicEntityNode, FieldNode } from './dynamic-entity-tree/entity-tree-nodes.types';
-import { MaterialModule } from '../../../material/material.module';
 
 @Component({
-  template: `<select-attribute [formInput]="control" [chosenEntity]="null"></select-attribute>`,
-  standalone: false
+    template: `<select-attribute [formInput]="control" [chosenEntity]="null"></select-attribute>`,
+    imports: [SelectAttributeComponent]
 })
 class HostComponent {
   control = new FormControl<FieldNode | null>(null);
@@ -22,8 +20,7 @@ describe('SelectAttributeComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [SelectAttributeComponent, HostComponent],
-      imports: [ReactiveFormsModule, CommonModule, MaterialModule, NoopAnimationsModule]
+      imports: [HostComponent, NoopAnimationsModule]
     });
     fixture = TestBed.createComponent(HostComponent);
     host = fixture.componentInstance;

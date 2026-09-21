@@ -5,8 +5,7 @@ import { RawDataModel } from "../../services/supported-libraries-service/models/
 
 @Component({
     selector: 'raw-data-frame',
-    templateUrl: './raw-data-frame.component.html',
-    standalone: false
+    templateUrl: './raw-data-frame.component.html'
 })
 export class RawDataFrameComponent implements OnInit, OnChanges {
 

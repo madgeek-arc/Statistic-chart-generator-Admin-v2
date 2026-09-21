@@ -28,16 +28,22 @@ import { NestedTreeControl } from '@angular/cdk/tree';
 import { takeWhile } from 'rxjs/operators';
 import { ChartLoadingService } from "../../../services/chart-loading-service/chart-loading.service";
 import { DynamicTreeDatabase } from "../../../services/dynamic-tree-database/dynamic-tree-database.service";
+import { MatButton, MatIconButton } from '@angular/material/button';
+import { MatMenuTrigger, MatMenu } from '@angular/material/menu';
+import { MatTree, MatTreeNodeDef, MatNestedTreeNode, MatTreeNodeToggle, MatTreeNodeOutlet } from '@angular/material/tree';
+import { MatIcon } from '@angular/material/icon';
+import { MatProgressBar } from '@angular/material/progress-bar';
+import { TitleCasePipe } from '@angular/common';
 
 @Component({
-  selector: 'select-attribute',
-  templateUrl: './select-attribute.component.html',
-  styleUrls: ['./select-attribute.component.less'],
-  viewProviders: [
-    { provide: ControlContainer, useExisting: FormGroupDirective }
-  ],
-  providers: [{ provide: NG_VALUE_ACCESSOR, useExisting: forwardRef(() => SelectAttributeComponent), multi: true }],
-  standalone: false
+    selector: 'select-attribute',
+    templateUrl: './select-attribute.component.html',
+    styleUrls: ['./select-attribute.component.less'],
+    viewProviders: [
+        { provide: ControlContainer, useExisting: FormGroupDirective }
+    ],
+    providers: [{ provide: NG_VALUE_ACCESSOR, useExisting: forwardRef(() => SelectAttributeComponent), multi: true }],
+    imports: [MatButton, MatMenuTrigger, MatMenu, MatTree, MatTreeNodeDef, MatNestedTreeNode, MatTreeNodeToggle, MatIconButton, MatIcon, MatProgressBar, MatTreeNodeOutlet, TitleCasePipe]
 })
 
 export class SelectAttributeComponent implements ControlValueAccessor, OnChanges, AfterViewInit {

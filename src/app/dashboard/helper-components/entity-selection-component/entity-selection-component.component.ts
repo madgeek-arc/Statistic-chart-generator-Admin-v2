@@ -1,10 +1,13 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { CachedEntityNode } from '../select-attribute/dynamic-entity-tree/entity-tree-nodes.types';
+import { MatOption } from '@angular/material/select';
+import { MatExpansionPanel, MatExpansionPanelHeader } from '@angular/material/expansion';
+import { UpperCasePipe } from '@angular/common';
 
 @Component({
     selector: 'app-entity-selection-component',
     templateUrl: './entity-selection-component.component.html',
-    standalone: false
+    imports: [MatOption, MatExpansionPanel, MatExpansionPanelHeader, UpperCasePipe]
 })
 export class EntitySelectionComponentComponent implements OnInit {
 

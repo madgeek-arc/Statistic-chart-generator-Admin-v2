@@ -13,8 +13,7 @@ import { UrlProviderService } from '../../services/url-provider-service/url-prov
 
 @Component({
     selector: 'chart-frame',
-    templateUrl: './chart-frame.component.html',
-    standalone: false
+    templateUrl: './chart-frame.component.html'
 })
 
 export class ChartFrameComponent implements OnChanges, AfterViewInit, OnInit {

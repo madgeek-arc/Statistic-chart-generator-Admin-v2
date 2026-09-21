@@ -1,10 +1,12 @@
 import { Component, Input } from '@angular/core';
-import { FormArray, FormControl, FormGroup } from '@angular/forms';
+import { FormArray, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { InputComponent } from '../../../../shared/input.component';
+import { MatSlideToggle } from '@angular/material/slide-toggle';
 
 @Component({
     selector: 'app-high-charts',
     templateUrl: './high-charts.component.html',
-    standalone: false
+    imports: [ReactiveFormsModule, InputComponent, MatSlideToggle]
 })
 export class HighChartsComponent {
 

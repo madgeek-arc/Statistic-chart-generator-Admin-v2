@@ -8,8 +8,8 @@ describe('ChartDataPresentationTableComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ TableFrameComponent ]
-    })
+    imports: [TableFrameComponent]
+})
     .compileComponents();
   }));
 

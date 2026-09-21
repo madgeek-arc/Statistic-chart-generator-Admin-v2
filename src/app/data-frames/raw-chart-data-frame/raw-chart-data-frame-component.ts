@@ -5,8 +5,7 @@ import { RawChartDataModel } from "../../services/supported-libraries-service/mo
 
 @Component({
     selector: 'raw-chart-data-frame',
-    templateUrl: './raw-chart-data-frame.component.html',
-    standalone: false
+    templateUrl: './raw-chart-data-frame.component.html'
 })
 export class RawChartDataFrameComponent implements OnInit, OnChanges {
 

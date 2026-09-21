@@ -8,8 +8,8 @@ describe('GeneratedShortUrlFieldComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ GeneratedShortUrlFieldComponent ]
-    })
+    imports: [GeneratedShortUrlFieldComponent]
+})
     .compileComponents();
   }));
 

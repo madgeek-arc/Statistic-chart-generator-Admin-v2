@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, DestroyRef, inject, Input, OnInit, ViewChild } from '@angular/core';
-import { FormArray, FormControl, FormGroup, FormGroupDirective } from '@angular/forms';
+import { FormArray, FormControl, FormGroup, FormGroupDirective, ReactiveFormsModule } from '@angular/forms';
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { distinctUntilChanged } from "rxjs/operators";
 import { DbSchemaService } from "../../services/db-schema-service/db-schema.service";
@@ -8,6 +8,12 @@ import { DynamicTreeDatabase } from "../../services/dynamic-tree-database/dynami
 import { Profile } from "../../services/mapping-profiles-service/mapping-profiles.service";
 import { InputComponent } from "../../shared/input.component";
 import UIkit from "uikit";
+import { MatIcon } from '@angular/material/icon';
+import { SelectAttributeComponent } from '../helper-components/select-attribute/select-attribute.component';
+import { MatIconButton } from '@angular/material/button';
+import { MatRadioGroup, MatRadioButton } from '@angular/material/radio';
+import { AutocompleteInputFieldComponent } from '../helper-components/autocomplete-input-field/autocomplete-input-field.component';
+import { FilterOperatorsPipe } from '../pipes/filter-operators.pipe';
 
 export enum FieldType { text, int, float, date};
 
@@ -22,7 +28,7 @@ export class FilterType {
     templateUrl: './dataseries-selector.component.html',
     styleUrls: ['./dataseries-selector.component.less'],
     providers: [FormGroupDirective],
-    standalone: false
+    imports: [ReactiveFormsModule, InputComponent, MatIcon, SelectAttributeComponent, MatIconButton, MatRadioGroup, MatRadioButton, AutocompleteInputFieldComponent, FilterOperatorsPipe]
 })
 
 export class DataseriesSelectorComponent implements OnInit, AfterViewInit {

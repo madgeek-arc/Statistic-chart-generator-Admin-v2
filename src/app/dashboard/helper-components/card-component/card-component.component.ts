@@ -1,9 +1,10 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { MatIcon } from '@angular/material/icon';
 
 @Component({
     selector: 'app-card-component',
     templateUrl: './card-component.component.html',
-    standalone: false
+    imports: [MatIcon]
 })
 export class CardComponentComponent {
 

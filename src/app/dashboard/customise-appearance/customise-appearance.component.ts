@@ -1,11 +1,16 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { FormFactoryService } from "../../services/form-factory-service/form-factory-service";
+import { InputComponent } from '../../shared/input.component';
+import { HighChartsComponent } from './visualisation-options/high-charts/high-charts.component';
+import { GoogleChartsComponent } from './visualisation-options/google-charts/google-charts.component';
+import { EChartsComponent } from './visualisation-options/e-charts/e-charts.component';
+import { HighMapsComponent } from './visualisation-options/high-maps/high-maps.component';
 
 @Component({
     selector: 'app-customise-appearance',
     templateUrl: './customise-appearance.component.html',
-    standalone: false
+    imports: [ReactiveFormsModule, InputComponent, HighChartsComponent, GoogleChartsComponent, EChartsComponent, HighMapsComponent]
 })
 
 export class CustomiseAppearanceComponent implements OnInit {

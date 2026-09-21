@@ -6,8 +6,7 @@ import { GoogleChartsTable } from "../../services/supported-libraries-service/mo
 @Component({
     selector: 'table-frame',
     templateUrl: './table-frame.component.html',
-    styleUrls: ['./table-frame.component.scss'],
-    standalone: false
+    styleUrls: ['./table-frame.component.scss']
 })
 export class TableFrameComponent implements OnInit, OnChanges {
 

@@ -10,12 +10,21 @@ import { ISupportedCategory } from '../services/supported-chart-types-service/su
 import { DiagramCategoryService } from "../services/diagram-category-service/diagram-category.service";
 import { distinctUntilChanged } from "rxjs/operators";
 import UIkit from 'uikit';
+import { ViewSelectorComponent } from './view-selector/view-selector.component';
+import { CategorySelectorComponent } from './category-selector/category-selector.component';
+import { DataseriesSelectorComponent } from './dataseries-selector/dataseries-selector.component';
+import { NlChatComponent } from '../nl-chat/nl-chat.component';
+import { CustomiseAppearanceComponent } from './customise-appearance/customise-appearance.component';
+import { ChartFrameComponent } from '../data-frames/chart-frame/chart-frame.component';
+import { GeneratedShortUrlFieldComponent } from '../data-frames/generated-short-url-field/generated-short-url-field.component';
+import { MatTabGroup, MatTab } from '@angular/material/tabs';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
-  selector: 'app-dashboard',
-  templateUrl: './dashboard.component.html',
-  styleUrl: './dashboard.component.less',
-  standalone: false
+    selector: 'app-dashboard',
+    templateUrl: './dashboard.component.html',
+    styleUrl: './dashboard.component.less',
+    imports: [ViewSelectorComponent, CategorySelectorComponent, DataseriesSelectorComponent, NlChatComponent, CustomiseAppearanceComponent, ChartFrameComponent, GeneratedShortUrlFieldComponent, MatTabGroup, MatTab, AsyncPipe]
 })
 
 export class DashboardComponent implements OnInit {

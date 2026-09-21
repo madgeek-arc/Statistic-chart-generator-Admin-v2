@@ -1,10 +1,12 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { InputComponent } from '../../../../shared/input.component';
+import { MatSlideToggle } from '@angular/material/slide-toggle';
 
 @Component({
     selector: 'app-e-charts',
     templateUrl: './e-charts.component.html',
-    standalone: false
+    imports: [ReactiveFormsModule, InputComponent, MatSlideToggle]
 })
 
 export class EChartsComponent implements OnInit {

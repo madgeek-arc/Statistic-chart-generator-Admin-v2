@@ -1,10 +1,13 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { InputComponent } from '../../../../shared/input.component';
+import { MatSlideToggle } from '@angular/material/slide-toggle';
+import { MatIcon } from '@angular/material/icon';
 
 @Component({
     selector: 'app-google-charts',
     templateUrl: './google-charts.component.html',
-    standalone: false
+    imports: [ReactiveFormsModule, InputComponent, MatSlideToggle, MatIcon]
 })
 export class GoogleChartsComponent implements OnInit {
 

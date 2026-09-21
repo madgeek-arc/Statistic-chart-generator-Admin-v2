@@ -8,10 +8,7 @@ export interface FilterType {
   filterType: FieldType[];
 }
 
-@Pipe({
-    name: 'filterOperators',
-    standalone: false
-})
+@Pipe({ name: 'filterOperators' })
 export class FilterOperatorsPipe implements PipeTransform {
 
 	transform(items: FilterType[], filter: string): Option[] {
