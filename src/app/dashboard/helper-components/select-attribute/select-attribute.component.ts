@@ -7,15 +7,14 @@ import {
   AfterViewInit,
   ChangeDetectorRef,
   Component,
-  EventEmitter,
   forwardRef,
   Input,
   OnChanges,
-  Output,
   SimpleChanges,
   ViewRef,
   inject,
-  input
+  input,
+  output
 } from '@angular/core';
 import {
   AbstractControl,
@@ -57,7 +56,7 @@ export class SelectAttributeComponent implements ControlValueAccessor, OnChanges
   @Input() isDisabled = false;
   readonly formControl = input<AbstractControl | null>(undefined, { alias: 'formInput' });
   readonly chosenEntity = input<string | null>(null);
-  @Output() fieldChanged = new EventEmitter<FieldNode>();
+  readonly fieldChanged = output<FieldNode>();
 
   selectedNode: FieldNode | null = null;
   private pendingValue: FieldNode | null = null; // Store value to set later

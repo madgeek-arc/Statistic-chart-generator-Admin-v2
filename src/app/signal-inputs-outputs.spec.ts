@@ -7,7 +7,7 @@ import { ChartFrameComponent } from './data-frames/chart-frame/chart-frame.compo
 import { GeneratedShortUrlFieldComponent } from './data-frames/generated-short-url-field/generated-short-url-field.component';
 import { InputComponent } from './shared/input.component';
 
-// Components whose @Input()s moved to input(): bind real values through a host template,
+// Components whose @Input()s and @Output()s moved to input() and output(): bind real values through a host template,
 // the way the app does, and check what the component does with them.
 
 @Component({
@@ -28,13 +28,16 @@ class ShortUrlHostComponent {
 }
 
 @Component({
-  template: `<div input placeholder="Name" [value]="value" [disabled]="disabled" [password]="password"></div>`,
+  template: `<div input placeholder="Name" [value]="value" [disabled]="disabled" [password]="password"
+                  (valueChange)="valueChanges.push($event)" (focusEmitter)="focusEvents.push($event)"></div>`,
   imports: [InputComponent]
 })
 class InputHostComponent {
   value = 'abc';
   disabled = false;
   password = false;
+  valueChanges: unknown[] = [];
+  focusEvents: boolean[] = [];
 }
 
 describe('chart-frame with a signal chartUrl input', () => {
@@ -127,5 +130,24 @@ describe('InputComponent with signal inputs', () => {
     fixture.detectChanges();
 
     expect(fixture.nativeElement.querySelector('input.input').type).toBe('password');
+  });
+
+  // Outputs (formerly EventEmitters): a listener on the host must still receive them.
+  it('emits valueChange to a host listener when the control value changes', () => {
+    fixture.detectChanges();
+
+    control().setValue('typed');
+
+    expect(host.valueChanges).toEqual(['typed']);
+  });
+
+  it('emits focusEmitter to a host listener when focus changes', () => {
+    fixture.detectChanges();
+    const input = fixture.debugElement.query(By.directive(InputComponent)).componentInstance as InputComponent;
+
+    input.focus(true);
+    input.focus(false);
+
+    expect(host.focusEvents).toEqual([true, false]);
   });
 });

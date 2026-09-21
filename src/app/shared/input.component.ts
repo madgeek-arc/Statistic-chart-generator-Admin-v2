@@ -3,19 +3,18 @@ import {
   ChangeDetectorRef,
   Component,
   ElementRef,
-  EventEmitter,
   HostListener,
   Input,
   OnChanges,
   OnDestroy,
   OnInit,
-  Output,
   QueryList,
   SimpleChanges,
   ViewChild,
   ViewChildren,
   inject,
-  input
+  input,
+  output
 } from '@angular/core';
 import {
   AbstractControl,
@@ -372,7 +371,7 @@ export class InputComponent implements OnInit, OnDestroy, AfterViewInit, OnChang
   readonly disabled = input(false);
   @Input() disabledIcon = 'lock';
   readonly value = input<any | any[]>(undefined);
-  @Output() valueChange = new EventEmitter<any | any[]>();
+  readonly valueChange = output<any | any[]>();
   @Input() hint: string;
   @Input() tooltip = false;
   @Input() searchable = false;
@@ -409,7 +408,7 @@ export class InputComponent implements OnInit, OnDestroy, AfterViewInit, OnChang
   public selectedDate: Date;
   readonly visibleRows = input(-1);
   readonly extendEnter = input<() => void>(null);
-  @Output() focusEmitter: EventEmitter<boolean> = new EventEmitter<boolean>();
+  readonly focusEmitter = output<boolean>();
   /** LogoUrl information */
   public secure = true;
   /** Internal basic information */
