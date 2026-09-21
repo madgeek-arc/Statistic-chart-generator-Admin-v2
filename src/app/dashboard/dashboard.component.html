@@ -439,7 +439,6 @@
                         <mat-tab label="Table">
                           <div class="container">
                             <chart-frame [chartUrl]="chartExportingService.tableUrl$ | async"></chart-frame>
-<!--                            <table-frame [table]="this.dialogData.tableObj"></table-frame>-->
                           </div>
                           <div class="actions">
                             <div class="label">
@@ -452,7 +451,6 @@
                         <mat-tab label="Raw Chart Data">
                           <div class="container">
                             <chart-frame [chartUrl]="chartExportingService.rawChartDataUrl$ | async"></chart-frame>
-<!--                            <raw-chart-data-frame [rawChartData]="this.dialogData.rawChartDataObj"></raw-chart-data-frame>-->
                           </div>
                           <div class="actions">
                             <div class="label">
@@ -465,7 +463,6 @@
                         <mat-tab label="Raw Data">
                           <div class="container">
                             <chart-frame [chartUrl]="chartExportingService.rawDataUrl$ | async"></chart-frame>
-<!--                            <raw-data-frame [rawData]="this.dialogData.rawDataObj"></raw-data-frame>-->
                           </div>
                           <div class="actions">
                             <div class="label">
