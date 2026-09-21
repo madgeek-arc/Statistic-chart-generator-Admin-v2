@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { FormControl } from '@angular/forms';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 
 import { AutocompleteInputFieldComponent } from './autocomplete-input-field.component';
 import {
@@ -21,25 +21,33 @@ describe('AutocompleteInputFieldComponent', () => {
     });
     fixture = TestBed.createComponent(AutocompleteInputFieldComponent);
     component = fixture.componentInstance;
-    component.inputFormGroup = new FormControl('');
-    component.filterfield = 'dataset.publisher';
+    fixture.componentRef.setInput('inputFormGroup', new FormControl(''));
+    fixture.componentRef.setInput('filterfield', 'dataset.publisher');
     fixture.detectChanges();
   });
 
+  const input = (): HTMLInputElement => fixture.nativeElement.querySelector('input');
+
   function type(text: string): void {
-    const input: HTMLInputElement = fixture.nativeElement.querySelector('input');
-    input.value = text;
-    input.dispatchEvent(new KeyboardEvent('keyup'));
+    input().value = text;
+    input().dispatchEvent(new KeyboardEvent('keyup'));
     tick(component.typeToSearchDelay);
   }
 
-  // Regression test: an empty backend body reaches the component as `null`, and
-  // reading `result.count` used to throw before `loading` was reset.
+  function possibleValues(): string[] | null | undefined {
+    let values: string[] | null | undefined;
+    component.possibleFieldValues.subscribe(v => values = v);
+    return values;
+  }
+
+  // An empty backend body reaches the component as `null`, and reading
+  // `result.count` used to throw before `loading` was reset.
   it('treats an empty (null) backend response as no matches instead of throwing', fakeAsync(() => {
     getAutocompleteFields.and.returnValue(of(null));
 
     type('ela');
 
+    expect(possibleValues()).toEqual([]);
     expect(component.numberOfpossibleFieldValues).toBe(0);
     expect(component.loading).toBeFalse();
   }));
@@ -50,10 +58,62 @@ describe('AutocompleteInputFieldComponent', () => {
 
     type('e');
 
-    let values: string[] | undefined;
-    component.possibleFieldValues.subscribe(v => values = v);
-    expect(values).toEqual(['Zenodo', 'Elsevier']);
+    expect(possibleValues()).toEqual(['Zenodo', 'Elsevier']);
     expect(component.numberOfpossibleFieldValues).toBe(2);
     expect(component.loading).toBeFalse();
+  }));
+
+  // The endpoint omits `values` for high-cardinality fields; the template must
+  // show "type to narrow down" (values === null), not crash or say "No results".
+  it('flags a response with a count but no values as "too many values"', fakeAsync(() => {
+    getAutocompleteFields.and.returnValue(of({ count: 121 } as unknown as AutocompleteResponse));
+
+    type('20');
+
+    expect(possibleValues()).toBeNull();
+    expect(component.numberOfpossibleFieldValues).toBe(121);
+    expect(component.loading).toBeFalse();
+  }));
+
+  // Focusing the box fetches the available values straight away (empty query).
+  it('looks up values as soon as the input is focused, without typing', fakeAsync(() => {
+    getAutocompleteFields.and.returnValue(of({ count: 1, values: ['Zenodo'] }));
+
+    input().dispatchEvent(new Event('focus'));
+    tick();
+
+    expect(getAutocompleteFields).toHaveBeenCalledWith('dataset.publisher', null);
+    expect(possibleValues()).toEqual(['Zenodo']);
+  }));
+
+  it('shows a "could not fetch" state and stops loading when the request fails', fakeAsync(() => {
+    spyOn(console, 'error');
+    getAutocompleteFields.and.returnValue(throwError(() => new Error('boom')));
+
+    type('ela');
+
+    expect(component.numberOfpossibleFieldValues).toBe(-1);
+    expect(component.loading).toBeFalse();
+    expect(component.searched).toBeTrue();
+  }));
+
+  // Values fetched for the previous field must not leak into the new one.
+  it('resets its state and searches the new field when the filter field changes', fakeAsync(() => {
+    getAutocompleteFields.and.returnValue(of({ count: 1, values: ['Zenodo'] }));
+    type('z');
+    expect(component.searched).toBeTrue();
+
+    fixture.componentRef.setInput('filterfield', 'dataset.year');
+    fixture.detectChanges();
+
+    expect(component.searched).toBeFalse();
+    expect(component.panelReady).toBeFalse();
+    expect(possibleValues()).toEqual([]);
+
+    getAutocompleteFields.calls.reset();
+    getAutocompleteFields.and.returnValue(of({ count: 1, values: ['2020'] }));
+    type('2');
+
+    expect(getAutocompleteFields).toHaveBeenCalledWith('dataset.year', '2');
   }));
 });
