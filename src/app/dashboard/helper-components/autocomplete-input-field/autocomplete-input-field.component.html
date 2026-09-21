@@ -1,6 +1,6 @@
-<div class="input-wrapper flat" [class.focused]="focused" [class.disabled]="inputFormGroup?.disabled">
+<div class="input-wrapper flat" [class.focused]="focused" [class.disabled]="inputFormGroup()?.disabled">
   <div class="input-box static">
-    <input #autoInputField class="input" [formControl]="inputFormGroup" [matAutocomplete]="auto"
+    <input #autoInputField class="input" [formControl]="inputFormGroup()" [matAutocomplete]="auto"
       [matAutocompleteDisabled]="!panelReady"
       type="text" name="filterValue" placeholder="Value"
       (focus)="focused = true" (blur)="focused = false">

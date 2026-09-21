@@ -3,12 +3,12 @@ import {
   ChangeDetectorRef,
   Component,
   ElementRef,
-  Input,
   OnChanges,
   OnDestroy,
   SimpleChanges,
   ViewChild,
-  inject
+  inject,
+  input
 } from '@angular/core';
 import { fromEvent, merge, Observable, of, Subscription } from 'rxjs';
 import { debounceTime, distinctUntilChanged, map, switchAll, tap } from 'rxjs/operators';
@@ -39,11 +39,11 @@ export class AutocompleteInputFieldComponent implements AfterViewInit, OnChanges
   private cdr = inject(ChangeDetectorRef);
 
   // The FormGroup of the current filter
-  @Input() inputFormGroup: FormControl;
+  readonly inputFormGroup = input<FormControl>(undefined);
   // The index of the current filter input value
-  @Input() filterValueIndex: any;
+  readonly filterValueIndex = input<any>(undefined);
   // The selected field for the current filter
-  @Input() filterfield: string;
+  readonly filterfield = input<string>(undefined);
   // Dom element for the autocomplete
   @ViewChild('autoInputField', {static: false}) valueInput: ElementRef;
   // Trigger directive on the input, used to open / reposition the panel once async options load
@@ -111,7 +111,7 @@ export class AutocompleteInputFieldComponent implements AfterViewInit, OnChanges
       distinctUntilChanged(),
       tap(() => {this.possibleFieldValues = of([]); this.loading = true; this.cdr.markForCheck(); } ),
       map((queryText: string) => this.fieldAutocompleteService.getAutocompleteFields(
-        this.filterfield, queryText.length ? queryText : null)),
+        this.filterfield(), queryText.length ? queryText : null)),
       switchAll()).subscribe({
         next: (result: AutocompleteResponse | null) => {
           const firstOpen = !this.panelReady;

@@ -3,9 +3,9 @@ import {
   Component,
   DestroyRef,
   inject,
-  Input,
   OnInit,
-  ViewChild
+  ViewChild,
+  input
 } from '@angular/core';
 import { FormArray, FormControl, FormGroup, FormGroupDirective, ReactiveFormsModule } from '@angular/forms';
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
@@ -46,7 +46,7 @@ export class DataseriesSelectorComponent implements OnInit, AfterViewInit {
 
   private destroyRef = inject(DestroyRef);
 
-	@Input() selectedProfile: FormControl = new FormControl();
+	readonly selectedProfile = input<FormControl>(new FormControl());
 	@ViewChild('editDataseriesName') editDataseriesName: InputComponent;
 
   form: FormArray<FormGroup> | null = null;
@@ -106,12 +106,13 @@ export class DataseriesSelectorComponent implements OnInit, AfterViewInit {
 		// With the change in stepper, the data is not created in the beginning, so it'll have to be initialized and not wait for "value changes"
     const profile = new Profile();
 
-		if (this.selectedProfile && this.selectedProfile.value) {
-      profile.name = this.selectedProfile.value;
+		const selectedProfile = this.selectedProfile();
+		if (selectedProfile && selectedProfile.value) {
+      profile.name = selectedProfile.value;
       this.handleProfileChange(profile);
 		}
 
-		this.selectedProfile.valueChanges.subscribe((profileName: string) => {
+		selectedProfile.valueChanges.subscribe((profileName: string) => {
 			if (profileName) {
         profile.name = profileName;
         this.handleProfileChange(profile);

@@ -14,7 +14,8 @@ import {
   SimpleChanges,
   ViewChild,
   ViewChildren,
-  inject
+  inject,
+  input
 } from '@angular/core';
 import {
   AbstractControl,
@@ -86,7 +87,7 @@ declare let UIkit: any;
     @if (formControl) {
       <div [id]="id">
         <div class="input-wrapper" [class.disabled]="formControl.disabled" [class.opened]="opened"
-          [class.focused]="focused" [ngClass]="inputClass" [class.hint]="hint"
+          [class.focused]="focused" [ngClass]="inputClass()" [class.hint]="hint"
           [class.active]="!focused && (formAsControl?.value || formAsControl?.value === 0 || selectable || type === 'date' || formAsArray?.length > 0 || getLabel(formAsControl?.value) || yearRangeActive)"
           [class.danger]="(formControl.invalid && (formControl.touched || !!searchControl?.touched)) || (!!searchControl?.invalid && !!searchControl?.touched)">
           <div #inputBox class="input-box" [class.select]="selectable || type ==='date'"
@@ -105,13 +106,13 @@ declare let UIkit: any;
               @if (type === 'text' || type === 'URL' || type === 'logoURL') {
                 <input #input class="input"
                   [attr.placeholder]="placeholderInfo?.static?placeholderInfo.label:hint"
-                  [type]="password?'password':'text'" [formControl]="formAsControl"
+                  [type]="password()?'password':'text'" [formControl]="formAsControl"
                   [class.uk-text-truncate]="!focused">
               }
               @if (type === 'textarea') {
                 <textarea #textArea class="input"
                   [attr.placeholder]="placeholderInfo?.static?placeholderInfo.label:hint"
-                [rows]="rows" [formControl]="formAsControl"></textarea>
+                [rows]="rows()" [formControl]="formAsControl"></textarea>
               }
               @if (type === 'number') {
                 <input #input class="input" type="number"
@@ -144,7 +145,7 @@ declare let UIkit: any;
                   @if (!getLabel(formControl.value)) {
                     <div
                       class="input uk-width-expand uk-text-truncate"
-                      [class.uk-disabled]="formControl.disabled">{{ noValueSelected }}
+                      [class.uk-disabled]="formControl.disabled">{{ noValueSelected() }}
                     </div>
                   }
                   @if (getLabel(formControl.value)) {
@@ -178,7 +179,7 @@ declare let UIkit: any;
                 @if (!focused && selectable) {
                   @if (!getLabel(formControl.value)) {
                     <div class="input uk-text-truncate"
-                      [class.uk-disabled]="formControl.disabled">{{ noValueSelected }}
+                      [class.uk-disabled]="formControl.disabled">{{ noValueSelected() }}
                     </div>
                   }
                   @if (getLabel(formControl.value)) {
@@ -196,7 +197,7 @@ declare let UIkit: any;
               }
               @if (type === 'chips') {
                 <div class="uk-grid uk-grid-small uk-grid-row-collapse uk-overflow-auto uk-width-expand"
-                  [class.uk-flex-nowrap]="noWrap" [class.uk-overflow-auto]="noWrap" uk-grid>
+                  [class.uk-flex-nowrap]="noWrap()" [class.uk-overflow-auto]="noWrap()" uk-grid>
                   @for (chip of formAsArray.controls; track chip; let i = $index) {
                     <div #chip
                       [class.uk-hidden]="!focused && i > visibleChips - 1" class="chip">
@@ -247,7 +248,7 @@ declare let UIkit: any;
               @if (type === 'date') {
                 @if (!formAsControl.getRawValue()) {
                   <div class="input uk-text-truncate"
-                    [class.uk-disabled]="formControl.disabled">{{ selectADate }}
+                    [class.uk-disabled]="formControl.disabled">{{ selectADate() }}
                   </div>
                 }
                 @if (formAsControl.getRawValue()) {
@@ -366,11 +367,11 @@ export class InputComponent implements OnInit, OnDestroy, AfterViewInit, OnChang
   /** Basic information */
   @Input('formInput') formControl: AbstractControl;
   @Input() type: InputType = 'text';
-  @Input() password = false;
-  @Input() validators: ValidatorFn[] | ValidatorFn;
-  @Input() disabled = false;
+  readonly password = input(false);
+  readonly validators = input<ValidatorFn[] | ValidatorFn>(undefined);
+  readonly disabled = input(false);
   @Input() disabledIcon = 'lock';
-  @Input() value: any | any[];
+  readonly value = input<any | any[]>(undefined);
   @Output() valueChange = new EventEmitter<any | any[]>();
   @Input() hint: string;
   @Input() tooltip = false;
@@ -379,35 +380,35 @@ export class InputComponent implements OnInit, OnDestroy, AfterViewInit, OnChang
   @ViewChildren('input') input: QueryList<ElementRef>;
   /** Textarea options */
   @ViewChild('textArea') textArea: ElementRef;
-  @Input() rows = 3;
+  readonly rows = input(3);
   /** Select | Autocomplete | chips available options */
   @Input() selectArrow = 'arrow_drop_down';
   @Input() selectedIndex = 0;
   @Input() selectable = false;
-  @Input() noValueSelected = 'No option selected';
+  readonly noValueSelected = input('No option selected');
   /** Chips && Autocomplete*/
   public filteredOptions: Option[] = [];
   public searchControl: UntypedFormControl;
   public activeElement: BehaviorSubject<ElementRef> = new BehaviorSubject<ElementRef>(null);
   /** Use modifier's class(es) to change view of your Input */
-  @Input() inputClass = 'flat';
+  readonly inputClass = input('flat');
   /** Icon on the input */
   @Input() icon: string = null;
   /** Chip options */
-  @Input() addExtraChips = false;
+  readonly addExtraChips = input(false);
   @Input() showOptionsOnEmpty = true;
   @Input() visibleChips = 1;
-  @Input() separators: string[] = [];
-  @Input() noWrap = false;
+  readonly separators = input<string[]>([]);
+  readonly noWrap = input(false);
   /** Year Range Configuration */
   @Input() yearRange: YearRange;
   public activeIndex: 0 | 1 | null = null;
   /** Date Configuration*/
-  @Input() selectADate = 'Select a date';
-  @Input() formatDateToString = false;
+  readonly selectADate = input('Select a date');
+  readonly formatDateToString = input(false);
   public selectedDate: Date;
-  @Input() visibleRows = -1;
-  @Input() extendEnter: () => void = null;
+  readonly visibleRows = input(-1);
+  readonly extendEnter = input<() => void>(null);
   @Output() focusEmitter: EventEmitter<boolean> = new EventEmitter<boolean>();
   /** LogoUrl information */
   public secure = true;
@@ -449,7 +450,7 @@ export class InputComponent implements OnInit, OnDestroy, AfterViewInit, OnChang
       this.optionsArray = options.map(option => {
         if (option === null) {
           return {
-            label: this.noValueSelected,
+            label: this.noValueSelected(),
             value: ''
           };
         } else if (typeof option === 'string' || typeof option === 'number') {
@@ -529,8 +530,9 @@ export class InputComponent implements OnInit, OnDestroy, AfterViewInit, OnChang
 
   @HostListener('window:keydown.enter', ['$event'])
   enter(event: Event) {
-    if (this.extendEnter) {
-      this.extendEnter();
+    const extendEnter = this.extendEnter();
+    if (extendEnter) {
+      extendEnter();
     }
     if (this.opened && this.optionBox) {
       event.preventDefault();
@@ -546,7 +548,8 @@ export class InputComponent implements OnInit, OnDestroy, AfterViewInit, OnChang
 
   @HostListener('keydown', ['$event'])
   onKeyDown(event: KeyboardEvent) {
-    if (this.separators.includes(event.key) || this.separators.includes(event.key.toLowerCase())) {
+    const separators = this.separators();
+    if (separators.includes(event.key) || separators.includes(event.key.toLowerCase())) {
       event.preventDefault();
       this.add(event, true);
     }
@@ -568,15 +571,16 @@ export class InputComponent implements OnInit, OnDestroy, AfterViewInit, OnChang
     InputComponent.INPUT_COUNTER++;
     this.id = 'input-' + InputComponent.INPUT_COUNTER;
     if (!this.formControl) {
-      if (Array.isArray(this.value)) {
+      const inputValue = this.value();
+      if (Array.isArray(inputValue)) {
         this.formControl = new UntypedFormArray([]);
-        this.value.forEach(value => {
-          this.formAsArray.push(new UntypedFormControl(value, this.validators));
+        inputValue.forEach(value => {
+          this.formAsArray.push(new UntypedFormControl(value, this.validators()));
         });
       } else {
-        this.formControl = new UntypedFormControl(this.value, this.validators);
+        this.formControl = new UntypedFormControl(inputValue, this.validators());
       }
-      if (this.disabled) {
+      if (this.disabled()) {
         this.formControl.disable();
       }
     }
@@ -594,7 +598,7 @@ export class InputComponent implements OnInit, OnDestroy, AfterViewInit, OnChang
   ngOnChanges(changes: SimpleChanges) {
     if (this.formControl) {
       if (changes['value'] && changes['value'].currentValue !== changes['value'].previousValue) {
-        this.formControl.setValue(this.value);
+        this.formControl.setValue(this.value());
       }
       if (changes['validators']) {
         this.updateValidators();
@@ -603,7 +607,7 @@ export class InputComponent implements OnInit, OnDestroy, AfterViewInit, OnChang
         this.reset();
       }
       if (changes['disabled']) {
-        if (this.disabled) {
+        if (this.disabled()) {
           this.formControl.disable();
         } else {
           this.formControl.enable();
@@ -682,7 +686,7 @@ export class InputComponent implements OnInit, OnDestroy, AfterViewInit, OnChang
     }
     if (this.type === 'chips' || this.type === 'autocomplete') {
       if (!this.searchControl) {
-        this.searchControl = new UntypedFormControl('', this.validators);
+        this.searchControl = new UntypedFormControl('', this.validators());
       }
       this.subscriptions.push(this.searchControl.valueChanges.subscribe(value => {
         this.filteredOptions = this.filter(value);
@@ -728,7 +732,8 @@ export class InputComponent implements OnInit, OnDestroy, AfterViewInit, OnChang
             this.selectedDate = value ? new Date(value) : null;
           }
         }
-        if ((this.value && value && this.value !== value) || (!this.value && value) || this.value && !value) {
+        const inputValue = this.value();
+        if ((inputValue && value && inputValue !== value) || (!inputValue && value) || inputValue && !value) {
           this.valueChange.emit(this.formControl.value);
         }
       }
@@ -777,11 +782,11 @@ export class InputComponent implements OnInit, OnDestroy, AfterViewInit, OnChang
   updateValidators() {
     if (this.formAsArray) {
       this.formAsArray.controls.forEach(control => {
-        control.setValidators(this.validators);
+        control.setValidators(this.validators());
         control.updateValueAndValidity();
       });
     } else {
-      this.formControl.setValidators(this.validators);
+      this.formControl.setValidators(this.validators());
       this.formControl.updateValueAndValidity();
     }
   }
@@ -824,7 +829,7 @@ export class InputComponent implements OnInit, OnDestroy, AfterViewInit, OnChang
 
   splitSearchControl() {
     let values = [this.searchControl.value];
-    this.separators.forEach(separator => {
+    this.separators().forEach(separator => {
       values = ([] as string[]).concat(...values.map(value => {
         if (Array.isArray(value)) {
           return ([] as string[]).concat(...value.map(element => element.split(separator)));
@@ -834,7 +839,7 @@ export class InputComponent implements OnInit, OnDestroy, AfterViewInit, OnChang
       }));
     });
     values.forEach(value => {
-      const control = new UntypedFormControl(value.trim(), this.validators);
+      const control = new UntypedFormControl(value.trim(), this.validators());
       if (control.valid) {
         this.formAsArray.push(control);
         this.formAsArray.markAsDirty();
@@ -893,7 +898,7 @@ export class InputComponent implements OnInit, OnDestroy, AfterViewInit, OnChang
           this.searchInput.nativeElement.blur();
         }
         if (this.searchControl) {
-          this.add(event, this.addExtraChips);
+          this.add(event, this.addExtraChips());
         }
       }
       this.focusEmitter.emit(this.focused);
@@ -952,7 +957,7 @@ export class InputComponent implements OnInit, OnDestroy, AfterViewInit, OnChang
 
   dateChanged(event: Date) {
     this.focus(false);
-    if (this.formatDateToString) {
+    if (this.formatDateToString()) {
       this.formAsControl.setValue(event.toISOString().split('T')[0]);
       return;
     }

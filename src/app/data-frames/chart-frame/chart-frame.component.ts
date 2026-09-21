@@ -1,11 +1,11 @@
 import {
   AfterViewInit,
   Component,
-  Input,
   OnChanges,
   OnInit,
   SimpleChanges,
-  inject
+  inject,
+  input
 } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { UrlProviderService } from '../../services/url-provider-service/url-provider.service';
@@ -19,7 +19,7 @@ export class ChartFrameComponent implements OnChanges, AfterViewInit, OnInit {
   private sanitizer = inject(DomSanitizer);
   private urlProvider = inject(UrlProviderService);
 
-  @Input() chartUrl: string | null = null;
+  readonly chartUrl = input<string | null>(null);
 	frameHeight: number;
 	frameUrl: SafeResourceUrl | null = null;
 
@@ -43,7 +43,7 @@ export class ChartFrameComponent implements OnChanges, AfterViewInit, OnInit {
     if (changes['chartUrl'] && changes['chartUrl'].currentValue) {
       this.frameUrl = null;
       setTimeout(() => { // Ahh, the magic of setTimeout... even claude shat the bed on this one.
-        this.frameUrl = this.getSanitizedFrameUrl(this.chartUrl);
+        this.frameUrl = this.getSanitizedFrameUrl(this.chartUrl());
       }, 0);
     } else {
 			this.frameUrl = this.getSanitizedFrameUrl(this.urlProvider.serviceURL + '/chart');

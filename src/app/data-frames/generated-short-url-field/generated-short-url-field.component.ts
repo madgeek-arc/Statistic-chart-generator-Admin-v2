@@ -1,5 +1,5 @@
 import { first } from 'rxjs/operators';
-import { Component, Input, OnChanges, SimpleChanges, ViewChild } from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges, ViewChild, input } from '@angular/core';
 import { Observable } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 
@@ -14,8 +14,8 @@ export class GeneratedShortUrlFieldComponent implements OnChanges {
   @ViewChild('clipboardAlert', {static: false}) clipboardAlert: any
 
   @Input('dataName') field_name: string | undefined;
-  @Input('shortUrl') url$: Observable<string>;
-  @Input('isUrlLoading') isUrlLoading$: Observable<boolean>;
+  readonly url$ = input<Observable<string>>(undefined, { alias: 'shortUrl' });
+  readonly isUrlLoading$ = input<Observable<boolean>>(undefined, { alias: 'isUrlLoading' });
 
   public copiedUrl = false;
 
@@ -31,7 +31,7 @@ export class GeneratedShortUrlFieldComponent implements OnChanges {
       return;
     }
 
-    this.url$.pipe(first()).subscribe(
+    this.url$().pipe(first()).subscribe(
       (shortUrl: string) => {
         navigator.clipboard.writeText(shortUrl).then(
           () => {

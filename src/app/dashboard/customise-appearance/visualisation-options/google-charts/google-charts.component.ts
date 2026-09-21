@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, OnInit, input } from '@angular/core';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { InputComponent } from '../../../../shared/input.component';
 import { MatSlideToggle } from '@angular/material/slide-toggle';
@@ -11,7 +11,7 @@ import { MatIcon } from '@angular/material/icon';
 })
 export class GoogleChartsComponent implements OnInit {
 
-	@Input() googleChartsForm: FormGroup;
+	readonly googleChartsForm = input<FormGroup>(undefined);
 
 	protected stackedGraphList = [
 		{ label: 'Disabled', value: 'disabled' },
@@ -22,8 +22,9 @@ export class GoogleChartsComponent implements OnInit {
 	constructor() { }
 
 	ngOnInit(): void {
-		if (this.googleChartsForm && this.googleChartsForm.value) {
-			console.log("this.googleChartsForm:", this.googleChartsForm.value);
+		const googleChartsForm = this.googleChartsForm();
+		if (googleChartsForm && googleChartsForm.value) {
+			console.log("this.googleChartsForm:", googleChartsForm.value);
 		}
 	}
 
