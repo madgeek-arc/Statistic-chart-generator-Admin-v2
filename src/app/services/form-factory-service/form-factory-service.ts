@@ -1,4 +1,13 @@
-import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
+import {
+  AbstractControl,
+  FormArray,
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  ValidationErrors,
+  ValidatorFn,
+  Validators
+} from "@angular/forms";
 import { DestroyRef, inject, Injectable } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { distinctUntilChanged } from "rxjs/operators";
@@ -41,6 +50,20 @@ export class FormFactoryService {
     if (disabled)
       ctrl.disable();
     return ctrl;
+  }
+
+  /**
+   * The y-axis entity field is the field being aggregated, so every aggregate
+   * except 'total' (which counts the entity itself) needs one; the backend
+   * rejects the query with HTTP 422 otherwise. Mirrors when the dataseries
+   * selector shows the field picker. The aggregate is captured by closure
+   * because the field control has no parent yet when it is first validated.
+   */
+  private requiredUnlessTotal(aggregate: AbstractControl): ValidatorFn {
+    return (field: AbstractControl): ValidationErrors | null => {
+      const needsField = !!aggregate.value && aggregate.value !== 'total';
+      return needsField && !field.value ? { required: true } : null;
+    };
   }
 
   /** Trim a filter-rule `values` FormArray to at most `max` controls, keeping at least one. */
@@ -131,13 +154,18 @@ export class FormFactoryService {
     const filtersRaw = rv?.data?.filters ?? [];
     const filtersControls = filtersRaw.map((f: any) => this.createFilterGroup(f));
 
+    const yaxisAggregate = this.controlFromRaw<string | null>(rv?.data?.yaxisData?.yaxisAggregate, null, Validators.required);
+    const yaxisFieldName = this.controlFromRaw<string | null>(
+      rv?.data?.yaxisData?.yaxisEntityField?.name, null, this.requiredUnlessTotal(yaxisAggregate)
+    );
+
     const group = this.fb.group({
       data: this.fb.group({
         yaxisData: this.fb.group({
           entity: this.controlFromRaw<string | null>(rv?.data?.yaxisData?.entity, null, Validators.required),
-          yaxisAggregate: this.controlFromRaw<string | null>(rv?.data?.yaxisData?.yaxisAggregate, null, Validators.required),
+          yaxisAggregate,
           yaxisEntityField: this.fb.group({
-            name: this.controlFromRaw<string | null>(rv?.data?.yaxisData?.yaxisEntityField?.name, null),
+            name: yaxisFieldName,
             type: this.controlFromRaw<string | null>(rv?.data?.yaxisData?.yaxisEntityField?.type, null)
           }),
         }),
@@ -150,6 +178,11 @@ export class FormFactoryService {
         dataseriesName: this.controlFromRaw<string>(rv?.chartProperties?.dataseriesName, 'Data' + (index > 0 ? `(${index})` : '')),
         stacking: this.controlFromRaw<'null' | 'normal' | 'percent' | 'stream' | 'overlap'>(rv?.chartProperties?.stacking ?? 'null', 'null', Validators.required)
       })
+    });
+
+    // Whether the field is required depends on the aggregate, so re-check it when the aggregate changes.
+    yaxisAggregate.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+      next: () => yaxisFieldName.updateValueAndValidity()
     });
 
     // If diagram is numbers type disable x-axis

@@ -52,3 +52,82 @@ describe('FormFactoryService filter rules', () => {
     expect(valuesOf(r).value).toEqual(['a', 'b']);
   });
 });
+
+// Every aggregate except 'total' aggregates a field, and the backend rejects
+// the query (HTTP 422) when that field is missing, so the form must not let
+// "Create Chart" through without it.
+describe('FormFactoryService y-axis entity field', () => {
+  let factory: FormFactoryService;
+
+  const yaxis = (raw: { aggregate: string | null; field?: string | null }) =>
+    factory.createDataseriesGroup(0, {
+      data: {
+        yaxisData: {
+          entity: 'dataset',
+          yaxisAggregate: raw.aggregate,
+          yaxisEntityField: { name: raw.field ?? null, type: raw.field ? 'text' : null }
+        },
+        xaxisData: [{ name: 'dataset.publisher', type: 'text' }]
+      }
+    });
+  const fieldName = (series: FormGroup) => series.get('data.yaxisData.yaxisEntityField.name');
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({});
+    factory = TestBed.inject(FormFactoryService);
+  });
+
+  it('does not need a field for the total aggregate', () => {
+    const series = yaxis({ aggregate: 'total' });
+
+    expect(fieldName(series).valid).toBeTrue();
+    expect(series.valid).toBeTrue();
+  });
+
+  it('needs a field as soon as the aggregate is anything but total', () => {
+    const series = yaxis({ aggregate: 'total' });
+
+    for (const aggregate of ['count', 'sum', 'min', 'max', 'avg']) {
+      series.get('data.yaxisData.yaxisAggregate').setValue(aggregate);
+
+      expect(fieldName(series).hasError('required')).withContext(aggregate).toBeTrue();
+      expect(series.valid).withContext(aggregate).toBeFalse();
+    }
+  });
+
+  it('becomes valid once a field is picked and invalid again when it is cleared', () => {
+    const series = yaxis({ aggregate: 'avg' });
+    const field = series.get('data.yaxisData.yaxisEntityField');
+
+    field.setValue({ name: 'dataset.year', type: 'int' });
+    expect(series.valid).toBeTrue();
+
+    // select-attribute resets the field when the entity changes
+    field.reset();
+    expect(series.valid).toBeFalse();
+  });
+
+  it('stops requiring the field when the aggregate goes back to total', () => {
+    const series = yaxis({ aggregate: 'sum' });
+    expect(series.valid).toBeFalse();
+
+    series.get('data.yaxisData.yaxisAggregate').setValue('total');
+
+    expect(series.valid).toBeTrue();
+  });
+
+  it('flags a loaded chart that aggregates a field but has none', () => {
+    expect(yaxis({ aggregate: 'sum', field: null }).valid).toBeFalse();
+    expect(yaxis({ aggregate: 'sum', field: 'dataset.year' }).valid).toBeTrue();
+  });
+
+  it('keeps the field required after the dataseries is duplicated', () => {
+    const original = yaxis({ aggregate: 'avg', field: 'dataset.year' });
+
+    const copy = factory.createDataseriesGroup(1, factory.serializeControl(original));
+    expect(copy.valid).toBeTrue();
+
+    fieldName(copy).setValue(null);
+    expect(copy.valid).toBeFalse();
+  });
+});
