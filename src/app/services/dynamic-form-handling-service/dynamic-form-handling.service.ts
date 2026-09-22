@@ -40,9 +40,6 @@ export class DynamicFormHandlingService {
 
 	private _diagramCreator: DiagramCreator;
 
-	// fixme when find another solution
-	private _xAxisRequired = false;
-
 	constructor() {
 
 		this._diagramCreator = new DiagramCreator(this.diagramcategoryService);
@@ -76,8 +73,6 @@ export class DynamicFormHandlingService {
   }
 
 	get loadFormObjectFile(): File | null { return this._loadFormObjectFile; }
-
-	get isxAxisRequired(): boolean { return this._xAxisRequired; }
 
 	loadForm(event: any) {
 		this._loadFormObjectFile = null;
