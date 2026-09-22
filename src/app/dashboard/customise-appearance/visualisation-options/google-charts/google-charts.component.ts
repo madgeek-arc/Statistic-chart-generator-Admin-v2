@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { InputComponent } from '../../../../shared/input.component';
 import { MatSlideToggle } from '@angular/material/slide-toggle';
@@ -11,7 +11,7 @@ import { refreshOnFormChanges } from '../refresh-on-form-changes';
     changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [ReactiveFormsModule, InputComponent, MatSlideToggle, MatIcon]
 })
-export class GoogleChartsComponent implements OnInit {
+export class GoogleChartsComponent {
 
 	readonly googleChartsForm = input<FormGroup>(undefined);
 
@@ -23,13 +23,6 @@ export class GoogleChartsComponent implements OnInit {
 
 	constructor() {
 		refreshOnFormChanges(this.googleChartsForm);
-	}
-
-	ngOnInit(): void {
-		const googleChartsForm = this.googleChartsForm();
-		if (googleChartsForm && googleChartsForm.value) {
-			console.log("this.googleChartsForm:", googleChartsForm.value);
-		}
 	}
 
 }

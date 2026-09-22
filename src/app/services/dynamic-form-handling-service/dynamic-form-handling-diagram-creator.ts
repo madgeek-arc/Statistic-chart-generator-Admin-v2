@@ -36,13 +36,11 @@ export class DiagramCreator {
 
 	public createChart(formObj: SCGAFormSchema): Observable<HighChartsChart | GoogleChartsChart | HighMapsMap | EChartsChart | null> {
 
-    console.log('Create chart called with: ', formObj);
 		const view: ViewFormSchema = formObj.view;
 		const category: CategoryFormSchema = formObj.category;
 		const dataseries: DataseriesFormSchema[] = formObj.dataseries;
 		const appearanceOptions: AppearanceFormSchema = formObj.appearance;
 		const library: string = appearanceOptions.chartAppearance.generalOptions.visualisationLibrary;
-    console.log(library);
 
     // `library` is already constrained to the chosen chart type's supported libraries via
     // the visualisationLibrary dropdown (see customise-appearance.component.ts), and the
@@ -55,25 +53,18 @@ export class DiagramCreator {
 
 			case ('HighCharts'): {
 				const hchartObj = this.createDynamicHighChartsChart(view, category, dataseries, appearanceOptions);
-				console.log('Creating a ' + library + ' chart!', hchartObj);
-
 				return of(hchartObj);
 			}
 			case ('GoogleCharts'): {
 				const gchartObj = this.createDynamicGoogleChartsChart(view, category, dataseries, appearanceOptions);
-				console.log('Creating a ' + library + ' chart!', gchartObj);
-
 				return of(gchartObj);
 			}
 			case ('HighMaps'): {
 				const hmapObj = this.createDynamicHighMapsMap(view, category, dataseries, appearanceOptions);
-				console.log('Creating a ' + library + ' chart!', hmapObj);
 				return of(hmapObj);
 			}
 			case ('eCharts'): {
 				const echartObj = this.createDynamicEChartsChart(view, category, dataseries, appearanceOptions);
-				console.log('Creating a ' + library + ' chart!', echartObj);
-
 				return of(echartObj);
 			}
 			default: {
@@ -117,7 +108,6 @@ export class DiagramCreator {
 				new ChartInfo(dataElement, view.profile, appearanceOptions.chartAppearance.generalOptions.resultsLimit,
 					this.figureCategoryType(dataElement, category)));
 		});
-		console.log('Creating a rawChartData model!', rawChartDataModel);
 		return of(rawChartDataModel);
 	}
 
@@ -136,7 +126,6 @@ export class DiagramCreator {
 			rawDataModel.series.push(
 				new QueryInfo(dataElement.data, view.profile, appearanceOptions.chartAppearance.generalOptions.resultsLimit.toString()));
 		});
-		console.log('Creating a rawData model!', rawDataModel);
 		return of(rawDataModel);
 	}
 
@@ -316,7 +305,6 @@ export class DiagramCreator {
     dataseries.forEach(dataElement => {
 
       const chartInfo = new ChartInfo(dataElement, view.profile, appearanceOptions.chartAppearance.generalOptions.resultsLimit, this.figureCategoryType(dataElement, category));
-      console.log(chartInfo);
       queries.push(chartInfo);
 
 			// Make sure that Highcharts gets a valid stacking value
@@ -480,8 +468,6 @@ export class DiagramCreator {
 				[{ color: ['#F0F0F0', gradientMapMaxColor], colorMappingBy: 'value' }];
 
 		}
-
-		console.log('chartObj.chartDescription', chartObj.chartDescription);
 
 		return chartObj;
 	}

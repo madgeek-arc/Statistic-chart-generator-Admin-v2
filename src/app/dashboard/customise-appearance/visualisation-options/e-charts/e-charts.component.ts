@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { InputComponent } from '../../../../shared/input.component';
 import { MatSlideToggle } from '@angular/material/slide-toggle';
@@ -11,7 +11,7 @@ import { refreshOnFormChanges } from '../refresh-on-form-changes';
     imports: [ReactiveFormsModule, InputComponent, MatSlideToggle]
 })
 
-export class EChartsComponent implements OnInit {
+export class EChartsComponent {
 
 	readonly eChartsForm = input<FormGroup>(undefined);
 
@@ -35,13 +35,6 @@ export class EChartsComponent implements OnInit {
 		{ label: 'Middle', value: 'middle' },
 		{ label: 'Bottom', value: 'bottom' }
 	];
-
-  ngOnInit(): void {
-    const eChartsForm = this.eChartsForm();
-    if (eChartsForm && eChartsForm.value) {
-      console.log("this.eChartsForm:", eChartsForm.value);
-    }
-  }
 
 	getSeriesColors(form: any) {
 		return form.controls.dataSeriesColorArray.controls;

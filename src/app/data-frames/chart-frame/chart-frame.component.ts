@@ -30,7 +30,6 @@ export class ChartFrameComponent implements OnChanges, AfterViewInit, OnInit {
 	constructor() {
     this.frameHeight = (3 * window.outerHeight) / 5;
 		this.frameUrl.set(this.getSanitizedFrameUrl(this.urlProvider.serviceURL + '/chart?json'));
-		console.log("CHART URL:", this.frameUrl());
 	}
 
   ngOnInit() {
@@ -42,8 +41,6 @@ export class ChartFrameComponent implements OnChanges, AfterViewInit, OnInit {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-		console.log('[chart-frame.component] On changes: ' + changes['chartUrl']?.currentValue);
-
     if (changes['chartUrl'] && changes['chartUrl'].currentValue) {
       this.frameUrl.set(null);
       setTimeout(() => { // Ahh, the magic of setTimeout... even claude shat the bed on this one.

@@ -85,9 +85,7 @@ export class DashboardComponent implements OnInit {
 
     this.diagramSettings.get('view.profile')?.valueChanges
       .pipe(distinctUntilChanged(), takeUntilDestroyed(this.destroyRef)).subscribe((profile: string) => {
-      console.log("New View Selected.");
       if (profile) {
-        console.log("resetting diagramSettings");
         this.resetForm();
       }
     });
@@ -157,16 +155,11 @@ export class DashboardComponent implements OnInit {
 
   updateFormFile() {
     try {
-      console.log('📁 UpdateFormFile - START');
-      console.log('📁 Load form object:', this.dynamicFormHandlingService.loadFormObject);
-
       this.clearData();
 
       setTimeout(() => {
-        console.log('📁 Form created, about to adjust and patch');
         this.dynamicFormHandlingService.adjustAndPatchFormWithValidators(this.diagramSettings);
 
-        console.log('📁 About to patchValue with:', this.dynamicFormHandlingService.loadFormObject);
         this.diagramSettings.patchValue(this.dynamicFormHandlingService.loadFormObject, { emitEvent: false });
         // Update the selected profile in the mapping profiles service.
         this.profileService.changeSelectedProfile(this.diagramSettings.get('view.profile')?.value);
@@ -185,8 +178,6 @@ export class DashboardComponent implements OnInit {
   }
 
 	submitData() {
-		console.log("SUBMIT this form:", this.diagramSettings.value);
-
     this.hasChanges = false;
     if (this.nlQuery() || this.nlAppearance()) {
       this.dynamicFormHandlingService.submitNLQuery(this.chartInfo, this.appearanceFromChat);
@@ -314,7 +305,6 @@ export class DashboardComponent implements OnInit {
 	 */
   onQueryComplete(result: ChartInfo[]): void {
     if (result) {
-      console.log('AI Chat completed with result: ', result);
       this.chartInfo = result;
       this.nlQuery.set(true);
     }
@@ -322,7 +312,6 @@ export class DashboardComponent implements OnInit {
 
   onOptionsComplete(result: OptionsData) {
     if (result) {
-      console.log('AI Chat completed with options: ', result);
       this.appearanceFromChat = result;
       this.nlAppearance.set(true);
     }

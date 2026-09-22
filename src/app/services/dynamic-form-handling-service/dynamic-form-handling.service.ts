@@ -138,8 +138,6 @@ export class DynamicFormHandlingService {
     const formPath = this.getFormPath(parentForm);
     const fullPath = formPath ? `${formPath}.${key}` : key;
 
-    console.log(`🔧 Creating control with validators for path: ${fullPath}`);
-
     // Handle specific form sections using form factory methods
     if (fullPath === 'category') {
       return this.formFactoryService.createCategoryGroup();
@@ -163,8 +161,6 @@ export class DynamicFormHandlingService {
 
   private createArrayControlWithValidators(formArray: FormArray, value: any): AbstractControl | null {
     const formPath = this.getFormPath(formArray);
-
-    console.log(`🔧 Creating array control with validators for path: ${formPath}`);
 
     if (formPath === 'dataseries') {
       const index = formArray.length;
@@ -254,16 +250,11 @@ export class DynamicFormHandlingService {
 	}
 
 	public submitForm() {
-		console.log('Submitted this form', this.formSchemaObject);
-    console.log('this.isFormValid', this.isFormValid);
-
 		if (this.formSchemaObject !== null && this.isFormValid)
 			this.createDataObjectsFromSchemaObject(this.formSchemaObject);
 	}
 
   public submitNLQuery(chartInfo: ChartInfo[], options?: OptionsData) {
-    console.log('Submitted this nlQuery', chartInfo);
-    console.log('With options: ', options);
     this.createDataObjectsFromSchemaObject(this.formSchemaObject, chartInfo, options);
   }
 
@@ -287,7 +278,6 @@ export class DynamicFormHandlingService {
           chart.chartDescription = this.mergeObjects(chart.chartDescription, JSON.parse(options.optionsJson));
           chart.nlOptions = options.nlOptions;
           chart.optionsSig = options.optionsSig;
-          console.log(chart);
         }
 
         if (chartInfo) {
@@ -317,8 +307,6 @@ export class DynamicFormHandlingService {
                 break;
               }
             }
-
-            console.log(chartObject);
           }
 
           if (tableObject) {
@@ -358,8 +346,6 @@ export class DynamicFormHandlingService {
   }
 
 	public publishURLS() {
-		console.log('Publish this form', this.formSchemaObject);
-
 		if (!this.isFormValid)
 			this.changeDataObjects(null, null, null, null);
 

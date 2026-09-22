@@ -31,7 +31,7 @@ export class MappingProfilesService {
         this.mappingProfiles$.next(result);
       },
       error: err => {
-        console.log("Error:", err)
+        console.error("Error:", err)
       },
       complete: () => {
         sub.unsubscribe();
@@ -40,8 +40,6 @@ export class MappingProfilesService {
 	}
 
 	changeSelectedProfile(profile: string) {
-    console.log('set profile to: ', profile)
-
     const selectedProfile = this.mappingProfiles$.value.find((e: Profile) => e.name === profile);
 
     if (selectedProfile !== undefined)

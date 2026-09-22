@@ -70,7 +70,6 @@ export class HeaderComponent {
 
     // Magic starts here
     const raw = tmpData[0].endsWith('/raw');
-    console.log('Is raw data: ', raw);
     this.urlMappingService.updateFormObjet(JSON.parse(decodeURIComponent(tmpData[1])), raw);
   }
 

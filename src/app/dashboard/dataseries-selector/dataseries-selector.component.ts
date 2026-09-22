@@ -1,5 +1,4 @@
 import {
-  AfterViewInit,
   Component,
   DestroyRef,
   inject,
@@ -39,7 +38,7 @@ export class FilterType {
     imports: [ReactiveFormsModule, InputComponent, MatIcon, SelectAttributeComponent, MatIconButton, MatRadioGroup, MatRadioButton, AutocompleteInputFieldComponent, FilterOperatorsPipe]
 })
 
-export class DataseriesSelectorComponent implements OnInit, AfterViewInit {
+export class DataseriesSelectorComponent implements OnInit {
   private dynamicTreeDB = inject(DynamicTreeDatabase);
   private dbService = inject(DbSchemaService);
   private formFactory = inject(FormFactoryService);
@@ -128,19 +127,6 @@ export class DataseriesSelectorComponent implements OnInit, AfterViewInit {
     });
 
 	}
-
-  ngAfterViewInit() {
-
-    // Check if the form is patched after view init
-    setTimeout(() => {
-      console.log('🏁 DataSeries AfterViewInit - Form values:');
-      this.form.controls.forEach((ctrl, index) => {
-        const entity = ctrl.get('data.yaxisData.entity')?.value;
-        const yField = ctrl.get('data.yaxisData.yaxisEntityField')?.value;
-        console.log(`   Series ${index}: Entity=${entity}, YField=${JSON.stringify(yField)}`);
-      });
-    }, 100);
-  }
 
   hide(element: any) {
     UIkit.dropdown(element).hide();
@@ -233,7 +219,6 @@ export class DataseriesSelectorComponent implements OnInit, AfterViewInit {
 
     // Ensure serializeControl is available in this class
     const richRaw = this.formFactory.serializeControl(original); // {value, disabled} tree
-    console.log('serializeControl ->', JSON.stringify(richRaw));
 
     const copy = this.formFactory.createDataseriesGroup(index + 1, richRaw);
     this.form.push(copy);

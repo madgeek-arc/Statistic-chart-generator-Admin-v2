@@ -89,12 +89,6 @@ export class DiagramCategoryService {
     );
 
     this.selectedDiagramCategorySubject.next(found ?? null);
-
-    if (found) {
-      console.log('Changed to:', diagramCategory.type);
-    } else {
-      console.log(`${diagramCategory.type} diagram not found among:`, this.availableDiagramsSubject.value);
-    }
   }
 
   public get selectedDiagramCategory(): ISupportedCategory | null {

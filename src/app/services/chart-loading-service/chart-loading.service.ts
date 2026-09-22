@@ -17,7 +17,6 @@ export class ChartLoadingService {
   set chartLoadingStatus(isLoading: boolean) {
     this.$chartIsLoading.next(isLoading);
     this._hasLoadedAChart = false;
-    console.log('Chart Loading: ' + this.chartLoadingStatus);
   }
 
   get chartLoadingStatus(): boolean {

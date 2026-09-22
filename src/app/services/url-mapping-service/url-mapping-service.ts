@@ -109,7 +109,6 @@ export class UrlMappingService {
         // type should eventually be inferred from chartDescription.chart.type!'
         diagram: this.diagramService.availableDiagrams.find(d => d.type === chartType)
       }
-      console.log(category);
       this.diagramService.changeDiagramCategory(category.diagram);
 
       // 3) Build `dataseries`
