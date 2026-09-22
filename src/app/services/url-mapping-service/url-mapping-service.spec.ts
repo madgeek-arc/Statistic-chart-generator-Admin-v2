@@ -215,6 +215,13 @@ describe('URL round-trip: given chart JSON -> reconstructed form -> regenerated 
 
       expect(second.chartDescription.colors.length).toBe(first.chartDescription.colors.length);
     });
+
+    it('keeps a series color\'s alpha channel exactly', () => {
+      const given = highChartsFixture();
+      const actual = regenerate(given) as HighChartsChart;
+
+      expect(actual.chartDescription.colors[0]).toBe(given.chartDescription.queries[0].color);
+    });
   });
 
   describe('HighMaps', () => {
@@ -231,6 +238,14 @@ describe('URL round-trip: given chart JSON -> reconstructed form -> regenerated 
       expect(actual.mapDescription.title.text).toBe(given.mapDescription.title.text);
       expect(actual.mapDescription.subtitle.text).toBe(given.mapDescription.subtitle.text);
       expect(actual.mapDescription.legend.enabled).toBe(given.mapDescription.legend.enabled);
+    });
+
+    it('keeps the color axis min/max colors exactly, with no alpha added', () => {
+      const given = highMapsFixture();
+      const actual = regenerate(given) as HighMapsMap;
+
+      expect(actual.mapDescription.colorAxis.minColor).toBe(given.mapDescription.colorAxis.minColor);
+      expect(actual.mapDescription.colorAxis.maxColor).toBe(given.mapDescription.colorAxis.maxColor);
     });
   });
 });
