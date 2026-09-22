@@ -9,6 +9,7 @@ import { MappingProfilesService } from "../mapping-profiles-service/mapping-prof
 import {
   AppearanceFormSchema,
   ChartAppearanceFormSchema,
+  HighmapsOptionsFormSchema,
   SCGAFormSchema,
   TableAppearanceFormSchema
 } from "../supported-libraries-service/chart-form-schema.classes";
@@ -254,8 +255,12 @@ export class UrlMappingService {
         orderByAxis: urlJson.orderBy ?? 'xaxis'
       };
 
-      // Build highchartsAppearanceOptions but include map-specific options inside hcMapOptions
-      const hcaOptions: any = {
+      // DiagramCreator.createDynamicHighMapsMap() reads its appearance options from
+      // highmapsAppearanceOptions (hm*-prefixed fields), not highchartsAppearanceOptions
+      // (hc*-prefixed) — the two are separate, both-optional properties of
+      // ChartAppearanceFormSchema, so building the wrong one here type-checked fine but
+      // left every map's title, subtitle and legend setting silently unset on reload.
+      const hmaOptions: HighmapsOptionsFormSchema = {
         title: {
           titleText: mapDesc.title?.text ?? '',
           color: mapDesc.title?.style?.color ?? '#333333FF',
@@ -269,61 +274,26 @@ export class UrlMappingService {
           fontSize: parseFloat((mapDesc.subtitle?.style?.fontSize ?? '12').toString()),
           align: mapDesc.subtitle?.align ?? 'center'
         },
-        xAxis: {
-          xAxisText: mapDesc.xAxis?.title?.text ?? '',
-          color: mapDesc.xAxis?.title?.style?.color ?? '#666666FF',
-          fontSize: parseFloat((mapDesc.xAxis?.title?.style?.fontSize ?? '11').toString())
+        hmCredits: {
+          hmEnableCredits: mapDesc.credits?.enabled ?? false,
+          hmCreditsText: mapDesc.credits?.text
         },
-        yAxis: {
-          yAxisText: mapDesc.yAxis?.title?.text ?? '',
-          color: mapDesc.yAxis?.title?.style?.color ?? '#666666FF',
-          fontSize: parseFloat((mapDesc.yAxis?.title?.style?.fontSize ?? '11').toString()),
-          reversedStacks: mapDesc.yAxis?.reversedStacks ?? false
+        hmLegend: {
+          hmEnableLegend: mapDesc.legend?.enabled ?? true
         },
-        dataSeriesColorArray: mapDesc.colors ?? [],
-        hcChartArea: {
-          hcCABackGroundColor: mapDesc.chart?.backgroundColor ?? '#FFFFFFFF',
-          hcCABorderWidth: mapDesc.chart?.borderWidth ?? 0,
-          hcCABorderCornerRadius: mapDesc.chart?.borderRadius ?? 0,
-          hcCABorderColor: mapDesc.chart?.borderColor ?? '#00000000'
-        },
-        hcPlotArea: {
-          hcPABorderWidth: mapDesc.chart?.plotBorderWidth ?? 0,
-          hcPABorderColor: mapDesc.chart?.plotBorderColor ?? '#00000000'
-        },
-        hcCredits: {
-          hcEnableCredits: mapDesc.credits?.enabled ?? false,
-          hcCreditsText: mapDesc.credits.text,
-        },
-        hcLegend: {
-          hcEnableLegend: mapDesc.legend?.enabled ?? true,
-          hcLegendLayout: mapDesc.legend?.layout ?? 'horizontal',
-          hcLegendHorizontalAlignment: mapDesc.legend?.align ?? 'center',
-          hcLegendVerticalAlignment: mapDesc.legend?.verticalAlign ?? 'bottom'
-        },
-        hcMiscOptions: {
+        hmMiscOptions: {
           exporting: mapDesc.exporting?.enabled ?? true,
-          // store the raw map-specific fields here so your UI/chart builder can access them:
-          colorAxis: mapDesc.colorAxis ?? null,
-          map: mapDesc.chart?.map ?? null,
-          mapNavigation: mapDesc.mapNavigation ?? null,
-          zoomTo: mapDesc.zoomTo ?? null,
-          // keep stacking default for compatibility
-          stackedChart: mapDesc.plotOptions?.series?.stacking ?? undefined
+          hmEnableDataLabels: mapDesc.series?.[0]?.dataLabels?.enabled ?? false,
+          hmEnableMapNavigation: mapDesc.mapNavigation?.enabled ?? false
         },
-        hcDataLabels: {
-          enabled: mapDesc.series?.[0]?.dataLabels?.enabled ?? false
+        hmColorAxis: {
+          hmColorAxisMin: mapDesc.colorAxis?.min ?? undefined,
+          hmColorAxisMax: mapDesc.colorAxis?.max ?? undefined,
+          hmColorAxisType: mapDesc.colorAxis?.type,
+          hmColorAxisMinColor: mapDesc.colorAxis?.minColor,
+          hmColorAxisMaxColor: mapDesc.colorAxis?.maxColor
         },
-        hcZoomOptions: {
-          enableXaxisZoom: mapDesc.xAxis?.zoomEnabled ?? false,
-          enableYaxisZoom: mapDesc.yAxis?.zoomEnabled ?? false
-        },
-        // keep the original raw series for maps (useful for joins/keys)
-        hcMapOptions: {
-          series: mapDesc.series ?? [],
-          keys: mapDesc.series?.[0]?.keys ?? [],
-          joinBy: mapDesc.series?.[0]?.joinBy ?? 'iso-a2'
-        }
+        hmZoomTo: mapDesc.zoomTo
       };
 
       const tableAppearance = { paginationSize: 30 };
@@ -337,7 +307,7 @@ export class UrlMappingService {
         appearance: {
           chartAppearance: {
             generalOptions,
-            highchartsAppearanceOptions: hcaOptions
+            highmapsAppearanceOptions: hmaOptions
           },
           tableAppearance
         }
@@ -461,7 +431,13 @@ export class UrlMappingService {
         fontSize: parseFloat(hcaOpts.yAxis.title.style.fontSize),
         reversedStacks: hcaOpts.yAxis.reversedStacks,
       },
-      dataSeriesColorArray: hcaOpts.colors,
+      // dataSeriesColorArray is the Appearance panel's user-curated "extra colors"
+      // swatch list, which starts empty for a new chart (form-factory-service.ts) —
+      // each series' own color already round-trips separately via chartProperties
+      // .dataseriesColor above. Seeding this from the chart's own already-flattened
+      // colors array (dataseriesColors + defaults, merged by createDynamicHighChartsChart)
+      // fed it back into that same concat on every reload, growing it without bound.
+      dataSeriesColorArray: [] as string[],
       hcChartArea: {
         hcCABackGroundColor: hcaOpts.chart.backgroundColor,
         hcCABorderWidth: hcaOpts.chart.borderWidth,
