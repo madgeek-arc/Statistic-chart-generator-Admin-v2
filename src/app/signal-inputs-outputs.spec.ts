@@ -29,7 +29,7 @@ class ShortUrlHostComponent {
 
 @Component({
   template: `<div input placeholder="Name" [value]="value" [disabled]="disabled" [password]="password"
-                  (valueChange)="valueChanges.push($event)" (focusEmitter)="focusEvents.push($event)"></div>`,
+                  (valueChange)="valueChanges.push($event)"></div>`,
   imports: [InputComponent]
 })
 class InputHostComponent {
@@ -37,7 +37,6 @@ class InputHostComponent {
   disabled = false;
   password = false;
   valueChanges: unknown[] = [];
-  focusEvents: boolean[] = [];
 }
 
 describe('chart-frame with a signal chartUrl input', () => {
@@ -159,15 +158,5 @@ describe('InputComponent with signal inputs', () => {
     control().setValue('typed');
 
     expect(host.valueChanges).toEqual(['typed']);
-  });
-
-  it('emits focusEmitter to a host listener when focus changes', () => {
-    fixture.detectChanges();
-    const input = fixture.debugElement.query(By.directive(InputComponent)).componentInstance as InputComponent;
-
-    input.focus(true);
-    input.focus(false);
-
-    expect(host.focusEvents).toEqual([true, false]);
   });
 });

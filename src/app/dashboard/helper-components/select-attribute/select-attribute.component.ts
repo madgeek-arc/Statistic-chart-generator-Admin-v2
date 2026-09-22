@@ -13,8 +13,7 @@ import {
   SimpleChanges,
   ViewRef,
   inject,
-  input,
-  output
+  input
 } from '@angular/core';
 import {
   AbstractControl,
@@ -56,7 +55,6 @@ export class SelectAttributeComponent implements ControlValueAccessor, OnChanges
   @Input() isDisabled = false;
   readonly formControl = input<AbstractControl | null>(undefined, { alias: 'formInput' });
   readonly chosenEntity = input<string | null>(null);
-  readonly fieldChanged = output<FieldNode>();
 
   selectedNode: FieldNode | null = null;
   private pendingValue: FieldNode | null = null; // Store value to set later
@@ -77,16 +75,12 @@ export class SelectAttributeComponent implements ControlValueAccessor, OnChanges
 
   ngOnChanges(changes: SimpleChanges) {
     const formControl = this.formControl();
-    console.log(formControl);
     const change = changes['chosenEntity'];
 
     if (change === null || change === undefined)
       return;
     if (change.currentValue == change.previousValue)
       return;
-
-    console.log('🏷️  Entity changed to:', change.currentValue);
-    console.log('🏷️  Previous entity:', change.previousValue);
 
     if (formControl !== null && formControl !== undefined && change.previousValue !== undefined) {
       formControl.reset();
@@ -106,7 +100,6 @@ export class SelectAttributeComponent implements ControlValueAccessor, OnChanges
     setTimeout(() => {
       const formControl = this.formControl();
       if (formControl && formControl.value && this.chosenEntity()) {
-        console.log('🔧 Found control value after entity change:', formControl.value);
         // Force writeValue to be called with the current control value
         this.writeValue(formControl.value);
       }
@@ -149,7 +142,6 @@ export class SelectAttributeComponent implements ControlValueAccessor, OnChanges
   private populateRootNode(entity: string) {
     this.dynamicTreeDB.getRootNode(entity)?.pipe(takeWhile(() => this.chosenEntity() == entity))
       .subscribe((rootNode: DynamicEntityNode | null) => {
-        console.log('🌳 Root node received for entity:', entity, rootNode);
         if (rootNode != null) {
           // Initialise the NestedTree's data
           this.nestedEntityDataSource.data = [rootNode];
@@ -160,10 +152,8 @@ export class SelectAttributeComponent implements ControlValueAccessor, OnChanges
           // Check for both pending value and current control value
           const formControl = this.formControl();
           if (this.pendingValue) {
-            console.log('🎯 Handling pending value:', this.pendingValue);
             this.handlePendingValue();
           } else if (formControl && formControl.value && formControl.value.name && formControl.value.type) {
-            console.log('🎯 Found control value to apply:', formControl.value);
             // Apply the current control value
             this.selectedNode = formControl.value;
             this.expandTreeToPath(formControl.value.name);
@@ -174,10 +164,6 @@ export class SelectAttributeComponent implements ControlValueAccessor, OnChanges
   }
 
   private handlePendingValue() {
-    console.log('🎯 HandlePendingValue called');
-    console.log('🎯 Pending value:', this.pendingValue);
-    console.log('🎯 Tree data length:', this.nestedEntityDataSource.data.length);
-
     if (!this.pendingValue || !this.nestedEntityDataSource.data.length) {
       return;
     }
@@ -187,7 +173,6 @@ export class SelectAttributeComponent implements ControlValueAccessor, OnChanges
 
     // Set the selected node
     this.selectedNode = this.pendingValue;
-    console.log('✅ Pending value applied:', this.selectedNode);
     this.pendingValue = null;
 
     // Trigger change detection
@@ -237,17 +222,12 @@ export class SelectAttributeComponent implements ControlValueAccessor, OnChanges
     selectedFieldNode.type = field.type;
 
     // Change the control into the updated value
-    console.log(selectedFieldNode);
     const formControl = this.formControl();
-    console.log(formControl);
     if (formControl) {
       formControl.setValue(selectedFieldNode);
     }
 
     this.selectedNode = selectedFieldNode;
-
-    // Emit the event that the field value has changed
-    this.fieldChanged.emit(selectedFieldNode);
   }
 
   /**
@@ -308,10 +288,7 @@ export class SelectAttributeComponent implements ControlValueAccessor, OnChanges
 
   // Writes a new value from the form model into the view or (if necessary) DOM property.
   writeValue(value: FieldNode) {
-    console.log('🔄 WriteValue called with:', value);
-    console.log('🔄 Tree data ready:', !!this.nestedEntityDataSource.data.length);
     const chosenEntity = this.chosenEntity();
-    console.log('🔄 Chosen entity:', chosenEntity);
 
     // Check for valid field node - be more permissive about what we consider valid
     const isValidValue = value &&
@@ -322,11 +299,9 @@ export class SelectAttributeComponent implements ControlValueAccessor, OnChanges
     if (isValidValue) {
       // If tree data is not ready yet, store the value to set later
       if (!this.nestedEntityDataSource.data.length || !chosenEntity) {
-        console.log('⏳ Tree not ready, storing pending value:', value);
         this.pendingValue = value;
       } else {
         // Tree is ready, set the value immediately
-        console.log('✅ Tree ready, setting value immediately:', value);
         this.selectedNode = value;
         this.expandTreeToPath(value.name);
       }
@@ -335,7 +310,6 @@ export class SelectAttributeComponent implements ControlValueAccessor, OnChanges
         this.cdr.detectChanges();
       }
     } else {
-      console.log('❌ Invalid field node, clearing selection. Value was:', value);
       this.selectedNode = null;
       this.pendingValue = null;
     }

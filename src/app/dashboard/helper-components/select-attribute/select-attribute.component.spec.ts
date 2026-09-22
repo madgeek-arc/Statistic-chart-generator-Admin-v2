@@ -6,13 +6,11 @@ import { SelectAttributeComponent } from './select-attribute.component';
 import { DynamicEntityNode, FieldNode } from './dynamic-entity-tree/entity-tree-nodes.types';
 
 @Component({
-    template: `<select-attribute [formInput]="control" [chosenEntity]="null"
-                                 (fieldChanged)="emitted = $event"></select-attribute>`,
+    template: `<select-attribute [formInput]="control" [chosenEntity]="null"></select-attribute>`,
     imports: [SelectAttributeComponent]
 })
 class HostComponent {
   control = new FormControl<FieldNode | null>(null);
-  emitted: FieldNode | null = null;
 }
 
 describe('SelectAttributeComponent', () => {
@@ -49,18 +47,5 @@ describe('SelectAttributeComponent', () => {
 
     expect(host.control.value?.name).toBe('dataset.title');
     expect(host.control.value?.type).toBe('string');
-  });
-
-  it('emits fieldChanged to a listener on the host when a field is selected', () => {
-    fixture.detectChanges();
-    const component = fixture.debugElement.children[0].componentInstance as SelectAttributeComponent;
-    const field = new FieldNode();
-    field.name = 'title';
-    field.type = 'string';
-
-    component.nodeSelected(field, new DynamicEntityNode([], 'dataset', []));
-
-    expect(host.emitted?.name).toBe('dataset.title');
-    expect(host.emitted?.type).toBe('string');
   });
 });

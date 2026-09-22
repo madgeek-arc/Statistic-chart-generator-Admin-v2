@@ -408,7 +408,6 @@ export class InputComponent implements OnInit, OnDestroy, AfterViewInit, OnChang
   public selectedDate: Date;
   readonly visibleRows = input(-1);
   readonly extendEnter = input<() => void>(null);
-  readonly focusEmitter = output<boolean>();
   /** LogoUrl information */
   public secure = true;
   /** Internal basic information */
@@ -900,7 +899,6 @@ export class InputComponent implements OnInit, OnDestroy, AfterViewInit, OnChang
           this.add(event, this.addExtraChips());
         }
       }
-      this.focusEmitter.emit(this.focused);
     }
   }
 
