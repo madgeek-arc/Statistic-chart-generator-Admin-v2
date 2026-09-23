@@ -3,7 +3,6 @@ import {
   ChangeDetectorRef,
   Component,
   ElementRef,
-  HostListener,
   Input,
   OnChanges,
   OnDestroy,
@@ -81,6 +80,16 @@ declare let UIkit: any;
  * */
 @Component({
     selector: '[input]',
+    host: {
+        '(window:keydown.arrowUp)': 'arrowUp($event)',
+        '(window:keydown.arrowDown)': 'arrowDown($event)',
+        '(window:keydown.arrowLeft)': 'arrowLeft($event)',
+        '(window:keydown.arrowRight)': 'arrowRight($event)',
+        '(window:keydown.enter)': 'enter($event)',
+        '(keydown)': 'onKeyDown($event)',
+        '(document:click)': 'click($event)',
+        '(window:keydown.escape)': 'esc($event)'
+    },
     imports: [CommonModule, RouterModule, FormsModule, ReactiveFormsModule, MatDatepickerModule, MatNativeDateModule, MatInputModule],
     template: `
     @if (formControl) {
@@ -476,7 +485,6 @@ export class InputComponent implements OnInit, OnDestroy, AfterViewInit, OnChang
     }
   }
 
-  @HostListener('window:keydown.arrowUp', ['$event'])
   arrowUp(event: Event) {
     if (this.opened && this.optionBox) {
       event.preventDefault();
@@ -487,7 +495,6 @@ export class InputComponent implements OnInit, OnDestroy, AfterViewInit, OnChang
     }
   }
 
-  @HostListener('window:keydown.arrowDown', ['$event'])
   arrowDown(event: Event) {
     if (this.opened && this.optionBox) {
       event.preventDefault();
@@ -498,7 +505,6 @@ export class InputComponent implements OnInit, OnDestroy, AfterViewInit, OnChang
     }
   }
 
-  @HostListener('window:keydown.arrowLeft', ['$event'])
   arrowLeft(event: Event) {
     if (this.type === 'chips' && this.focused) {
       if (this.activeElement.getValue()) {
@@ -512,7 +518,6 @@ export class InputComponent implements OnInit, OnDestroy, AfterViewInit, OnChang
     }
   }
 
-  @HostListener('window:keydown.arrowRight', ['$event'])
   arrowRight(event: Event) {
     if (this.type === 'chips' && this.focused) {
       if (this.activeElement.getValue()) {
@@ -526,7 +531,6 @@ export class InputComponent implements OnInit, OnDestroy, AfterViewInit, OnChang
     }
   }
 
-  @HostListener('window:keydown.enter', ['$event'])
   enter(event: Event) {
     const extendEnter = this.extendEnter();
     if (extendEnter) {
@@ -544,7 +548,6 @@ export class InputComponent implements OnInit, OnDestroy, AfterViewInit, OnChang
     }
   }
 
-  @HostListener('keydown', ['$event'])
   onKeyDown(event: KeyboardEvent) {
     const separators = this.separators();
     if (separators.includes(event.key) || separators.includes(event.key.toLowerCase())) {
@@ -553,14 +556,12 @@ export class InputComponent implements OnInit, OnDestroy, AfterViewInit, OnChang
     }
   }
 
-  @HostListener('document:click', ['$event'])
   click(event: any) {
     if (event.isTrusted) {
       this.focus(this.inputBox && this.inputBox.nativeElement.contains(event.target));
     }
   }
 
-  @HostListener('window:keydown.escape', ['$event'])
   esc(_event: Event) {
     this.focus(false);
   }
