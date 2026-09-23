@@ -26,8 +26,13 @@ jobs:
       - name: Lint
         run: npm run lint
 
+      # Installed explicitly: npm may skip puppeteer's postinstall download.
+      - name: Install headless Chromium
+        run: npx puppeteer browsers install chrome
+
+      # executablePath() returns a Promise from puppeteer 25 on.
       - name: Resolve headless Chromium binary
-        run: echo "CHROME_BIN=$(node -e "console.log(require('puppeteer').executablePath())")" >> "$GITHUB_ENV"
+        run: echo "CHROME_BIN=$(node -e "Promise.resolve(require('puppeteer').executablePath()).then(p => console.log(p))")" >> "$GITHUB_ENV"
 
       - name: Test
         run: npm test -- --watch=false --browsers=ChromeHeadlessNoSandbox
