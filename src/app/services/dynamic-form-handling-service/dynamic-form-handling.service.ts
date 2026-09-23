@@ -1,4 +1,4 @@
-import { Injectable, inject } from '@angular/core';
+import { Injectable, inject, signal } from '@angular/core';
 import { BehaviorSubject, forkJoin } from 'rxjs';
 import { DiagramCreator } from './dynamic-form-handling-diagram-creator';
 import { ChartExportingService } from '../chart-exporting-service/chart-exporting.service';
@@ -34,7 +34,8 @@ export class DynamicFormHandlingService {
 	private _rawDataObject: RawDataModel | null = null;
 	private _formSchemaObject: BehaviorSubject<SCGAFormSchema | null> = new BehaviorSubject<SCGAFormSchema | null>(null);
 	private _loadFormObject: object;
-	private _loadFormObjectFile: File | null = null;
+	// A signal, so the OnPush header shows the file name once it has been read.
+	private readonly _loadFormObjectFile = signal<File | null>(null);
 	private updateFormFromFile = new BehaviorSubject(false);
 	jsonLoaded = this.updateFormFromFile.asObservable();
 
@@ -72,10 +73,10 @@ export class DynamicFormHandlingService {
     this.updateFormFromFile.next(true);
   }
 
-	get loadFormObjectFile(): File | null { return this._loadFormObjectFile; }
+	get loadFormObjectFile(): File | null { return this._loadFormObjectFile(); }
 
 	loadForm(event: Event) {
-		this._loadFormObjectFile = null;
+		this._loadFormObjectFile.set(null);
 		const file = (event?.target as HTMLInputElement | null)?.files?.[0];
 
 		if (file) {
@@ -86,7 +87,7 @@ export class DynamicFormHandlingService {
 				this.updateFormFromFile.next(true);
 			}
 			fr.onloadstart = () => this.chartLoadingService.chartLoadingStatus = true;
-			fr.onloadend = () => this._loadFormObjectFile = file;
+			fr.onloadend = () => this._loadFormObjectFile.set(file);
 
 
 			fr.readAsText(file);
@@ -94,7 +95,7 @@ export class DynamicFormHandlingService {
 	}
 
 	resetLoadForm() {
-		this._loadFormObjectFile = null;
+		this._loadFormObjectFile.set(null);
 		this.chartLoadingService.isChartLoaded = false;
 	}
 

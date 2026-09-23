@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { FormArray, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { InputComponent } from '../../../../shared/input.component';
 import { MatSlideToggle } from '@angular/material/slide-toggle';
-import { refreshOnFormChanges } from '../refresh-on-form-changes';
+import { refreshOnFormChanges } from '../../../../shared/refresh-on-form-changes';
 
 @Component({
     selector: 'app-high-charts',

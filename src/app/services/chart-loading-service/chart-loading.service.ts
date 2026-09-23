@@ -1,34 +1,30 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { Injectable, signal } from '@angular/core';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ChartLoadingService {
 
-  private $chartIsLoading: BehaviorSubject<boolean>;
+  // Signals, so OnPush components that read these getters in a template refresh when they change.
+  private readonly _chartIsLoading = signal(false);
 
-  private _hasLoadedAChart = false;
-
-  constructor() {
-    this.$chartIsLoading = new BehaviorSubject<boolean>(false);
-  }
+  private readonly _hasLoadedAChart = signal(false);
 
   set chartLoadingStatus(isLoading: boolean) {
-    this.$chartIsLoading.next(isLoading);
-    this._hasLoadedAChart = false;
+    this._chartIsLoading.set(isLoading);
+    this._hasLoadedAChart.set(false);
   }
 
   get chartLoadingStatus(): boolean {
-    return this.$chartIsLoading.value;
+    return this._chartIsLoading();
   }
 
   set isChartLoaded(value: boolean){
-    this._hasLoadedAChart = value;
+    this._hasLoadedAChart.set(value);
   }
 
   get isChartLoaded(): boolean{
-    return this._hasLoadedAChart;
+    return this._hasLoadedAChart();
   }
 
 }

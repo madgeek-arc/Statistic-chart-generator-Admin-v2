@@ -5,7 +5,7 @@ import { MatSlideToggleModule } from "@angular/material/slide-toggle";
 
 import { CountriesListingService } from "../../../../services/countries-listing-service/countries-listing.service";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
-import { refreshOnFormChanges } from "../refresh-on-form-changes";
+import { refreshOnFormChanges } from '../../../../shared/refresh-on-form-changes';
 
 @Component({
     selector: 'app-high-maps',

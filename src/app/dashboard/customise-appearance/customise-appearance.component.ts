@@ -1,6 +1,7 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { FormFactoryService } from "../../services/form-factory-service/form-factory-service";
+import { refreshOnFormChanges } from '../../shared/refresh-on-form-changes';
 import { InputComponent } from '../../shared/input.component';
 import { HighChartsComponent } from './visualisation-options/high-charts/high-charts.component';
 import { GoogleChartsComponent } from './visualisation-options/google-charts/google-charts.component';
@@ -10,6 +11,7 @@ import { HighMapsComponent } from './visualisation-options/high-maps/high-maps.c
 @Component({
     selector: 'app-customise-appearance',
     templateUrl: './customise-appearance.component.html',
+    changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [ReactiveFormsModule, InputComponent, HighChartsComponent, GoogleChartsComponent, EChartsComponent, HighMapsComponent]
 })
 
@@ -23,6 +25,11 @@ export class CustomiseAppearanceComponent implements OnInit {
 		{ label: 'X Axis', value: 'xaxis' },
 		{ label: 'Y Axis', value: 'yaxis' }
 	];
+
+  constructor() {
+    // The visualisation library changes with the chart type's supported libraries and on chart loads.
+    refreshOnFormChanges(this.formFactoryService.root);
+  }
 
   ngOnInit() {
     this.appearanceForm = this.formFactoryService.getFormRoot().get('appearance') as FormGroup;

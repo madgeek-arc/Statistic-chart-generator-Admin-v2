@@ -8,7 +8,7 @@ import {
   ValidatorFn,
   Validators
 } from "@angular/forms";
-import { inject, Injectable } from "@angular/core";
+import { inject, Injectable, signal } from "@angular/core";
 import { distinctUntilChanged, map, startWith } from "rxjs/operators";
 
 interface InvalidControl {
@@ -23,6 +23,9 @@ export class FormFactoryService {
   private fb = inject(FormBuilder);
 
   private formRoot: FormGroup;
+  private readonly _root = signal<FormGroup | null>(null);
+  /** The current form root; replaced whenever the dashboard resets or loads a chart. */
+  readonly root = this._root.asReadonly();
 
   //////////////////////
   // Helpers
@@ -110,6 +113,7 @@ export class FormFactoryService {
       appearance: this.createAppearanceGroup()
     });
     this.syncXaxisWithDiagram(this.formRoot);
+    this._root.set(this.formRoot);
 
     return this.formRoot;
   }

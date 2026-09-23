@@ -3,7 +3,7 @@ import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { InputComponent } from '../../../../shared/input.component';
 import { MatSlideToggle } from '@angular/material/slide-toggle';
 import { MatIcon } from '@angular/material/icon';
-import { refreshOnFormChanges } from '../refresh-on-form-changes';
+import { refreshOnFormChanges } from '../../../../shared/refresh-on-form-changes';
 
 @Component({
     selector: 'app-google-charts',
