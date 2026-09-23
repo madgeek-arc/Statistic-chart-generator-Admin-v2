@@ -1,10 +1,12 @@
 import { DataFormSchema } from "../chart-form-schema.classes";
 import { Query } from "./chart-query.model";
+import type { ChartInfo as NlChartInfo } from "../../nl-chat-service/nl-chat.service";
 
 export class RawDataModel {
     orderBy: string | null = null;
     verbose = false;
-    series: QueryInfo[] = [];
+    // Built from the form, or taken as-is from a completed NL chat session.
+    series: (QueryInfo | NlChartInfo)[] = [];
 
     constructor() {}
 }

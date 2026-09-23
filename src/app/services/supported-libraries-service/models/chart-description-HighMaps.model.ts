@@ -1,4 +1,4 @@
-import { ChartInfo } from "./chart-query.model";
+import { DataseriesInfo } from "./chart-query.model";
 import { HCCredits, HCDataLabels, HCExporting, HCLegend } from './chart-description-HighCharts.model';
 
 export class HighMapsMap {
@@ -19,7 +19,7 @@ class HighMapsDescription {
     exporting: HCExporting;
     legend: HCLegend;
     mapNavigation: HMNavigation;
-    queries: ChartInfo[];
+    queries: DataseriesInfo[];
     series: HMSeriesInfo[];
     subtitle: Highcharts.SubtitleOptions;
     title: Highcharts.TitleOptions;

@@ -1,4 +1,4 @@
-import { ChartInfo } from "./chart-query.model";
+import { DataseriesInfo } from "./chart-query.model";
 
 export class GoogleChartsChart {
     library: string;
@@ -25,7 +25,7 @@ export class GoogleChartsTable {
 class GoogleChartsDescription {
     chartType: 'AreaChart'|'BarChart'|'ColumnChart'|'LineChart'|'PieChart'|'ComboChart'|'TreeMap' = 'ComboChart';
     columns: string[];
-    queriesInfo: ChartInfo[];
+    queriesInfo: DataseriesInfo[];
     options: GoogleChartsOptions;
 
     constructor() {

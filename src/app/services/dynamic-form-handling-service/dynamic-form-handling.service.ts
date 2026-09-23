@@ -281,44 +281,40 @@ export class DynamicFormHandlingService {
         }
 
         if (chartInfo) {
-          // `chartInfo` here is the NL-chat ChartInfo (nl-chat.service.ts: no `color`,
-          // `query: NlQuery | DslQuery`), while every field below expects the unrelated
-          // form-builder ChartInfo (chart-query.model.ts: `color` + `query: Query`). The
-          // `as any` casts are bridging two intentionally different domain models, not a
-          // typing oversight — a real fix needs a defined mapping from NL/DSL query results
-          // to `color`/`Query`, which isn't established yet.
+          // The NL chat's queries replace the form-built ones; every description field
+          // accepts both (DataseriesInfo in chart-query.model.ts).
           if (chartObject ) {
             switch (library) {
 
               case ('GoogleCharts'): {
-                (chartObject as GoogleChartsChart).chartDescription.queriesInfo = chartInfo as any;
+                (chartObject as GoogleChartsChart).chartDescription.queriesInfo = chartInfo;
                 break;
               }
               case ('HighCharts'): {
-                (chartObject as HighChartsChart).chartDescription.queries = chartInfo as any;
+                (chartObject as HighChartsChart).chartDescription.queries = chartInfo;
                 break;
               }
               case ('HighMaps'): {
-                (chartObject as HighMapsMap).mapDescription.queries = chartInfo as any;
+                (chartObject as HighMapsMap).mapDescription.queries = chartInfo;
                 break;
               }
               case ('eCharts'): {
-                (chartObject as EChartsChart).chartDescription.queries = chartInfo as any;
+                (chartObject as EChartsChart).chartDescription.queries = chartInfo;
                 break;
               }
             }
           }
 
           if (tableObject) {
-            (tableObject as GoogleChartsTable).tableDescription.queriesInfo = chartInfo as any;
+            (tableObject as GoogleChartsTable).tableDescription.queriesInfo = chartInfo;
           }
 
           if (rawChartDataObject) {
-            (rawChartDataObject as RawChartDataModel).chartsInfo = chartInfo as any;
+            (rawChartDataObject as RawChartDataModel).chartsInfo = chartInfo;
           }
 
           if (rawDataObject) {
-            (rawDataObject as RawDataModel).series = chartInfo as any;
+            (rawDataObject as RawDataModel).series = chartInfo;
           }
         }
 

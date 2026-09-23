@@ -1,5 +1,6 @@
 import { Filter, FilterGroup } from './query-filter.model';
 import { DataFormSchema, DataseriesFormSchema } from "../chart-form-schema.classes";
+import type { ChartInfo as NlChartInfo } from "../../nl-chat-service/nl-chat.service";
 
 export class Query {
 
@@ -61,6 +62,12 @@ export class Select {
     this.aggregate = null;
   }
 }
+
+/**
+ * One dataseries as a chart description sends it to the backend: built from the
+ * form (ChartInfo, with a DSL Query) or taken as-is from a completed NL chat session.
+ */
+export type DataseriesInfo = ChartInfo | NlChartInfo;
 
 export class ChartInfo {
   name: string;

@@ -1,4 +1,4 @@
-import { ChartInfo } from './chart-query.model';
+import { DataseriesInfo } from './chart-query.model';
 import type {
   DataZoomComponentOption,
   SeriesOption,
@@ -36,7 +36,7 @@ class EChartsDescription {
   legend: ECLegend;
 
 
-  queries: ChartInfo[] = [];
+  queries: DataseriesInfo[] = [];
 
   constructor() {
 

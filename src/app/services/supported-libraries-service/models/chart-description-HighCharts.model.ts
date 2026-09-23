@@ -1,5 +1,5 @@
 import * as Highcharts from "highcharts";
-import { ChartInfo } from "./chart-query.model";
+import { DataseriesInfo } from "./chart-query.model";
 
 export class HighChartsChart {
 	library: string;
@@ -21,7 +21,7 @@ class HighChartsDescription {
 	subtitle: Highcharts.SubtitleOptions;
 	yAxis: Highcharts.YAxisOptions;
 	xAxis: Highcharts.XAxisOptions;
-	queries: ChartInfo[] = [];
+	queries: DataseriesInfo[] = [];
 	lang: HCLang;
 	exporting: HCExporting;
 	plotOptions: HCPlotOptions;
