@@ -8,9 +8,8 @@ import {
   ValidatorFn,
   Validators
 } from "@angular/forms";
-import { DestroyRef, inject, Injectable } from "@angular/core";
-import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
-import { distinctUntilChanged } from "rxjs/operators";
+import { inject, Injectable } from "@angular/core";
+import { distinctUntilChanged, map, startWith } from "rxjs/operators";
 
 interface InvalidControl {
   path: string;
@@ -21,7 +20,6 @@ interface InvalidControl {
 @Injectable({ providedIn: 'root' })
 
 export class FormFactoryService {
-  private destroyRef = inject(DestroyRef);
   private fb = inject(FormBuilder);
 
   private formRoot: FormGroup;
@@ -111,8 +109,33 @@ export class FormFactoryService {
       dataseries: this.createDataseriesGroupArray(),
       appearance: this.createAppearanceGroup()
     });
+    this.syncXaxisWithDiagram(this.formRoot);
 
     return this.formRoot;
+  }
+
+  /**
+   * The numbers diagram (id 14) has no x-axis, so every dataseries' x-axis data
+   * is disabled while it is selected. This watches the root rather than each
+   * dataseries or the diagramId control: the dashboard replaces the category and
+   * dataseries groups on reset, and a removed dataseries must not stay subscribed.
+   */
+  private syncXaxisWithDiagram(root: FormGroup): void {
+    root.valueChanges.pipe(
+      startWith(null),
+      map(() => root.get('category.diagram.diagramId')?.value),
+      distinctUntilChanged()
+    ).subscribe({
+      next: diagramId => {
+        (root.get('dataseries') as FormArray).controls.forEach(group => {
+          if (diagramId === 14) {
+            group.get('data.xaxisData').disable();
+          } else {
+            group.get('data.xaxisData').enable();
+          }
+        });
+      }
+    });
   }
 
   createViewGroup(profile: string | null) {
@@ -180,25 +203,14 @@ export class FormFactoryService {
     });
 
     // Whether the field is required depends on the aggregate, so re-check it when the aggregate changes.
-    yaxisAggregate.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+    yaxisAggregate.valueChanges.subscribe({
       next: () => yaxisFieldName.updateValueAndValidity()
     });
 
-    // If diagram is numbers type disable x-axis
+    // If diagram is numbers type disable x-axis; later switches are handled by syncXaxisWithDiagram.
     if (this.formRoot?.get('category.diagram.diagramId')?.value === 14) {
       group.get('data.xaxisData').disable();
     }
-
-    // Disable/enable x-axis when switching to and from numbers type diagram.
-    this.formRoot?.get('category.diagram.diagramId')?.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: diagramId => {
-        if (diagramId === 14) {
-          group.get('data.xaxisData').disable();
-        } else {
-          group.get('data.xaxisData').enable();
-        }
-      }
-    });
 
     return group;
   }
@@ -243,7 +255,7 @@ export class FormFactoryService {
       values: this.fb.array(valuesControls)
     });
 
-    group.get('field.type').valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+    group.get('field.type').valueChanges.subscribe({
       next: value => {
         if (value !== null && value !== undefined) {
           group.get('type').enable();
@@ -258,7 +270,7 @@ export class FormFactoryService {
     // is set via the FormControl constructor and does not emit, so loading a
     // saved chart is unaffected.
     group.get('field.name').valueChanges
-      .pipe(distinctUntilChanged(), takeUntilDestroyed(this.destroyRef))
+      .pipe(distinctUntilChanged())
       .subscribe({
         next: () => {
           const values = group.get('values') as FormArray;
@@ -269,7 +281,7 @@ export class FormFactoryService {
 
     // Keep the `values` FormArray shape in sync with the operator: multi-value for
     // in/not_in, single-value for everything else.
-    group.get('type').valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+    group.get('type').valueChanges.subscribe({
       next: (type: string | null) => {
         const values = group.get('values') as FormArray;
         const multi = type === 'in' || type === 'not_in';

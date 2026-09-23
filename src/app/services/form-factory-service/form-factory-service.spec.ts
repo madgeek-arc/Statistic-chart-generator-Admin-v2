@@ -131,3 +131,61 @@ describe('FormFactoryService y-axis entity field', () => {
     expect(copy.valid).toBeFalse();
   });
 });
+
+// The "numbers" diagram (id 14) has no x-axis, so every dataseries' x-axis
+// data is disabled while it is selected.
+describe('FormFactoryService x-axis and the numbers diagram', () => {
+  let factory: FormFactoryService;
+  let root: FormGroup;
+
+  const diagramId = () => root.get('category.diagram.diagramId');
+  const dataseries = () => root.get('dataseries') as FormArray;
+  const xaxisDisabled = () => dataseries().controls.map(group => group.get('data.xaxisData').disabled);
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({});
+    factory = TestBed.inject(FormFactoryService);
+    root = factory.createForm();
+  });
+
+  it('disables the x-axis of every dataseries for the numbers diagram and re-enables it after', () => {
+    dataseries().push(factory.createDataseriesGroup(1));
+
+    diagramId().setValue(14);
+    expect(xaxisDisabled()).toEqual([true, true]);
+
+    diagramId().setValue(1);
+    expect(xaxisDisabled()).toEqual([false, false]);
+  });
+
+  it('starts a dataseries added while the numbers diagram is selected with its x-axis disabled', () => {
+    diagramId().setValue(14);
+
+    dataseries().push(factory.createDataseriesGroup(1));
+
+    expect(xaxisDisabled()).toEqual([true, true]);
+  });
+
+  // The dashboard's resetForm() swaps the category group (and with it the
+  // diagramId control) and the dataseries array when the view changes.
+  it('follows the diagram after the category and dataseries are replaced', () => {
+    root.setControl('category', factory.createCategoryGroup());
+    root.setControl('dataseries', factory.createDataseriesGroupArray());
+
+    diagramId().setValue(14);
+
+    expect(xaxisDisabled()).toEqual([true]);
+  });
+
+  it('stops touching a dataseries once it is removed', () => {
+    dataseries().push(factory.createDataseriesGroup(1));
+    const removed = dataseries().at(1).get('data.xaxisData');
+    dataseries().removeAt(1);
+    const disable = spyOn(removed, 'disable').and.callThrough();
+
+    diagramId().setValue(14);
+
+    expect(disable).not.toHaveBeenCalled();
+    expect(xaxisDisabled()).toEqual([true]);
+  });
+});
