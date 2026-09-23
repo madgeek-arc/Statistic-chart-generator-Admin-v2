@@ -32,7 +32,6 @@
 .vd-panel-title {
   font-size: 13px;
   font-weight: 600;
-  font-family: @font-family;
   letter-spacing: 0.01em;
 }
 
@@ -53,7 +52,6 @@
   color: #fff;
   font-weight: 700;
   font-size: 15px;
-  font-family: @font-family;
   flex-shrink: 0;
   letter-spacing: 0.02em;
 }
@@ -62,7 +60,6 @@
   font-size: 16px;
   font-weight: 600;
   color: @vd-text;
-  font-family: @font-family;
   margin-bottom: 3px;
 }
 
@@ -82,7 +79,6 @@
 .vd-desc {
   font-size: 13px;
   color: @vd-muted-dark;
-  font-family: @font-family;
   line-height: 1.6;
   margin: 0 0 14px;
 }
@@ -94,10 +90,10 @@
   margin-bottom: 18px;
 }
 
-.vd-tag {
+.vd-tag,
+.ct-tag {
   font-size: 11px;
   font-weight: 500;
-  font-family: @font-family;
   padding: 3px 9px;
   border-radius: 4px;
   background: #F3F3F3;
@@ -125,7 +121,6 @@
   letter-spacing: 0.07em;
   text-transform: uppercase;
   color: @vd-muted;
-  font-family: @font-family;
   margin-bottom: 4px;
 }
 
@@ -133,7 +128,6 @@
   font-size: 20px;
   font-weight: 700;
   color: @vd-text;
-  font-family: @font-family;
 }
 
 .vd-empty {
@@ -156,14 +150,12 @@
   font-size: 15px;
   font-weight: 600;
   color: @vd-text;
-  font-family: @font-family;
   margin: 0;
 }
 
 .vd-empty-sub {
   font-size: 13px;
   color: @vd-muted-dark;
-  font-family: @font-family;
   line-height: 1.6;
   margin: 0;
   max-width: 280px;
@@ -200,20 +192,19 @@
 .action-selection-label {
   font-size: 13px;
   color: @vd-muted-dark;
-  font-family: @font-family;
 
   strong { color: @vd-text; font-weight: 600; }
 }
 
 .action-btn-continue {
   padding: 9px 18px;
+  font-family: @font-family;
   border-radius: 6px;
   border: none;
   background: @vd-teal;
   color: #fff;
   font-size: 12px;
   font-weight: 600;
-  font-family: @font-family;
   letter-spacing: 0.04em;
   cursor: pointer;
   transition: background 0.15s, opacity 0.15s;
@@ -272,7 +263,6 @@
   font-size: 13px;
   font-weight: 600;
   color: @vd-text;
-  font-family: @font-family;
 }
 
 .ct-about-panel {
@@ -282,7 +272,6 @@
 .ct-best-for {
   font-size: 13px;
   color: @vd-muted-dark;
-  font-family: @font-family;
   margin: 0;
   line-height: 1.5;
 
@@ -295,24 +284,12 @@
   gap: 5px;
 }
 
-.ct-tag {
-  font-size: 11px;
-  font-weight: 500;
-  font-family: @font-family;
-  padding: 3px 9px;
-  border-radius: 4px;
-  background: #F3F3F3;
-  color: @vd-muted-dark;
-  border: 1px solid @vd-border;
-}
-
 .ct-tip {
   display: flex;
   align-items: flex-start;
   gap: 8px;
   font-size: 13px;
   color: @vd-muted-dark;
-  font-family: @font-family;
   line-height: 1.5;
 }
 
@@ -328,19 +305,18 @@
 .ct-tip-text { flex: 1; }
 
 // Sidebar nav redesign
-@nav-font: 'Roboto', sans-serif;
 @nav-teal: #3ADDBF;
 @nav-teal-bg: #f0fdfb;
 @nav-text: #2C2C2C;
 @nav-muted: #B3B3B3;
 
-.nav-section-label {
+.nav-section-label,
+.nav-design-first::before {
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: @nav-muted;
-  font-family: @nav-font;
   padding: 14px 16px 4px;
 }
 
@@ -348,13 +324,6 @@
 .nav-design-first::before {
   content: 'DESIGN';
   display: block;
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: @nav-muted;
-  font-family: @nav-font;
-  padding: 14px 16px 4px;
   pointer-events: none;
 }
 
@@ -417,7 +386,6 @@
   font-size: 13px;
   font-weight: 500;
   color: @nav-text;
-  font-family: @nav-font;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -426,7 +394,6 @@
 .nav-step-subtitle {
   font-size: 11px;
   color: @nav-muted;
-  font-family: @nav-font;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -435,13 +402,13 @@
 
 .action-btn-back {
   padding: 9px 14px;
+  font-family: @font-family;
   border-radius: 6px;
   border: 1px solid @vd-border;
   background: transparent;
   color: @vd-muted-dark;
   font-size: 12px;
   font-weight: 600;
-  font-family: @nav-font;
   cursor: pointer;
   letter-spacing: 0.04em;
   white-space: nowrap;
@@ -470,16 +437,6 @@
   position: relative;
 }
 
-.seg-thumb {
-  position: absolute;
-  top: 4px;
-  bottom: 4px;
-  background: #fff;
-  border-radius: 8px;
-  box-shadow: 0 1px 3px rgba(15,23,42,.08),0 1px 2px rgba(15,23,42,.04);
-  transition: left .22s cubic-bezier(.4,.0,.2,1), width .22s cubic-bezier(.4,.0,.2,1);
-  z-index: 0;
-}
 
 .seg-btn {
   appearance: none;
