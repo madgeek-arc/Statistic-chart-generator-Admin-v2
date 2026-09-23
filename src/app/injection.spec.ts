@@ -27,10 +27,7 @@ import { SelectAttributeComponent } from './dashboard/helper-components/select-a
 describe('Dependency injection', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([])],
-      // The components are only constructed, never initialized, so skip ngOnDestroy
-      // (AutocompleteInputFieldComponent unsubscribes something created in ngAfterViewInit).
-      teardown: { destroyAfterEach: false }
+      providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([])]
     });
   });
 

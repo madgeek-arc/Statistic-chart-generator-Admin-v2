@@ -91,7 +91,7 @@ export class AutocompleteInputFieldComponent implements AfterViewInit, OnChanges
   }
 
   ngOnDestroy() {
-    this.autocompleteSubscription.unsubscribe();
+    this.autocompleteSubscription?.unsubscribe();
   }
 
   setupAutocompleteInputField(): void {

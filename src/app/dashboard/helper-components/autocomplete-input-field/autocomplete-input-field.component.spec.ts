@@ -117,3 +117,17 @@ describe('AutocompleteInputFieldComponent', () => {
     expect(getAutocompleteFields).toHaveBeenCalledWith('dataset.year', '2');
   }));
 });
+
+describe('AutocompleteInputFieldComponent teardown', () => {
+  // The lookup subscription only exists after ngAfterViewInit, so a component
+  // destroyed before its first change detection has nothing to unsubscribe.
+  it('can be destroyed before its view is initialized', () => {
+    TestBed.configureTestingModule({
+      imports: [AutocompleteInputFieldComponent],
+      providers: [{ provide: FieldAutocompleteService, useValue: { getAutocompleteFields: () => of(null) } }]
+    });
+    const fixture = TestBed.createComponent(AutocompleteInputFieldComponent);
+
+    expect(() => fixture.destroy()).not.toThrow();
+  });
+});
