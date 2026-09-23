@@ -1,5 +1,5 @@
 import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
-import { FormArray, FormControl, FormGroup } from '@angular/forms';
+import { AbstractControl, FormArray, FormControl, FormGroup } from '@angular/forms';
 import { DynamicFormHandlingService } from "../services/dynamic-form-handling-service/dynamic-form-handling.service";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { ChartExportingService } from '../services/chart-exporting-service/chart-exporting.service';
@@ -247,7 +247,7 @@ export class DashboardComponent implements OnInit {
     // Reset the chartType of all dataseries to null. So chart type change can take place.
     // The above issue occurs when loading a chart from url.
     if (this.selectedChartDetails.name !== 'combo') {
-      this.dataseries.controls.forEach((control: any) => {
+      this.dataseries.controls.forEach((control: AbstractControl) => {
         control.get('chartProperties.chartType').setValue(null);
       });
     }

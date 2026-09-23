@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormArray, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { InputComponent } from '../../../../shared/input.component';
 import { MatSlideToggle } from '@angular/material/slide-toggle';
 import { refreshOnFormChanges } from '../refresh-on-form-changes';
@@ -36,16 +36,16 @@ export class EChartsComponent {
 		{ label: 'Bottom', value: 'bottom' }
 	];
 
-	getSeriesColors(form: any) {
-		return form.controls.dataSeriesColorArray.controls;
+	getSeriesColors(form: FormGroup) {
+		return (form.get('dataSeriesColorArray') as FormArray).controls;
 	}
 
-	addSeriesColor(form: any): void {
-		form.controls.dataSeriesColorArray.push(new FormControl<string>('#ffffff'));
+	addSeriesColor(form: FormGroup): void {
+		(form.get('dataSeriesColorArray') as FormArray).push(new FormControl<string>('#ffffff'));
 	}
 
-	removeSeriesColor(form: any, index: number) {
-		form.controls.dataSeriesColorArray.removeAt(index);
+	removeSeriesColor(form: FormGroup, index: number) {
+		(form.get('dataSeriesColorArray') as FormArray).removeAt(index);
 	}
 
 }

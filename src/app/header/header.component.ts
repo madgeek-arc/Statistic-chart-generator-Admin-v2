@@ -27,7 +27,7 @@ export class HeaderComponent {
     this.dynamicFormHandlingService.exportForm();
   }
 
-  loadChart(event: any): void {
+  loadChart(event: Event): void {
     this.dynamicFormHandlingService.loadForm(event);
   }
 

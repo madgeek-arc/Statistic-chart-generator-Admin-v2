@@ -199,7 +199,7 @@ export class SelectAttributeComponent implements ControlValueAccessor, OnChanges
         if (nodeToExpand.relations) {
           if (typeof nodeToExpand.relations.subscribe === 'function') {
             // It's a BehaviorSubject, get the current value
-            currentNodes = (nodeToExpand.relations as any).value || [];
+            currentNodes = nodeToExpand.relations.value || [];
           } else {
             // It's already an array
             currentNodes = nodeToExpand.relations as unknown as DynamicEntityNode[];
@@ -256,7 +256,7 @@ export class SelectAttributeComponent implements ControlValueAccessor, OnChanges
    */
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function -- ControlValueAccessor stub, replaced by registerOnChange
-  _onChange = (_arg: any) => { };
+  _onChange = (_arg: unknown) => { };
   // eslint-disable-next-line @typescript-eslint/no-empty-function -- ControlValueAccessor stub, replaced by registerOnTouched
   _onTouched = (_arg: boolean) => { };
 
@@ -278,11 +278,11 @@ export class SelectAttributeComponent implements ControlValueAccessor, OnChanges
     }
   }
 
-  registerOnChange(fn: (_: any) => void): void {
+  registerOnChange(fn: (_: unknown) => void): void {
     this._onChange = fn;
   }
 
-  registerOnTouched(fn: any): void {
+  registerOnTouched(fn: (_arg: boolean) => void): void {
     this._onTouched = fn;
   }
 

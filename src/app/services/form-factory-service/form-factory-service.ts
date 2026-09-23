@@ -13,8 +13,8 @@ import { distinctUntilChanged, map, startWith } from "rxjs/operators";
 
 interface InvalidControl {
   path: string;
-  errors: any;
-  value: any;
+  errors: ValidationErrors | null;
+  value: unknown;
 }
 
 @Injectable({ providedIn: 'root' })

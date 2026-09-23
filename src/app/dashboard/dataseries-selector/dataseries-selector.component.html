@@ -187,7 +187,7 @@
                                           <div class="uk-text-meta">No value required</div>
                                         } @else if ((group.get('type').value === '=') || (group.get('type').value === '!=')) {
                                           <div>
-                                            <autocomplete-input-field [inputFormGroup]="group.get('values.0')"
+                                            <autocomplete-input-field [inputFormGroup]="getFilterValues(group)[0]"
                                                                       [filterfield]="group.get('field.name').value">
                                             </autocomplete-input-field>
                                           </div>
@@ -196,7 +196,7 @@
                                             @for (val of getFilterValues(group); track val; let vi = $index) {
                                               <div class="uk-flex uk-flex-middle uk-margin-small-bottom">
                                                 <div class="uk-width-expand">
-                                                  <autocomplete-input-field [inputFormGroup]="group.get('values.' + vi)"
+                                                  <autocomplete-input-field [inputFormGroup]="val"
                                                                             [filterfield]="group.get('field.name').value">
                                                   </autocomplete-input-field>
                                                 </div>

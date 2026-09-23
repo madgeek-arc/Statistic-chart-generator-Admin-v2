@@ -40,8 +40,6 @@ export class AutocompleteInputFieldComponent implements AfterViewInit, OnChanges
 
   // The FormGroup of the current filter
   readonly inputFormGroup = input<FormControl>(undefined);
-  // The index of the current filter input value
-  readonly filterValueIndex = input<any>(undefined);
   // The selected field for the current filter
   readonly filterfield = input<string>(undefined);
   // Dom element for the autocomplete
@@ -127,7 +125,7 @@ export class AutocompleteInputFieldComponent implements AfterViewInit, OnChanges
           this.cdr.markForCheck();
           this.revealPanel(firstOpen);
         },
-        error: (err: any) => {
+        error: (err: unknown) => {
           console.error(err);
           this.loading = false;
           this.searched = true;

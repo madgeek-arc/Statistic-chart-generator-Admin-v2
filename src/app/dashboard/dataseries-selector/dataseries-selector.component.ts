@@ -6,7 +6,7 @@ import {
   ViewChild,
   input
 } from '@angular/core';
-import { FormArray, FormControl, FormGroup, FormGroupDirective, ReactiveFormsModule } from '@angular/forms';
+import { AbstractControl, FormArray, FormControl, FormGroup, FormGroupDirective, ReactiveFormsModule } from '@angular/forms';
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { distinctUntilChanged } from "rxjs/operators";
 import { DbSchemaService } from "../../services/db-schema-service/db-schema.service";
@@ -128,7 +128,7 @@ export class DataseriesSelectorComponent implements OnInit {
 
 	}
 
-  hide(element: any) {
+  hide(element: HTMLElement) {
     UIkit.dropdown(element).hide();
   }
 
@@ -142,63 +142,66 @@ export class DataseriesSelectorComponent implements OnInit {
     });
   }
 
-	getXAxisData(form: any) {
-		return form.controls.data.controls.xaxisData.controls;
+	getXAxisData(form: AbstractControl) {
+		return (form.get('data.xaxisData') as FormArray).controls as FormGroup[];
 	}
 
-	getFilters(form: any) {
-		return form.controls.data.controls.filters.controls;
+	getFilters(form: AbstractControl) {
+		return (form.get('data.filters') as FormArray).controls as FormGroup[];
 	}
 
-	getGroups(form: any) {
-		return form.controls.groupFilters.controls;
+	getGroups(form: AbstractControl) {
+		return (form.get('groupFilters') as FormArray).controls as FormGroup[];
 	}
 
-	addFilter(form: any) {
-		form.controls.data.controls.filters.push(this.formFactory.createFilterGroup());
-    this.addFilterRule(form.controls.data.controls.filters.controls[form.controls.data.controls.filters.controls.length - 1]);
+	addFilter(form: AbstractControl) {
+		const filters = form.get('data.filters') as FormArray;
+		filters.push(this.formFactory.createFilterGroup());
+    this.addFilterRule(filters.at(filters.length - 1));
   }
 
-	removeFilter(form: any, index: number) {
-		form.controls.data.controls.filters.removeAt(index);
+	removeFilter(form: AbstractControl, index: number) {
+		(form.get('data.filters') as FormArray).removeAt(index);
 	}
 
-	addFilterRule(form: any) {
-		form.controls.groupFilters.push(this.formFactory.createFilterRuleGroup());
+	addFilterRule(form: AbstractControl) {
+		(form.get('groupFilters') as FormArray).push(this.formFactory.createFilterRuleGroup());
 	}
 
-	removeFilterRule(form: any, index: number) {
-		form.controls.groupFilters.removeAt(index);
+	removeFilterRule(form: AbstractControl, index: number) {
+		(form.get('groupFilters') as FormArray).removeAt(index);
 	}
 
-	getFilterValues(group: any) {
-		return group.get('values').controls;
+	getFilterValues(group: AbstractControl) {
+		return (group.get('values') as FormArray).controls as FormControl[];
 	}
 
-	addFilterValue(group: any) {
-		group.get('values').push(new FormControl(null));
+	addFilterValue(group: AbstractControl) {
+		(group.get('values') as FormArray).push(new FormControl(null));
 	}
 
-	removeFilterValue(group: any, index: number) {
-		const values = group.get('values');
+	removeFilterValue(group: AbstractControl, index: number) {
+		const values = group.get('values') as FormArray;
 		values.removeAt(index);
 		if (values.length === 0) {
 			values.push(new FormControl(null));
 		}
 	}
 
-	addEntityField(form: any) {
-		form.controls.data.controls.xaxisData.push(this.formFactory.createXaxisEntityField());
+	addEntityField(form: AbstractControl) {
+		const xaxisData = form.get('data.xaxisData') as FormArray;
+		xaxisData.push(this.formFactory.createXaxisEntityField());
 
-		if (form.controls.data.controls.xaxisData.length === 2) {
+		if (xaxisData.length === 2) {
 			this.hasTwoEntityFields = true;
 		}
 	}
 
-	removeEntityField(form: any, index: number) {
-		form.controls.data.controls.xaxisData.removeAt(index);
+	removeEntityField(form: AbstractControl, index: number) {
+		const xaxisData = form.get('data.xaxisData') as FormArray;
+		xaxisData.removeAt(index);
 
-		if (form.controls.data.controls.xaxisData.length < 2) {
+		if (xaxisData.length < 2) {
 			this.hasTwoEntityFields = false;
 		}
 

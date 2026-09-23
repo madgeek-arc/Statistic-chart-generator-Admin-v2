@@ -74,10 +74,11 @@ export class DynamicFormHandlingService {
 
 	get loadFormObjectFile(): File | null { return this._loadFormObjectFile; }
 
-	loadForm(event: any) {
+	loadForm(event: Event) {
 		this._loadFormObjectFile = null;
+		const file = (event?.target as HTMLInputElement | null)?.files?.[0];
 
-		if (!(event === null || event === undefined)) {
+		if (file) {
 			const fr: FileReader = new FileReader();
 
 			fr.onload = () => {
@@ -85,10 +86,10 @@ export class DynamicFormHandlingService {
 				this.updateFormFromFile.next(true);
 			}
 			fr.onloadstart = () => this.chartLoadingService.chartLoadingStatus = true;
-			fr.onloadend = () => this._loadFormObjectFile = event.target.files[0];
+			fr.onloadend = () => this._loadFormObjectFile = file;
 
 
-			fr.readAsText(event.target.files[0]);
+			fr.readAsText(file);
 		}
 	}
 
@@ -184,8 +185,8 @@ export class DynamicFormHandlingService {
 
     // Walk up the form tree to build path - this is a basic implementation
     // You might need to enhance this based on your specific form structure
-    while (current && (current as any).parent) {
-      const parent = (current as any).parent;
+    while (current && current.parent) {
+      const parent = current.parent;
       if (parent instanceof FormGroup) {
         const key = Object.keys(parent.controls).find(k => parent.controls[k] === current);
         if (key) {
