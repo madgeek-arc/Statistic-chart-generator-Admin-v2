@@ -6,7 +6,7 @@ import { UrlMappingService } from "../services/url-mapping-service/url-mapping-s
 import { RouterLink } from '@angular/router';
 import { NgOptimizedImage, SlicePipe } from '@angular/common';
 import { GeneratedShortUrlFieldComponent } from '../data-frames/generated-short-url-field/generated-short-url-field.component';
-import { ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { FormFactoryService } from "../services/form-factory-service/form-factory-service";
 import { refreshOnFormChanges } from '../shared/refresh-on-form-changes';
 
@@ -15,7 +15,7 @@ import { refreshOnFormChanges } from '../shared/refresh-on-form-changes';
     templateUrl: './header.component.html',
     styleUrls: ['./header.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [RouterLink, NgOptimizedImage, GeneratedShortUrlFieldComponent, ReactiveFormsModule, FormsModule, SlicePipe]
+    imports: [RouterLink, NgOptimizedImage, GeneratedShortUrlFieldComponent, ReactiveFormsModule, SlicePipe]
 })
 export class HeaderComponent {
   dynamicFormHandlingService = inject(DynamicFormHandlingService);
@@ -23,7 +23,7 @@ export class HeaderComponent {
   chartLoadingService = inject(ChartLoadingService);
   chartExportingService = inject(ChartExportingService);
 
-  urlJson: string | null = null;
+  urlJson = new FormControl('', { nonNullable: true });
   errorMsg = signal<string | null>(null);
 
   constructor() {
@@ -60,12 +60,13 @@ export class HeaderComponent {
       this.errorMsg.set(null);
     }, 4000);
 
-    if (this.urlJson === null || this.urlJson.trim() === '') {
+    const urlJson = this.urlJson.value;
+    if (urlJson.trim() === '') {
       this.errorMsg.set('Missing URL');
       return;
     }
 
-    const tmpData = this.urlJson.split('?json=');
+    const tmpData = urlJson.split('?json=');
     if (tmpData.length !== 2){
       this.errorMsg.set('Invalid URL');
       return;

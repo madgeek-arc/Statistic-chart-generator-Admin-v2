@@ -20,7 +20,7 @@
       <div class="vs-toolbar">
         <div class="vs-search">
           <span class="material-symbols-outlined vs-search-icon">search</span>
-          <input class="vs-search-input" type="text" placeholder="Search views, descriptions..." [(ngModel)]="searchQuery"/>
+          <input class="vs-search-input" type="text" placeholder="Search views, descriptions..." [formControl]="searchControl"/>
         </div>
         <div class="vs-filters">
           @for (tab of filterTabs(); track tab + $index) {

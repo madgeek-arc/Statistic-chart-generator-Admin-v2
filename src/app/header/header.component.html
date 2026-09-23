@@ -75,15 +75,14 @@
                     <div class="uk-margin">
                       <label for="url-input" class="uk-form-label">Or provide url</label>
                       <div class="uk-form-controls">
-                        <textarea class="uk-textarea" id="url-input" rows="4" [(ngModel)]="urlJson"
-                          [ngModelOptions]="{standalone: true}">
+                        <textarea class="uk-textarea" id="url-input" rows="4" [formControl]="urlJson">
                         </textarea>
                         @if (errorMsg()) {
                           <span class="uk-text-danger">{{errorMsg()}}</span>
                         }
                       </div>
                       <div class="uk-flex uk-flex-right uk-margin-small-top" data-uk-tooltip="Input url to load">
-                        <button class="uk-button uk-button-default" (click)="loadFormFromUrl()">Load</button>
+                        <button type="button" class="uk-button uk-button-default" (click)="loadFormFromUrl()">Load</button>
                       </div>
                     </div>
                   </form>

@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, DestroyRef, inject, OnInit, output, signal } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MappingProfilesService, Profile } from "../../services/mapping-profiles-service/mapping-profiles.service";
-import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
+import { takeUntilDestroyed, toSignal } from "@angular/core/rxjs-interop";
 
 type FilterTab = 'All' | string;
 
@@ -11,7 +11,7 @@ type FilterTab = 'All' | string;
   styleUrls: ['./view-selector.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    FormsModule
+    ReactiveFormsModule
   ],
   standalone: true
 })
@@ -22,7 +22,8 @@ export class ViewSelectorComponent implements OnInit {
   profileDetailsChange = output<{ profile: Profile, manualChange: boolean } | null>();
 
   // Signals: the profiles and the selection arrive from the service, and the component is OnPush.
-  searchQuery = signal('');
+  searchControl = new FormControl('', { nonNullable: true });
+  searchQuery = toSignal(this.searchControl.valueChanges, { initialValue: '' });
   activeFilter = signal<FilterTab>('All');
   selectedProfile = signal<Profile | null>(null);
   allProfiles = signal<Profile[]>([]);
