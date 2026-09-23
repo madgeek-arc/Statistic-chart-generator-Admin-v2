@@ -18,13 +18,13 @@ import { CustomiseAppearanceComponent } from './customise-appearance/customise-a
 import { ChartFrameComponent } from '../data-frames/chart-frame/chart-frame.component';
 import { GeneratedShortUrlFieldComponent } from '../data-frames/generated-short-url-field/generated-short-url-field.component';
 import { MatTabGroup, MatTab } from '@angular/material/tabs';
-import { AsyncPipe } from '@angular/common';
+import { AsyncPipe, NgOptimizedImage } from '@angular/common';
 
 @Component({
     selector: 'app-dashboard',
     templateUrl: './dashboard.component.html',
     styleUrl: './dashboard.component.less',
-    imports: [ViewSelectorComponent, CategorySelectorComponent, DataseriesSelectorComponent, NlChatComponent, CustomiseAppearanceComponent, ChartFrameComponent, GeneratedShortUrlFieldComponent, MatTabGroup, MatTab, AsyncPipe]
+    imports: [ViewSelectorComponent, CategorySelectorComponent, DataseriesSelectorComponent, NlChatComponent, CustomiseAppearanceComponent, ChartFrameComponent, GeneratedShortUrlFieldComponent, MatTabGroup, MatTab, AsyncPipe, NgOptimizedImage]
 })
 
 export class DashboardComponent implements OnInit {

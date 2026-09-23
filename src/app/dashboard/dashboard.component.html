@@ -353,7 +353,7 @@
                 <div class="ct-panel">
                   @if (selectedChartDetails) {
                     <div class="ct-preview">
-                      <img [src]="'/assets/' + selectedChartDetails.imageURL" [alt]="selectedChartDetails.name" class="ct-preview-img" />
+                      <img [ngSrc]="'/assets/' + selectedChartDetails.imageURL" width="176" height="112" [alt]="selectedChartDetails.name" class="ct-preview-img uk-width-auto" />
                     </div>
                     <div class="ct-about">
                       <div class="ct-about-header">
