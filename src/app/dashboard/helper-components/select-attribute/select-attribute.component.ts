@@ -6,6 +6,7 @@ import {
 import {
   AfterViewInit,
   ChangeDetectorRef,
+  DestroyRef,
   Component,
   forwardRef,
   Input,
@@ -23,7 +24,8 @@ import {
   NG_VALUE_ACCESSOR
 } from '@angular/forms';
 import { NestedTreeControl } from '@angular/cdk/tree';
-import { takeWhile } from 'rxjs/operators';
+import { filter, take, takeWhile } from 'rxjs/operators';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ChartLoadingService } from "../../../services/chart-loading-service/chart-loading.service";
 import { DynamicTreeDatabase } from "../../../services/dynamic-tree-database/dynamic-tree-database.service";
 import { MatButton, MatIconButton } from '@angular/material/button';
@@ -47,6 +49,7 @@ import { TitleCasePipe } from '@angular/common';
 export class SelectAttributeComponent implements ControlValueAccessor, OnChanges, AfterViewInit {
   private chartLoadingService = inject(ChartLoadingService);
   private cdr = inject(ChangeDetectorRef);
+  private destroyRef = inject(DestroyRef);
   private dynamicTreeDB = inject(DynamicTreeDatabase);
 
   nestedEntityTreeControl: NestedTreeControl<DynamicEntityNode>;
@@ -125,13 +128,10 @@ export class SelectAttributeComponent implements ControlValueAccessor, OnChanges
     if (entity !== this.chosenEntity())
       return;
 
-    // Check if the Data Source is connected and if it is, populate the Tree Root node
-    this.nestedEntityDataSource.connected$.subscribe(
-      connected => {
-        if (connected) {
-          this.populateRootNode(entity);
-        }
-      }
+    // Once the Data Source is connected, populate the Tree Root node. It only ever connects once,
+    // so a single emission is enough and nothing stays subscribed after an entity change.
+    this.nestedEntityDataSource.connected$.pipe(filter(connected => connected), take(1)).subscribe(
+      () => this.populateRootNode(entity)
     );
 
     // Set the field untouched
@@ -140,7 +140,7 @@ export class SelectAttributeComponent implements ControlValueAccessor, OnChanges
   }
 
   private populateRootNode(entity: string) {
-    this.dynamicTreeDB.getRootNode(entity)?.pipe(takeWhile(() => this.chosenEntity() == entity))
+    this.dynamicTreeDB.getRootNode(entity)?.pipe(takeWhile(() => this.chosenEntity() == entity), takeUntilDestroyed(this.destroyRef))
       .subscribe((rootNode: DynamicEntityNode | null) => {
         if (rootNode != null) {
           // Initialise the NestedTree's data

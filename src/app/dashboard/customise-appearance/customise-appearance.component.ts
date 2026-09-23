@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, OnInit, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { FormFactoryService } from "../../services/form-factory-service/form-factory-service";
 import { refreshOnFormChanges } from '../../shared/refresh-on-form-changes';
@@ -17,6 +18,7 @@ import { HighMapsComponent } from './visualisation-options/high-maps/high-maps.c
 
 export class CustomiseAppearanceComponent implements OnInit {
 	private formFactoryService = inject(FormFactoryService);
+	private destroyRef = inject(DestroyRef);
 
 	appearanceForm: FormGroup | null = null;
 
@@ -37,7 +39,7 @@ export class CustomiseAppearanceComponent implements OnInit {
     this.visualisationLibraryList = this.formFactoryService.getFormRoot().get('category.diagram.supportedLibraries').value;
     this.setInitialLibrary();
 
-    this.formFactoryService.getFormRoot().get('category.diagram.supportedLibraries').valueChanges.subscribe({
+    this.formFactoryService.getFormRoot().get('category.diagram.supportedLibraries').valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (value: string[]) => {
         this.visualisationLibraryList = value;
         this.setInitialLibrary();

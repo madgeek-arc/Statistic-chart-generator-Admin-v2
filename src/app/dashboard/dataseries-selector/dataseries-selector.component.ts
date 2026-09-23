@@ -111,7 +111,7 @@ export class DataseriesSelectorComponent implements OnInit {
       this.handleProfileChange(profile);
 		}
 
-		selectedProfile.valueChanges.subscribe((profileName: string) => {
+		selectedProfile.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((profileName: string) => {
 			if (profileName) {
         profile.name = profileName;
         this.handleProfileChange(profile);
