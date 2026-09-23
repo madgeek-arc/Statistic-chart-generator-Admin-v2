@@ -4,7 +4,7 @@ import { ChartLoadingService } from "../services/chart-loading-service/chart-loa
 import { ChartExportingService } from "../services/chart-exporting-service/chart-exporting.service";
 import { UrlMappingService } from "../services/url-mapping-service/url-mapping-service";
 import { RouterLink } from '@angular/router';
-import { NgOptimizedImage, NgClass, SlicePipe } from '@angular/common';
+import { NgOptimizedImage, SlicePipe } from '@angular/common';
 import { GeneratedShortUrlFieldComponent } from '../data-frames/generated-short-url-field/generated-short-url-field.component';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 
@@ -12,7 +12,7 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
     selector: 'app-header',
     templateUrl: './header.component.html',
     styleUrls: ['./header.component.less'],
-    imports: [RouterLink, NgOptimizedImage, NgClass, GeneratedShortUrlFieldComponent, ReactiveFormsModule, FormsModule, SlicePipe]
+    imports: [RouterLink, NgOptimizedImage, GeneratedShortUrlFieldComponent, ReactiveFormsModule, FormsModule, SlicePipe]
 })
 export class HeaderComponent {
   dynamicFormHandlingService = inject(DynamicFormHandlingService);

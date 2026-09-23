@@ -252,14 +252,14 @@
           @for (dataSeriesColor of getSeriesColors(highChartsForm()); track dataSeriesColor; let i = $index) {
             <div class="uk-flex uk-flex-middle uk-grid-small" uk-grid>
               <div class="uk-width-expand" input type="color" [formInput]="highChartsForm().get('dataSeriesColorArray').get(i.toString())"></div>
-              <a (click)="removeSeriesColor(highChartsForm(), i)" class="uk-link-reset">
+              <a class="uk-link-reset" role="button" aria-label="Remove series color" tabindex="0" (keydown.enter)="$any($event.currentTarget).click()" (keydown.space)="$event.preventDefault(); $any($event.currentTarget).click()" (click)="removeSeriesColor(highChartsForm(), i)">
                 <span class="material-symbols-outlined uk-margin-small-left">close</span>
               </a>
             </div>
           }
 
           <div class="uk-margin-top">
-            <a class="uk-link uk-flex uk-flex-middle" (click)="addSeriesColor(highChartsForm())">
+            <a class="uk-link uk-flex uk-flex-middle" role="button" tabindex="0" (keydown.enter)="$any($event.currentTarget).click()" (keydown.space)="$event.preventDefault(); $any($event.currentTarget).click()" (click)="addSeriesColor(highChartsForm())">
               <span class="material-symbols-outlined">add</span>
               <span>Add Series Color</span>
             </a>

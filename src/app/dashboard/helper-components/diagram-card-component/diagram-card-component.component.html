@@ -1,4 +1,4 @@
-<div class="dc-card" [class.dc-card--selected]="isSelected()" (click)="categorySelect()">
+<div class="dc-card" [class.dc-card--selected]="isSelected()" role="button" [attr.aria-pressed]="isSelected()" tabindex="0" (keydown.enter)="$any($event.currentTarget).click()" (keydown.space)="$event.preventDefault(); $any($event.currentTarget).click()" (click)="categorySelect()">
   <div class="dc-card-preview">
     <img [src]="'/assets/' + diagram().imageURL" [alt]="diagram().name" />
     @if (isSelected()) {

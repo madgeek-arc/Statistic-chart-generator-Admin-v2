@@ -34,6 +34,7 @@
       <div class="vs-grid">
         @for (profile of filteredProfiles(); track profile.name + $index) {
           <div class="vs-card" [class.vs-card--selected]="selectedProfile()?.name === profile.name"
+            role="button" [attr.aria-pressed]="selectedProfile()?.name === profile.name" tabindex="0" (keydown.enter)="$any($event.currentTarget).click()" (keydown.space)="$event.preventDefault(); $any($event.currentTarget).click()"
             (click)="selectProfile(profile)">
             <div class="vs-card-top">
               <div class="vs-avatar" [style.background]="getAvatarColor(profile.name)">

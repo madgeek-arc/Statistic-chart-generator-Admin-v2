@@ -49,7 +49,7 @@
               <div>
                 @if (field !== null) {
                   <div>
-                    <a class="mat-tree-node item" (click)="nodeSelected(field, node)" style="padding-inline-start: 1em">
+                    <a class="mat-tree-node item" role="button" tabindex="0" (keydown.enter)="$any($event.currentTarget).click()" (keydown.space)="$event.preventDefault(); $any($event.currentTarget).click()" (click)="nodeSelected(field, node)" style="padding-inline-start: 1em">
                       {{ field.name | titlecase }}
                     </a>
                     <div class="ui fitted divider"></div>

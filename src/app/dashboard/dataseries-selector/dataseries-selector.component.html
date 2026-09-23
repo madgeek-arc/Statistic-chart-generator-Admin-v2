@@ -23,7 +23,7 @@
               <div #element data-uk-dropdown="mode: click; pos: bottom-left; offset: 5; delay-hide: 0; container: body">
                 <ul class="uk-nav uk-dropdown-nav">
                   <li>
-                    <a (click)="editDataseriesTitle(i); hide(element)">
+                    <a role="button" tabindex="0" (keydown.enter)="$any($event.currentTarget).click()" (keydown.space)="$event.preventDefault(); $any($event.currentTarget).click()" (click)="editDataseriesTitle(i); hide(element)">
                       <div class="uk-flex uk-flex-middle">
                         <mat-icon style="margin: 0;">edit</mat-icon>
                         <span class="uk-margin-small-left uk-width-expand">Edit</span>
@@ -31,7 +31,7 @@
                     </a>
                   </li>
                   <li>
-                    <a (click)="duplicateDataseries(i); hide(element)">
+                    <a role="button" tabindex="0" (keydown.enter)="$any($event.currentTarget).click()" (keydown.space)="$event.preventDefault(); $any($event.currentTarget).click()" (click)="duplicateDataseries(i); hide(element)">
                       <div class="uk-flex uk-flex-middle">
                         <mat-icon style="margin: 0;">content_copy</mat-icon>
                         <span class="uk-margin-small-left uk-width-expand">Duplicate</span>
@@ -42,7 +42,7 @@
                     <li class="uk-nav-divider"></li>
                     @if (form.controls.indexOf(ctrl) !== 0) {
                       <li>
-                        <a (click)="move(-1, i); hide(element)">
+                        <a role="button" tabindex="0" (keydown.enter)="$any($event.currentTarget).click()" (keydown.space)="$event.preventDefault(); $any($event.currentTarget).click()" (click)="move(-1, i); hide(element)">
                           <div class="uk-flex uk-flex-middle">
                             <mat-icon style="margin: 0;">arrow_back</mat-icon>
                             <span class="uk-margin-small-left uk-width-expand">Move left</span>
@@ -52,7 +52,7 @@
                     }
                     @if (form.controls.indexOf(ctrl) !== form.controls.length - 1) {
                       <li>
-                        <a (click)="move(+1, i); hide(element)">
+                        <a role="button" tabindex="0" (keydown.enter)="$any($event.currentTarget).click()" (keydown.space)="$event.preventDefault(); $any($event.currentTarget).click()" (click)="move(+1, i); hide(element)">
                           <div class="uk-flex uk-flex-middle">
                             <mat-icon style="margin: 0;">arrow_forward</mat-icon>
                             <span class="uk-margin-small-left uk-width-expand">Move right</span>
@@ -63,7 +63,7 @@
                   }
                   <li class="uk-nav-divider"></li>
                   <li>
-                    <a (click)="removeDataseries(i); hide(element)">
+                    <a role="button" tabindex="0" (keydown.enter)="$any($event.currentTarget).click()" (keydown.space)="$event.preventDefault(); $any($event.currentTarget).click()" (click)="removeDataseries(i); hide(element)">
                       <div class="uk-flex uk-flex-middle">
                         <mat-icon style="margin: 0;">delete_forever</mat-icon>
                         <span class="uk-margin-small-left uk-width-expand">Delete</span>
@@ -77,7 +77,7 @@
         </li>
       }
       <li>
-        <a class="uk-link uk-flex uk-flex-middle" (click)="addDataseries()">
+        <a class="uk-link uk-flex uk-flex-middle" role="button" tabindex="0" (keydown.enter)="$any($event.currentTarget).click()" (keydown.space)="$event.preventDefault(); $any($event.currentTarget).click()" (click)="addDataseries()">
           <span class="material-symbols-outlined">add</span>
           <span>Add Dataseries</span>
         </a>
@@ -142,7 +142,7 @@
                         }
                         @if (!hasTwoEntityFields) {
                           <div>
-                            <a class="uk-link uk-flex uk-flex-middle" (click)="addEntityField(ctrl)">
+                            <a class="uk-link uk-flex uk-flex-middle" role="button" tabindex="0" (keydown.enter)="$any($event.currentTarget).click()" (keydown.space)="$event.preventDefault(); $any($event.currentTarget).click()" (click)="addEntityField(ctrl)">
                               <span class="material-symbols-outlined">add</span>
                               <span>Add Group By</span>
                             </a>
@@ -205,7 +205,7 @@
                                                 </button>
                                               </div>
                                             }
-                                            <a class="uk-link uk-flex uk-flex-middle" (click)="addFilterValue(group)">
+                                            <a class="uk-link uk-flex uk-flex-middle" role="button" tabindex="0" (keydown.enter)="$any($event.currentTarget).click()" (keydown.space)="$event.preventDefault(); $any($event.currentTarget).click()" (click)="addFilterValue(group)">
                                               <span class="material-symbols-outlined">add</span>
                                               <span>Add value</span>
                                             </a>
@@ -221,7 +221,7 @@
 
                                   </div>
                                 }
-                                <a class="uk-link uk-flex uk-flex-middle" (click)="addFilterRule(filter)">
+                                <a class="uk-link uk-flex uk-flex-middle" role="button" tabindex="0" (keydown.enter)="$any($event.currentTarget).click()" (keydown.space)="$event.preventDefault(); $any($event.currentTarget).click()" (click)="addFilterRule(filter)">
                                   <span class="material-symbols-outlined">add</span>
                                   <span>Add Filter Rule</span>
                                 </a>
@@ -235,7 +235,7 @@
                       }
 
                       <div>
-                        <a class="uk-link uk-flex uk-flex-middle" (click)="addFilter(ctrl)">
+                        <a class="uk-link uk-flex uk-flex-middle" role="button" tabindex="0" (keydown.enter)="$any($event.currentTarget).click()" (keydown.space)="$event.preventDefault(); $any($event.currentTarget).click()" (click)="addFilter(ctrl)">
                           <span class="material-symbols-outlined">add</span>
                           <span>Add Filter</span>
                         </a>

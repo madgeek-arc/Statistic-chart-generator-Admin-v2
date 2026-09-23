@@ -15,7 +15,10 @@
           <div class="uk-navbar-right">
             <ul class="uk-navbar-nav">
               <li class="uk-animation-fade">
-                <a class="uk-button" [ngClass]="{'uk-disabled': !dynamicFormHandlingService.isFormValid}" (click)="share()">
+                <a class="uk-button" [class.uk-disabled]="!dynamicFormHandlingService.isFormValid" role="button"
+                   [attr.aria-disabled]="!dynamicFormHandlingService.isFormValid" [attr.tabindex]="dynamicFormHandlingService.isFormValid ? 0 : -1"
+                   (keydown.enter)="$any($event.currentTarget).click()" (keydown.space)="$event.preventDefault(); $any($event.currentTarget).click()"
+                   (click)="share()">
                   Share
                 </a>
                 <div data-uk-dropdown="mode: click">
@@ -87,7 +90,7 @@
                 </div>
               </li>
               <li class="uk-animation-fade">
-                <a class="uk-button" (click)="saveChart()">Save</a>
+                <a class="uk-button" role="button" tabindex="0" (keydown.enter)="$any($event.currentTarget).click()" (keydown.space)="$event.preventDefault(); $any($event.currentTarget).click()" (click)="saveChart()">Save</a>
               </li>
             </ul>
           </div>

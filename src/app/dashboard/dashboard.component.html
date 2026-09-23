@@ -3,7 +3,7 @@
   [class.sidebar_mini]="!open">
   <div id="sidebar_main" uk-sticky="end: .sidebar_main_swipe;" offset="80">
     <div sidebar-content="">
-      <div id="sidebar_toggle" (click)="toggleSidebar()"></div>
+      <div id="sidebar_toggle" role="button" aria-label="Toggle sidebar" tabindex="0" (keydown.enter)="$any($event.currentTarget).click()" (keydown.space)="$event.preventDefault(); $any($event.currentTarget).click()" (click)="toggleSidebar()"></div>
       <div id="sidebar_content">
         <div class="menu_section uk-margin-top" style="min-height: 30vh;">
 
@@ -15,7 +15,7 @@
             <li class="uk-parent nav-step"
                 [class.nav-step--active]="currentStep === 0"
                 [class.nav-step--done]="currentStep > 0">
-              <a class="uk-flex uk-flex-middle nav-step-link" role="button" (click)="onNavClick($event, 0)">
+              <a class="uk-flex uk-flex-middle nav-step-link" role="button" tabindex="0" (keydown.enter)="$any($event.currentTarget).click()" (keydown.space)="$event.preventDefault(); $any($event.currentTarget).click()" (click)="onNavClick($event, 0)">
                 <div class="nav-step-icon uk-width-auto">
                   @if (currentStep > 0) {
                     <span class="material-symbols-outlined nav-icon-check">check_circle</span>
@@ -39,7 +39,7 @@
                 [class.nav-step--active]="currentStep === 1"
                 [class.nav-step--done]="currentStep > 1"
                 [class.nav-step--locked]="!view.get('profile')?.value">
-              <a class="uk-flex uk-flex-middle nav-step-link" role="button" (click)="onNavClick($event, 1)">
+              <a class="uk-flex uk-flex-middle nav-step-link" role="button" tabindex="0" (keydown.enter)="$any($event.currentTarget).click()" (keydown.space)="$event.preventDefault(); $any($event.currentTarget).click()" (click)="onNavClick($event, 1)">
                 <div class="nav-step-icon uk-width-auto">
                   @if (currentStep > 1) {
                     <span class="material-symbols-outlined nav-icon-check">check_circle</span>
@@ -66,7 +66,7 @@
                 [class.nav-step--active]="currentStep === 2"
                 [class.nav-step--done]="currentStep > 2"
                 [class.nav-step--locked]="!hasDataAndDiagramType">
-              <a class="uk-flex uk-flex-middle nav-step-link" role="button" (click)="onNavClick($event, 2)">
+              <a class="uk-flex uk-flex-middle nav-step-link" role="button" tabindex="0" (keydown.enter)="$any($event.currentTarget).click()" (keydown.space)="$event.preventDefault(); $any($event.currentTarget).click()" (click)="onNavClick($event, 2)">
                 <div class="nav-step-icon uk-width-auto">
                   @if (currentStep > 2) {
                     <span class="material-symbols-outlined nav-icon-check">check_circle</span>
@@ -88,7 +88,7 @@
             <li class="uk-parent nav-step"
                 [class.nav-step--active]="currentStep === 3"
                 [class.nav-step--locked]="!hasDataAndDiagramType">
-              <a class="uk-flex uk-flex-middle nav-step-link" role="button" (click)="onNavClick($event, 3)">
+              <a class="uk-flex uk-flex-middle nav-step-link" role="button" tabindex="0" (keydown.enter)="$any($event.currentTarget).click()" (keydown.space)="$event.preventDefault(); $any($event.currentTarget).click()" (click)="onNavClick($event, 3)">
                 <div class="nav-step-icon uk-width-auto">
                   <span class="material-symbols-outlined nav-icon">tune</span>
                 </div>

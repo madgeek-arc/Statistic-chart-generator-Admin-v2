@@ -127,12 +127,12 @@
           @for (dataSeriesColor of getSeriesColors(eChartsForm()); track dataSeriesColor; let i = $index) {
             <div class="uk-flex uk-flex-middle uk-grid-small" uk-grid>
               <div class="uk-width-expand" input type="color" [formInput]="eChartsForm().get('dataSeriesColorArray').get(i.toString())"></div>
-              <a (click)="removeSeriesColor(eChartsForm(), i)" class="uk-link-reset"><span class="material-symbols-outlined uk-margin-small-left">close</span></a>
+              <a class="uk-link-reset" role="button" aria-label="Remove series color" tabindex="0" (keydown.enter)="$any($event.currentTarget).click()" (keydown.space)="$event.preventDefault(); $any($event.currentTarget).click()" (click)="removeSeriesColor(eChartsForm(), i)"><span class="material-symbols-outlined uk-margin-small-left">close</span></a>
             </div>
           }
 
           <div class="uk-margin-top">
-            <a class="uk-link uk-flex uk-flex-middle" (click)="addSeriesColor(eChartsForm())">
+            <a class="uk-link uk-flex uk-flex-middle" role="button" tabindex="0" (keydown.enter)="$any($event.currentTarget).click()" (keydown.space)="$event.preventDefault(); $any($event.currentTarget).click()" (click)="addSeriesColor(eChartsForm())">
               <span class="material-symbols-outlined">add</span>
               <span>Add Series Color</span>
             </a>
