@@ -1,6 +1,6 @@
 import {
   AfterViewInit,
-  ChangeDetectorRef,
+  ChangeDetectionStrategy,
   Component,
   ElementRef,
   OnChanges,
@@ -8,9 +8,10 @@ import {
   SimpleChanges,
   ViewChild,
   inject,
-  input
+  input,
+  signal
 } from '@angular/core';
-import { fromEvent, merge, Observable, of, Subscription } from 'rxjs';
+import { fromEvent, merge, Subscription } from 'rxjs';
 import { debounceTime, distinctUntilChanged, map, switchAll, tap } from 'rxjs/operators';
 import {
   AutocompleteResponse,
@@ -19,15 +20,14 @@ import {
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocomplete, MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import { MatOption } from '@angular/material/core';
-import { AsyncPipe } from "@angular/common";
 
 @Component({
     selector: 'autocomplete-input-field',
     templateUrl: './autocomplete-input-field.component.html',
     styleUrls: ['./autocomplete-input-field.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [
         ReactiveFormsModule,
-        AsyncPipe,
         MatAutocomplete,
         MatAutocompleteTrigger,
         MatOption
@@ -36,7 +36,6 @@ import { AsyncPipe } from "@angular/common";
 
 export class AutocompleteInputFieldComponent implements AfterViewInit, OnChanges, OnDestroy {
   private fieldAutocompleteService = inject(FieldAutocompleteService);
-  private cdr = inject(ChangeDetectorRef);
 
   // The FormGroup of the current filter
   readonly inputFormGroup = input<FormControl>(undefined);
@@ -47,26 +46,21 @@ export class AutocompleteInputFieldComponent implements AfterViewInit, OnChanges
   // Trigger directive on the input, used to open / reposition the panel once async options load
   @ViewChild(MatAutocompleteTrigger) private autoTrigger?: MatAutocompleteTrigger;
 
-  possibleFieldValues: Observable<string[] | null>;
-  numberOfpossibleFieldValues: number;
-  loading: boolean;
-  focused = false;
+  // The values of the last lookup; null when the field has too many to list
+  readonly possibleFieldValues = signal<string[] | null>([]);
+  // How many values the field has; -1 when the lookup failed
+  readonly numberOfpossibleFieldValues = signal(0);
+  readonly loading = signal(false);
+  readonly focused = signal(false);
   // True once at least one lookup has returned, so "No results" is not shown before the first search
-  searched = false;
+  readonly searched = signal(false);
   // Keeps the mat-autocomplete panel closed (matAutocompleteDisabled) until the
   // first results for the current field are in, so the CDK overlay is positioned
   // once against the real option list instead of the empty list it would see if
   // it opened on focus. Reset when the field changes.
-  panelReady = false;
-  typeToSearchDelay: number;
+  readonly panelReady = signal(false);
+  readonly typeToSearchDelay = 250;
   autocompleteSubscription: Subscription;
-
-  constructor() {
-    this.possibleFieldValues = of([]);
-    this.typeToSearchDelay = 250;
-    this.loading = false;
-    this.numberOfpossibleFieldValues = 0;
-  }
 
   ngAfterViewInit() {
     this.setupAutocompleteInputField();
@@ -77,14 +71,13 @@ export class AutocompleteInputFieldComponent implements AfterViewInit, OnChanges
     // belong to the old field. Rebuild the stream so a fresh distinctUntilChanged
     // does not swallow the next (identical, usually empty) focus query.
     if (changes['filterfield'] && !changes['filterfield'].firstChange && this.valueInput) {
-      this.possibleFieldValues = of([]);
-      this.numberOfpossibleFieldValues = 0;
-      this.searched = false;
-      this.loading = false;
-      this.panelReady = false;
+      this.possibleFieldValues.set([]);
+      this.numberOfpossibleFieldValues.set(0);
+      this.searched.set(false);
+      this.loading.set(false);
+      this.panelReady.set(false);
       this.autocompleteSubscription?.unsubscribe();
       this.setupAutocompleteInputField();
-      this.cdr.markForCheck();
     }
   }
 
@@ -107,36 +100,34 @@ export class AutocompleteInputFieldComponent implements AfterViewInit, OnChanges
 
     this.autocompleteSubscription = merge(focus$, keyup$).pipe(
       distinctUntilChanged(),
-      tap(() => {this.possibleFieldValues = of([]); this.loading = true; this.cdr.markForCheck(); } ),
+      tap(() => { this.possibleFieldValues.set([]); this.loading.set(true); }),
       map((queryText: string) => this.fieldAutocompleteService.getAutocompleteFields(
         this.filterfield(), queryText.length ? queryText : null)),
       switchAll()).subscribe({
         next: (result: AutocompleteResponse | null) => {
-          const firstOpen = !this.panelReady;
+          const firstOpen = !this.panelReady();
           // HttpClient yields `null` for an empty response body: treat it as no matches.
           // A response that has a count but no `values` means the field has too many
           // distinct values; normalise it to null so the template's `=== null` branch
           // ("type to narrow down") handles it instead of dereferencing undefined.
-          this.possibleFieldValues = of(result ? (result.values ?? null) : []);
-          this.numberOfpossibleFieldValues = result?.count ?? 0;
-          this.loading = false;
-          this.searched = true;
-          this.panelReady = true;
-          this.cdr.markForCheck();
+          this.possibleFieldValues.set(result ? (result.values ?? null) : []);
+          this.numberOfpossibleFieldValues.set(result?.count ?? 0);
+          this.loading.set(false);
+          this.searched.set(true);
+          this.panelReady.set(true);
           this.revealPanel(firstOpen);
         },
         error: (err: unknown) => {
           console.error(err);
-          this.loading = false;
-          this.searched = true;
-          this.numberOfpossibleFieldValues = -1;
-          const firstOpen = !this.panelReady;
-          this.panelReady = true;
-          this.cdr.markForCheck();
+          this.loading.set(false);
+          this.searched.set(true);
+          this.numberOfpossibleFieldValues.set(-1);
+          const firstOpen = !this.panelReady();
+          this.panelReady.set(true);
           this.revealPanel(firstOpen);
         },
         complete: () => {
-          this.loading = false;
+          this.loading.set(false);
         }
       });
   }

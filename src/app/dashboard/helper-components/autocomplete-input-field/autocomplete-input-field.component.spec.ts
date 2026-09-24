@@ -1,6 +1,9 @@
+import { Component } from '@angular/core';
 import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { FormControl } from '@angular/forms';
 import { of, throwError } from 'rxjs';
+import { delay } from 'rxjs/operators';
+import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
 
 import { AutocompleteInputFieldComponent } from './autocomplete-input-field.component';
 import {
@@ -34,11 +37,7 @@ describe('AutocompleteInputFieldComponent', () => {
     tick(component.typeToSearchDelay);
   }
 
-  function possibleValues(): string[] | null | undefined {
-    let values: string[] | null | undefined;
-    component.possibleFieldValues.subscribe(v => values = v);
-    return values;
-  }
+  const possibleValues = () => component.possibleFieldValues();
 
   // An empty backend body reaches the component as `null`, and reading
   // `result.count` used to throw before `loading` was reset.
@@ -48,8 +47,8 @@ describe('AutocompleteInputFieldComponent', () => {
     type('ela');
 
     expect(possibleValues()).toEqual([]);
-    expect(component.numberOfpossibleFieldValues).toBe(0);
-    expect(component.loading).toBeFalse();
+    expect(component.numberOfpossibleFieldValues()).toBe(0);
+    expect(component.loading()).toBeFalse();
   }));
 
   it('exposes the values returned by the backend', fakeAsync(() => {
@@ -59,8 +58,8 @@ describe('AutocompleteInputFieldComponent', () => {
     type('e');
 
     expect(possibleValues()).toEqual(['Zenodo', 'Elsevier']);
-    expect(component.numberOfpossibleFieldValues).toBe(2);
-    expect(component.loading).toBeFalse();
+    expect(component.numberOfpossibleFieldValues()).toBe(2);
+    expect(component.loading()).toBeFalse();
   }));
 
   // The endpoint omits `values` for high-cardinality fields; the template must
@@ -71,8 +70,8 @@ describe('AutocompleteInputFieldComponent', () => {
     type('20');
 
     expect(possibleValues()).toBeNull();
-    expect(component.numberOfpossibleFieldValues).toBe(121);
-    expect(component.loading).toBeFalse();
+    expect(component.numberOfpossibleFieldValues()).toBe(121);
+    expect(component.loading()).toBeFalse();
   }));
 
   // Focusing the box fetches the available values straight away (empty query).
@@ -92,22 +91,22 @@ describe('AutocompleteInputFieldComponent', () => {
 
     type('ela');
 
-    expect(component.numberOfpossibleFieldValues).toBe(-1);
-    expect(component.loading).toBeFalse();
-    expect(component.searched).toBeTrue();
+    expect(component.numberOfpossibleFieldValues()).toBe(-1);
+    expect(component.loading()).toBeFalse();
+    expect(component.searched()).toBeTrue();
   }));
 
   // Values fetched for the previous field must not leak into the new one.
   it('resets its state and searches the new field when the filter field changes', fakeAsync(() => {
     getAutocompleteFields.and.returnValue(of({ count: 1, values: ['Zenodo'] }));
     type('z');
-    expect(component.searched).toBeTrue();
+    expect(component.searched()).toBeTrue();
 
     fixture.componentRef.setInput('filterfield', 'dataset.year');
     fixture.detectChanges();
 
-    expect(component.searched).toBeFalse();
-    expect(component.panelReady).toBeFalse();
+    expect(component.searched()).toBeFalse();
+    expect(component.panelReady()).toBeFalse();
     expect(possibleValues()).toEqual([]);
 
     getAutocompleteFields.calls.reset();
@@ -116,6 +115,87 @@ describe('AutocompleteInputFieldComponent', () => {
 
     expect(getAutocompleteFields).toHaveBeenCalledWith('dataset.year', '2');
   }));
+});
+
+// What the user sees, with the field inside a parent as on the dashboard. The lookups finish
+// outside any event in this component, and the control can be disabled from elsewhere in the
+// form, so the field must refresh its own view.
+@Component({
+  template: `<autocomplete-input-field [inputFormGroup]="control" filterfield="dataset.publisher"/>`,
+  imports: [AutocompleteInputFieldComponent]
+})
+class HostComponent {
+  control = new FormControl('');
+}
+
+describe('AutocompleteInputFieldComponent rendered', () => {
+  let fixture: ComponentFixture<HostComponent>;
+  let getAutocompleteFields: jasmine.Spy;
+
+  beforeEach(() => {
+    getAutocompleteFields = jasmine.createSpy('getAutocompleteFields');
+    TestBed.configureTestingModule({
+      imports: [HostComponent],
+      providers: [{ provide: FieldAutocompleteService, useValue: { getAutocompleteFields } }]
+    });
+    fixture = TestBed.createComponent(HostComponent);
+    fixture.detectChanges();
+  });
+
+  const input = (): HTMLInputElement => fixture.nativeElement.querySelector('input');
+  const panelText = () => document.querySelector('.mat-mdc-autocomplete-panel')?.textContent ?? '';
+
+  // Answers arrive after the lookup starts, as over HTTP.
+  const respond = (response: AutocompleteResponse) =>
+    getAutocompleteFields.and.returnValue(of(response).pipe(delay(100)));
+
+  function type(text: string): void {
+    input().value = text;
+    input().dispatchEvent(new KeyboardEvent('keyup'));
+    tick(250);
+    fixture.detectChanges();
+    tick(100);
+    fixture.detectChanges();
+  }
+
+  const openPanel = () => {
+    fixture.debugElement.query(el => !!el.injector.get(MatAutocompleteTrigger, null)).injector
+      .get(MatAutocompleteTrigger).openPanel();
+    fixture.detectChanges();
+  };
+
+  it('lists the values of each lookup in the open panel', fakeAsync(() => {
+    respond({ count: 2, values: ['Zenodo', 'Elsevier'] });
+    type('e');
+    openPanel();
+    expect(panelText()).toContain('Zenodo');
+
+    respond({ count: 1, values: ['Springer'] });
+    type('sp');
+
+    expect(panelText()).toContain('Springer');
+    expect(panelText()).not.toContain('Zenodo');
+    tick();
+  }));
+
+  it('says so when a field has too many values to list', fakeAsync(() => {
+    respond({ count: 121 } as unknown as AutocompleteResponse);
+    type('2');
+    openPanel();
+
+    expect(panelText()).toContain('Too many values');
+    tick();
+  }));
+
+  it('greys out when its control is disabled elsewhere in the form', () => {
+    const wrapper = (): HTMLElement => fixture.nativeElement.querySelector('.input-wrapper');
+    expect(wrapper().classList).not.toContain('disabled');
+
+    fixture.componentInstance.control.disable();
+    fixture.detectChanges();
+
+    expect(wrapper().classList).toContain('disabled');
+  });
 });
 
 describe('AutocompleteInputFieldComponent teardown', () => {
