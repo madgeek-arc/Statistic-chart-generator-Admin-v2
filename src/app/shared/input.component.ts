@@ -1,27 +1,24 @@
 import {
   AfterViewInit,
+  ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
   ElementRef,
-  Input,
   OnChanges,
   OnDestroy,
-  OnInit,
-  QueryList,
   SimpleChanges,
-  ViewChild,
-  ViewChildren,
+  computed,
   inject,
   input,
-  output
+  output,
+  signal,
+  viewChild,
+  viewChildren
 } from '@angular/core';
-import {
-  AbstractControl,
-  ReactiveFormsModule,
-  UntypedFormControl
-} from '@angular/forms';
+import { AbstractControl, FormControl, ReactiveFormsModule } from '@angular/forms';
 import { Subscription } from 'rxjs';
-import { NgClass } from '@angular/common';
+
+import { refreshOnFormChanges } from './refresh-on-form-changes';
 
 // A select with more than six options becomes an autocomplete.
 export type InputType =
@@ -35,7 +32,7 @@ export type InputType =
 export interface Option {
   icon?: string;
   iconClass?: string;
-  value: any;
+  value: unknown;
   label: string;
   tooltip?: string;
   disabled?: boolean;
@@ -48,150 +45,118 @@ export interface Placeholder {
   tooltip?: string;
 }
 
-declare let UIkit: any;
+declare const UIkit: { dropdown(element: HTMLElement): { show(): void; hide(): void } };
 
 /**
  * Adapted from OpenAIRE's shared input, keeping only the field types this app uses.
  */
 @Component({
     selector: '[input]',
+    changeDetection: ChangeDetectionStrategy.OnPush,
     host: {
         '(window:keydown.arrowUp)': 'arrowUp($event)',
         '(window:keydown.arrowDown)': 'arrowDown($event)',
         '(window:keydown.enter)': 'enter($event)',
         '(document:click)': 'click($event)',
-        '(window:keydown.escape)': 'esc($event)'
+        '(window:keydown.escape)': 'esc()'
     },
-    imports: [NgClass, ReactiveFormsModule],
+    imports: [ReactiveFormsModule],
     template: `
-    @if (formControl) {
+    @if (control(); as control) {
       <div [id]="id">
-        <div class="input-wrapper" [class.disabled]="formControl.disabled" [class.opened]="opened"
-          [class.focused]="focused" [ngClass]="inputClass()" [class.hint]="hint"
-          [class.active]="!focused && (formAsControl?.value || formAsControl?.value === 0 || selectable || getLabel(formAsControl?.value))"
-          [class.danger]="(formControl.invalid && (formControl.touched || !!searchControl?.touched)) || (!!searchControl?.invalid && !!searchControl?.touched)">
-          <div #inputBox class="input-box" [class.select]="selectable"
-            [class.static]="placeholderInfo?.static">
-            @if (!placeholderInfo?.static && placeholderInfo?.label) {
+        <div class="input-wrapper flat" [class.disabled]="control.disabled" [class.opened]="opened()"
+          [class.focused]="focused()" [class.hint]="hint()"
+          [class.active]="!focused() && (control.value || control.value === 0 || isSelectable() || getLabel(control.value))"
+          [class.danger]="(control.invalid && (control.touched || searchControl.touched)) || (searchControl.invalid && searchControl.touched)">
+          <div #inputBox class="input-box" [class.select]="isSelectable()"
+            [class.static]="placeholderInfo().static">
+            @if (!placeholderInfo().static && placeholderInfo().label) {
               <div class="placeholder">
-                <label>{{ placeholderInfo.label }} @if (required) {
+                <label>{{ placeholderInfo().label }} @if (required()) {
                   <sup>*</sup>
                 }</label>
               </div>
             }
             <div class="uk-flex uk-flex-middle"
-               [attr.uk-tooltip]="placeholderInfo.tooltip?('title: ' + placeholderInfo.tooltip + '; delay: 500; pos: bottom-left'):
-                       ((tooltip && !focused && (formControl.value || hint || placeholderInfo?.label))?
-                       ('title: ' + (formControl.value ?getTooltip(formControl.value):(hint?hint:placeholderInfo?.label)) + '; delay: 500; pos: bottom-left'):null)">
-              @if (type === 'text' || type === 'URL') {
+               [attr.uk-tooltip]="placeholderInfo().tooltip?('title: ' + placeholderInfo().tooltip + '; delay: 500; pos: bottom-left'):
+                       ((tooltip() && !focused() && (control.value || hint() || placeholderInfo().label))?
+                       ('title: ' + (control.value ?getTooltip(control.value):(hint()?hint():placeholderInfo().label)) + '; delay: 500; pos: bottom-left'):null)">
+              @if (kind() === 'text' || kind() === 'URL') {
                 <input #input class="input"
-                  [attr.placeholder]="placeholderInfo?.static?placeholderInfo.label:hint"
-                  type="text" [formControl]="formAsControl"
-                  [class.uk-text-truncate]="!focused">
+                  [attr.placeholder]="placeholderInfo().static?placeholderInfo().label:hint()"
+                  type="text" [formControl]="control"
+                  [class.uk-text-truncate]="!focused()">
               }
-              @if (type === 'number') {
+              @if (kind() === 'number') {
                 <input #input class="input" type="number"
-                  [attr.placeholder]="placeholderInfo?.static?placeholderInfo.label:hint"
-                  [formControl]="formAsControl"
-                  [class.uk-text-truncate]="!focused">
+                  [attr.placeholder]="placeholderInfo().static?placeholderInfo().label:hint()"
+                  [formControl]="control"
+                  [class.uk-text-truncate]="!focused()">
               }
-              @if (type === 'color') {
+              @if (kind() === 'color') {
                 <input #input class="input" type="color"
-                  [attr.placeholder]="placeholderInfo?.static?placeholderInfo.label:hint"
-                  [formControl]="formAsControl"
-                  [class.uk-text-truncate]="!focused">
+                  [attr.placeholder]="placeholderInfo().static?placeholderInfo().label:hint()"
+                  [formControl]="control"
+                  [class.uk-text-truncate]="!focused()">
               }
-              @if (type === 'select') {
-                @if (placeholderInfo?.static) {
-                  @if (!getLabel(formControl.value)) {
-                    <div
-                      class="input placeholder uk-width-expand uk-text-truncate"
-                      [class.uk-disabled]="formControl.disabled">{{ placeholderInfo.label }}
-                    </div>
-                  }
-                  @if (getLabel(formControl.value)) {
-                    <div
-                      class="input uk-width-expand uk-text-truncate"
-                      [class.uk-disabled]="formControl.disabled">{{ getLabel(formControl.value) }}
-                    </div>
-                  }
-                }
-                @if (!placeholderInfo?.static) {
-                  @if (!getLabel(formControl.value)) {
-                    <div
-                      class="input uk-width-expand uk-text-truncate"
-                      [class.uk-disabled]="formControl.disabled">{{ noValueSelected() }}
-                    </div>
-                  }
-                  @if (getLabel(formControl.value)) {
-                    <div
-                      class="input uk-width-expand uk-text-truncate"
-                      [class.uk-disabled]="formControl.disabled">{{ getLabel(formControl.value) }}
-                    </div>
-                  }
+              @if (kind() === 'select') {
+                @if (!getLabel(control.value)) {
+                  <div
+                    class="input uk-width-expand uk-text-truncate"
+                    [class.placeholder]="placeholderInfo().static"
+                    [class.uk-disabled]="control.disabled">{{ placeholderInfo().static ? placeholderInfo().label : noValueSelected() }}
+                  </div>
+                } @else {
+                  <div
+                    class="input uk-width-expand uk-text-truncate"
+                    [class.uk-disabled]="control.disabled">{{ getLabel(control.value) }}
+                  </div>
                 }
               }
-              @if (type === 'autocomplete') {
-                @if (focused) {
-                  <input [attr.placeholder]="placeholderInfo?.static?placeholderInfo.label:hint"
+              @if (kind() === 'autocomplete') {
+                @if (focused()) {
+                  <input [attr.placeholder]="placeholderInfo().static?placeholderInfo().label:hint()"
                     #searchInput class="input" [formControl]="searchControl"
-                    [class.uk-text-truncate]="!focused">
-                }
-                @if (!focused && !selectable) {
-                  @if (!getLabel(formControl.value)) {
-                    <div
-                      class="input placeholder uk-text-truncate"
-                      [class.uk-disabled]="formControl.disabled">{{ placeholderInfo?.static ? placeholderInfo.label : getLabel(formAsControl.value) }}
-                    </div>
-                  }
-                  @if (getLabel(formControl.value)) {
-                    <div
-                      class="input uk-text-truncate"
-                      [class.uk-disabled]="formControl.disabled">{{ getLabel(formAsControl.value) }}
-                    </div>
-                  }
-                }
-                @if (!focused && selectable) {
-                  @if (!getLabel(formControl.value)) {
-                    <div class="input uk-text-truncate"
-                      [class.uk-disabled]="formControl.disabled">{{ noValueSelected() }}
-                    </div>
-                  }
-                  @if (getLabel(formControl.value)) {
-                    <div
-                      class="input uk-text-truncate"
-                      [class.uk-disabled]="formControl.disabled">{{ getLabel(formControl.value) }}
-                    </div>
-                  }
+                    [class.uk-text-truncate]="!focused()">
+                } @else if (!isSelectable()) {
+                  <div
+                    class="input uk-text-truncate"
+                    [class.placeholder]="!getLabel(control.value)"
+                    [class.uk-disabled]="control.disabled">{{ !getLabel(control.value) && placeholderInfo().static ? placeholderInfo().label : getLabel(control.value) }}
+                  </div>
+                } @else {
+                  <div class="input uk-text-truncate"
+                    [class.uk-disabled]="control.disabled">{{ getLabel(control.value) || noValueSelected() }}
+                  </div>
                 }
               }
-              @if ((formControl.disabled && disabledIcon) || icon || (selectable && selectArrow) || type === 'autocomplete') {
+              @if ((control.disabled && disabledIcon) || icon() || (isSelectable() && selectArrow()) || kind() === 'autocomplete') {
                 <div
                   class="uk-margin-small-left icon">
-                  @if (formControl.disabled && disabledIcon) {
+                  @if (control.disabled && disabledIcon) {
                     <span class="uk-flex">
                       <span class="material-icons" style="font-size: 20px;">{{ disabledIcon }}</span>
                     </span>
                   }
-                  @if (formControl.enabled) {
-                    @if (!searchControl?.value && icon) {
+                  @if (control.enabled) {
+                    @if (!searchControl.value && icon()) {
                       <span class="uk-flex">
-                        <span class="material-icons" style="font-size: 20px;">{{ icon }}</span>
+                        <span class="material-icons" style="font-size: 20px;">{{ icon() }}</span>
                       </span>
                     }
-                    @if (!icon && selectable && selectArrow) {
+                    @if (!icon() && isSelectable() && selectArrow()) {
                       <span class="uk-flex">
-                        <span class="material-icons" style="font-size: 20px;">{{ selectArrow }}</span>
+                        <span class="material-icons" style="font-size: 20px;">{{ selectArrow() }}</span>
                       </span>
                     }
-                    @if (focused && type === 'autocomplete' && (!selectable || searchControl.value)) {
+                    @if (focused() && kind() === 'autocomplete' && (!isSelectable() || searchControl.value)) {
                       <button
                         class="uk-close uk-icon" (click)="resetSearch($event)">
                         <span class="uk-flex"><span class="material-icons" style="font-size: 20px;">close</span></span>
                       </button>
                     }
-                    @if ((!focused && type === 'autocomplete' && !selectable) ||
-                      (type !== 'autocomplete' && !searchControl?.value && !!formControl?.value && !selectable)) {
+                    @if ((!focused() && kind() === 'autocomplete' && !isSelectable()) ||
+                      (kind() !== 'autocomplete' && !searchControl.value && !!control.value && !isSelectable())) {
                       <button
                         class="uk-close uk-icon" (click)="resetValue($event);">
                         <span class="uk-flex"><span class="material-icons" style="font-size: 20px;">close</span></span>
@@ -208,15 +173,15 @@ declare let UIkit: any;
             </div>
           </div>
         </div>
-        @if (filteredOptions && filteredOptions.length > 0 && opened) {
+        @if (filteredOptions().length > 0 && opened()) {
           <div class="options uk-dropdown"
             #optionBox uk-dropdown="mode: none; stretch: true; flip: false; shift: false" [attr.boundary]="'#' + id">
             <ul class="uk-nav uk-dropdown-nav">
-              @for (option of filteredOptions; track option; let i = $index) {
+              @for (option of filteredOptions(); track option; let i = $index) {
                 <li [class.uk-hidden]="option.hidden"
-                  [class.uk-active]="(formControl.value === option.value) || selectedIndex === i">
-                  <a (click)="selectOption(option, $event)" [class]="option.disabled ? 'uk-disabled uk-text-muted' : ''">
-                    <span [attr.uk-tooltip]="(tooltip)?('title: ' + (option.tooltip ? option.tooltip : option.label) + '; delay: 500; pos:bottom-left'):null">{{ option.label }}</span>
+                  [class.uk-active]="(control.value === option.value) || selectedIndex() === i">
+                  <a (click)="selectOption(option)" [class]="option.disabled ? 'uk-disabled uk-text-muted' : ''">
+                    <span [attr.uk-tooltip]="tooltip()?('title: ' + (option.tooltip ? option.tooltip : option.label) + '; delay: 500; pos:bottom-left'):null">{{ option.label }}</span>
                   </a>
                 </li>
               }
@@ -224,16 +189,16 @@ declare let UIkit: any;
           </div>
         }
       </div>
-    }
-    @if (formControl?.invalid && formControl?.touched) {
-      <span class="uk-text-small uk-text-danger">
-        @if (errors?.error) {
-          <span>{{ errors?.error }}</span>
-        }
-        @if (type === 'URL') {
-          <span>Please provide a valid URL (e.g. https://example.com)</span>
-        }
-      </span>
+      @if (control.invalid && control.touched) {
+        <span class="uk-text-small uk-text-danger">
+          @if (control.errors?.['error']) {
+            <span>{{ control.errors?.['error'] }}</span>
+          }
+          @if (kind() === 'URL') {
+            <span>Please provide a valid URL (e.g. https://example.com)</span>
+          }
+        </span>
+      }
     }
     <span class="uk-text-small uk-text-danger">
       <ng-content select="[error]"></ng-content>
@@ -241,7 +206,7 @@ declare let UIkit: any;
     <span class="uk-text-small uk-text-success">
       <ng-content select="[success]"></ng-content>
     </span>
-    @if (formControl?.valid) {
+    @if (control()?.valid) {
       <span class="uk-text-small uk-text-warning uk-margin-xsmall-top">
         <ng-content select="[warning]"></ng-content>
       </span>
@@ -252,117 +217,103 @@ declare let UIkit: any;
     `
 })
 
-export class InputComponent implements OnInit, OnDestroy, AfterViewInit, OnChanges {
+export class InputComponent implements OnDestroy, AfterViewInit, OnChanges {
   private cdr = inject(ChangeDetectorRef);
 
   private static INPUT_COUNTER = 0;
   /** Basic information */
-  @Input('formInput') formControl: AbstractControl;
-  @Input() type: InputType = 'text';
-  @Input() disabledIcon = 'lock';
-  readonly valueChange = output<any>();
-  @Input() hint: string;
-  @Input() tooltip = false;
-  /** Text */
-  @ViewChildren('input') input: QueryList<ElementRef>;
+  readonly formInput = input.required<AbstractControl | null>();
+  readonly type = input<InputType>('text');
+  readonly placeholder = input<string | Placeholder>('');
+  readonly hint = input<string>();
+  readonly valueChange = output<unknown>();
   /** Select | Autocomplete available options */
-  @Input() selectArrow = 'arrow_drop_down';
-  @Input() selectedIndex = 0;
-  @Input() selectable = false;
+  readonly options = input<(Option | string | number | null)[] | null>(null);
+  readonly selectArrow = input<string | null>('arrow_drop_down');
+  readonly selectable = input(false);
   readonly noValueSelected = input('No option selected');
-  /** Autocomplete */
-  public filteredOptions: Option[] = [];
-  public searchControl: UntypedFormControl;
-  /** Use modifier's class(es) to change view of your Input */
-  readonly inputClass = input('flat');
-  /** Icon on the input */
-  @Input() icon: string = null;
-  public activeIndex: 0 | 1 | null = null;
-  /** Internal basic information */
-  public id: string;
-  public placeholderInfo: Placeholder = {label: '', static: true};
-  public required = false;
-  public focused = false;
-  public opened = false;
-  private initValue: any;
-  private optionsArray: Option[] = [];
-  private optionsBreakpoint = 6;
-  private subscriptions: any[] = [];
-  @ViewChild('inputBox') inputBox: ElementRef;
-  @ViewChild('optionBox') optionBox: ElementRef;
-  @ViewChild('searchInput') searchInput: ElementRef;
 
-  @Input()
-  set placeholder(placeholder: string | Placeholder) {
+  readonly disabledIcon = 'lock';
+  readonly id = 'input-' + (++InputComponent.INPUT_COUNTER);
+  readonly searchControl = new FormControl('');
+
+  /** Every field this app shows is bound to a FormControl. */
+  readonly control = computed(() => {
+    const control = this.formInput();
+    return control instanceof FormControl ? control : null;
+  });
+  readonly optionsArray = computed<Option[]>(() => (this.options() ?? []).map(option => {
+    if (option === null) {
+      return { label: this.noValueSelected(), value: '' };
+    } else if (typeof option === 'string' || typeof option === 'number') {
+      return { label: option.toString(), value: option };
+    }
+    return option;
+  }));
+  /** What is rendered: a select with more than six options becomes an autocomplete. */
+  readonly kind = computed<InputType>(() =>
+    this.type() === 'select' && this.optionsArray().length > InputComponent.OPTIONS_BREAKPOINT ? 'autocomplete' : this.type());
+  readonly isSelectable = computed(() => this.selectable() || this.type() === 'select');
+  readonly icon = computed(() => this.type() === 'select' && this.kind() === 'autocomplete' ? this.selectArrow() : null);
+  readonly tooltip = computed(() => this.optionsArray().length > 0);
+  /** A static placeholder is not available for an autocomplete, or when there is a hint. */
+  readonly placeholderInfo = computed<Placeholder>(() => {
+    const placeholder = this.placeholder();
     if (typeof placeholder === 'string') {
-      this.placeholderInfo = {label: placeholder, static: false};
-    } else {
-      if (placeholder.static && (this.type === 'autocomplete' || this.hint)) {
-        placeholder.static = false;
-        console.debug('Static placeholder is not available in this type of input and if hint is available.');
-      }
-      this.placeholderInfo = placeholder;
+      return { label: placeholder, static: false };
     }
-  }
+    return { ...placeholder, static: placeholder.static && !(this.kind() === 'autocomplete' || this.hint()) };
+  });
 
-  @Input()
-  set options(options: (Option | string | number) []) {
-    if (options) {
-      this.optionsArray = options.map(option => {
-        if (option === null) {
-          return {
-            label: this.noValueSelected(),
-            value: ''
-          };
-        } else if (typeof option === 'string' || typeof option === 'number') {
-          return {
-            label: option.toString(),
-            value: option
-          };
-        } else {
-          return option;
-        }
-      });
-    } else {
-      this.optionsArray = [];
-    }
-    if (!this.tooltip) {
-      this.tooltip = this.optionsArray.length > 0;
-    }
-    if (this.type === 'select') {
-      if (this.optionsArray.length > this.optionsBreakpoint) {
-        this.type = 'autocomplete';
-        this.icon = this.selectArrow;
-      }
-      this.selectable = true;
-    }
+  readonly filteredOptions = signal<Option[]>([]);
+  readonly selectedIndex = signal(0);
+  readonly required = signal(false);
+  readonly focused = signal(false);
+  readonly opened = signal(false);
+
+  private readonly inputBox = viewChild<ElementRef<HTMLElement>>('inputBox');
+  private readonly optionBox = viewChild<ElementRef<HTMLElement>>('optionBox');
+  private readonly searchInput = viewChild<ElementRef<HTMLInputElement>>('searchInput');
+  private readonly inputs = viewChildren<ElementRef<HTMLInputElement>>('input');
+
+  private static readonly OPTIONS_BREAKPOINT = 6;
+  private initValue: unknown;
+  private subscriptions: Subscription[] = [];
+
+  constructor() {
+    // The form this field shows changes without any event in the field: patched by its host,
+    // disabled with the rest of a group, or loaded from a saved chart.
+    refreshOnFormChanges(this.formInput);
   }
 
   arrowUp(event: Event) {
-    if (this.opened && this.optionBox) {
+    const optionBox = this.optionBox();
+    if (this.opened() && optionBox) {
       event.preventDefault();
-      if (this.selectedIndex > 0) {
-        this.selectedIndex--;
-        this.optionBox.nativeElement.scrollBy(0, -34);
+      if (this.selectedIndex() > 0) {
+        this.selectedIndex.update(index => index - 1);
+        optionBox.nativeElement.scrollBy(0, -34);
       }
     }
   }
 
   arrowDown(event: Event) {
-    if (this.opened && this.optionBox) {
+    const optionBox = this.optionBox();
+    if (this.opened() && optionBox) {
       event.preventDefault();
-      if (this.selectedIndex < (this.filteredOptions.length - 1)) {
-        this.selectedIndex++;
-        this.optionBox.nativeElement.scrollBy(0, 34);
+      if (this.selectedIndex() < (this.filteredOptions().length - 1)) {
+        this.selectedIndex.update(index => index + 1);
+        optionBox.nativeElement.scrollBy(0, 34);
       }
     }
   }
 
   enter(event: Event) {
-    if (this.opened && this.optionBox) {
+    if (this.opened() && this.optionBox()) {
       event.preventDefault();
-      if (this.filteredOptions[this.selectedIndex]) {
-        this.selectOption(this.filteredOptions[this.selectedIndex], event);
+      const option = this.filteredOptions()[this.selectedIndex()];
+      if (option) {
+        this.selectOption(option);
       }
       this.open(false);
       event.stopPropagation();
@@ -371,19 +322,15 @@ export class InputComponent implements OnInit, OnDestroy, AfterViewInit, OnChang
     }
   }
 
-  click(event: any) {
+  click(event: MouseEvent) {
+    // Programmatic clicks, such as the keyboard handlers' forwarded ones, are ignored.
     if (event.isTrusted) {
-      this.focus(this.inputBox && this.inputBox.nativeElement.contains(event.target));
+      this.focus(!!this.inputBox()?.nativeElement.contains(event.target as Node));
     }
   }
 
-  esc(_event: Event) {
+  esc() {
     this.focus(false);
-  }
-
-  ngOnInit() {
-    InputComponent.INPUT_COUNTER++;
-    this.id = 'input-' + InputComponent.INPUT_COUNTER;
   }
 
   ngAfterViewInit() {
@@ -391,10 +338,8 @@ export class InputComponent implements OnInit, OnDestroy, AfterViewInit, OnChang
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (this.formControl) {
-      if (changes['formControl'] || changes['options']) {
-        this.reset();
-      }
+    if (this.control() && (changes['formInput'] || changes['options'])) {
+      this.reset();
     }
   }
 
@@ -402,180 +347,143 @@ export class InputComponent implements OnInit, OnDestroy, AfterViewInit, OnChang
     this.unsubscribe();
   }
 
-  get formAsControl(): UntypedFormControl {
-    if (this.formControl instanceof UntypedFormControl) {
-      return this.formControl;
-    } else {
-      return null;
-    }
-  }
-
-  get errors(): any {
-    if (this.formAsControl) {
-      return this.formAsControl.errors;
-    } else if (this.searchControl) {
-      return this.searchControl.errors;
-    } else {
-      return null;
-    }
-  }
-
   reset() {
-    this.unsubscribe();
-    this.initValue = this.formControl.getRawValue();
-    if (this.optionsArray?.length > 0) {
-      this.filteredOptions = this.filter('');
-      this.cdr.detectChanges();
+    const control = this.control();
+    if (!control) {
+      return;
     }
-    if (this.type === 'autocomplete') {
-      if (!this.searchControl) {
-        this.searchControl = new UntypedFormControl('');
-      }
+    this.unsubscribe();
+    this.initValue = control.getRawValue();
+    if (this.optionsArray().length > 0) {
+      this.filteredOptions.set(this.filter(''));
+    }
+    if (this.kind() === 'autocomplete') {
       this.subscriptions.push(this.searchControl.valueChanges.subscribe(value => {
-        this.filteredOptions = this.filter(value);
-        this.cdr.detectChanges();
-        if (this.focused) {
+        this.filteredOptions.set(this.filter(value));
+        if (this.focused()) {
           this.open(true);
           setTimeout(() => {
-            if (this.searchInput) {
-              this.searchInput.nativeElement.focus();
-              this.searchInput.nativeElement.value = value;
+            const searchInput = this.searchInput();
+            if (searchInput) {
+              searchInput.nativeElement.focus();
+              searchInput.nativeElement.value = value ?? '';
             }
           }, 0);
         }
       }));
     }
-    if (this.formAsControl?.validator) {
-      const validator = this.formControl.validator({} as AbstractControl);
-      this.required = (validator && validator['required']);
-    }
-    this.subscriptions.push(this.formControl.valueChanges.subscribe(value => {
-      if (this.formControl.enabled) {
+    this.required.set(!!control.validator?.({} as AbstractControl)?.['required']);
+    this.subscriptions.push(control.valueChanges.subscribe(value => {
+      if (control.enabled) {
         value = (value === '') ? null : value;
         if (this.initValue === value || (this.initValue === '' && value === null)) {
-          this.formControl.markAsPristine();
+          control.markAsPristine();
         } else {
-          this.formControl.markAsDirty();
+          control.markAsDirty();
         }
         if (value) {
-          this.valueChange.emit(this.formControl.value);
+          this.valueChange.emit(control.value);
         }
       }
     }));
-    if (this.input) {
-      this.input.forEach(input => {
-        input.nativeElement.disabled = this.formControl.disabled;
-      });
-    }
-  }
-
-  unsubscribe() {
-    this.subscriptions.forEach(subscription => {
-      if (subscription instanceof Subscription) {
-        subscription.unsubscribe();
-      }
+    this.inputs().forEach(input => {
+      input.nativeElement.disabled = control.disabled;
     });
   }
 
-  private filter(value: string): Option[] {
-    let options = this.optionsArray.filter(option => !option.hidden);
-    if ((!value || value.length == 0)) {
-      this.selectedIndex = 0;
+  unsubscribe() {
+    this.subscriptions.forEach(subscription => subscription.unsubscribe());
+    this.subscriptions = [];
+  }
+
+  private filter(value: string | null): Option[] {
+    let options = this.optionsArray().filter(option => !option.hidden);
+    if (!value) {
+      this.selectedIndex.set(0);
       return options;
     }
-    const filterValue = value.toString().toLowerCase();
-    options = options.filter(option => (option.label && option.label.toLowerCase().indexOf(filterValue) != -1));
-    this.selectedIndex = options.findIndex(option => option.value === this.formControl.value);
-    if (this.selectedIndex === -1) {
-      this.selectedIndex = 0;
-    }
+    const filterValue = value.toLowerCase();
+    options = options.filter(option => option.label && option.label.toLowerCase().includes(filterValue));
+    this.selectedIndex.set(Math.max(0, options.findIndex(option => option.value === this.control()?.value)));
     return options;
   }
 
-  getLabel(value: any): string {
-    const option = this.optionsArray.find(option => this.equals(option.value, value));
-    return (option) ? option.label : (value);
+  /** The label of the option holding this value, or the value itself. */
+  getLabel(value: unknown): unknown {
+    const option = this.optionsArray().find(option => this.equals(option.value, value));
+    return option ? option.label : value;
   }
 
-  getTooltip(value: any): string {
-    const option = this.optionsArray.find(option => this.equals(option.value, value));
-    return (option) ? (option.tooltip ? option.tooltip : option.label) : (value);
+  getTooltip(value: unknown): unknown {
+    const option = this.optionsArray().find(option => this.equals(option.value, value));
+    return option ? (option.tooltip ? option.tooltip : option.label) : value;
   }
 
   focus(value: boolean) {
-    if (!this.activeIndex) {
-      this.activeIndex = 0;
+    const control = this.control();
+    if (!control) {
+      return;
     }
-    if (this.focused) {
-      this.formControl.markAsTouched();
+    if (this.focused()) {
+      control.markAsTouched();
     }
-    if (this.formControl.enabled) {
-      this.focused = value;
+    if (control.enabled) {
+      this.focused.set(value);
+      // Render the search box now, so it can take focus.
       this.cdr.detectChanges();
-      if (this.focused) {
-        if (this.input?.length > 0) {
-          this.input.get(this.activeIndex).nativeElement.focus();
-        } else if (this.searchInput) {
-          this.searchInput.nativeElement.focus();
-        }
-        if (this.selectArrow) {
-          this.open(!this.opened);
+      if (value) {
+        const firstInput = this.inputs()[0];
+        if (firstInput) {
+          firstInput.nativeElement.focus();
         } else {
-          this.open(true);
+          this.searchInput()?.nativeElement.focus();
         }
+        this.open(this.selectArrow() ? !this.opened() : true);
       } else {
-        this.activeIndex = null;
         this.open(false);
-        if (this.input) {
-          this.input.forEach(input => {
-            input.nativeElement.blur();
-          });
-        } else if (this.searchInput) {
-          this.searchInput.nativeElement.blur();
-        }
-        if (this.searchControl) {
-          this.searchControl.setValue('');
-        }
+        this.inputs().forEach(input => input.nativeElement.blur());
+        this.searchControl.setValue('');
       }
     }
   }
 
   open(value: boolean) {
-    this.opened = value && this.formControl.enabled;
+    const control = this.control();
+    this.opened.set(value && !!control?.enabled);
+    // Render the option list now, so UIkit can show it.
     this.cdr.detectChanges();
-    if (this.optionBox) {
-      if (this.opened) {
-        this.selectedIndex = this.filteredOptions.findIndex(option => option.value === this.formControl.value);
-        if (this.selectedIndex === -1) {
-          this.selectedIndex = 0;
-        }
-        UIkit.dropdown(this.optionBox.nativeElement).show();
+    const optionBox = this.optionBox();
+    if (optionBox) {
+      if (this.opened()) {
+        this.selectedIndex.set(Math.max(0, this.filteredOptions().findIndex(option => option.value === control?.value)));
+        UIkit.dropdown(optionBox.nativeElement).show();
       } else {
-        UIkit.dropdown(this.optionBox.nativeElement).hide();
-        this.focused = false;
+        UIkit.dropdown(optionBox.nativeElement).hide();
+        this.focused.set(false);
       }
     }
   }
 
-  resetSearch(event: any) {
+  resetSearch(event: Event) {
     event.stopPropagation();
     this.searchControl.setValue('');
     this.focus(true);
   }
 
-  resetValue(event: any) {
+  resetValue(event: Event) {
     event.stopPropagation();
-    this.formControl.setValue('');
+    this.control()?.setValue('');
     this.focus(true);
   }
 
-  selectOption(option: Option, _event: any) {
-    if (this.formControl.enabled && this.formAsControl) {
-      this.formAsControl.setValue(option.value);
+  selectOption(option: Option) {
+    const control = this.control();
+    if (control?.enabled) {
+      control.setValue(option.value);
     }
   }
 
-  equals(a: any, b: any): boolean {
+  equals(a: unknown, b: unknown): boolean {
     return a === b || JSON.stringify(a) === JSON.stringify(b);
   }
 }

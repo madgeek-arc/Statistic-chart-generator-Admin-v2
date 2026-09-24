@@ -54,7 +54,7 @@ describe('DataseriesSelectorComponent', () => {
 
   it('offers a profile\'s entities once they load', fakeAsync(() => {
     const entityOptions = () => fixture.debugElement.query(By.css('[placeholder="Entity"]'))
-      .injector.get(InputComponent)['optionsArray'].map(option => option.value);
+      .injector.get(InputComponent).optionsArray().map(option => option.value);
     expect(entityOptions()).toEqual([]);
 
     fixture.componentInstance.profile.setValue('OpenAIRE Monitor');

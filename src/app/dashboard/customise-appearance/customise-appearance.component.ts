@@ -56,7 +56,7 @@ export class CustomiseAppearanceComponent implements OnInit {
     this.libraryChange(this.visualisationLibrary.value);
   }
 
-	libraryChange(event: string) {
+	libraryChange(event: unknown) {
     this.appearanceForm.get('chartAppearance.highchartsAppearanceOptions').disable();
     this.appearanceForm.get('chartAppearance.googlechartsAppearanceOptions').disable();
     this.appearanceForm.get('chartAppearance.echartsAppearanceOptions').disable();
