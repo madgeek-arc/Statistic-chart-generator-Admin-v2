@@ -5,16 +5,15 @@ import {
 } from './dynamic-entity-tree/entity-tree-nodes.types';
 import {
   AfterViewInit,
-  ChangeDetectorRef,
+  ChangeDetectionStrategy,
   DestroyRef,
   Component,
   forwardRef,
-  Input,
   OnChanges,
   SimpleChanges,
-  ViewRef,
   inject,
-  input
+  input,
+  signal
 } from '@angular/core';
 import {
   AbstractControl,
@@ -39,6 +38,7 @@ import { TitleCasePipe } from '@angular/common';
     selector: 'select-attribute',
     templateUrl: './select-attribute.component.html',
     styleUrls: ['./select-attribute.component.less'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
     viewProviders: [
         { provide: ControlContainer, useExisting: FormGroupDirective }
     ],
@@ -48,18 +48,17 @@ import { TitleCasePipe } from '@angular/common';
 
 export class SelectAttributeComponent implements ControlValueAccessor, OnChanges, AfterViewInit {
   private chartLoadingService = inject(ChartLoadingService);
-  private cdr = inject(ChangeDetectorRef);
   private destroyRef = inject(DestroyRef);
   private dynamicTreeDB = inject(DynamicTreeDatabase);
 
   nestedEntityTreeControl: NestedTreeControl<DynamicEntityNode>;
   nestedEntityDataSource: DynamicDataSource;
 
-  @Input() isDisabled = false;
+  readonly isDisabled = signal(false);
   readonly formControl = input<AbstractControl | null>(undefined, { alias: 'formInput' });
   readonly chosenEntity = input<string | null>(null);
 
-  selectedNode: FieldNode | null = null;
+  readonly selectedNode = signal<FieldNode | null>(null);
   private pendingValue: FieldNode | null = null; // Store value to set later
 
   constructor() {
@@ -155,9 +154,8 @@ export class SelectAttributeComponent implements ControlValueAccessor, OnChanges
             this.handlePendingValue();
           } else if (formControl && formControl.value && formControl.value.name && formControl.value.type) {
             // Apply the current control value
-            this.selectedNode = formControl.value;
+            this.selectedNode.set(formControl.value);
             this.expandTreeToPath(formControl.value.name);
-            this.cdr.detectChanges();
           }
         }
       });
@@ -172,11 +170,8 @@ export class SelectAttributeComponent implements ControlValueAccessor, OnChanges
     this.expandTreeToPath(this.pendingValue.name);
 
     // Set the selected node
-    this.selectedNode = this.pendingValue;
+    this.selectedNode.set(this.pendingValue);
     this.pendingValue = null;
-
-    // Trigger change detection
-    this.cdr.detectChanges();
   }
 
   private expandTreeToPath(fieldPath: string) {
@@ -227,7 +222,7 @@ export class SelectAttributeComponent implements ControlValueAccessor, OnChanges
       formControl.setValue(selectedFieldNode);
     }
 
-    this.selectedNode = selectedFieldNode;
+    this.selectedNode.set(selectedFieldNode);
   }
 
   /**
@@ -302,15 +297,11 @@ export class SelectAttributeComponent implements ControlValueAccessor, OnChanges
         this.pendingValue = value;
       } else {
         // Tree is ready, set the value immediately
-        this.selectedNode = value;
+        this.selectedNode.set(value);
         this.expandTreeToPath(value.name);
       }
-
-      if (this.cdr !== null && this.cdr !== undefined && !(this.cdr as ViewRef).destroyed) {
-        this.cdr.detectChanges();
-      }
     } else {
-      this.selectedNode = null;
+      this.selectedNode.set(null);
       this.pendingValue = null;
     }
   }
@@ -319,16 +310,13 @@ export class SelectAttributeComponent implements ControlValueAccessor, OnChanges
   // Method that calls the registered onChange method
   selectedFieldChanged(value: FieldNode | null) {
 
-    this.selectedNode = value;
+    this.selectedNode.set(value);
     this._onChange(value);
 
   }
 
   setDisabledState?(isDisabled: boolean): void {
-    this.isDisabled = isDisabled;
-    if (this.cdr && !(this.cdr as ViewRef).destroyed) {
-      this.cdr.detectChanges();
-    }
+    this.isDisabled.set(isDisabled);
   }
 
 }

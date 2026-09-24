@@ -1,9 +1,12 @@
 import { Component } from '@angular/core';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { FormControl } from '@angular/forms';
+import { BehaviorSubject } from 'rxjs';
+import { filter, first } from 'rxjs/operators';
 
 import { SelectAttributeComponent } from './select-attribute.component';
-import { DynamicEntityNode, FieldNode } from './dynamic-entity-tree/entity-tree-nodes.types';
+import { CachedEntityNode, DynamicEntityNode, FieldNode } from './dynamic-entity-tree/entity-tree-nodes.types';
+import { DynamicTreeDatabase } from '../../../services/dynamic-tree-database/dynamic-tree-database.service';
 
 @Component({
     template: `<select-attribute [formInput]="control" [chosenEntity]="null"></select-attribute>`,
@@ -48,4 +51,110 @@ describe('SelectAttributeComponent', () => {
     expect(host.control.value?.name).toBe('dataset.title');
     expect(host.control.value?.type).toBe('string');
   });
+});
+
+// What the user sees. The entity's fields arrive from the tree database after the field is shown,
+// and a saved field is applied on a timer, so the component must refresh its own view.
+class FakeTreeDatabase {
+  readonly map$ = new BehaviorSubject<Map<string, CachedEntityNode> | null>(null);
+
+  // Like the real database: answers as soon as the profile's entity map has loaded.
+  private whenLoaded(then: (map: Map<string, CachedEntityNode>) => void): void {
+    this.map$.pipe(filter(map => map !== null), first()).subscribe(map => then(map!));
+  }
+
+  getRootNode(entity: string): BehaviorSubject<DynamicEntityNode | null> {
+    const root$ = new BehaviorSubject<DynamicEntityNode | null>(null);
+    this.whenLoaded(map => {
+      const cached = map.get(entity);
+      if (cached) root$.next(new DynamicEntityNode(cached.fields, cached.name, [], null));
+    });
+    return root$;
+  }
+
+  getChildren(node: DynamicEntityNode): BehaviorSubject<DynamicEntityNode[]> {
+    const children$ = new BehaviorSubject<DynamicEntityNode[]>([]);
+    this.whenLoaded(map => children$.next((map.get(node.name)?.relations ?? [])
+      .map(name => map.get(name)!)
+      .map(cached => new DynamicEntityNode(cached.fields, cached.name, [...node.path], undefined, node))));
+    return children$;
+  }
+
+  changeEntityMap(): void { /* not used here */ }
+}
+
+const field = (name: string, type: string): FieldNode => Object.assign(new FieldNode(), { name, type });
+const entityMap = new Map<string, CachedEntityNode>([
+  ['result', { name: 'result', fields: [field('title', 'text'), field('year', 'int')], relations: ['project'] }],
+  ['project', { name: 'project', fields: [field('acronym', 'text')], relations: [] }]
+]);
+
+@Component({
+  template: `<select-attribute [formInput]="control" [chosenEntity]="entity"></select-attribute>`,
+  imports: [SelectAttributeComponent]
+})
+class DashboardLikeHostComponent {
+  control = new FormControl<FieldNode | null>(null);
+  entity: string | null = 'result';
+}
+
+describe('SelectAttributeComponent rendered', () => {
+  let fixture: ComponentFixture<DashboardLikeHostComponent>;
+  let db: FakeTreeDatabase;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [DashboardLikeHostComponent],
+      providers: [{ provide: DynamicTreeDatabase, useClass: FakeTreeDatabase }]
+    });
+    db = TestBed.inject(DynamicTreeDatabase) as unknown as FakeTreeDatabase;
+    fixture = TestBed.createComponent(DashboardLikeHostComponent);
+  });
+
+  const button = (): HTMLButtonElement => fixture.nativeElement.querySelector('button');
+  const menuText = () => document.querySelector('.mat-mdc-menu-panel')?.textContent ?? '';
+  const settle = () => { tick(200); fixture.detectChanges(); };
+
+  it('shows a saved field once the entity fields arrive', fakeAsync(() => {
+    fixture.componentInstance.control.setValue(field('result.title', 'text'));
+    fixture.detectChanges();
+    db.map$.next(entityMap);
+    settle();
+
+    expect(button().textContent).toContain('Title');
+  }));
+
+  it('lists the entity fields, and a related entity\'s fields once it is expanded', fakeAsync(() => {
+    fixture.detectChanges();
+    button().click();
+    fixture.detectChanges();
+    db.map$.next(entityMap);
+    fixture.detectChanges();
+    settle();
+    expect(menuText()).toContain('Year');
+
+    const projectToggle = [...document.querySelectorAll<HTMLElement>('.mat-mdc-menu-panel [matTreeNodeToggle], .mat-mdc-menu-panel .mat-tree-node.header')]
+      .find(el => el.textContent?.includes('Project'))!;
+    projectToggle.click();
+    fixture.detectChanges();
+    settle();
+
+    expect(menuText()).toContain('Acronym');
+  }));
+
+  it('shows the field picked from the menu', fakeAsync(() => {
+    fixture.detectChanges();
+    button().click();
+    fixture.detectChanges();
+    db.map$.next(entityMap);
+    fixture.detectChanges();
+    settle();
+
+    [...document.querySelectorAll<HTMLElement>('.mat-mdc-menu-panel a.item')].find(a => a.textContent?.includes('Year'))!.click();
+    fixture.detectChanges();
+
+    expect(button().textContent).toContain('Year');
+    expect(fixture.componentInstance.control.value?.name).toBe('result.year');
+    settle();
+  }));
 });

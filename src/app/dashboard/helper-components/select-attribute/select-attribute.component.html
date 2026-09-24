@@ -1,11 +1,11 @@
 <div class="menu-button">
 
-  <button mat-button [matMenuTriggerFor]="belowMenu" [disabled]="isDisabled" class="mat-button uk-width-1-1">
+  <button mat-button [matMenuTriggerFor]="belowMenu" [disabled]="isDisabled()" class="mat-button uk-width-1-1">
 
     <div class="uk-flex uk-flex-middle uk-flex-between">
-      @if (checkValidFieldNode(selectedNode) !== null) {
+      @if (checkValidFieldNode(selectedNode()); as selected) {
         <!-- Showing the breadcrump of entities -->
-        @for (field of selectedNode!.name.split('.'); track field; let last = $last) {
+        @for (field of selected.name.split('.'); track field; let last = $last) {
           <div class="ui breadcrumb">
             @if (last) {
               <span class="active section">{{ field | titlecase }}</span>
