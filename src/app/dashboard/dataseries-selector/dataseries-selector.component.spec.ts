@@ -3,10 +3,12 @@ import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testin
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
+import { By } from '@angular/platform-browser';
 import { BehaviorSubject, of } from 'rxjs';
 import { delay } from 'rxjs/operators';
 
 import { DataseriesSelectorComponent } from './dataseries-selector.component';
+import { InputComponent } from '../../shared/input.component';
 import { DbSchemaService } from '../../services/db-schema-service/db-schema.service';
 import { DynamicTreeDatabase } from '../../services/dynamic-tree-database/dynamic-tree-database.service';
 import { FormFactoryService } from '../../services/form-factory-service/form-factory-service';
@@ -19,6 +21,8 @@ class DashboardLikeHostComponent {
   profile = new FormControl('');
 }
 
+// What the user sees. Most of what the panel shows changes without any event inside it: the
+// profile's entities arrive over HTTP, and the chart type is chosen in another step of the dashboard.
 describe('DataseriesSelectorComponent', () => {
   let fixture: ComponentFixture<DashboardLikeHostComponent>;
   let root: FormGroup;
@@ -40,12 +44,54 @@ describe('DataseriesSelectorComponent', () => {
 
   const el = (): HTMLElement => fixture.nativeElement;
   const series = (): HTMLElement[] => [...el().querySelectorAll<HTMLElement>('#switcher-content > li')];
+  const diagram = () => root.get('category.diagram.diagramId') as FormControl;
   const addGroupBy = (seriesEl: HTMLElement) =>
     [...seriesEl.querySelectorAll('a')].find(a => a.textContent?.includes('Add Group By'));
   const click = (text: string, within: HTMLElement = el()) => {
     [...within.querySelectorAll('a')].find(a => a.textContent?.includes(text))!.click();
     fixture.detectChanges();
   };
+
+  it('offers a profile\'s entities once they load', fakeAsync(() => {
+    const entityOptions = () => fixture.debugElement.query(By.css('[placeholder="Entity"]'))
+      .injector.get(InputComponent)['optionsArray'].map(option => option.value);
+    expect(entityOptions()).toEqual([]);
+
+    fixture.componentInstance.profile.setValue('OpenAIRE Monitor');
+    tick(100);
+    fixture.detectChanges();
+
+    expect(entityOptions()).toEqual(['result', 'project']);
+  }));
+
+  it('asks for a chart type per series once the chart becomes a combo', () => {
+    expect(el().querySelector('[placeholder="Chart Type"]')).toBeNull();
+
+    diagram().setValue(13);
+    fixture.detectChanges();
+
+    expect(el().querySelector('[placeholder="Chart Type"]')).not.toBeNull();
+  });
+
+  it('hides the X axis while the Numbers chart is chosen', () => {
+    const hasXAxis = () => el().textContent!.includes('X Axis');
+    expect(hasXAxis()).toBeTrue();
+
+    diagram().setValue(14);
+    fixture.detectChanges();
+    expect(hasXAxis()).toBeFalse();
+
+    diagram().setValue(1);
+    fixture.detectChanges();
+    expect(hasXAxis()).toBeTrue();
+  });
+
+  it('shows a series added from outside the panel', () => {
+    (root.get('dataseries') as FormArray).push(TestBed.inject(FormFactoryService).createDataseriesGroup(1));
+    fixture.detectChanges();
+
+    expect(series().length).toBe(2);
+  });
 
   // Each series may group by at most two fields, counted per series.
   it('limits group-bys to two per series, not across series', fakeAsync(() => {

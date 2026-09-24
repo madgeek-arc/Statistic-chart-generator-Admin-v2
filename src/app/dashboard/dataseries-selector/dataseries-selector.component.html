@@ -5,11 +5,11 @@
         <li [formGroup]="ctrl">
           <a class="uk-link-reset">
             <div class="uk-flex" formGroupName="chartProperties">
-              @if (selectedTitleIndex === i ) {
+              @if (selectedTitleIndex() === i) {
                 <div tabindex="0">
                   <div input type="text" placeholder="Dataseries name" #editDataseriesName
                        [formInput]="form.controls[i].get('chartProperties.dataseriesName')"
-                       (focusout)="selectedTitleIndex = -1" (keydown)="$event.stopPropagation()" >
+                       (focusout)="selectedTitleIndex.set(-1)" (keydown)="$event.stopPropagation()" >
                   </div>
                 </div>
               } @else {
@@ -97,7 +97,7 @@
                       <div class="uk-child-width-1-2" data-uk-grid>
                         <div>
                           <div input placeholder="Entity" type="select"
-                               [formInput]="ctrl.get('data.yaxisData.entity')" [options]="entities">
+                               [formInput]="ctrl.get('data.yaxisData.entity')" [options]="entities()">
                           </div>
                         </div>
                         <div>
@@ -253,7 +253,7 @@
 
             <div class="dataSelection">
 
-              @if (this.selectedCategoryId === 13) {
+              @if (selectedCategoryId() === 13) {
                 <div class="uk-margin-medium-top">
                   <div input placeholder="Chart Type" type="select" [noValueSelected]="'Select Chart Type'"
                        [formInput]="ctrl.get('chartProperties.chartType')" [options]="chartTypeList">

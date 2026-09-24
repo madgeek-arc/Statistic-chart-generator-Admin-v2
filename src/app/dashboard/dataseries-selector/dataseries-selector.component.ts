@@ -1,10 +1,12 @@
 import {
+  ChangeDetectionStrategy,
   Component,
   DestroyRef,
   inject,
   OnInit,
   ViewChild,
-  input
+  input,
+  signal
 } from '@angular/core';
 import { AbstractControl, FormArray, FormControl, FormGroup, FormGroupDirective, ReactiveFormsModule } from '@angular/forms';
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
@@ -21,6 +23,7 @@ import { MatIconButton } from '@angular/material/button';
 import { MatRadioGroup, MatRadioButton } from '@angular/material/radio';
 import { AutocompleteInputFieldComponent } from '../helper-components/autocomplete-input-field/autocomplete-input-field.component';
 import { FilterOperatorsPipe } from '../pipes/filter-operators.pipe';
+import { refreshOnFormChanges } from '../../shared/refresh-on-form-changes';
 
 export enum FieldType { text, int, float, date};
 
@@ -34,6 +37,7 @@ export class FilterType {
     selector: 'app-dataseries-selector',
     templateUrl: './dataseries-selector.component.html',
     styleUrls: ['./dataseries-selector.component.less'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
     providers: [FormGroupDirective],
     imports: [ReactiveFormsModule, InputComponent, MatIcon, SelectAttributeComponent, MatIconButton, MatRadioGroup, MatRadioButton, AutocompleteInputFieldComponent, FilterOperatorsPipe]
 })
@@ -50,9 +54,9 @@ export class DataseriesSelectorComponent implements OnInit {
 
   form: FormArray<FormGroup> | null = null;
 
-  entities: string[] = [];
-  selectedTitleIndex = -1;
-  selectedCategoryId: number | null = null;
+  readonly entities = signal<string[]>([]);
+  readonly selectedTitleIndex = signal(-1);
+  readonly selectedCategoryId = signal<number | null>(null);
 
 	dataseriesIncremment = 0;
 
@@ -100,6 +104,12 @@ export class DataseriesSelectorComponent implements OnInit {
 		{ filterOperator: 'is_not_null', filterName: 'Is not null', filterType: [FieldType.text, FieldType.int, FieldType.float, FieldType.date] }
 	];
 
+  constructor() {
+    // The series are edited from outside this panel too: the chart type is chosen in another
+    // step, and the dashboard adds and replaces series when a chart loads.
+    refreshOnFormChanges(this.formFactory.root);
+  }
+
 	ngOnInit(): void {
 		// With the change in stepper, the data is not created in the beginning, so it'll have to be initialized and not wait for "value changes"
     const profile = new Profile();
@@ -118,10 +128,10 @@ export class DataseriesSelectorComponent implements OnInit {
 		});
 
     this.form = this.formFactory.getFormRoot().get('dataseries') as FormArray;
-    this.selectedCategoryId = this.formFactory.getFormRoot().get('category.diagram.diagramId').value;
+    this.selectedCategoryId.set(this.formFactory.getFormRoot().get('category.diagram.diagramId').value);
     this.formFactory.getFormRoot().get('category.diagram.diagramId').valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (diagramId: number) => {
-        this.selectedCategoryId = diagramId;
+        this.selectedCategoryId.set(diagramId);
       }
     });
 
@@ -136,7 +146,7 @@ export class DataseriesSelectorComponent implements OnInit {
 
     this.dbService.getAvailableEntities(profile).pipe(distinctUntilChanged()).subscribe({
       next: (entities: string[]) => {
-        this.entities = entities;
+        this.entities.set(entities);
       }
     });
   }
@@ -220,7 +230,7 @@ export class DataseriesSelectorComponent implements OnInit {
 	}
 
 	editDataseriesTitle(index: number) {
-    this.selectedTitleIndex = index;
+    this.selectedTitleIndex.set(index);
 
     setTimeout( () => {
       this.editDataseriesName.focus(true);
