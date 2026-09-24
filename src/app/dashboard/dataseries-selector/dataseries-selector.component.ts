@@ -54,7 +54,6 @@ export class DataseriesSelectorComponent implements OnInit {
   selectedTitleIndex = -1;
   selectedCategoryId: number | null = null;
 
-	hasTwoEntityFields = false;
 	dataseriesIncremment = 0;
 
 
@@ -189,22 +188,11 @@ export class DataseriesSelectorComponent implements OnInit {
 	}
 
 	addEntityField(form: AbstractControl) {
-		const xaxisData = form.get('data.xaxisData') as FormArray;
-		xaxisData.push(this.formFactory.createXaxisEntityField());
-
-		if (xaxisData.length === 2) {
-			this.hasTwoEntityFields = true;
-		}
+		(form.get('data.xaxisData') as FormArray).push(this.formFactory.createXaxisEntityField());
 	}
 
 	removeEntityField(form: AbstractControl, index: number) {
-		const xaxisData = form.get('data.xaxisData') as FormArray;
-		xaxisData.removeAt(index);
-
-		if (xaxisData.length < 2) {
-			this.hasTwoEntityFields = false;
-		}
-
+		(form.get('data.xaxisData') as FormArray).removeAt(index);
 	}
 
 	addDataseries() {

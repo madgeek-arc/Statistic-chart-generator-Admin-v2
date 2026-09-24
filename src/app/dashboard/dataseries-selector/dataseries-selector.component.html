@@ -140,7 +140,7 @@
                             </div>
                           </div>
                         }
-                        @if (!hasTwoEntityFields) {
+                        @if (getXAxisData(ctrl).length < 2) {
                           <div>
                             <a class="uk-link uk-flex uk-flex-middle" role="button" tabindex="0" (keydown.enter)="$any($event.currentTarget).click()" (keydown.space)="$event.preventDefault(); $any($event.currentTarget).click()" (click)="addEntityField(ctrl)">
                               <span class="material-symbols-outlined">add</span>
