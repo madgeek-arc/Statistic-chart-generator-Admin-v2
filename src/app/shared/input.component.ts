@@ -72,7 +72,7 @@ declare const UIkit: { dropdown(element: HTMLElement): { show(): void; hide(): v
             [class.static]="placeholderInfo().static">
             @if (!placeholderInfo().static && placeholderInfo().label) {
               <div class="placeholder">
-                <label>{{ placeholderInfo().label }} @if (required()) {
+                <label [for]="fieldId">{{ placeholderInfo().label }} @if (required()) {
                   <sup>*</sup>
                 }</label>
               </div>
@@ -82,19 +82,19 @@ declare const UIkit: { dropdown(element: HTMLElement): { show(): void; hide(): v
                        ((tooltip() && !focused() && (control.value || hint() || placeholderInfo().label))?
                        ('title: ' + (control.value ?getTooltip(control.value):(hint()?hint():placeholderInfo().label)) + '; delay: 500; pos: bottom-left'):null)">
               @if (kind() === 'text' || kind() === 'URL') {
-                <input #input class="input"
+                <input #input class="input" [id]="fieldId"
                   [attr.placeholder]="placeholderInfo().static?placeholderInfo().label:hint()"
                   type="text" [formControl]="control"
                   [class.uk-text-truncate]="!focused()">
               }
               @if (kind() === 'number') {
-                <input #input class="input" type="number"
+                <input #input class="input" type="number" [id]="fieldId"
                   [attr.placeholder]="placeholderInfo().static?placeholderInfo().label:hint()"
                   [formControl]="control"
                   [class.uk-text-truncate]="!focused()">
               }
               @if (kind() === 'color') {
-                <input #input class="input" type="color"
+                <input #input class="input" type="color" [id]="fieldId"
                   [attr.placeholder]="placeholderInfo().static?placeholderInfo().label:hint()"
                   [formControl]="control"
                   [class.uk-text-truncate]="!focused()">
@@ -116,7 +116,7 @@ declare const UIkit: { dropdown(element: HTMLElement): { show(): void; hide(): v
               @if (kind() === 'autocomplete') {
                 @if (focused()) {
                   <input [attr.placeholder]="placeholderInfo().static?placeholderInfo().label:hint()"
-                    #searchInput class="input" [formControl]="searchControl"
+                    #searchInput class="input" [id]="fieldId" [formControl]="searchControl"
                     [class.uk-text-truncate]="!focused()">
                 } @else if (!isSelectable()) {
                   <div
@@ -176,11 +176,14 @@ declare const UIkit: { dropdown(element: HTMLElement): { show(): void; hide(): v
         @if (filteredOptions().length > 0 && opened()) {
           <div class="options uk-dropdown"
             #optionBox uk-dropdown="mode: none; stretch: true; flip: false; shift: false" [attr.boundary]="'#' + id">
-            <ul class="uk-nav uk-dropdown-nav">
+            <ul class="uk-nav uk-dropdown-nav" role="listbox" [attr.aria-label]="placeholderInfo().label">
               @for (option of filteredOptions(); track option; let i = $index) {
                 <li [class.uk-hidden]="option.hidden"
                   [class.uk-active]="(control.value === option.value) || selectedIndex() === i">
-                  <a (click)="selectOption(option)" [class]="option.disabled ? 'uk-disabled uk-text-muted' : ''">
+                  <!-- Enter bubbles to the window listener, which picks the highlighted option and closes the list. -->
+                  <a role="option" tabindex="-1" [attr.aria-selected]="control.value === option.value"
+                    (click)="selectOption(option)" (keydown.enter)="selectedIndex.set(i)"
+                    [class]="option.disabled ? 'uk-disabled uk-text-muted' : ''">
                     <span [attr.uk-tooltip]="tooltip()?('title: ' + (option.tooltip ? option.tooltip : option.label) + '; delay: 500; pos:bottom-left'):null">{{ option.label }}</span>
                   </a>
                 </li>
@@ -235,6 +238,8 @@ export class InputComponent implements OnDestroy, AfterViewInit, OnChanges {
 
   readonly disabledIcon = 'lock';
   readonly id = 'input-' + (++InputComponent.INPUT_COUNTER);
+  /** The element its label points to: the text box, or the search box of an open autocomplete. */
+  readonly fieldId = this.id + '-field';
   readonly searchControl = new FormControl('');
 
   /** Every field this app shows is bound to a FormControl. */

@@ -182,6 +182,27 @@ describe('InputComponent', () => {
       expect(field('agg').querySelector('.options')).toBeNull();
     });
 
+    it('takes a focused option on Enter', () => {
+      open('agg');
+      const option = field('agg').querySelectorAll<HTMLElement>('.options a')[4];
+      option.focus();
+      option.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
+      fixture.detectChanges();
+
+      expect(host.form.value.agg).toBe('max');
+      expect(field('agg').querySelector('.options')).toBeNull();
+    });
+
+    it('labels the field and its options for assistive technology', () => {
+      const label = field('name').querySelector('label')!;
+      expect(document.getElementById(label.htmlFor)).toBe(field('name').querySelector('input'));
+
+      open('agg');
+      const options = [...field('agg').querySelectorAll('.options a')];
+      expect(options.every(option => option.getAttribute('role') === 'option')).toBeTrue();
+      expect(field('agg').querySelector('[role="listbox"]')!.getAttribute('aria-label')).toBe('Aggregate');
+    });
+
     it('closes on Escape without changing its value', () => {
       open('agg');
       expect(field('agg').querySelector('.options')).not.toBeNull();
