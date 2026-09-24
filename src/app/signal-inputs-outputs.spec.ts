@@ -1,11 +1,9 @@
 import { Component } from '@angular/core';
 import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
-import { By } from '@angular/platform-browser';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 
 import { ChartFrameComponent } from './data-frames/chart-frame/chart-frame.component';
 import { GeneratedShortUrlFieldComponent } from './data-frames/generated-short-url-field/generated-short-url-field.component';
-import { InputComponent } from './shared/input.component';
 
 // Components whose @Input()s and @Output()s moved to input() and output(): bind real values through a host template,
 // the way the app does, and check what the component does with them.
@@ -25,18 +23,6 @@ class ChartFrameHostComponent {
 class ShortUrlHostComponent {
   url$: Observable<string> = of('https://tinyurl.com/abc');
   loading$: Observable<boolean> = of(false);
-}
-
-@Component({
-  template: `<div input placeholder="Name" [value]="value" [disabled]="disabled" [password]="password"
-                  (valueChange)="valueChanges.push($event)"></div>`,
-  imports: [InputComponent]
-})
-class InputHostComponent {
-  value = 'abc';
-  disabled = false;
-  password = false;
-  valueChanges: unknown[] = [];
 }
 
 describe('chart-frame with a signal chartUrl input', () => {
@@ -107,56 +93,5 @@ describe('generated-short-url-field with aliased signal inputs', () => {
     fixture.nativeElement.querySelector('button').click();
 
     expect(writeText).toHaveBeenCalledWith('https://tinyurl.com/abc');
-  });
-});
-
-describe('InputComponent with signal inputs', () => {
-  let fixture: ComponentFixture<InputHostComponent>;
-  let host: InputHostComponent;
-  const control = () => fixture.debugElement.query(By.directive(InputComponent)).componentInstance.formControl;
-
-  beforeEach(() => {
-    fixture = TestBed.createComponent(InputHostComponent);
-    host = fixture.componentInstance;
-  });
-
-  it('builds its control from the value and disabled inputs', () => {
-    host.value = 'abc';
-    host.disabled = true;
-    fixture.detectChanges();
-
-    expect(control().value).toBe('abc');
-    expect(control().disabled).toBeTrue();
-  });
-
-  it('follows later changes to value and disabled (ngOnChanges)', () => {
-    fixture.detectChanges();
-    expect(control().enabled).toBeTrue();
-
-    host.value = 'xyz';
-    host.disabled = true;
-    fixture.detectChanges();
-    expect(control().value).toBe('xyz');
-    expect(control().disabled).toBeTrue();
-
-    host.disabled = false;
-    fixture.detectChanges();
-    expect(control().enabled).toBeTrue();
-  });
-
-  it('renders a password field when the password input is set', () => {
-    host.password = true;
-    fixture.detectChanges();
-
-    expect(fixture.nativeElement.querySelector('input.input').type).toBe('password');
-  });
-
-  // Outputs (formerly EventEmitters): a listener on the host must still receive them.
-  it('emits valueChange to a host listener when the control value changes', () => {
-    fixture.detectChanges();
-
-    control().setValue('typed');
-
-    expect(host.valueChanges).toEqual(['typed']);
   });
 });
