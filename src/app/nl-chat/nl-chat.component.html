@@ -176,7 +176,7 @@
 
   <div class="chat-composer uk-padding-small">
     <div class="composer-shell" [class.focus]="isFocused()">
-      <textarea [(ngModel)]="inputText" [disabled]="loading()"
+      <textarea [formControl]="messageControl"
                 [placeholder]="phase() === 'options' ? 'e.g., Blue bars with dark background': 'e.g., Show me publications per year'"
                 (keydown.enter)="send()" (focus)="isFocused.set(true)" (blur)="isFocused.set(false)"
                 cdkTextareaAutosize cdkAutosizeMinRows="1" cdkAutosizeMaxRows="5">

@@ -1,16 +1,18 @@
 import {
   afterRenderEffect,
+  ChangeDetectionStrategy,
   Component,
   DestroyRef,
+  effect,
   ElementRef,
   inject,
   input,
   output,
   signal,
-  ViewChild, OnInit
+  viewChild, OnInit
 } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import {
   ChartInfo,
   ChatResponse,
@@ -35,14 +37,15 @@ interface Message {
   selector: 'app-nl-chat',
   standalone: true,
   imports: [
-    FormsModule,
+    ReactiveFormsModule,
     TextFieldModule,
     MarkdownModule,
     MatCard,
     MatCardContent
   ],
   templateUrl: './nl-chat.component.html',
-  styleUrl: './nl-chat.component.less'
+  styleUrl: './nl-chat.component.less',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class NlChatComponent implements OnInit {
   private destroyRef = inject(DestroyRef);
@@ -50,8 +53,8 @@ export class NlChatComponent implements OnInit {
   private profileService = inject(MappingProfilesService);
   private diagramCategoryService = inject(DiagramCategoryService);
 
-  // ViewChild references for message containers
-  @ViewChild('messagesContainer') messagesContainer?: ElementRef;
+  // The container of the conversation, which is only there once there are messages
+  messagesContainer = viewChild<ElementRef>('messagesContainer');
 
   phase = input<'query' | 'options'>('query');
 
@@ -79,7 +82,8 @@ export class NlChatComponent implements OnInit {
   optionsSig = signal<string | undefined>(undefined);
   optionsJson = signal<string | undefined>(undefined);
 
-  inputText = signal<string>('');
+  messageControl = new FormControl('', { nonNullable: true });
+  inputText = toSignal(this.messageControl.valueChanges, { initialValue: '' });
   loading = signal<boolean>(false);
   isFocused = signal(false);
   // phase = signal<'query' | 'options' | 'done'>('query');
@@ -90,6 +94,14 @@ export class NlChatComponent implements OnInit {
     afterRenderEffect(() => {
       this.queryMessages(); // track the signal
       this.scrollToBottom();
+    });
+
+    // The text box is locked while an answer is awaited.
+    effect(() => {
+      if (this.loading())
+        this.messageControl.disable({ emitEvent: false });
+      else
+        this.messageControl.enable({ emitEvent: false });
     });
   }
 
@@ -114,8 +126,9 @@ export class NlChatComponent implements OnInit {
 
   private scrollToBottom(): void {
     try {
-      if (this.messagesContainer) {
-        const element = this.messagesContainer.nativeElement;
+      const container = this.messagesContainer();
+      if (container) {
+        const element = container.nativeElement;
         setTimeout(() => {
           element.scrollTop = element.scrollHeight;
         });
@@ -126,10 +139,10 @@ export class NlChatComponent implements OnInit {
   }
 
   send(): void {
-    const text = this.inputText().trim();
+    const text = this.messageControl.value.trim();
     if (!text || this.loading()) return;
 
-    this.inputText.set('');
+    this.messageControl.setValue('');
     this.loading.set(true);
     this.error.set(null);
 
@@ -231,7 +244,7 @@ export class NlChatComponent implements OnInit {
     this.canonicalDescription.set(undefined);
     this.optionsSig.set(undefined);
 
-    this.inputText.set('');
+    this.messageControl.setValue('');
     this.loading.set(false);
     // this.phase.set('query');
     this.chartData.set(null);
