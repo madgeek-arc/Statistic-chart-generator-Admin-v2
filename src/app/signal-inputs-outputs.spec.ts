@@ -17,7 +17,8 @@ class ChartFrameHostComponent {
 }
 
 @Component({
-  template: `<generated-short-url-field [shortUrl]="url$" [isUrlLoading]="loading$"></generated-short-url-field>`,
+  // The header names each field with a plain attribute.
+  template: `<generated-short-url-field dataName="Chart" [shortUrl]="url$" [isUrlLoading]="loading$"></generated-short-url-field>`,
   imports: [GeneratedShortUrlFieldComponent]
 })
 class ShortUrlHostComponent {
@@ -50,6 +51,13 @@ describe('generated-short-url-field with aliased signal inputs', () => {
     fixture.detectChanges();
 
     expect(fixture.nativeElement.querySelector('a.url-holder').textContent.trim()).toBe('https://tinyurl.com/abc');
+  });
+
+  it('titles the field with the name passed through the dataName alias', () => {
+    const fixture = TestBed.createComponent(ShortUrlHostComponent);
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.querySelector('h6').textContent.trim()).toBe('Chart TinyUrl');
   });
 
   it('shows the loading state passed through the isUrlLoading alias instead of the URL', () => {

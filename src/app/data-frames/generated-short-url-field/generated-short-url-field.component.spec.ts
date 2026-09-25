@@ -22,4 +22,9 @@ describe('GeneratedShortUrlFieldComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  // The dashboard shows its fields without a name.
+  it('has no title without a name', () => {
+    expect(fixture.nativeElement.querySelector('h6')).toBeNull();
+  });
 });

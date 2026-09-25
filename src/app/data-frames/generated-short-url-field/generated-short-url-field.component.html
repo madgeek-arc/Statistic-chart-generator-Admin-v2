@@ -1,6 +1,6 @@
 <div class="uk-flex uk-flex-column uk-margin-bottom">
-  @if (field_name) {
-    <h6 class="uk-text-center uk-margin-bottom">{{ field_name }} TinyUrl</h6>
+  @if (fieldName(); as name) {
+    <h6 class="uk-text-center uk-margin-bottom">{{ name }} TinyUrl</h6>
   }
 
   <div class="uk-flex uk-margin-bottom">

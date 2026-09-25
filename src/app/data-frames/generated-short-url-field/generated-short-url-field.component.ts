@@ -1,5 +1,5 @@
 import { first } from 'rxjs/operators';
-import { ChangeDetectionStrategy, Component, Input, signal, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, signal, input } from '@angular/core';
 import { Observable } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 
@@ -12,7 +12,7 @@ import { AsyncPipe } from '@angular/common';
 })
 export class GeneratedShortUrlFieldComponent {
 
-  @Input('dataName') field_name: string | undefined;
+  readonly fieldName = input<string>(undefined, { alias: 'dataName' });
   readonly url$ = input<Observable<string>>(undefined, { alias: 'shortUrl' });
   readonly isUrlLoading$ = input<Observable<boolean>>(undefined, { alias: 'isUrlLoading' });
 
