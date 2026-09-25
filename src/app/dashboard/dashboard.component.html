@@ -13,11 +13,11 @@
 
             <!-- Step 0: View -->
             <li class="uk-parent nav-step"
-                [class.nav-step--active]="currentStep === 0"
-                [class.nav-step--done]="currentStep > 0">
+                [class.nav-step--active]="currentStep() === 0"
+                [class.nav-step--done]="currentStep() > 0">
               <a class="uk-flex uk-flex-middle nav-step-link" role="button" tabindex="0" (keydown.enter)="$any($event.currentTarget).click()" (keydown.space)="$event.preventDefault(); $any($event.currentTarget).click()" (click)="onNavClick($event, 0)">
                 <div class="nav-step-icon uk-width-auto">
-                  @if (currentStep > 0) {
+                  @if (currentStep() > 0) {
                     <span class="material-symbols-outlined nav-icon-check">check_circle</span>
                   } @else {
                     <span class="material-symbols-outlined nav-icon">group</span>
@@ -26,8 +26,8 @@
                 <div class="uk-width-expand@l uk-margin-small-left hide-on-close">
                   <div class="nav-step-title">View</div>
                   <div class="nav-step-subtitle">
-                    @if (selectedProfileDetails) {
-                      {{selectedProfileDetails.name}}
+                    @if (selectedProfileDetails(); as profileDetails) {
+                      {{profileDetails.name}}
                     } @else { Choose the data source }
                   </div>
                 </div>
@@ -36,12 +36,12 @@
 
             <!-- Step 1: Chart type -->
             <li class="uk-parent nav-step"
-                [class.nav-step--active]="currentStep === 1"
-                [class.nav-step--done]="currentStep > 1"
+                [class.nav-step--active]="currentStep() === 1"
+                [class.nav-step--done]="currentStep() > 1"
                 [class.nav-step--locked]="!view.get('profile')?.value">
               <a class="uk-flex uk-flex-middle nav-step-link" role="button" tabindex="0" (keydown.enter)="$any($event.currentTarget).click()" (keydown.space)="$event.preventDefault(); $any($event.currentTarget).click()" (click)="onNavClick($event, 1)">
                 <div class="nav-step-icon uk-width-auto">
-                  @if (currentStep > 1) {
+                  @if (currentStep() > 1) {
                     <span class="material-symbols-outlined nav-icon-check">check_circle</span>
                   } @else {
                     <span class="material-symbols-outlined nav-icon">bar_chart</span>
@@ -50,8 +50,8 @@
                 <div class="uk-width-expand@l uk-margin-small-left hide-on-close">
                   <div class="nav-step-title">Chart type</div>
                   <div class="nav-step-subtitle">
-                    @if (selectedChartDetails) {
-                      {{ selectedChartDetails.name }}
+                    @if (selectedChartDetails(); as chartDetails) {
+                      {{ chartDetails.name }}
                     } @else { Pick a visualization }
                   </div>
                 </div>
@@ -63,12 +63,12 @@
 
             <!-- Step 2: Data — has DESIGN label injected via CSS ::before -->
             <li class="uk-parent nav-step nav-design-first"
-                [class.nav-step--active]="currentStep === 2"
-                [class.nav-step--done]="currentStep > 2"
-                [class.nav-step--locked]="!hasDataAndDiagramType">
+                [class.nav-step--active]="currentStep() === 2"
+                [class.nav-step--done]="currentStep() > 2"
+                [class.nav-step--locked]="!hasDataAndDiagramType()">
               <a class="uk-flex uk-flex-middle nav-step-link" role="button" tabindex="0" (keydown.enter)="$any($event.currentTarget).click()" (keydown.space)="$event.preventDefault(); $any($event.currentTarget).click()" (click)="onNavClick($event, 2)">
                 <div class="nav-step-icon uk-width-auto">
-                  @if (currentStep > 2) {
+                  @if (currentStep() > 2) {
                     <span class="material-symbols-outlined nav-icon-check">check_circle</span>
                   } @else {
                     <span class="material-symbols-outlined nav-icon">database</span>
@@ -78,7 +78,7 @@
                   <div class="nav-step-title">Data</div>
                   <div class="nav-step-subtitle">Describe the data you want</div>
                 </div>
-                @if (!hasDataAndDiagramType) {
+                @if (!hasDataAndDiagramType()) {
                   <span class="material-symbols-outlined nav-lock-icon hide-on-close">edit</span>
                 }
               </a>
@@ -86,8 +86,8 @@
 
             <!-- Step 3: Appearance -->
             <li class="uk-parent nav-step"
-                [class.nav-step--active]="currentStep === 3"
-                [class.nav-step--locked]="!hasDataAndDiagramType">
+                [class.nav-step--active]="currentStep() === 3"
+                [class.nav-step--locked]="!hasDataAndDiagramType()">
               <a class="uk-flex uk-flex-middle nav-step-link" role="button" tabindex="0" (keydown.enter)="$any($event.currentTarget).click()" (keydown.space)="$event.preventDefault(); $any($event.currentTarget).click()" (click)="onNavClick($event, 3)">
                 <div class="nav-step-icon uk-width-auto">
                   <span class="material-symbols-outlined nav-icon">tune</span>
@@ -96,7 +96,7 @@
                   <div class="nav-step-title">Appearance</div>
                   <div class="nav-step-subtitle">Style the chart</div>
                 </div>
-                @if (!hasDataAndDiagramType) {
+                @if (!hasDataAndDiagramType()) {
                   <span class="material-symbols-outlined nav-lock-icon hide-on-close">edit</span>
                 }
               </a>
@@ -119,10 +119,10 @@
                 </app-view-selector>
               </li>
               <li class="" style="animation-duration: 200ms;">
-                <app-category-selector (selectedChartChange)="selectedChartDetails = $event"></app-category-selector>
+                <app-category-selector (selectedChartChange)="selectedChartDetails.set($event)"></app-category-selector>
               </li>
               <li class="" style="animation-duration: 200ms;">
-                @if (hasDataAndDiagramType) {
+                @if (hasDataAndDiagramType()) {
 
                   <div class="step-wrapper uk-padding-small">
                     <div class="step-header">
@@ -195,7 +195,7 @@
                 }
               </li>
               <li class="" >
-                @if (this.hasDataAndDiagramType) {
+                @if (hasDataAndDiagramType()) {
 
                   <div class="step-wrapper uk-padding-small">
                     <div class="step-header">
@@ -260,30 +260,30 @@
             </ul>
           </div>
           <!-- Action bar — outside scrollable so it's always visible -->
-          @if (currentStep === 0) {
+          @if (currentStep() === 0) {
             <div class="action-bar-view">
               <span class="action-selection-label">
-                @if (selectedProfileDetails) {
-                  Selected: <strong>{{ selectedProfileDetails.name }}</strong>
+                @if (selectedProfileDetails(); as profileDetails) {
+                  Selected: <strong>{{ profileDetails.name }}</strong>
                 } @else {
                   Pick a view to begin
                 }
               </span>
-              <button class="action-btn-continue" [disabled]="!selectedProfileDetails" (click)="continueFromView()">
+              <button class="action-btn-continue" [disabled]="!selectedProfileDetails()" (click)="continueFromView()">
                 CONTINUE TO CHART TYPE →
               </button>
             </div>
-          } @else if (currentStep === 1) {
+          } @else if (currentStep() === 1) {
             <div class="action-bar-view">
               <button class="action-btn-back" (click)="backToView()">← BACK</button>
               <span class="action-selection-label">
-                @if (selectedChartDetails) {
-                  Chart type: <strong>{{ selectedChartDetails.name }}</strong>
+                @if (selectedChartDetails(); as chartDetails) {
+                  Chart type: <strong>{{ chartDetails.name }}</strong>
                 } @else {
                   Pick a chart type to continue
                 }
               </span>
-              <button class="action-btn-continue" [disabled]="!selectedChartDetails" (click)="continueFromChartType(2)">
+              <button class="action-btn-continue" [disabled]="!selectedChartDetails()" (click)="continueFromChartType(2)">
                 CONTINUE TO DATA →
               </button>
             </div>
@@ -300,36 +300,36 @@
           <div class="scrollable">
             <div class="uk-section uk-padding-remove uk-section-primary uk-preserve-color">
 
-              @if (currentStep === 0) {
+              @if (currentStep() === 0) {
                 <div class="vd-panel-header">
                   <span class="material-symbols-outlined vd-panel-icon">info</span>
                   <span class="vd-panel-title">View details</span>
                 </div>
                 <div class="vd-panel">
-                  @if (selectedProfileDetails) {
+                  @if (selectedProfileDetails(); as profileDetails) {
                     <div class="vd-title-row">
-                      <div class="vd-avatar" [style.background]="getAvatarColor(selectedProfileDetails.name)">
-                        {{ getAvatarText(selectedProfileDetails.name) }}
+                      <div class="vd-avatar" [style.background]="getAvatarColor(profileDetails.name)">
+                        {{ getAvatarText(profileDetails.name) }}
                       </div>
                       <div>
-                        <div class="vd-name">{{ selectedProfileDetails.name }}</div>
+                        <div class="vd-name">{{ profileDetails.name }}</div>
                         <div class="vd-handle">
                           <span class="material-symbols-outlined vd-handle-icon">database</span>
-                          {{ selectedProfileDetails.usage }}
+                          {{ profileDetails.usage }}
                         </div>
                       </div>
                     </div>
-                    <p class="vd-desc">{{ selectedProfileDetails.description }}</p>
+                    <p class="vd-desc">{{ profileDetails.description }}</p>
                     <div class="vd-tags">
-                      @for (tag of selectedProfileDetails.shareholders; track tag) {
+                      @for (tag of profileDetails.shareholders; track tag) {
                         <span class="vd-tag">{{ tag }}</span>
                       }
                     </div>
-                    @if (selectedProfileDetails.complexity >= 0) {
+                    @if (profileDetails.complexity >= 0) {
                       <div class="vd-stats">
                         <div class="vd-stat">
                           <div class="vd-stat-label">ROWS</div>
-                          <div class="vd-stat-value">{{ selectedProfileDetails.complexity }}M</div>
+                          <div class="vd-stat-value">{{ profileDetails.complexity }}M</div>
                         </div>
                       </div>
                     }
@@ -342,18 +342,18 @@
                   }
                 </div>
               }
-              @if (currentStep === 1) {
+              @if (currentStep() === 1) {
                 <div class="vd-panel-header">
                   <span class="material-symbols-outlined vd-panel-icon">visibility</span>
                   <span class="vd-panel-title">
-                    @if (selectedChartDetails) { {{ selectedChartDetails.name }} preview }
+                    @if (selectedChartDetails(); as chartDetails) { {{ chartDetails.name }} preview }
                     @else { Chart preview }
                   </span>
                 </div>
                 <div class="ct-panel">
-                  @if (selectedChartDetails) {
+                  @if (selectedChartDetails(); as chartDetails) {
                     <div class="ct-preview">
-                      <img [ngSrc]="'/assets/' + selectedChartDetails.imageURL" width="176" height="112" [alt]="selectedChartDetails.name" class="ct-preview-img uk-width-auto" />
+                      <img [ngSrc]="'/assets/' + chartDetails.imageURL" width="176" height="112" [alt]="chartDetails.name" class="ct-preview-img uk-width-auto" />
                     </div>
                     <div class="ct-about">
                       <div class="ct-about-header">
@@ -361,19 +361,19 @@
                         <span class="ct-about-title">About this chart</span>
                       </div>
                       <div class="ct-about-panel">
-                        @if (getChartMeta(selectedChartDetails.type)?.bestFor) {
-                          <p class="ct-best-for"><strong>Best for:</strong> {{ getChartMeta(selectedChartDetails.type)?.bestFor }}</p>
+                        @if (getChartMeta(chartDetails.type)?.bestFor) {
+                          <p class="ct-best-for"><strong>Best for:</strong> {{ getChartMeta(chartDetails.type)?.bestFor }}</p>
                         }
-                        @if (getChartMeta(selectedChartDetails.type)?.tags?.length) {
+                        @if (getChartMeta(chartDetails.type)?.tags?.length) {
                           <div class="ct-tags uk-margin-top">
-                            @for (tag of getChartMeta(selectedChartDetails.type)!.tags; track tag) {
+                            @for (tag of getChartMeta(chartDetails.type)!.tags; track tag) {
                               <span class="ct-tag">{{ tag }}</span>
                             }
                           </div>
                         }
-                        @if (getChartMeta(selectedChartDetails.type)?.tips?.length) {
+                        @if (getChartMeta(chartDetails.type)?.tips?.length) {
                           <div class="uk-margin-top">
-                            @for (tip of getChartMeta(selectedChartDetails.type)?.tips ?? []; track tip.text) {
+                            @for (tip of getChartMeta(chartDetails.type)?.tips ?? []; track tip.text) {
                               <div class="ct-tip">
                                 <span class="material-symbols-outlined ct-tip-icon" [class.ct-tip-icon--check]="tip.type === 'check'">
                                   {{ tip.type === 'check' ? 'check_circle' : 'info' }}
@@ -397,12 +397,12 @@
 
               <div class="uk-container uk-container-expand uk-margin-medium-top">
 
-                <div class="iframe-container" [style.display]="currentStep === 0 || currentStep === 1 ? 'none' : 'block'">
+                <div class="iframe-container" [style.display]="currentStep() === 0 || currentStep() === 1 ? 'none' : 'block'">
 
                   <div>
                     @if ((chartExportingService.chartUrl$ | async) !== null) {
                       <div>
-                        @if (hasChanges) {
+                        @if (hasChanges()) {
                           <div class="uk-alert-warning" uk-alert>
                             <p class="uk-text-bold">Your chart is not up to date</p>
                             <p>You updated the values in the control panel, but the chart was not updated automatically. Run the query by clicking on the "Create Chart" button.</p>

@@ -1,4 +1,4 @@
-import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { AbstractControl, FormArray, FormControl, FormGroup } from '@angular/forms';
 import { DynamicFormHandlingService } from "../services/dynamic-form-handling-service/dynamic-form-handling.service";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
@@ -7,6 +7,7 @@ import { FormFactoryService } from "../services/form-factory-service/form-factor
 import { MappingProfilesService, Profile } from "../services/mapping-profiles-service/mapping-profiles.service";
 import { ChartInfo, OptionsData } from "../services/nl-chat-service/nl-chat.service";
 import { ISupportedCategory } from '../services/supported-chart-types-service/supported-chart-types.service';
+import { refreshOnFormChanges } from '../shared/refresh-on-form-changes';
 import { DiagramCategoryService } from "../services/diagram-category-service/diagram-category.service";
 import { distinctUntilChanged } from "rxjs/operators";
 import UIkit from 'uikit';
@@ -24,6 +25,7 @@ import { AsyncPipe, NgOptimizedImage } from '@angular/common';
     selector: 'app-dashboard',
     templateUrl: './dashboard.component.html',
     styleUrl: './dashboard.component.less',
+    changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [ViewSelectorComponent, CategorySelectorComponent, DataseriesSelectorComponent, NlChatComponent, CustomiseAppearanceComponent, ChartFrameComponent, GeneratedShortUrlFieldComponent, MatTabGroup, MatTab, AsyncPipe, NgOptimizedImage]
 })
 
@@ -41,13 +43,13 @@ export class DashboardComponent implements OnInit {
   activeAppearanceTab = signal('builder');
   nlQuery = signal<boolean>(false);
   nlAppearance = signal<boolean>(false);
-  currentStep = 0;
-  selectedProfileDetails: Profile | null = null;
-  selectedChartDetails: ISupportedCategory | null = null;
-  hasChanges = false;
+  currentStep = signal(0);
+  selectedProfileDetails = signal<Profile | null>(null);
+  selectedChartDetails = signal<ISupportedCategory | null>(null);
+  hasChanges = signal(false);
 
   open = true;
-  hasDataAndDiagramType = false;
+  hasDataAndDiagramType = signal(false);
 
   chartInfo: ChartInfo[] | null = null;
   appearanceFromChat: OptionsData | null = null;
@@ -66,6 +68,11 @@ export class DashboardComponent implements OnInit {
     kpi:     { bestFor: 'Highlight a single important number', tags: ['metric', 'summary'], tips: [{ type: 'check', text: 'Ideal for dashboards and overviews' }, { type: 'info', text: 'Pair with a trend indicator for context' }] },
     map:     { bestFor: 'Show geographic distribution across regions', tags: ['geographic', 'spatial'], tips: [{ type: 'check', text: 'Requires a region or country dimension' }, { type: 'info', text: 'Use colour intensity to encode values' }] },
   };
+
+  constructor() {
+    // The panels edit the form, and its validity and values are shown in the nav and the action bar.
+    refreshOnFormChanges(this.formFactory.root);
+  }
 
 	ngOnInit(): void {
 
@@ -100,7 +107,7 @@ export class DashboardComponent implements OnInit {
 
     this.diagramSettings.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(value => {
       this.dynamicFormHandlingService.formSchemaObject = value;
-      this.hasChanges = true;
+      this.hasChanges.set(true);
     });
   }
 
@@ -133,7 +140,7 @@ export class DashboardComponent implements OnInit {
 
     this.checkDisabledTabs();
 
-    this.currentStep = step;
+    this.currentStep.set(step);
     setTimeout(() => {
       UIkit.switcher('#navTab').show(step);
       this.scrollLeftColumnToTop();
@@ -142,7 +149,7 @@ export class DashboardComponent implements OnInit {
   }
 
 	checkDisabledTabs() {
-    this.hasDataAndDiagramType = !!(this.view.get('profile')?.value && this.category.get('diagram')?.get('type')?.value);
+    this.hasDataAndDiagramType.set(!!(this.view.get('profile')?.value && this.category.get('diagram')?.get('type')?.value));
 	}
 
 	resetForm(): void {
@@ -178,7 +185,7 @@ export class DashboardComponent implements OnInit {
   }
 
 	submitData() {
-    this.hasChanges = false;
+    this.hasChanges.set(false);
     if (this.nlQuery() || this.nlAppearance()) {
       this.dynamicFormHandlingService.submitNLQuery(this.chartInfo, this.appearanceFromChat);
       return;
@@ -198,7 +205,7 @@ export class DashboardComponent implements OnInit {
     this.nlAppearance.set(false);
     this.appearanceFromChat = null;
 
-    this.currentStep = 0;
+    this.currentStep.set(0);
 
     // Reset chart, table, rawChartData, rawData objects.
     this.chartExportingService.clearChartUrls();
@@ -208,24 +215,24 @@ export class DashboardComponent implements OnInit {
 
   onNavClick(event: Event, step: number): void {
 
-    if (step === 1 && this.selectedProfileDetails) {
+    if (step === 1 && this.selectedProfileDetails()) {
       this.continueFromView();
       return;
     }
 
-    if ((step === 2 || step === 3) && this.selectedProfileDetails && this.selectedChartDetails) {
+    if ((step === 2 || step === 3) && this.selectedProfileDetails() && this.selectedChartDetails()) {
       this.continueFromChartType(step);
       return;
     }
 
     this.checkDisabledTabs();
-    if (((step === 2 || step === 3) && !this.hasDataAndDiagramType)
+    if (((step === 2 || step === 3) && !this.hasDataAndDiagramType())
       || ((step === 1) && !this.profile.value)) {
       event.preventDefault();
       event.stopPropagation();
       return;
     }
-    this.currentStep = step;
+    this.currentStep.set(step);
     setTimeout(() => this.scrollLeftColumnToTop(), 0);
   }
 
@@ -234,19 +241,20 @@ export class DashboardComponent implements OnInit {
   }
 
   continueFromChartType(step: number): void {
-    if (!this.selectedChartDetails) return;
+    const chart = this.selectedChartDetails();
+    if (!chart) return;
 
     (this.category.get('diagram.supportedLibraries') as FormArray).clear();
-    this.selectedChartDetails.supportedLibraries.forEach(lib => {
+    chart.supportedLibraries.forEach(lib => {
       (this.category.get('diagram.supportedLibraries') as FormArray).push(new FormControl<string | null>(lib));
     });
-    this.category.get('diagram').setValue(this.selectedChartDetails);
-    this.diagramCategoryService.changeDiagramCategory(this.selectedChartDetails);
+    this.category.get('diagram').setValue(chart);
+    this.diagramCategoryService.changeDiagramCategory(chart);
 
 
     // Reset the chartType of all dataseries to null. So chart type change can take place.
     // The above issue occurs when loading a chart from url.
-    if (this.selectedChartDetails.name !== 'combo') {
+    if (chart.name !== 'combo') {
       this.dataseries.controls.forEach((control: AbstractControl) => {
         control.get('chartProperties.chartType').setValue(null);
       });
@@ -256,13 +264,14 @@ export class DashboardComponent implements OnInit {
   }
 
   continueFromView(): void {
-    if (!this.selectedProfileDetails) return;
-    this.profile.setValue(this.selectedProfileDetails.name);
+    const selected = this.selectedProfileDetails();
+    if (!selected) return;
+    this.profile.setValue(selected.name);
     this.updateStepper(1);
   }
 
   profileChange(event: {profile: Profile, manualChange: boolean}) {
-    this.selectedProfileDetails = event.profile;
+    this.selectedProfileDetails.set(event.profile);
     if (event.manualChange) {
       this.clearData();
     }
