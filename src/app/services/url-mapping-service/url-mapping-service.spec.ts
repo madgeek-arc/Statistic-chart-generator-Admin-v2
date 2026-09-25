@@ -1,11 +1,17 @@
 import { TestBed } from '@angular/core/testing';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { of } from 'rxjs';
+import { filter } from 'rxjs/operators';
+import { provideHttpClient } from '@angular/common/http';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 
 import { UrlMappingService } from './url-mapping-service';
 import { DynamicFormHandlingService } from '../dynamic-form-handling-service/dynamic-form-handling.service';
 import { DynamicTreeDatabase } from '../dynamic-tree-database/dynamic-tree-database.service';
 import { DiagramCategoryService } from '../diagram-category-service/diagram-category.service';
+import { MappingProfilesService } from '../mapping-profiles-service/mapping-profiles.service';
+import { UrlProviderService } from '../url-provider-service/url-provider.service';
+import { answerProfile, entityNode, profileNamed } from '../dynamic-tree-database/dynamic-tree-database.testing';
 import { FormFactoryService } from '../form-factory-service/form-factory-service';
 import { CachedEntityNode } from '../../dashboard/helper-components/select-attribute/dynamic-entity-tree/entity-tree-nodes.types';
 import { HighChartsChart } from '../supported-libraries-service/models/chart-description-HighCharts.model';
@@ -565,5 +571,76 @@ describe('URL load into the dashboard form: combo chart', () => {
 
     expect(queriesOf(actual).map((q: { type: string, name: string, query: unknown }) => [q.type, q.name, q.query]))
       .toEqual(given.chartDescription.queries.map(q => [q.type, q.name, q.query]));
+  });
+});
+
+// The header's Load field, with the dashboard already on another profile. Field types are looked
+// up in the entity map, so the link's own profile has to be loaded before the form is rebuilt.
+describe('Loading a chart link of another profile into a dashboard in use', () => {
+  // The parts of the rebuilt form these specs read.
+  interface LoadedForm {
+    dataseries: { data: {
+      xaxisData: { xaxisEntityField: unknown }[];
+      filters: { groupFilters: { field: unknown }[] }[];
+    } }[];
+  }
+
+  let urlMappingService: UrlMappingService;
+  let formHandlingService: DynamicFormHandlingService;
+  let http: HttpTestingController;
+  let serviceUrl: string;
+  let loadedForms: LoadedForm[];
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        {
+          provide: DiagramCategoryService, useValue: {
+            availableDiagrams,
+            supportedMaps,
+            selectedDiagramCategory: { type: 'column' },
+            changeDiagramCategory: () => { /* no-op: nothing here reads the service's own selection state */ }
+          }
+        },
+        { provide: FormFactoryService, useValue: { getFormRoot: fakeFormRoot } }
+      ]
+    });
+    urlMappingService = TestBed.inject(UrlMappingService);
+    formHandlingService = TestBed.inject(DynamicFormHandlingService);
+    http = TestBed.inject(HttpTestingController);
+    serviceUrl = TestBed.inject(UrlProviderService).serviceURL;
+
+    http.expectOne(serviceUrl + '/schema/profiles').flush([profileNamed('openaire'), profileNamed('gr_monitor')]);
+    TestBed.inject(MappingProfilesService).changeSelectedProfile('openaire');
+    answerProfile(http, serviceUrl, 'openaire', [entityNode('result', { title: 'text' })]);
+
+    loadedForms = [];
+    formHandlingService.jsonLoaded.pipe(filter(loaded => loaded))
+      .subscribe(() => loadedForms.push(formHandlingService.loadFormObject as LoadedForm));
+  });
+
+  const answerGrMonitor = () => answerProfile(http, serviceUrl, 'gr_monitor', [
+    entityNode('result_result', { source_type: 'text', target_type: 'text', relclass: 'text' }, ['result']),
+    entityNode('result', { year: 'int' })
+  ]);
+
+  it('waits for the link\'s profile before rebuilding the form', () => {
+    urlMappingService.updateFormObjet(highChartsComboFixture());
+    expect(loadedForms).toEqual([]);
+
+    answerGrMonitor();
+
+    expect(loadedForms.length).toBe(1);
+  });
+
+  it('types the loaded fields from the link\'s profile', () => {
+    urlMappingService.updateFormObjet(highChartsComboFixture());
+    answerGrMonitor();
+
+    const dataseries = loadedForms[0].dataseries[0].data;
+    expect(dataseries.xaxisData[0].xaxisEntityField).toEqual({ name: 'result_result.result.year', type: 'int' });
+    expect(dataseries.filters[0].groupFilters[2].field).toEqual({ name: 'result_result.result.year', type: 'int' });
   });
 });

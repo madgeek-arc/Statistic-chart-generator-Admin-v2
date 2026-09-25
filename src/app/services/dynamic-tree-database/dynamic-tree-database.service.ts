@@ -26,6 +26,9 @@ export class DynamicTreeDatabase {
 	public get entityMap(): Map<string, CachedEntityNode> { return this._entityMap$.getValue() as Map<string, CachedEntityNode>; }
 	public get entityMap$() { return this._entityMap$.asObservable(); }
 	private _entityMap$ = new BehaviorSubject<Map<string, CachedEntityNode> | null>(null);
+	// The profile the loaded map belongs to, and the profile asked for last.
+	private entityMapProfile: string | null = null;
+	private requestedProfile: string | null = null;
 
 	constructor() {
 
@@ -51,6 +54,16 @@ export class DynamicTreeDatabase {
 			profile = new Profile();
 		}
 
+		const name = profile.name;
+		this.requestedProfile = name;
+
+		// The loaded map belongs to the previous profile. Drop it, so that whatever asks for entities
+		// while this one loads waits for them, instead of taking the previous profile's.
+		if (this.entityMapProfile !== name) {
+			this.entityMapProfile = null;
+			this._entityMap$.next(null);
+		}
+
 		this.dbService.getAvailableEntities(profile).pipe(first()).subscribe((entityNames: string[]) => {
       const entityMap = new Map<string, CachedEntityNode>(new Map<string, CachedEntityNode>());
 
@@ -62,7 +75,9 @@ export class DynamicTreeDatabase {
         for (let index = 0; index < entityNames.length; index++)
           entityMap.set(entityNames[index], cachedEntityNodes[index]);
 
-        if (entityMap.size > 0) {
+        // Another profile has been asked for since, so this answer is stale.
+        if (entityMap.size > 0 && this.requestedProfile === name) {
+          this.entityMapProfile = name;
           this._entityMap$.next(entityMap);
         }
       });

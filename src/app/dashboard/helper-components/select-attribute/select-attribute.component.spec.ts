@@ -1,12 +1,17 @@
 import { Component } from '@angular/core';
 import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { FormControl } from '@angular/forms';
+import { provideHttpClient } from '@angular/common/http';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { BehaviorSubject } from 'rxjs';
 import { filter, first } from 'rxjs/operators';
 
 import { SelectAttributeComponent } from './select-attribute.component';
 import { CachedEntityNode, DynamicEntityNode, FieldNode } from './dynamic-entity-tree/entity-tree-nodes.types';
 import { DynamicTreeDatabase } from '../../../services/dynamic-tree-database/dynamic-tree-database.service';
+import { answerProfile, entityNode, profileNamed } from '../../../services/dynamic-tree-database/dynamic-tree-database.testing';
+import { MappingProfilesService } from '../../../services/mapping-profiles-service/mapping-profiles.service';
+import { UrlProviderService } from '../../../services/url-provider-service/url-provider.service';
 
 @Component({
     template: `<select-attribute [formInput]="control" [chosenEntity]="null"></select-attribute>`,
@@ -156,5 +161,60 @@ describe('SelectAttributeComponent rendered', () => {
     expect(button().textContent).toContain('Year');
     expect(fixture.componentInstance.control.value?.name).toBe('result.year');
     settle();
+  }));
+});
+
+// Loading a chart link of another profile into a dashboard that is in use: the profile changes
+// underneath fields that are already asking for their entity. OpenAIRE All-inclusive has no
+// result_result entity, and the gr_monitor link is built on it.
+describe('SelectAttributeComponent when the profile changes while its entities load', () => {
+  let fixture: ComponentFixture<DashboardLikeHostComponent>;
+  let http: HttpTestingController;
+  let serviceUrl: string;
+  let profiles: MappingProfilesService;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [DashboardLikeHostComponent],
+      providers: [provideHttpClient(), provideHttpClientTesting()]
+    });
+    http = TestBed.inject(HttpTestingController);
+    serviceUrl = TestBed.inject(UrlProviderService).serviceURL;
+    profiles = TestBed.inject(MappingProfilesService);
+    TestBed.inject(DynamicTreeDatabase);
+    http.expectOne(serviceUrl + '/schema/profiles').flush([profileNamed('openaire'), profileNamed('gr_monitor')]);
+
+    profiles.changeSelectedProfile('openaire');
+    answerProfile(http, serviceUrl, 'openaire', [entityNode('result', { title: 'text' })]);
+    fixture = TestBed.createComponent(DashboardLikeHostComponent);
+  });
+
+  const button = (): HTMLButtonElement => fixture.nativeElement.querySelector('button');
+
+  it('shows the saved field of an entity that only the new profile has', fakeAsync(() => {
+    profiles.changeSelectedProfile('gr_monitor');
+    fixture.componentInstance.entity = 'result_result';
+    fixture.componentInstance.control.setValue(field('result_result.relclass', 'text'));
+    fixture.detectChanges();
+
+    answerProfile(http, serviceUrl, 'gr_monitor', [entityNode('result_result', { relclass: 'text' })]);
+    tick(200);
+    fixture.detectChanges();
+
+    expect(button().textContent).toContain('Relclass');
+  }));
+
+  it('lists the new profile\'s fields for an entity both profiles have', fakeAsync(() => {
+    profiles.changeSelectedProfile('gr_monitor');
+    fixture.componentInstance.entity = 'result';
+    fixture.detectChanges();
+    button().click();
+    fixture.detectChanges();
+
+    answerProfile(http, serviceUrl, 'gr_monitor', [entityNode('result', { title: 'text', year: 'int' })]);
+    tick(200);
+    fixture.detectChanges();
+
+    expect(document.querySelector('.mat-mdc-menu-panel')?.textContent).toContain('Year');
   }));
 });
