@@ -50,6 +50,8 @@ const entityMap = new Map<string, CachedEntityNode>([
 
 const availableDiagrams = [
   { type: 'column', isPolar: false, diagramId: 1, supportedLibraries: ['HighCharts'] },
+  { type: 'line', isPolar: false, diagramId: 3, supportedLibraries: ['HighCharts'] },
+  { type: 'area', isPolar: false, diagramId: 4, supportedLibraries: ['HighCharts'] },
   { type: 'world', isPolar: false, diagramId: 2, supportedLibraries: ['HighMaps'] },
   // Same entry the real /chart/special endpoint returns (see supported-chart-types.service.spec.ts).
   { type: 'combo', isPolar: false, diagramId: 13, supportedLibraries: ['HighCharts', 'GoogleCharts', 'eCharts'] }
@@ -409,6 +411,51 @@ describe('URL round-trip: given chart JSON -> reconstructed form -> regenerated 
       const actual = regenerate(given) as HighChartsChart;
 
       expect(actual.chartDescription.colors[0]).toBe(given.chartDescription.queries[0].color);
+    });
+  });
+
+  // The container type is only the default for a series that has no type of its own, and the chart
+  // page on the server reads it that way. Every series the wizard writes has a type, so what matters
+  // is that the series keep theirs. A "line" container is the one the wizard rewrites, to the type its
+  // series show: charts drawn by older tools, like the "Total Citations" one, say "line" over columns.
+  describe('HighCharts container type', () => {
+    const withTypes = (container: string, seriesTypes: string[]) => {
+      const given = highChartsFixture();
+      given.chartDescription.chart.type = container;
+      given.chartDescription.queries.forEach((query: { type: string }, index: number) => query.type = seriesTypes[index]);
+      return given;
+    };
+    const regenerated = (container: string, seriesTypes: string[]) => {
+      const actual = regenerate(withTypes(container, seriesTypes)) as HighChartsChart;
+      return { container: actual.chartDescription.chart.type, series: actual.chartDescription.queries.map(query => query.type) };
+    };
+
+    it('makes a line container the type its series share', () => {
+      expect(regenerated('line', ['column', 'column']).container).toBe('column');
+      expect(regenerated('line', ['area', 'area']).container).toBe('area');
+    });
+
+    it('makes a line container with mixed series types a combo, whichever series comes first', () => {
+      expect(regenerated('line', ['column', 'line']).container).toBe('combo');
+      expect(regenerated('line', ['line', 'column']).container).toBe('combo');
+    });
+
+    it('keeps a line container whose series are all lines', () => {
+      expect(regenerated('line', ['line', 'line']).container).toBe('line');
+    });
+
+    it('keeps any other container type, even when its series differ from it', () => {
+      expect(regenerated('area', ['column', 'column']).container).toBe('area');
+      expect(regenerated('column', ['column', 'line']).container).toBe('column');
+    });
+
+    it('leaves every series with the type it was given', () => {
+      for (const [container, seriesTypes] of [
+        ['line', ['column', 'column']], ['line', ['column', 'line']], ['line', ['line', 'column']],
+        ['area', ['column', 'column']], ['column', ['line', 'line']]
+      ] as [string, string[]][]) {
+        expect(regenerated(container, seriesTypes).series).withContext(`${container} over ${seriesTypes}`).toEqual(seriesTypes);
+      }
     });
   });
 
