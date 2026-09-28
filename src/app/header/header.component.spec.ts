@@ -53,6 +53,14 @@ describe('HeaderComponent', () => {
     expect(link('Share').getAttribute('aria-disabled')).toBe('false');
   });
 
+  it('publishes the share URLs when Share is clicked', () => {
+    const publishURLS = spyOn(component.dynamicFormHandlingService, 'publishURLS');
+
+    link('Share').click();
+
+    expect(publishURLS).toHaveBeenCalled();
+  });
+
   it('shows the loading indicator while a chart file is read', () => {
     expect(el().querySelector('[role="status"]')).toBeNull();
 
