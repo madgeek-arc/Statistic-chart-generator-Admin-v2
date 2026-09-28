@@ -5,7 +5,7 @@ import type { ChartInfo as NlChartInfo } from "../../nl-chat-service/nl-chat.ser
 export class Query {
 
   name: string;
-  parameters: any[] = [];
+  parameters: unknown[] = [];
 
   limit: string;
   profile: string;

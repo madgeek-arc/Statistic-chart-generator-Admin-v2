@@ -59,8 +59,8 @@ export interface EntityFieldFormSchema {
 }
 
 export interface ChartPropertiesFormSchema {
-  chartType?: string;
-  dataseriesColor?: string;
+  chartType?: string | null;
+  dataseriesColor?: string | null;
   dataseriesName?: string;
   stackName?: string;
   stacking?: 'null' | 'normal' | 'percent' | 'stream' | 'overlap';

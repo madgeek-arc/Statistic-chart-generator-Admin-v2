@@ -242,7 +242,7 @@ export class DynamicFormHandlingService {
 			Object.keys(value).forEach(key => group.addControl(key, this.createControl(value[key])));
 			return group;
 		} else if (Array.isArray(value)) {
-			const array = new FormArray<any>([]);
+			const array = new FormArray<AbstractControl>([]);
 
 			value.forEach(item => array.push(this.createControl(item)));
 			return array;
@@ -324,8 +324,8 @@ export class DynamicFormHandlingService {
       });
 	}
 
-  mergeObjects(obj1: any, obj2: any): any {
-    const merged = { ...obj1 };
+  mergeObjects<T extends object>(obj1: T, obj2: Record<string, unknown>): T {
+    const merged: Record<string, unknown> = { ...obj1 } as Record<string, unknown>;
 
     for (const key in obj2) {
       if (Object.prototype.hasOwnProperty.call(obj2, key)) {
@@ -333,14 +333,14 @@ export class DynamicFormHandlingService {
         const value2 = obj2[key];
 
         if (value2 !== null && typeof value2 === 'object' && !Array.isArray(value2) && value1 !== null && typeof value1 === 'object' && !Array.isArray(value1)) {
-          merged[key] = this.mergeObjects(value1, value2);
+          merged[key] = this.mergeObjects(value1 as Record<string, unknown>, value2 as Record<string, unknown>);
         } else {
           merged[key] = value2;
         }
       }
     }
 
-    return merged;
+    return merged as T;
   }
 
 	public publishURLS() {

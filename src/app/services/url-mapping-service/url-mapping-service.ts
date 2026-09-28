@@ -2,13 +2,15 @@ import { inject, Injectable } from "@angular/core";
 import { DynamicFormHandlingService } from "../dynamic-form-handling-service/dynamic-form-handling.service";
 import { DiagramCategoryService } from "../diagram-category-service/diagram-category.service";
 import { ISupportedCategory } from "../supported-chart-types-service/supported-chart-types.service";
-import { ChartInfo, Query } from "../supported-libraries-service/models/chart-query.model";
+import { ChartInfo, Query, Select } from "../supported-libraries-service/models/chart-query.model";
+import { Filter, FilterGroup } from "../supported-libraries-service/models/query-filter.model";
 import { DynamicTreeDatabase } from "../dynamic-tree-database/dynamic-tree-database.service";
 import { filter, first } from "rxjs/operators";
 import { MappingProfilesService } from "../mapping-profiles-service/mapping-profiles.service";
 import {
   AppearanceFormSchema,
   ChartAppearanceFormSchema,
+  ChartPropertiesFormSchema,
   HighmapsOptionsFormSchema,
   SCGAFormSchema,
   TableAppearanceFormSchema
@@ -156,9 +158,9 @@ export class UrlMappingService {
         }));
 
         // 3d) chartProperties
-        const chartProperties = {
-          chartType: null as any,
-          dataseriesColor: null as any,
+        const chartProperties: ChartPropertiesFormSchema = {
+          chartType: null,
+          dataseriesColor: null,
           dataseriesName: 'Data (' + index + ')',
           stacking: 'null',
         };
@@ -216,15 +218,15 @@ export class UrlMappingService {
           },
         };
 
-        const xaxisData = (q.query?.select ?? []).slice(1).map((sel: any) => ({
+        const xaxisData = (q.query?.select ?? []).slice(1).map((sel: Select) => ({
           xaxisEntityField: {
             name: sel.field,
             type: this.getFieldType(q.query.entity, sel.field)
           }
         }));
 
-        const filters = (q.query?.filters ?? []).map((group: any) => ({
-          groupFilters: (group.groupFilters ?? []).map((f: any) => ({
+        const filters = (q.query?.filters ?? []).map((group: FilterGroup) => ({
+          groupFilters: (group.groupFilters ?? []).map((f: Filter) => ({
             field: {
               name: f.field,
               type: typeof f.values?.[0] === 'string' && /^\d+$/.test(f.values?.[0]) ? 'int' : 'text'
@@ -464,7 +466,7 @@ export class UrlMappingService {
       },
       hcDataLabels: {
         enabled: hcaOpts.plotOptions.series.dataLabels.enabled,
-        format: undefined as any,
+        format: undefined as string | undefined,
         style: {'textOutline': '2px contrast', 'stroke-width': 0} // Further inspect this!
       },
       hcZoomOptions: {

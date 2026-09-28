@@ -482,9 +482,9 @@ export class DiagramCreator {
 			if (appearanceOptions.chartAppearance.highmapsAppearanceOptions !== undefined && appearanceOptions.chartAppearance.highmapsAppearanceOptions !== null) {
 			// Color Axis
 			mapObj.mapDescription.colorAxis.max = appearanceOptions.chartAppearance.highmapsAppearanceOptions.hmColorAxis?.hmColorAxisMax === undefined ?
-				null as any : appearanceOptions.chartAppearance.highmapsAppearanceOptions.hmColorAxis.hmColorAxisMax;
+				null : appearanceOptions.chartAppearance.highmapsAppearanceOptions.hmColorAxis.hmColorAxisMax;
 			mapObj.mapDescription.colorAxis.min = appearanceOptions.chartAppearance.highmapsAppearanceOptions.hmColorAxis?.hmColorAxisMin === undefined ?
-				null as any : appearanceOptions.chartAppearance.highmapsAppearanceOptions.hmColorAxis.hmColorAxisMin;
+				null : appearanceOptions.chartAppearance.highmapsAppearanceOptions.hmColorAxis.hmColorAxisMin;
 			mapObj.mapDescription.colorAxis.maxColor = appearanceOptions.chartAppearance.highmapsAppearanceOptions.hmColorAxis?.hmColorAxisMaxColor as string;
 			mapObj.mapDescription.colorAxis.minColor = appearanceOptions.chartAppearance.highmapsAppearanceOptions.hmColorAxis?.hmColorAxisMinColor as string;
 			mapObj.mapDescription.colorAxis.type = appearanceOptions.chartAppearance.highmapsAppearanceOptions.hmColorAxis?.hmColorAxisType as string;

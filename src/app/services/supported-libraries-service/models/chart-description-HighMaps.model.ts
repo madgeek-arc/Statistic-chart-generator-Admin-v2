@@ -51,15 +51,15 @@ class HMNavigation {
 }
 
 class HMColorAxis {
-    min: number | undefined = undefined;
-    max: number | undefined= undefined;
+    min: number | null | undefined = undefined;
+    max: number | null | undefined = undefined;
     type = 'linear';
     minColor = '#e6ebf5';
     maxColor = '#003399';
 }
 
 export class HMSeriesInfo {
-    data: any[] = [];
+    data: unknown[] = [];
     name: string;
     keys = ['iso-a2', 'value'];
     joinBy = 'iso-a2';
