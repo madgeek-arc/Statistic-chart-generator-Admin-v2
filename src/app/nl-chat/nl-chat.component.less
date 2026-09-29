@@ -356,3 +356,9 @@
     }
   }
 }
+
+// UIkit override attempted: uk-light on the message would recolour all of its text, not just the code
+// blocks that sit on a dark background; ::ng-deep reaches the markdown output, which has no component scope.
+.message-text ::ng-deep pre code {
+  color: #E2E8F0;
+}

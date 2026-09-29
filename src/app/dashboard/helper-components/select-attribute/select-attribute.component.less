@@ -87,3 +87,18 @@
   float: right;
   margin-right: -24px;
 }
+
+// UIkit override attempted: uk-button and uk-button-default on this Material button leave its height at
+// Material's 36px and its padding at 8px (Material's own rules win) and only add a transparent border,
+// so the 45px height, 15px left padding, grey border and 12px font are set here.
+.mat-mdc-button.mat-mdc-button-base {
+  height: 45px !important;
+  border: 1px solid #DDDDDD;
+  padding-left: 15px;
+}
+
+// UIkit override attempted: see the button rule above; the label font comes from Material's .mdc-button.
+.mdc-button {
+  font-family: Roboto, 'Helvetica Neue', sans-serif !important;
+  font-size: 12px !important;
+}

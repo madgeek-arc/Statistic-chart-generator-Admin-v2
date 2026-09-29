@@ -68,3 +68,9 @@
 //	background: none !important;
 //	background-color: unset !important;
 //}
+
+// UIkit override attempted: a UIkit class on <mat-radio-button> only reaches the host element, not the
+// .mdc-form-field label inside Material's own template, which sets its own font-family.
+.mat-mdc-radio-button ::ng-deep .mdc-form-field {
+  font-family: Roboto, 'Helvetica Neue', sans-serif !important;
+}

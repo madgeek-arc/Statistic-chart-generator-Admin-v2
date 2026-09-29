@@ -91,7 +91,7 @@ describe('generated-short-url-field with aliased signal inputs', () => {
 
   it('copies the bound URL to the clipboard', () => {
     if (!navigator.clipboard) {
-      pending('Clipboard API is not available in this browser');
+      pending('Clipboard API is not available in this browser')
       return;
     }
     const writeText = spyOn(navigator.clipboard, 'writeText').and.resolveTo();
