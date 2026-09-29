@@ -288,7 +288,7 @@
               </button>
             </div>
           } @else {
-            <div class="uk-flex uk-flex-center actionButtons uk-padding-small">
+            <div class="uk-flex uk-flex-center uk-position-fixed uk-background-default actionButtons uk-padding-small">
               <button class="uk-button uk-button-primary" (click)="submitData()"
                 [disabled]="!(view.valid && category.valid && dataseries.valid) && !nlQuery()">Create Chart
               </button>

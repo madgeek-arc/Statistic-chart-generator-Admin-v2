@@ -2,6 +2,17 @@
 	min-width: 26.5em;
 }
 
+// UIkit override attempted: uk-width-* only goes from halves to sixths, so there is no 9-10 or 1-10;
+// uk-width-expand and uk-width-auto size the filter row by its content instead of a fixed 90/10 split.
+.width-9-10 {
+  width: 90%;
+}
+
+// UIkit override attempted: see .width-9-10 above.
+.width-1-10 {
+  width: 10%;
+}
+
 //.dataSelectionDiv {
 //	margin-bottom: 3rem;
 //	width: 100%;

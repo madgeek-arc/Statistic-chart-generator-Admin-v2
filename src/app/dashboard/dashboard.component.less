@@ -304,6 +304,12 @@
 
 .ct-tip-text { flex: 1; }
 
+// UIkit override attempted: uk-position-fixed and uk-background-default cover the position and the background;
+// uk-position-bottom also sets left and right to 0, which would stretch the bar across the sidebar.
+.actionButtons {
+  bottom: 0;
+}
+
 // Data and Appearance step layout
 .step-wrapper {
   display: flex;
